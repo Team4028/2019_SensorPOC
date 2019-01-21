@@ -165,7 +165,7 @@ public class Robot extends TimedRobot {
 		// limit spamming
     	long scanCycleDeltaInMSecs = new Date().getTime() - _lastScanEndTimeInMSec;
     	// add scan time sample to calc scan time rolling average
-    	extracted().add(new BigDecimal(scanCycleDeltaInMSecs));
+    	_scanTimeSamples.add(new BigDecimal(scanCycleDeltaInMSecs));
     	
     	if((new Date().getTime() - _lastDashboardWriteTimeMSec) > 100) {
 
@@ -180,7 +180,7 @@ public class Robot extends TimedRobot {
     		// write the overall robot dashboard info
 	    	SmartDashboard.putString("Robot Build", _buildMsg);
 	    	
-	    	BigDecimal movingAvg = extracted().getAverage();
+	    	BigDecimal movingAvg = _scanTimeSamples.getAverage();
 	    	DecimalFormat df = new DecimalFormat("####");
 	    	SmartDashboard.putString("Scan Time (2 sec roll avg)", df.format(movingAvg) + " mSec");
     		// snapshot last time
@@ -191,10 +191,6 @@ public class Robot extends TimedRobot {
     	_lastScanEndTimeInMSec = new Date().getTime();
 	}
 
-  private MovingAverage extracted() {
-    return _scanTimeSamples;
-  }
-	
 	/** Method for Logging Data to the USB Stick plugged into the RoboRio */
 	private void logAllData() { 
 		// always call this 1st to calc drive metrics
