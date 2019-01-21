@@ -47,7 +47,7 @@ public class Robot extends TimedRobot {
 	private String _buildMsg = "?";
  	long _lastScanEndTimeInMSec;
  	long _lastDashboardWriteTimeMSec;
-	 MovingAverage _scanTimeSamples;
+	MovingAverage _scanTimeSamples;
 	public double _startTime;
 
   /********************************************************************************************
@@ -67,6 +67,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    _scanTimeSamples = new MovingAverage(20);
     _lastDashboardWriteTimeMSec = new Date().getTime(); // snapshot time to control spamming
 		_dataLogger = GeneralUtilities.setupLogging("Auton"); // init data logging	
   }
@@ -89,6 +90,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopInit() {
+    _scanTimeSamples = new MovingAverage(20);
     _dataLogger = GeneralUtilities.setupLogging("Teleop"); // init data logging
 		_lastDashboardWriteTimeMSec = new Date().getTime(); // snapshot time to control spamming
   }
@@ -128,6 +130,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
+    _scanTimeSamples = new MovingAverage(20);
   }
 
   /**
@@ -190,7 +193,7 @@ public class Robot extends TimedRobot {
     	// snapshot when this scan ended
     	_lastScanEndTimeInMSec = new Date().getTime();
 	}
-	
+
 	/** Method for Logging Data to the USB Stick plugged into the RoboRio */
 	private void logAllData() { 
 		// always call this 1st to calc drive metrics
