@@ -7,13 +7,20 @@
 
 package frc.robot.sensors;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.interfaces.IDistanceSensor;
+import frc.robot.sensors.revSrc.DistanceUnit;
+import frc.robot.sensors.revSrc.VL53L0X;
+import frc.robot.util.LogDataBE;
+import frc.robot.RobotMap;
 
 /**
  * This class exposes the onboard Distance Sensor Lead Student:
  */
-public class DistanceRev2mSensor implements IDistanceSensor {
-    
+public class DistanceRev2mSensor implements IDistanceSensor{
+
+	private VL53L0X _distanceSensor;
+
     //=====================================================================================
 	// Define Singleton Pattern
 	//=====================================================================================
@@ -22,14 +29,30 @@ public class DistanceRev2mSensor implements IDistanceSensor {
 	public static DistanceRev2mSensor getInstance() {
 		return _instance;
 	}
-	
+
 	// private constructor for singleton pattern
-	private DistanceRev2mSensor() 
-	{	
+	private DistanceRev2mSensor() {	
+		_distanceSensor = new VL53L0X(RobotMap.I2C_SENSOR_PORT, 0x29);
 	}
 
-	public double get_distanceToTargetInInches()
-	{
-		return 0.0;
+	public void updateDashboard(){
+		SmartDashboard.putNumber("VL53LOX:DistanceInInches", get_distanceToTargetInInches());
+		SmartDashboard.putBoolean("VL53LOX:didTimeoutOccur", get_didTimeoutOccur());
+		SmartDashboard.putBoolean("VL53LOX:isSensorPresent", get_isSensorPresent());
 	}
+	
+  	public void updateLogData(LogDataBE logData) {
+	}
+
+	@Override
+	public double get_distanceToTargetInInches() {
+		return _distanceSensor.getDistance(DistanceUnit.INCH);
+	}
+
+	public boolean get_didTimeoutOccur(){
+		return _distanceSensor.didTimeoutOccur();
+	} 
+	public boolean get_isSensorPresent(){
+		return _distanceSensor.doInitialize();
+	} 
 }

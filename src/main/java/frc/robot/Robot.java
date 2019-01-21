@@ -14,7 +14,7 @@ import java.util.Date;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
+import frc.robot.sensors.DistanceRev2mSensor;
 import frc.robot.subsystems.Chassis;
 import frc.robot.util.DataLogger;
 import frc.robot.util.GeneralUtilities;
@@ -38,6 +38,8 @@ public class Robot extends TimedRobot {
   private AutonChoosers _autonChoosers = AutonChoosers.getInstance();
 
   private Chassis _chassis = Chassis.getInstance();
+
+  private DistanceRev2mSensor _DistanceRev2mSensor = DistanceRev2mSensor.getInstance();
 
 	// class level working variables
 	private DataLogger _dataLogger = null;
@@ -170,7 +172,8 @@ public class Robot extends TimedRobot {
     		// to push its data out to the dashboard
         // ----------------------------------------------
         _autonChoosers.updateDashboard();
-    		_chassis.updateDashboard(); 
+        _chassis.updateDashboard(); 
+        _DistanceRev2mSensor.updateDashboard();
 	    	
     		// write the overall robot dashboard info
 	    	SmartDashboard.putString("Robot Build", _buildMsg);
@@ -198,7 +201,8 @@ public class Robot extends TimedRobot {
         // ----------------------------------------------
         _autonChoosers.updateLogData(logData);
 	    	_chassis.updateLogData(logData);
-	    	
+        _DistanceRev2mSensor.updateLogData(logData);
+        
 	    	_dataLogger.WriteDataLine(logData);
     	}
 	}

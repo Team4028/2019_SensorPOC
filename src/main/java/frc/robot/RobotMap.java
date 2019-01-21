@@ -7,8 +7,7 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.SPI.Port;
+import edu.wpi.first.wpilibj.I2C.Port;
 
 /**
  * The RobotMap is a mapping from the ports sensors and actuators are wired into
@@ -39,9 +38,13 @@ public class RobotMap
 	// NavX (on Roborio)
 	//public static final SPI.Port NAVX_PORT = Port.kMXP;
 	
+	
 	// PWM Ports on RoboRIO
 	//public static final int CLIMBER_SERVO_PWM_ADDRESS = 0;
 	
 	// PCM Ports
 	//public static final int CARRIAGE_SQUEEZE_PCM_PORT = 0;
+
+	//I2C Ports
+	public static final Port I2C_SENSOR_PORT = Port.kOnboard;
 }
