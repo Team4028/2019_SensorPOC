@@ -11,6 +11,7 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C.Port;
+import frc.robot.RobotMap;
 
 /**
  * This class exposes the OnBoard Navigation Sensor Lead Student:
@@ -33,7 +34,7 @@ public class GyroNavX {
 	// private constructor for singleton pattern
 	private GyroNavX() {	
 		try {          
-			_navXSensor = new AHRS(Port.kOnboard); // Communication via RoboRIO MXP (SPI) 
+			_navXSensor = new AHRS(RobotMap.NAVX_PORT); // Communication via RoboRIO MXP (SPI) 
 		  } catch (RuntimeException ex ) {
 			  DriverStation.reportError("Error instantiating navX MXP:  " + ex.getMessage(), true);
 		  }
@@ -52,7 +53,7 @@ public class GyroNavX {
 		_navXSensor.zeroYaw(); 
 	}
 	
-	public double getRoll() {
+	public double getPitch() { //Axis Perpendicular to the Front/Back of the robot
 	return _navXSensor.getPitch();
 	}
 }

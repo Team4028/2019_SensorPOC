@@ -41,5 +41,4 @@ public class VisionLL implements IVisionSensor {
 
         return distanceInIn;
     }
-
 }
