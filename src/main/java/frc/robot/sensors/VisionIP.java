@@ -35,11 +35,6 @@ public class VisionIP implements IVisionSensor {
     }
 
     @Override
-    public double get_angle2InDegrees() {
-        return 0;
-    }
-
-    @Override
     public double get_distanceToTargetInInches() {
         return 0;
     }

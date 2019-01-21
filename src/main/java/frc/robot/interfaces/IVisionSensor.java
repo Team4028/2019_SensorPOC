@@ -14,7 +14,4 @@ public interface IVisionSensor extends IDistanceSensor{
 
     // returns the angle (in degrees) from the robot centerline directly to the target centerline
     public double get_angle1InDegrees();
-
-    // returns the angle (in degrees) from the robot centerline to a normal line from the target centerline
-    public double get_angle2InDegrees();
 }
