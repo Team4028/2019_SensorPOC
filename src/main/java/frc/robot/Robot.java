@@ -44,7 +44,7 @@ public class Robot extends TimedRobot {
 	private String _buildMsg = "?";
  	long _lastScanEndTimeInMSec;
  	long _lastDashboardWriteTimeMSec;
-	 MovingAverage _scanTimeSamples;
+	MovingAverage _scanTimeSamples;
 	public double _startTime;
 
   /********************************************************************************************
@@ -64,6 +64,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    _scanTimeSamples = new MovingAverage(20);
     _lastDashboardWriteTimeMSec = new Date().getTime(); // snapshot time to control spamming
 		_dataLogger = GeneralUtilities.setupLogging("Auton"); // init data logging	
   }
@@ -84,6 +85,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopInit() {
+    _scanTimeSamples = new MovingAverage(20);
     _dataLogger = GeneralUtilities.setupLogging("Teleop"); // init data logging
 		_lastDashboardWriteTimeMSec = new Date().getTime(); // snapshot time to control spamming
   }
@@ -161,7 +163,7 @@ public class Robot extends TimedRobot {
 		// limit spamming
     	long scanCycleDeltaInMSecs = new Date().getTime() - _lastScanEndTimeInMSec;
     	// add scan time sample to calc scan time rolling average
-    	_scanTimeSamples.add(new BigDecimal(scanCycleDeltaInMSecs));
+    	extracted().add(new BigDecimal(scanCycleDeltaInMSecs));
     	
     	if((new Date().getTime() - _lastDashboardWriteTimeMSec) > 100) {
 
@@ -175,7 +177,7 @@ public class Robot extends TimedRobot {
     		// write the overall robot dashboard info
 	    	SmartDashboard.putString("Robot Build", _buildMsg);
 	    	
-	    	BigDecimal movingAvg = _scanTimeSamples.getAverage();
+	    	BigDecimal movingAvg = extracted().getAverage();
 	    	DecimalFormat df = new DecimalFormat("####");
 	    	SmartDashboard.putString("Scan Time (2 sec roll avg)", df.format(movingAvg) + " mSec");
     		// snapshot last time
@@ -185,6 +187,10 @@ public class Robot extends TimedRobot {
     	// snapshot when this scan ended
     	_lastScanEndTimeInMSec = new Date().getTime();
 	}
+
+  private MovingAverage extracted() {
+    return _scanTimeSamples;
+  }
 	
 	/** Method for Logging Data to the USB Stick plugged into the RoboRio */
 	private void logAllData() { 
