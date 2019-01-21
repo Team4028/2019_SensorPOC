@@ -228,38 +228,7 @@ public class VL53L0X {
         //this.deviceClient.engage();
     }
 
-    public boolean doTestInit() {      
-        byte bVal;  
-        System.out.format("Checking to see if it's really a VL53L0X sensor...");
-
-        //RobotLog.dd(MYTAG, "Checking to see if it's really a VL53L0X sensor...");     
-        //bVal = deviceClient.read8(0xC0);
-        //bVal = read8(0xC0);        
-        // Bulk Write Based Read_Only for a single register Read of 0x01 (status)
-        // djoSendData[0] = 0x01;  
-        // i2c_Lidar->WriteBulk(djoSendData,1);
-        // i2c_Lidar->ReadOnly(1,LidarMassData);
-        // printf("Mass Data 0 %4X ", LidarMassData[0]);
-        //System.out.format("Checking to see if some device is at the expected address...");
-        //return !_i2cBus.addressOnly();
-
-        boolean isFailure = false;
-        
-        byte[] writeBuffer = new byte[1];
-        writeBuffer[0] = (byte)0xC0;
-        isFailure = _i2cBus.writeBulk(writeBuffer, 1);
-        System.out.format("Write Failure: ", isFailure);
-
-        byte[]  readBuffer = new byte[1];
-        isFailure = _i2cBus.readOnly(readBuffer, 1);
-        bVal = readBuffer[0];
-        System.out.format("Read Failure: ", isFailure);
-
-        System.out.format("Reg 0xC0 = %x (should be 0xEE)", bVal);
-
-        return !isFailure;
-    }
-
+   
     // initialize the sensor.
     //protected synchronized boolean doInitialize()
     public boolean doInitialize() {

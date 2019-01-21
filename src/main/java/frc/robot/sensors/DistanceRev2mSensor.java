@@ -13,7 +13,7 @@ import frc.robot.sensors.revSrc.DistanceUnit;
 import frc.robot.sensors.revSrc.VL53L0X;
 import frc.robot.util.LogDataBE;
 import frc.robot.RobotMap;
-
+import frc.robot.util.GeneralUtilities;
 /**
  * This class exposes the onboard Distance Sensor Lead Student:
  */
@@ -33,12 +33,13 @@ public class DistanceRev2mSensor implements IDistanceSensor{
 	// private constructor for singleton pattern
 	private DistanceRev2mSensor() {	
 		_distanceSensor = new VL53L0X(RobotMap.I2C_SENSOR_PORT, 0x29);
+		SmartDashboard.putBoolean("VL53LOX:isSensorPresent", get_isSensorPresent());
 	}
 
 	public void updateDashboard(){
 		SmartDashboard.putNumber("VL53LOX:DistanceInInches", get_distanceToTargetInInches());
 		SmartDashboard.putBoolean("VL53LOX:didTimeoutOccur", get_didTimeoutOccur());
-		SmartDashboard.putBoolean("VL53LOX:isSensorPresent", get_isSensorPresent());
+		
 	}
 	
   	public void updateLogData(LogDataBE logData) {
@@ -46,7 +47,7 @@ public class DistanceRev2mSensor implements IDistanceSensor{
 
 	@Override
 	public double get_distanceToTargetInInches() {
-		return _distanceSensor.getDistance(DistanceUnit.INCH);
+		return GeneralUtilities.roundDouble(_distanceSensor.getDistance(DistanceUnit.INCH),2);
 	}
 
 	public boolean get_didTimeoutOccur(){
