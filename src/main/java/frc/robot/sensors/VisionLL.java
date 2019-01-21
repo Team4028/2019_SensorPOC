@@ -7,6 +7,7 @@
 
 package frc.robot.sensors;
 
+import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.interfaces.IVisionSensor;
 
 /**
@@ -24,23 +25,21 @@ public class VisionLL implements IVisionSensor {
 	}
 	
 	// private constructor for singleton pattern
-	private VisionLL() 
-	{	
-    }
+	private VisionLL() {}
 
     @Override
     public double get_angle1InDegrees() {
-        return 0;
-    }
-
-    @Override
-    public double get_angle2InDegrees() {
-        return 0;
+        return Math.round(NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0));
     }
 
     @Override
     public double get_distanceToTargetInInches() {
-        return 0;
+        double heightofBoundedBox = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tvert").getDouble(0);
+        double widthOfBoundedBox = NetworkTableInstance.getDefault().getTable("limelight").getEntry("thor").getDouble(0);
+        double areaofBoundedBox = heightofBoundedBox * widthOfBoundedBox;
+        double distanceInIn = (1606.9 * Math.pow(areaofBoundedBox, -0.443));
+
+        return distanceInIn;
     }
 
 }
