@@ -125,6 +125,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
+    _scanTimeSamples = new MovingAverage(20);
   }
 
   /**
