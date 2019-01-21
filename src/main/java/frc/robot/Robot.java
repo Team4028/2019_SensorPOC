@@ -78,7 +78,7 @@ public class Robot extends TimedRobot {
   public void autonomousPeriodic() 
   {
     Scheduler.getInstance().run();
-    _leds.set_targetangle( Math.random() * 10.);
+    _leds.set_targetangle( Math.random() * 27.0);
   }
 
   /********************************************************************************************
