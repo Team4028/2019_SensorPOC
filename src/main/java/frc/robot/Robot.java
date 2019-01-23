@@ -22,6 +22,7 @@ import frc.robot.util.LogDataBE;
 import frc.robot.util.MovingAverage;
 import frc.robot.ux.AutonChoosers;
 import frc.robot.ux.LEDController;
+import frc.robot.ux.OI;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -31,6 +32,7 @@ import frc.robot.ux.LEDController;
  * project.
  */
 public class Robot extends TimedRobot {
+  private OI _oi = OI.getInstance();
 
 	private static final String ROBOT_NAME = "2019 DeepSpace SensorPOC";
 
@@ -38,7 +40,7 @@ public class Robot extends TimedRobot {
   //  Note: add each one to the outputAllToDashboard & logAllData methods below
   private AutonChoosers _autonChoosers = AutonChoosers.getInstance();
 
-  private Chassis _chassis = Chassis.getInstance();
+
   private LEDController _leds = LEDController.getInstance();
 
 
@@ -48,7 +50,8 @@ public class Robot extends TimedRobot {
  	long _lastScanEndTimeInMSec;
  	long _lastDashboardWriteTimeMSec;
 	MovingAverage _scanTimeSamples;
-	public double _startTime;
+  public double _startTime;
+  private Chassis _chassis = Chassis.getInstance();
 
   /********************************************************************************************
    * This function is run when the robot is first started up and should be used
@@ -92,7 +95,8 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
     _scanTimeSamples = new MovingAverage(20);
     _dataLogger = GeneralUtilities.setupLogging("Teleop"); // init data logging
-		_lastDashboardWriteTimeMSec = new Date().getTime(); // snapshot time to control spamming
+    _lastDashboardWriteTimeMSec = new Date().getTime(); // snapshot time to control spamming
+    _chassis.zeroSensors();
   }
 
   /**

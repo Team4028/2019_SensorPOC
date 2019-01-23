@@ -27,7 +27,11 @@ public class RobotMap
 	public static final int PCM_CAN_ADDR = 0;	
 	
 	// Motor Controller Can Bus Address
-	//public static final int LEFT_DRIVE_MASTER_CAN_ADDR = 1;
+	public static final int LEFT_DRIVE_MASTER_CAN_ADDR = 1;
+	public static final int LEFT_DRIVE_SLAVE_CAN_ADDR = 2;
+	public static final int RIGHT_DRIVE_MASTER_CAN_ADDR = 3;
+	public static final int RIGHT_DRIVE_SLAVE_CAN_ADDR = 4;
+
 	
 	// DIO Ports
 	//public static final int CARRIAGE_LIMIT_SWITCH_DIO_PORT = 0;
