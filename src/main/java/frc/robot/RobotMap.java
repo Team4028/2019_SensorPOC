@@ -36,7 +36,7 @@ public class RobotMap
 	//public static final int STORED_PRESSURE_SENSOR_AIO_PORT = 0;	
 	
 	// NavX (on Roborio)
-	//public static final Port NAVX_PORT = Port.kOnboard;
+	public static final Port NAVX_PORT = Port.kOnboard;
 	
 	
 	// PWM Ports on RoboRIO
