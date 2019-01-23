@@ -20,6 +20,13 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.RobotMap;
+import frc.robot.auton.pathfollowing.RobotState;
+import frc.robot.auton.pathfollowing.control.Path;
+import frc.robot.auton.pathfollowing.control.PathFollower;
+import frc.robot.auton.pathfollowing.motion.RigidTransform;
+import frc.robot.auton.pathfollowing.motion.Rotation;
+import frc.robot.auton.pathfollowing.motion.Twist;
+import frc.robot.auton.pathfollowing.util.Kinematics;
 import frc.robot.interfaces.IBeakSquadSubsystem;
 import frc.robot.sensors.GyroNavX;
 import frc.robot.util.LogDataBE;
@@ -47,7 +54,7 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
   
   ChassisState _chassisState = ChassisState.UNKNOWN;
   GyroNavX _navX = GyroNavX.getInstance();
-
+  PathFollower _pathFollower;
   TalonSRX _leftMaster, _leftSlave, _rightMaster, _rightSlave;
 
   double _leftMtrDriveSetDistanceCmd, _rightMtrDriveSetDistanceCmd;
@@ -55,6 +62,13 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
   double _targetAngle,_angleError;
   double ENCODER_CODES_PER_DEGREE = 339.2468;
   boolean _isTurnRight;
+
+  double _leftTargetVelocity, _rightTargetVelocity, _centerTargetVelocity;
+  Path _currentPath;
+  RobotState _robotState;
+  double _leftEncoderPrevDistance, _rightEncoderPrevDistance;
+
+  static double ENCODER_COUNTS_PER_WHEEL_REV=0;
 	public static Chassis getInstance() {
 		return _instance;
 	}
@@ -127,6 +141,12 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
     _rightMaster.set(ControlMode.PercentOutput, throttleCmd-0.7*turnCmd);
   }
 
+  public void stop()
+  {
+    _chassisState = ChassisState.PERCENT_VBUS;
+    setLeftRightCommand(ControlMode.PercentOutput, 0, 0);
+  }
+
   public void updateChassis(double timestamp){
 		switch(_chassisState) {
 			case UNKNOWN:
@@ -135,12 +155,12 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
 				return;
 				
 			case AUTO_TURN:
-        _leftMaster.config_kF(0, 0);
-        _leftMaster.config_kP(0, 0);
+        _leftMaster.config_kF(0, 0.1223);
+        _leftMaster.config_kP(0, 0.01);
         _leftMaster.config_kI(0, 0);
         _leftMaster.config_kD(0, 0);
-        _rightMaster.config_kF(0, 0);
-        _rightMaster.config_kP(0, 0);
+        _rightMaster.config_kF(0, 0.1223);
+        _rightMaster.config_kP(0, 0.01);
         _rightMaster.config_kI(0, 0);
         _rightMaster.config_kD(0, 0);
 				moveToTargetAngle();
@@ -159,13 +179,15 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
 				return;
 				
 			case FOLLOW_PATH:
-				if (get_isHighGear()) {
-					GeneralUtilities.setPIDFGains(_leftMaster, HIGH_GEAR_VELOCITY_PIDF_GAINS);
-					GeneralUtilities.setPIDFGains(_rightMaster, HIGH_GEAR_VELOCITY_PIDF_GAINS);
-				} else {
-					GeneralUtilities.setPIDFGains(_leftMaster, LOW_GEAR_VELOCITY_PIDF_GAINS);
-					GeneralUtilities.setPIDFGains(_rightMaster, LOW_GEAR_VELOCITY_PIDF_GAINS);
-				}
+        _leftMaster.config_kF(0, 0);
+        _leftMaster.config_kP(0, 0);
+        _leftMaster.config_kI(0, 0);
+        _leftMaster.config_kD(0, 0);
+        _rightMaster.config_kF(0, 0);
+        _rightMaster.config_kP(0, 0);
+        _rightMaster.config_kI(0, 0);
+        _rightMaster.config_kD(0, 0);
+          
 				
 				if (_pathFollower != null) 
 					updatePathFollower(timestamp);
@@ -214,6 +236,93 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
   public void moveToTargetPosDriveSetDistance ()
 	{
 		setLeftRightCommand(ControlMode.MotionMagic, _leftMtrDriveSetDistanceCmd, _rightMtrDriveSetDistanceCmd);
+  }
+  
+  public synchronized void setWantDrivePath(Path path, boolean reversed) 
+	{
+		if (_currentPath != path || _chassisState != ChassisState.FOLLOW_PATH) 
+		{
+			_leftEncoderPrevDistance = getLeftPos()/ENCODER_COUNTS_PER_WHEEL_REV * Constants.DRIVE_WHEEL_DIAMETER_IN * Math.PI;
+	        _rightEncoderPrevDistance = getLeftPos()/ENCODER_COUNTS_PER_WHEEL_REV * Constants.DRIVE_WHEEL_DIAMETER_IN * Math.PI;
+            RobotState.getInstance().resetDistanceDriven();
+            _pathFollower = new PathFollower(path, reversed, path.maxAccel, path.maxDecel, path.inertiaSteeringGain);
+            _chassisState = ChassisState.FOLLOW_PATH;
+            _currentPath = path;
+		} 
+		else 
+		{
+        	setLeftRightCommand(ControlMode.Velocity, 0.0, 0.0);
+        }
+    }
+
+  private void estimateRobotState( double timestamp)
+  {
+    final double left_distance = NUtoInches(getLeftPos());
+    final double right_distance = NUtoInches(getRightPos());
+    final Rotation gyro_angle = Rotation.fromDegrees(getHeading());
+    final Twist odometry_velocity = _robotState.generateOdometryFromSensors(
+        left_distance - _leftEncoderPrevDistance, right_distance - _rightEncoderPrevDistance, gyro_angle);
+    final Twist predicted_velocity = Kinematics.forwardKinematics(getLeftVelocityInchesPerSec(),
+        getRightVelocityInchesPerSec());
+    _robotState.addObservations(timestamp, odometry_velocity, predicted_velocity);
+    _leftEncoderPrevDistance = left_distance;
+    _rightEncoderPrevDistance = right_distance;
+  }
+
+	public void updatePathFollower(double timestamp) 
+	{
+		estimateRobotState(timestamp);
+		RigidTransform _robotPose = RobotState.getInstance().getLatestFieldToVehicle().getValue();
+		Twist command = _pathFollower.update(timestamp, _robotPose, RobotState.getInstance().getDistanceDriven(), RobotState.getInstance().getPredictedVelocity().dx);
+		if (!_pathFollower.isFinished()) 
+		{
+			Kinematics.DriveVelocity setpoint = Kinematics.inverseKinematics(command);
+			final double maxDesired = Math.max(Math.abs(setpoint.left), Math.abs(setpoint.right));
+            final double scale = maxDesired > Constants.DRIVE_VELOCITY_MAX_SETPOINT ? Constants.DRIVE_VELOCITY_MAX_SETPOINT / maxDesired : 1.0;
+            setLeftRightCommand(ControlMode.Velocity, inchesPerSecToNU(setpoint.left * scale), inchesPerSecToNU(setpoint.right * scale));
+            _centerTargetVelocity = command.dx;
+			_leftTargetVelocity = setpoint.left;
+			_rightTargetVelocity = setpoint.right;
+		} 
+		else 
+		{
+			setLeftRightCommand(ControlMode.Velocity, 0.0, 0.0);
+		}
+	}
+	public synchronized boolean isDoneWithPath() 
+	{
+		if (_chassisState == ChassisState.FOLLOW_PATH && _pathFollower != null)
+		{
+			if (_pathFollower.isFinished())
+			{
+				System.out.println("Chassis Done With Path");
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else 
+		{
+			return true;
+		}
+    }
+
+    /** Path following e-stop */
+	public synchronized void forceDoneWithPath() 
+	{
+        if (_chassisState == ChassisState.FOLLOW_PATH && _pathFollower != null)
+            _pathFollower.forceFinish();
+		else {}
+		
+           // System.out.println("Robot is not in path following mode");
+	}
+	public synchronized double getRemainingPathDistance() {
+		if (_pathFollower != null) {
+			return _pathFollower.remainingPathLength();
+		} 
+		return 0;
 	}
 	//=====================================================================================
 	// Helper Methods
