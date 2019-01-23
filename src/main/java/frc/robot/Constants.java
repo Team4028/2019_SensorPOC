@@ -19,6 +19,9 @@ public class Constants {
 	public static final Value SHIFTER_LOW_GEAR_POS = DoubleSolenoid.Value.kReverse;
 	public static final Value SHIFTER_HIGH_GEAR_POS = DoubleSolenoid.Value.kForward;
 
+
+
+	public static final int BIG_NUMBER = (int)1e6;
     // Logging
 	// this is where the USB stick is mounted on the RoboRIO filesystem.  
 	// You can confirm by logging into the RoboRIO using WinSCP
