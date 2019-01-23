@@ -68,10 +68,4 @@ public class DistanceRev2mSensor implements IDistanceSensor{
 		return GeneralUtilities.roundDouble(_distanceToTargetInInches, 2);
 	}
 
-	// public boolean get_didTimeoutOccur(){
-	// 	return _didTimeoutOccur;
-	// } 
-	// // public boolean get_isSensorPresent(){
-	// // 	return _isSensorPresent;
-	// // } 
 }
