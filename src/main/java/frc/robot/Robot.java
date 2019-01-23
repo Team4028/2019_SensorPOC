@@ -21,6 +21,7 @@ import frc.robot.util.GeneralUtilities;
 import frc.robot.util.LogDataBE;
 import frc.robot.util.MovingAverage;
 import frc.robot.ux.AutonChoosers;
+import frc.robot.ux.LEDController;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -38,6 +39,8 @@ public class Robot extends TimedRobot {
   private AutonChoosers _autonChoosers = AutonChoosers.getInstance();
 
   private Chassis _chassis = Chassis.getInstance();
+  private LEDController _leds = LEDController.getInstance();
+
 
   private DistanceRev2mSensor _DistanceRev2mSensor = DistanceRev2mSensor.getInstance();
 
@@ -75,8 +78,10 @@ public class Robot extends TimedRobot {
    * This function is called periodically during autonomous mode.
    */
   @Override
-  public void autonomousPeriodic() {
+  public void autonomousPeriodic() 
+  {
     Scheduler.getInstance().run();
+    _leds.set_targetangle( Math.random() * 27.0);
   }
 
   /********************************************************************************************
