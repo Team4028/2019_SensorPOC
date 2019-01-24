@@ -43,7 +43,7 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
 	//=====================================================================================
   private static Chassis _instance = new Chassis();
   
-  double ENCODER_CODES_PER_DEGREE = 312.796576; //value calculated theoretically from ECPWR //339.2468*100/169.8;
+  double ENCODER_CODES_PER_DEGREE = 312; //value calculated theoretically from ECPWR //339.2468*100/169.8;
 
   public enum ChassisState
 	{
@@ -61,7 +61,7 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
 
   public double _leftMtrDriveSetDistanceCmd, _rightMtrDriveSetDistanceCmd;
 
-  double _targetAngle,_angleError;
+  public double _targetAngle,_angleError;
 
   boolean _isTurnRight;
 
@@ -91,8 +91,8 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
     _leftMaster.setInverted(true);
     _leftSlave.setInverted(true);
 
-    _rightMaster.setSensorPhase(true);
-    _leftMaster.setSensorPhase(true);
+    _rightMaster.setSensorPhase(false);
+    _leftMaster.setSensorPhase(false);
 
     _leftMaster.setNeutralMode(NeutralMode.Brake);
 		_leftSlave.setNeutralMode(NeutralMode.Brake);
@@ -139,40 +139,30 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
     // setDefaultCommand(new MySpecialCommand());
   }
 
-  // basic driving
-  public void arcadeDrive(double throttleCmd, double turnCmd) 
-  {
-    _leftMaster.set(ControlMode.PercentOutput, throttleCmd+0.7*turnCmd);
-    _rightMaster.set(ControlMode.PercentOutput, throttleCmd-0.7*turnCmd);
-  }
 
-  public void stop()
-  {
-    _chassisState = ChassisState.PERCENT_VBUS;
-    setLeftRightCommand(ControlMode.PercentOutput, 0, 0);
-  }
 
   public void updateChassis(double timestamp){
 		switch(_chassisState) {
 			case UNKNOWN:
 			return;
-			case PERCENT_VBUS:
+      case PERCENT_VBUS:
+
 				return;
 				
 			case AUTO_TURN:
-        _leftMaster.config_kF(0, 0.1223);
+        _leftMaster.config_kF(0, 0.0581);
         _leftMaster.config_kP(0, 0.2);
         _leftMaster.config_kI(0, 0);
-        _leftMaster.config_kD(0, 0);
-        _rightMaster.config_kF(0, 0.1223);
+        _leftMaster.config_kD(0, 2);
+        _rightMaster.config_kF(0, 0.0581);
         _rightMaster.config_kP(0, 0.2);
         _rightMaster.config_kI(0, 0);
-        _rightMaster.config_kD(0, 0);
-        _rightMaster.configMotionCruiseVelocity(100);
-        _leftMaster.configMotionCruiseVelocity(100);
-        _rightMaster.configMotionAcceleration(10000);
-        _leftMaster.configMotionAcceleration(10000);
-				moveToTargetAngle();
+        _rightMaster.config_kD(0, 2);
+        _rightMaster.configMotionCruiseVelocity(5000);
+        _leftMaster.configMotionCruiseVelocity(5000);
+        _rightMaster.configMotionAcceleration(30000);
+        _leftMaster.configMotionAcceleration(30000);
+				//moveToTargetAngle();
 				return;
 			
 			case DRIVE_SET_DISTANCE:
@@ -202,7 +192,20 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
 					updatePathFollower(timestamp);
 				return;
 		}
-	}
+  }
+  
+    // basic driving
+    public void arcadeDrive(double throttleCmd, double turnCmd) 
+    {
+      _leftMaster.set(ControlMode.PercentOutput, throttleCmd+0.7*turnCmd);
+      _rightMaster.set(ControlMode.PercentOutput, throttleCmd-0.7*turnCmd);
+    }
+  
+    public void stop()
+    {
+      _chassisState = ChassisState.PERCENT_VBUS;
+      setLeftRightCommand(ControlMode.PercentOutput, 0,0);
+    }
 
   public synchronized void setTargetAngleAndTurnDirection(double targetAngle, boolean isTurnRight) 
 	{
@@ -225,11 +228,13 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
         {
             _angleError = 360 - getHeading() + _targetAngle;
         }
+        System.out.println("AngleError:"+_angleError);
         double encoderError = ENCODER_CODES_PER_DEGREE * _angleError;       
         double leftDriveTargetPos = getLeftPos() + encoderError;
         double rightDriveTargetPos = getRightPos() - encoderError;
         
         setLeftRightCommand(ControlMode.MotionMagic, leftDriveTargetPos, rightDriveTargetPos);
+        
     }
 
 

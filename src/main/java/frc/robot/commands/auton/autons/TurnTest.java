@@ -9,8 +9,9 @@ public class TurnTest extends CommandGroup
 {
     public TurnTest()
     {
-        //addSequential(new InPlaceTurn(100, true));
         addParallel(new Auton_ParallelStarter());
-        addSequential(new CG_FollowVisionPath(Math.PI/12, Math.PI/15, 70, true));
+        addSequential(new InPlaceTurn(180, true));
+
+        //addSequential(new CG_FollowVisionPath(Math.PI/12, Math.PI/15, 70, true));
     }
 }

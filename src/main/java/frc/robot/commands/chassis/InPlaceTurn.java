@@ -24,14 +24,16 @@ public class InPlaceTurn extends Command
     @Override
     protected void execute() 
     {
-        //_chassis.moveToTargetAngle();
+        _chassis.moveToTargetAngle();
+        System.out.println("Heading"+_chassis.getHeading());
+        System.out.println("Error"+(_targetAngle-_chassis.getHeading()));
     }
     
     @Override
     protected boolean isFinished() 
     { 
         
-        if(Math.abs(_targetAngle - _chassis.getHeading()) < 2.5)
+        if(_chassis._angleError < 5)
         {
             System.out.println("Done");
             return true;
@@ -46,5 +48,6 @@ public class InPlaceTurn extends Command
     protected void end()
     {
         _chassis.stop();
+        System.out.println("chassis stopped");
     }
 }

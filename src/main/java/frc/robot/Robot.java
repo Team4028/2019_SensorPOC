@@ -75,11 +75,13 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    _chassis.zeroSensors();
+    _chassis.stop();
     _scanTimeSamples = new MovingAverage(20);
     _lastDashboardWriteTimeMSec = new Date().getTime(); // snapshot time to control spamming
     _dataLogger = GeneralUtilities.setupLogging("Auton"); // init data logging	
     _autonChoosers.getSelectedAuton().start();
-    _chassis.zeroSensors();
+
   }
 
   /**
@@ -88,10 +90,12 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() 
   {
+
+    _chassis.updateChassis(Timer.getFPGATimestamp());
     Scheduler.getInstance().run();
     _leds.set_targetangle( Math.random() * 27.0);
-    _chassis.updateChassis(Timer.getFPGATimestamp());
-    //System.out.println(_chassis.getHeading());
+    
+    System.out.println(_chassis.getHeading());
    // _chassis.setLeftRightCommand(ControlMode.PercentOutput, 1, 1);
   }
 
