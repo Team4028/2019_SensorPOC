@@ -24,21 +24,27 @@ public class InPlaceTurn extends Command
     @Override
     protected void execute() 
     {
-        _chassis.moveToTargetAngle();
+        //_chassis.moveToTargetAngle();
     }
     
     @Override
     protected boolean isFinished() 
     { 
         
-		return Math.abs(_targetAngle - _chassis.getHeading()) < 2.5; // Returns true when chassis is within angle
-                                                                     // deadband
+        if(Math.abs(_targetAngle - _chassis.getHeading()) < 2.5)
+        {
+            System.out.println("Done");
+            return true;
+        } // Returns true when chassis is within angle
+        else
+        {
+            return false;
+        }                                // deadband
     
     }
     @Override
     protected void end()
     {
         _chassis.stop();
-        //_targetAngle = _chassis.get_Heading();
     }
 }

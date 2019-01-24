@@ -11,11 +11,15 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.Date;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.auton.autons.TurnTest;
+import frc.robot.sensors.GyroNavX;
 import frc.robot.subsystems.Chassis;
 import frc.robot.util.DataLogger;
 import frc.robot.util.GeneralUtilities;
@@ -40,7 +44,6 @@ public class Robot extends TimedRobot {
   // create instance of each Subsystem (singleton)
   //  Note: add each one to the outputAllToDashboard & logAllData methods below
   private AutonChoosers _autonChoosers = AutonChoosers.getInstance();
-  CommandGroup _auton = new TurnTest();
 
   private LEDController _leds = LEDController.getInstance();
 
@@ -53,6 +56,7 @@ public class Robot extends TimedRobot {
 	MovingAverage _scanTimeSamples;
   public double _startTime;
   private Chassis _chassis = Chassis.getInstance();
+  private GyroNavX _navX=GyroNavX.getInstance();
 
   /********************************************************************************************
    * This function is run when the robot is first started up and should be used
@@ -74,7 +78,7 @@ public class Robot extends TimedRobot {
     _scanTimeSamples = new MovingAverage(20);
     _lastDashboardWriteTimeMSec = new Date().getTime(); // snapshot time to control spamming
     _dataLogger = GeneralUtilities.setupLogging("Auton"); // init data logging	
-    _auton.start();
+    _autonChoosers.getSelectedAuton().start();
     _chassis.zeroSensors();
   }
 
@@ -86,6 +90,9 @@ public class Robot extends TimedRobot {
   {
     Scheduler.getInstance().run();
     _leds.set_targetangle( Math.random() * 27.0);
+    _chassis.updateChassis(Timer.getFPGATimestamp());
+    //System.out.println(_chassis.getHeading());
+   // _chassis.setLeftRightCommand(ControlMode.PercentOutput, 1, 1);
   }
 
   /********************************************************************************************
@@ -96,6 +103,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopInit() {
+    _chassis.stop();
     _scanTimeSamples = new MovingAverage(20);
     _dataLogger = GeneralUtilities.setupLogging("Teleop"); // init data logging
     _lastDashboardWriteTimeMSec = new Date().getTime(); // snapshot time to control spamming
@@ -108,6 +116,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     Scheduler.getInstance().run();
+    System.out.println(_chassis.getHeading());
   }
 
   /********************************************************************************************

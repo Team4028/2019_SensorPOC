@@ -41,8 +41,10 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
 	//=====================================================================================
 	// Define Singleton Pattern
 	//=====================================================================================
-	private static Chassis _instance = new Chassis();
+  private static Chassis _instance = new Chassis();
   
+  double ENCODER_CODES_PER_DEGREE = 312.796576; //value calculated theoretically from ECPWR //339.2468*100/169.8;
+
   public enum ChassisState
 	{
 		UNKNOWN,
@@ -55,12 +57,12 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
   ChassisState _chassisState = ChassisState.UNKNOWN;
   GyroNavX _navX = GyroNavX.getInstance();
   PathFollower _pathFollower;
-  TalonSRX _leftMaster, _leftSlave, _rightMaster, _rightSlave;
+  public TalonSRX _leftMaster, _leftSlave, _rightMaster, _rightSlave;
 
-  double _leftMtrDriveSetDistanceCmd, _rightMtrDriveSetDistanceCmd;
+  public double _leftMtrDriveSetDistanceCmd, _rightMtrDriveSetDistanceCmd;
 
   double _targetAngle,_angleError;
-  double ENCODER_CODES_PER_DEGREE = 339.2468;
+
   boolean _isTurnRight;
 
   double _leftTargetVelocity, _rightTargetVelocity, _centerTargetVelocity;
@@ -68,7 +70,7 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
   RobotState _robotState;
   double _leftEncoderPrevDistance, _rightEncoderPrevDistance;
 
-  static double ENCODER_COUNTS_PER_WHEEL_REV=0;
+  static double ENCODER_COUNTS_PER_WHEEL_REV=30028.471298;
 	public static Chassis getInstance() {
 		return _instance;
 	}
@@ -89,6 +91,9 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
     _leftMaster.setInverted(true);
     _leftSlave.setInverted(true);
 
+    _rightMaster.setSensorPhase(true);
+    _leftMaster.setSensorPhase(true);
+
     _leftMaster.setNeutralMode(NeutralMode.Brake);
 		_leftSlave.setNeutralMode(NeutralMode.Brake);
 		_rightMaster.setNeutralMode(NeutralMode.Brake);
@@ -104,8 +109,8 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
   }
   private void configMasterMotors(TalonSRX talon) 
 	{
-		talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
-		talon.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 5, 0);
+		talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 10);
+		talon.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 5, 10);
 	
         talon.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_10Ms, 0);
         talon.configVelocityMeasurementWindow(32, 0);
@@ -156,23 +161,27 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
 				
 			case AUTO_TURN:
         _leftMaster.config_kF(0, 0.1223);
-        _leftMaster.config_kP(0, 0.01);
+        _leftMaster.config_kP(0, 0.2);
         _leftMaster.config_kI(0, 0);
         _leftMaster.config_kD(0, 0);
         _rightMaster.config_kF(0, 0.1223);
-        _rightMaster.config_kP(0, 0.01);
+        _rightMaster.config_kP(0, 0.2);
         _rightMaster.config_kI(0, 0);
         _rightMaster.config_kD(0, 0);
+        _rightMaster.configMotionCruiseVelocity(100);
+        _leftMaster.configMotionCruiseVelocity(100);
+        _rightMaster.configMotionAcceleration(10000);
+        _leftMaster.configMotionAcceleration(10000);
 				moveToTargetAngle();
 				return;
 			
 			case DRIVE_SET_DISTANCE:
-        _leftMaster.config_kF(0, 0);
-        _leftMaster.config_kP(0, 0);
+        _leftMaster.config_kF(0, .0810618);
+        _leftMaster.config_kP(0, .01);
         _leftMaster.config_kI(0, 0);
         _leftMaster.config_kD(0, 0);
-        _rightMaster.config_kF(0, 0);
-        _rightMaster.config_kP(0, 0);
+        _rightMaster.config_kF(0, 0.0810618);
+        _rightMaster.config_kP(0, 0.01);
         _rightMaster.config_kI(0, 0);
         _rightMaster.config_kD(0, 0);
 				moveToTargetPosDriveSetDistance();
@@ -216,7 +225,6 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
         {
             _angleError = 360 - getHeading() + _targetAngle;
         }
-
         double encoderError = ENCODER_CODES_PER_DEGREE * _angleError;       
         double leftDriveTargetPos = getLeftPos() + encoderError;
         double rightDriveTargetPos = getRightPos() - encoderError;

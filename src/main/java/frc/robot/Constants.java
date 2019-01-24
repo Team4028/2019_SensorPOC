@@ -42,7 +42,7 @@ public class Constants {
 	public static final double PATH_STOP_STEERING_DISTANCE = 2.0;
 
 
-	public static final double TRACK_SCRUBBING_FACTOR = 0.9;
+	public static final double TRACK_SCRUBBING_FACTOR = 1.0;
 	// Units: setpoint, error, and output are in inches per second. 
 	public static final double DRIVE_VELOCITY_NOMINAL_OUTPUT = 0.05;
 	public static final double DRIVE_VELOCITY_MAX_SETPOINT = 15 * 12.0; // 15 fps

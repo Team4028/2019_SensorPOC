@@ -27,10 +27,11 @@ public class RobotMap
 	public static final int PCM_CAN_ADDR = 0;	
 	
 	// Motor Controller Can Bus Address
-	public static final int LEFT_DRIVE_MASTER_CAN_ADDR = 1;
-	public static final int LEFT_DRIVE_SLAVE_CAN_ADDR = 2;
-	public static final int RIGHT_DRIVE_MASTER_CAN_ADDR = 3;
-	public static final int RIGHT_DRIVE_SLAVE_CAN_ADDR = 4;
+	public static final int RIGHT_DRIVE_MASTER_CAN_ADDR = 1;
+	public static final int RIGHT_DRIVE_SLAVE_CAN_ADDR = 2;
+	public static final int LEFT_DRIVE_MASTER_CAN_ADDR = 3;
+	public static final int LEFT_DRIVE_SLAVE_CAN_ADDR = 4;
+
 
 	
 	// DIO Ports
@@ -40,7 +41,7 @@ public class RobotMap
 	//public static final int STORED_PRESSURE_SENSOR_AIO_PORT = 0;	
 	
 	// NavX (on Roborio)
-	public static final Port NAVX_PORT = Port.kOnboard;
+	public static final Port NAVX_PORT = Port.kMXP;
 	
 	// PWM Ports on RoboRIO
 	//public static final int CLIMBER_SERVO_PWM_ADDRESS = 0;

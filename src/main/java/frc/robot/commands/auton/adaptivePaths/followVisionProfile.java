@@ -6,8 +6,10 @@ import frc.robot.commands.auton.Auton_ParallelStarter;
 import frc.robot.auton.path_planning.problem;
 
 public class followVisionProfile extends CommandGroup{
-    public followVisionProfile(double timeOut){
+    
+    public followVisionProfile(double timeOut)
+    {
         addParallel(new Auton_ParallelStarter());
-        addSequential( new Auton_RunTimedMotionProfileCommand(problem._path, timeOut));
+        addSequential( new Auton_RunTimedMotionProfileCommand(problem.getPath(), timeOut));
     }
 }

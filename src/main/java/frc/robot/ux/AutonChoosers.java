@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.commands.auton.autons.TurnTest;
 import frc.robot.interfaces.IBeakSquadSubsystem;
 import frc.robot.util.LogDataBE;
 
@@ -22,6 +23,7 @@ public class AutonChoosers implements IBeakSquadSubsystem {
 
     private enum AUTON_MODE {
 		UNDEFINED,
+		TURN_TEST,
         DO_NOTHING
     }
 
@@ -47,10 +49,12 @@ public class AutonChoosers implements IBeakSquadSubsystem {
 	private AutonChoosers() {
         // Auton Mode
 		_autonAction.setDefaultOption("Do Nothing", AUTON_MODE.DO_NOTHING);
+		_autonAction.addOption("AutoTurn Test", AUTON_MODE.TURN_TEST);
         
         // Auton Starting Side
 		_autonStartingSideChooser.setDefaultOption("LEFT", STARTING_SIDE.LEFT);
 		_autonStartingSideChooser.addOption("RIGHT", STARTING_SIDE.RIGHT);
+
     }
     
     public boolean get_isBlueAlliance() {
@@ -64,7 +68,8 @@ public class AutonChoosers implements IBeakSquadSubsystem {
 		switch(_autonAction.getSelected()) {
 			case DO_NOTHING:
 				return null;
-
+			case TURN_TEST:
+				return new TurnTest();
 			default:
 				return null; 
 		}
@@ -77,6 +82,8 @@ public class AutonChoosers implements IBeakSquadSubsystem {
 
     @Override
     public void updateDashboard() {
+		SmartDashboard.putData("Auton",_autonAction);
+		SmartDashboard.putData("Side Start",_autonStartingSideChooser);
         SmartDashboard.putString("AutonChoosers:AutonAction", _autonAction.getSelected().toString());
         SmartDashboard.putString("AutonChoosers:StartingSide", _autonStartingSideChooser.getSelected().toString());
 

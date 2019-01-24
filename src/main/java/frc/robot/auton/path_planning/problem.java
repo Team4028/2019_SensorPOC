@@ -143,6 +143,7 @@ public class problem{
         double r = vec.get(0);
         double s = vec.get(1);
         cubicBezier bezSol = this.genBezier(r, s);
+        bezSol._print_control_points();
         linearHermiteSpline lhSpline = bezSol.approx_with_segs(numSegmentsApproxForPathGen);
         Path sol = PathPlanner.planPath(PathPlanner.genWaypointsFromSpline(lhSpline, cruiseVelo, cruiseAccel, cycleTime));
         return sol;
@@ -150,5 +151,10 @@ public class problem{
 
     public static Path solveFromVisionData(double a1, double a2, double l, RigidTransform curPose){
         return geometry.genProblemFromVisionData(a1, a2, l, curPose).solve();
+    }
+
+    public static Path getPath()
+    {
+        return _path;
     }
 }
