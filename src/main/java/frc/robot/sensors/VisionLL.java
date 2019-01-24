@@ -41,4 +41,12 @@ public class VisionLL implements IVisionSensor {
 
         return distanceInIn;
     }
+
+    public boolean canLLSeeTarget(){
+        if(NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0) == 1){
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

@@ -14,7 +14,8 @@ import java.util.Date;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
+import frc.robot.sensors.MagneticLS;
+import frc.robot.sensors.VisionLL;
 import frc.robot.subsystems.Chassis;
 import frc.robot.util.DataLogger;
 import frc.robot.util.GeneralUtilities;
@@ -40,6 +41,8 @@ public class Robot extends TimedRobot {
 
   private Chassis _chassis = Chassis.getInstance();
   private LEDController _leds = LEDController.getInstance();
+  private VisionLL _vision = VisionLL.getInstance();
+  private MagneticLS _magnetls = MagneticLS.getInstance();
 
 
 	// class level working variables
@@ -69,17 +72,19 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     _scanTimeSamples = new MovingAverage(20);
     _lastDashboardWriteTimeMSec = new Date().getTime(); // snapshot time to control spamming
-		_dataLogger = GeneralUtilities.setupLogging("Auton"); // init data logging	
+    _dataLogger = GeneralUtilities.setupLogging("Auton"); // init data logging	
+    
   }
 
   /**
    * This function is called periodically during autonomous mode.
    */
   @Override
-  public void autonomousPeriodic() 
-  {
+  public void autonomousPeriodic() {
     Scheduler.getInstance().run();
-    _leds.set_targetangle( Math.random() * 27.0);
+    _leds.set_targetangle(_vision.get_angle1InDegrees(), _vision.canLLSeeTarget());
+    System.out.println(_vision.canLLSeeTarget());
+    
   }
 
   /********************************************************************************************

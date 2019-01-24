@@ -8,12 +8,13 @@
 package frc.robot.ux;
 
 import edu.wpi.first.wpilibj.Spark;
+import frc.robot.RobotMap;
 
 /**
  * This class controls the onboard LEDs Lead Student: Parker Johnson
  */
-public class LEDController 
-{
+public class LEDController {
+
 	private Spark LEDstrip;
 	public boolean _areledsorange;
     public boolean _areledsblinking;
@@ -21,74 +22,70 @@ public class LEDController
 	private static final double YELLOWZONE = 10.0;
 	private static final double GREENZONE = 2.0;
 
-   
     //=====================================================================================
 	// Define Singleton Pattern
 	//=====================================================================================
 	private static LEDController _instance = new LEDController();
 	
-	public static LEDController getInstance() 
-	{
+	public static LEDController getInstance() {
 		return _instance;
 	}
 	
 	// private constructor for singleton pattern
-	private LEDController() 
-	{	
-		LEDstrip = new Spark(0);
+	private LEDController() {	
+		LEDstrip = new Spark(RobotMap.PWM_LED_PORT);
 	}
 	
 	// call this method to display the correct LED Color
-	public void set_targetangle (double currentAngleInDegrees)
-	{
-		if(Math.abs(currentAngleInDegrees) > REDZONE)
-        {
-            whiteLights();
-		}
-		else if(Math.abs(currentAngleInDegrees) >= YELLOWZONE && Math.abs(currentAngleInDegrees)<= REDZONE)
-        {
-            redLEDstrip();
-		}
-		else if(Math.abs(currentAngleInDegrees) >= GREENZONE && Math.abs(currentAngleInDegrees)<= YELLOWZONE)
-		{
-			orangeLEDstrip();
-		}
-		else if(Math.abs(currentAngleInDegrees) <= YELLOWZONE)
-		{
-			partyMode();
-		}     
+	public void set_targetangle (double currentAngleInDegrees, boolean istargetaquired){
+        if(istargetaquired == true){
+            if(Math.abs(currentAngleInDegrees) > REDZONE){
+                whiteLights();
+            }
+            else if(Math.abs(currentAngleInDegrees) >= YELLOWZONE && Math.abs(currentAngleInDegrees)<= REDZONE){
+                redLEDstrip();
+            }
+            else if(Math.abs(currentAngleInDegrees) >= GREENZONE && Math.abs(currentAngleInDegrees)<= YELLOWZONE){
+                orangeLEDstrip();
+            }
+            else if(Math.abs(currentAngleInDegrees) <= YELLOWZONE)
+            {
+                partyMode();
+            }
+        } else {
+            redBlinkLights();
+        }
+
 	}
-	private void partyMode()
-	{
+	private void partyMode(){
 		LEDstrip.set(-0.99);
 	}
-	private void whiteLights()
-	{
+	private void whiteLights(){
 		LEDstrip.set(0.99);
-	}
-	private void greenLights()
-    {
+    }
+    private void redBlinkLights(){
+        LEDstrip.set(-0.11);
+    }
+	private void greenLights(){
         LEDstrip.set(0.75);
         _areledsblinking = true;
     }
 
-    private void orangeLEDstrip()
-    {
+    private void orangeLEDstrip(){
         LEDstrip.set(0.67);
         _areledsorange = true;
     }
-    private void redLEDstrip()
-    {
+
+    private void redLEDstrip(){
         LEDstrip.set(0.61);
     }
-    private void fireLEDS()
-    {
+
+    private void fireLEDS(){
         LEDstrip.set(0.57);
-        _areledsblinking = false;
-        
+        _areledsblinking = false; 
     }
-    private void blueLEDs()
-    {
+    
+    private void blueLEDs(){
         LEDstrip.set(-0.95);
         _areledsorange = false;
 	}
