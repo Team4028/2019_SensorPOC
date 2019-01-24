@@ -14,6 +14,7 @@ import frc.robot.auton.path_planning.math.ThreeD_Matrix;
 import frc.robot.auton.path_planning.math.ThreeD_Vector;
 import frc.robot.auton.path_planning.math.calculus;
 import frc.robot.auton.path_planning.math.rootFinding;
+import frc.robot.auton.path_planning.math.ezOptimizer;
 
 public class problem{
 
@@ -29,6 +30,11 @@ public class problem{
     private static final double cycleTime = .2;
     public static boolean pathPlanned = false;
     public static Path _path;
+
+    private static final int rGrid = 1000;
+    private static final int sGrid = 1000;
+    private static final int kapNum = 1000;
+    private static final int numLinSegs = 1000;
 
     double Xi;
     double Yi; 
@@ -149,8 +155,34 @@ public class problem{
         return sol;
     }
 
+    private double[] getMinMaxs(){
+        if (Math.abs(Math.tan(THETAi)) != Math.abs(Math.tan(THETAf))){
+            point intPoint = geometry.get_intersect(Xi, Yi, THETAi, Xf, Yf, THETAf);
+            double d1 = geometry.dist(new point(Xi, Yi), intPoint);
+            double d2 = geometry.dist(intPoint, new point(Xf, Yf));
+            return new double[] {d1 * .1, d1 * 1.5, -1.5 * d2, -.3 * d2};
+        } else {
+            double d = geometry.dist(new point(Xi, Yi), new point(Xf, Yf));
+            return new double[] { d * .06, d * 1.25, d * -1.25, d * -.3};
+        }
+    }
+
+    public Path ezSolve(){
+        double[] minMaxs = this.getMinMaxs();
+        double[] params = ezOptimizer.optimizeRS(this, minMaxs[0], minMaxs[1], minMaxs[2], minMaxs[3], maxKappaSquared, rGrid, sGrid, kapNum, numLinSegs);
+        cubicBezier bezSol = this.genBezier(params[0], params[1]);
+        bezSol._print_control_points();
+        linearHermiteSpline lhSpline = bezSol.approx_with_segs(numSegmentsApproxForPathGen);
+        Path sol = PathPlanner.planPath(PathPlanner.genWaypointsFromSpline(lhSpline, cruiseVelo, cruiseAccel, cycleTime));
+        return sol;
+    }
+
     public static Path solveFromVisionData(double a1, double a2, double l, RigidTransform curPose){
         return geometry.genProblemFromVisionData(a1, a2, l, curPose).solve();
+    }
+
+    public static Path ezMoneySolveFromVisionData(double a1, double a2, double l, RigidTransform curPose){
+        return geometry.genProblemFromVisionData(a1, a2, l, curPose).ezSolve();
     }
 
     public static Path getPath()

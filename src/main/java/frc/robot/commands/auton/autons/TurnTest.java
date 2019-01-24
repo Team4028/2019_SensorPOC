@@ -11,6 +11,6 @@ public class TurnTest extends CommandGroup
     {
         //addSequential(new InPlaceTurn(100, true));
         addParallel(new Auton_ParallelStarter());
-        addSequential(new CG_FollowVisionPath(Math.PI/12, Math.PI/15, 70));
+        addSequential(new CG_FollowVisionPath(Math.PI/12, Math.PI/15, 70, true));
     }
 }

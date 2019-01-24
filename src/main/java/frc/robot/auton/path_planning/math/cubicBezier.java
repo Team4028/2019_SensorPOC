@@ -9,6 +9,7 @@ import java.lang.Math;
 import frc.robot.auton.path_planning.math.polynomial;
 import java.util.function.Function;
 import frc.robot.auton.path_planning.math.rootFinding;
+import frc.robot.auton.path_planning.math.ezOptimizer;
 
 public class cubicBezier{
 
@@ -35,8 +36,8 @@ public class cubicBezier{
 
     public linearHermiteSpline approx_with_segs(int numSegs){
         lineSegment[] segments = new lineSegment[numSegs];
-        double[] t_vals = util.linspace(0, 1, numSegs);
-        for (int i = 0; i < numSegs - 1; i++){
+        double[] t_vals = util.linspace(0, 1, numSegs + 1);
+        for (int i = 0; i < numSegs; i++){
             segments[i] = new lineSegment(this.get_from_t(t_vals[i]), this.get_from_t(t_vals[i+1]));
         }
         return new linearHermiteSpline(segments);
@@ -179,6 +180,11 @@ public class cubicBezier{
             }
             return util.getMaxPair(testVals, kappaSquaredVals);            
         }
+    }
+
+    public double lazyMaxKappaSquared(int num){
+        Function<Double, Double> kappaSquared = t -> Math.pow(this.get_analytic_curvature(t), 2);
+        return ezOptimizer.lazyOptimize(kappaSquared, 0, 1, num);
     }
 
     public void _print_control_points(){
