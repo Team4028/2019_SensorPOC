@@ -158,10 +158,9 @@ public class Paths {
 		
 		// First Cube
 		lSwitchPath = buildPathFromWaypoints(0.0015, Arrays.asList(
-						new Waypoint(20,166,0,0),
-						new Waypoint(50,166,25,80),
-						new Waypoint(90,107,30,80),
-						new Waypoint(128,107,0,80)));
+						new Waypoint(20, 100, 0, 0),
+						new Waypoint(100, 100, 30, 120),
+						new Waypoint(100, 180, 0 , 120)));
 		centerPaths.put(Center.L_SWITCH, lSwitchPath);
 		
 		rSwitchPath = buildPathFromWaypoints(0.0030, Arrays.asList(
