@@ -34,7 +34,7 @@ public class RobotMap
 	//public static final int CARRIAGE_LIMIT_SWITCH_DIO_PORT = 0;
 	
 	// Analog Ports
-	//public static final int STORED_PRESSURE_SENSOR_AIO_PORT = 0;	
+	public static final int STORED_PRESSURE_SENSOR_AIO_PORT = 0;	
 	
 	// NavX (on Roborio)
 	public static final SPI.Port NAVX_PORT = SPI.Port.kMXP;

@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.sensors.DistanceRev2mSensor;
+import frc.robot.sensors.PressureSensor;
 import frc.robot.subsystems.Chassis;
 import frc.robot.util.DataLogger;
 import frc.robot.util.GeneralUtilities;
@@ -41,7 +42,7 @@ public class Robot extends TimedRobot {
   private Chassis _chassis = Chassis.getInstance();
   private LEDController _leds = LEDController.getInstance();
 
-
+  private PressureSensor _pressureSensor = PressureSensor.getInstance();
   private DistanceRev2mSensor _DistanceRev2mSensor = DistanceRev2mSensor.getInstance();
 
 	// class level working variables
@@ -82,6 +83,7 @@ public class Robot extends TimedRobot {
   {
     Scheduler.getInstance().run();
     _leds.set_targetangle( Math.random() * 27.0);
+
   }
 
   /********************************************************************************************
@@ -182,6 +184,8 @@ public class Robot extends TimedRobot {
         _autonChoosers.updateDashboard();
         _chassis.updateDashboard(); 
         _DistanceRev2mSensor.updateDashboard();
+        _pressureSensor.updateDashboard();
+
 	    	
     		// write the overall robot dashboard info
 	    	SmartDashboard.putString("Robot Build", _buildMsg);
