@@ -18,6 +18,8 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.auton.pathfollowing.PathBuilder;
+import frc.robot.auton.pathfollowing.Paths;
 import frc.robot.commands.auton.autons.TurnTest;
 import frc.robot.sensors.GyroNavX;
 import frc.robot.subsystems.Chassis;
@@ -48,7 +50,8 @@ public class Robot extends TimedRobot {
   private LEDController _leds = LEDController.getInstance();
 
 
-	// class level working variables
+  // class level working variables
+
 	private DataLogger _dataLogger = null;
 	private String _buildMsg = "?";
  	long _lastScanEndTimeInMSec;
@@ -65,6 +68,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     _buildMsg = GeneralUtilities.WriteBuildInfoToDashboard(ROBOT_NAME);
+    Paths.buildPaths();
+    
   }
 
   /********************************************************************************************
@@ -96,6 +101,7 @@ public class Robot extends TimedRobot {
     _leds.set_targetangle( Math.random() * 27.0);
     
     System.out.println(_chassis.getHeading());
+
    // _chassis.setLeftRightCommand(ControlMode.PercentOutput, 1, 1);
   }
 

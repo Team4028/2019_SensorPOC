@@ -20,7 +20,7 @@ public class DriveSetDistance extends Command
     }
     @Override
     protected void execute() {
-        
+        _chassis.moveToTargetPosDriveSetDistance();        
     }
     @Override
     protected boolean isFinished() 

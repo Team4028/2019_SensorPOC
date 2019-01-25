@@ -67,10 +67,10 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
 
   double _leftTargetVelocity, _rightTargetVelocity, _centerTargetVelocity;
   Path _currentPath;
-  RobotState _robotState;
+  RobotState _robotState = RobotState.getInstance();
   double _leftEncoderPrevDistance, _rightEncoderPrevDistance;
 
-  static double ENCODER_COUNTS_PER_WHEEL_REV=30028.471298;
+  static double ENCODER_COUNTS_PER_WHEEL_REV= 13582.78; // 30028.471298;
 	public static Chassis getInstance() {
 		return _instance;
 	}
@@ -94,10 +94,10 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
     _rightMaster.setSensorPhase(false);
     _leftMaster.setSensorPhase(false);
 
-    _leftMaster.setNeutralMode(NeutralMode.Brake);
-		_leftSlave.setNeutralMode(NeutralMode.Brake);
-		_rightMaster.setNeutralMode(NeutralMode.Brake);
-    _rightSlave.setNeutralMode(NeutralMode.Brake);
+    _leftMaster.setNeutralMode(NeutralMode.Coast);
+		_leftSlave.setNeutralMode(NeutralMode.Coast);
+		_rightMaster.setNeutralMode(NeutralMode.Coast);
+    _rightSlave.setNeutralMode(NeutralMode.Coast);
     
     configMasterMotors(_leftMaster);
 		configMasterMotors(_rightMaster);
@@ -166,26 +166,30 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
 				return;
 			
 			case DRIVE_SET_DISTANCE:
-        _leftMaster.config_kF(0, .0810618);
-        _leftMaster.config_kP(0, .01);
+        _leftMaster.config_kF(0, 0.0357942617214836);
+        _leftMaster.config_kP(0, .175);
         _leftMaster.config_kI(0, 0);
-        _leftMaster.config_kD(0, 0);
-        _rightMaster.config_kF(0, 0.0810618);
-        _rightMaster.config_kP(0, 0.01);
+        _leftMaster.config_kD(0, 1.75);
+        _rightMaster.config_kF(0, 0.0357942617214836);
+        _rightMaster.config_kP(0, 0.175);
         _rightMaster.config_kI(0, 0);
-        _rightMaster.config_kD(0, 0);
-				moveToTargetPosDriveSetDistance();
+        _rightMaster.config_kD(0, 1.75);
+        _rightMaster.configMotionCruiseVelocity(10000);
+        _leftMaster.configMotionCruiseVelocity(10000);
+        _rightMaster.configMotionAcceleration(30000);
+        _leftMaster.configMotionAcceleration(30000);
 				return;
 				
 			case FOLLOW_PATH:
-        _leftMaster.config_kF(0, 0);
-        _leftMaster.config_kP(0, 0);
+        _leftMaster.config_kF(0, 0.0357942617214836);
+        _leftMaster.config_kP(0, .08);
         _leftMaster.config_kI(0, 0);
         _leftMaster.config_kD(0, 0);
-        _rightMaster.config_kF(0, 0);
-        _rightMaster.config_kP(0, 0);
+        _rightMaster.config_kF(0, 0.0357942617214836);
+        _rightMaster.config_kP(0, 0.08);
         _rightMaster.config_kI(0, 0);
         _rightMaster.config_kD(0, 0);
+
           
 				
 				if (_pathFollower != null) 
@@ -406,7 +410,7 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
 	
 	public double getRightSpeedRPM() 
 	{
-		return -_rightMaster.getSelectedSensorVelocity(0) * (600 / ENCODER_COUNTS_PER_WHEEL_REV);
+		return _rightMaster.getSelectedSensorVelocity(0) * (600 / ENCODER_COUNTS_PER_WHEEL_REV);
 	}
 	public double getLeftVelocityInchesPerSec() 
 	{
@@ -421,6 +425,11 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
   @Override
   public void updateLogData(LogDataBE logData) 
   {
+    logData.AddData("Left Target Velocity", Double.toString(_leftTargetVelocity));
+    logData.AddData("Left Actual Velocity", Double.toString(getLeftVelocityInchesPerSec()));
+
+    logData.AddData("Right Target Velocity", Double.toString(_rightTargetVelocity));
+    logData.AddData("Right Actual Velocity", Double.toString(getRightVelocityInchesPerSec()));
 
   }
 
