@@ -19,7 +19,7 @@ import frc.robot.auton.path_planning.math.ezOptimizer;
 public class problem{
 
     private static final int linearHermiteSplineLengthForArcLength = 100;
-    private static final double maxKappaSquared = 1/256;
+    private static final double maxKappaSquared = 0.000074517;
     private static final double epsilon = Constants.EPSILON_NEGATIVE_6;
     private static final int numStepsNewtonsMethod = 100;
     private static final double newtonsMethodC = 1;
@@ -31,10 +31,10 @@ public class problem{
     public static boolean pathPlanned = false;
     public static Path _path;
 
-    private static final int rGrid = 1000;
-    private static final int sGrid = 1000;
-    private static final int kapNum = 1000;
-    private static final int numLinSegs = 1000;
+    private static final int rGrid = 100;
+    private static final int sGrid = 100;
+    private static final int kapNum = 100;
+    private static final int numLinSegs = 100;
 
     double Xi;
     double Yi; 
@@ -160,10 +160,10 @@ public class problem{
             point intPoint = geometry.get_intersect(Xi, Yi, THETAi, Xf, Yf, THETAf);
             double d1 = geometry.dist(new point(Xi, Yi), intPoint);
             double d2 = geometry.dist(intPoint, new point(Xf, Yf));
-            return new double[] {d1 * .1, d1 * 1.5, -1.5 * d2, -.3 * d2};
+            return new double[] {d1 * -1.5, d1 * -.1,  .3 * d2 , 1.5 * d2};
         } else {
             double d = geometry.dist(new point(Xi, Yi), new point(Xf, Yf));
-            return new double[] { d * .06, d * 1.25, d * -1.25, d * -.3};
+            return new double[] {d * .06,  d * 1.25,  d * -1.25, d * -.3};
         }
     }
 
@@ -182,7 +182,10 @@ public class problem{
     }
 
     public static Path ezMoneySolveFromVisionData(double a1, double a2, double l, RigidTransform curPose){
-        return geometry.genProblemFromVisionData(a1, a2, l, curPose).ezSolve();
+        // problem p = geometry.genProblemFromVisionData(a1, a2, l, curPose);
+        problem p = new problem(0, 0, Math.PI/3, 150, 350, Math.PI/2);
+        System.out.println(p.Xi);
+        return p.ezSolve();
     }
 
     public static Path getPath()

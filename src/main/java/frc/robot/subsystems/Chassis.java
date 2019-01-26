@@ -94,10 +94,10 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
     _rightMaster.setSensorPhase(false);
     _leftMaster.setSensorPhase(false);
 
-    _leftMaster.setNeutralMode(NeutralMode.Coast);
-		_leftSlave.setNeutralMode(NeutralMode.Coast);
-		_rightMaster.setNeutralMode(NeutralMode.Coast);
-    _rightSlave.setNeutralMode(NeutralMode.Coast);
+    _leftMaster.setNeutralMode(NeutralMode.Brake);
+		_leftSlave.setNeutralMode(NeutralMode.Brake);
+		_rightMaster.setNeutralMode(NeutralMode.Brake);
+    _rightSlave.setNeutralMode(NeutralMode.Brake);
     
     configMasterMotors(_leftMaster);
 		configMasterMotors(_rightMaster);
@@ -182,7 +182,7 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
 				
 			case FOLLOW_PATH:
         _leftMaster.config_kF(0, 0.0357942617214836);
-        _leftMaster.config_kP(0, .06);
+        _leftMaster.config_kP(0, .07);
         _leftMaster.config_kI(0, 0);
         _leftMaster.config_kD(0, .55);
         _rightMaster.config_kF(0, 0.0357942617214836);

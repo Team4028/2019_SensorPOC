@@ -5,6 +5,7 @@ import frc.robot.auton.path_planning.math.cubicBezier;
 
 import java.util.function.Function;
 
+import frc.robot.Constants;
 import frc.robot.auton.path_planning.problem;
 
 public class ezOptimizer{
@@ -13,15 +14,20 @@ public class ezOptimizer{
         double[] rVals = util.linspace(minR, maxR, rGrid + 1);
         double[] sVals = util.linspace(minS, maxS, sGrid + 1);
         double[] bestPairSoFar = new double[] {Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY};
-        double bestLenSoFar = Double.POSITIVE_INFINITY;
+        double bestLenSoFar = (double) Constants.BIG_NUMBER;
         for (int i = 0; i < rGrid + 1; i++){
             for (int j = 0; j < sGrid + 1; j++){
-                cubicBezier bez = p.genBezier(rVals[i], sVals[j]);
-                if (bez.lazyMaxKappaSquared(kapNum) < maxKappaSquared){
+                cubicBezier bez = p.genBezier(-1 * rVals[i], sVals[j]);
+                // bez._print_control_points();
+                double kappaSquared = bez.lazyMaxKappaSquared(kapNum);
+                // System.out.println(kappaSquared);
+                if (kappaSquared < maxKappaSquared){
                     double l = bez.approx_with_segs(numLinSegs).get_arc_len();
+                    // System.out.println(l);
                     if ( l < bestLenSoFar){
-                        bestPairSoFar = new double[] {rVals[i], sVals[j]};
+                        bestPairSoFar = new double[] {-1 * rVals[i], sVals[j]};
                         bestLenSoFar = l;
+                        // System.out.println(bestLenSoFar);
                     }
                 }
             }

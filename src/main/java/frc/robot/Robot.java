@@ -86,7 +86,6 @@ public class Robot extends TimedRobot {
     _lastDashboardWriteTimeMSec = new Date().getTime(); // snapshot time to control spamming
     _dataLogger = GeneralUtilities.setupLogging("Auton"); // init data logging	
     _autonChoosers.getSelectedAuton().start();
-
   }
 
   /**
@@ -100,7 +99,7 @@ public class Robot extends TimedRobot {
     Scheduler.getInstance().run();
     _leds.set_targetangle( Math.random() * 27.0);
     
-    System.out.println(_chassis.getHeading());
+    // System.out.println(_chassis.getHeading());
 
    // _chassis.setLeftRightCommand(ControlMode.PercentOutput, 1, 1);
   }

@@ -28,7 +28,12 @@ public class PathPlanner {
         for (int i = 0; i < lengths.size() - 1; i++){
             radii.add(geometry.getRadiusFromPointSlopes(pointSlopes.get(i), pointSlopes.get(i+1)));            
         }
+        radii.add(0.);
         for (int i = 0; i < lengths.size(); i++){
+            System.out.println("X: " + pointSlopes.get(i).pt.x);
+            System.out.println("Y: " + pointSlopes.get(i).pt.y);
+            System.out.println("R: " + radii.get(i));
+            System.out.println("V: " + velos.get(i));
             waypts.add(new Waypoint(pointSlopes.get(i).pt.x, pointSlopes.get(i).pt.y, radii.get(i), velos.get(i)));
         }
         return waypts;         
