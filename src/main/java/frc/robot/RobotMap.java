@@ -26,13 +26,11 @@ public class RobotMap
 	
 	// PCM Can Bus Address
 	public static final int PCM_CAN_ADDR = 0;
-	public static final int MAG_LS_TEST_TALON = 14;	
 	
 	// Motor Controller Can Bus Address
 	//public static final int LEFT_DRIVE_MASTER_CAN_ADDR = 1;
 	
 	// DIO Ports
-	public static final int REV_ROBOTICS_MAG_LIMIT = 0;
 	
 	// Analog Ports
 	//public static final int STORED_PRESSURE_SENSOR_AIO_PORT = 0;	
