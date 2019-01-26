@@ -25,13 +25,12 @@ public class RobotMap
 	public static final int ENGINEERING_GAMEPAD_B_USB_PORT = 3;
 	
 	// PCM Can Bus Address
-	public static final int PCM_CAN_ADDR = 0;	
+	public static final int PCM_CAN_ADDR = 0;
 	
 	// Motor Controller Can Bus Address
 	//public static final int LEFT_DRIVE_MASTER_CAN_ADDR = 1;
 	
 	// DIO Ports
-	//public static final int CARRIAGE_LIMIT_SWITCH_DIO_PORT = 0;
 	
 	// Analog Ports
 	//public static final int STORED_PRESSURE_SENSOR_AIO_PORT = 0;	
@@ -41,7 +40,7 @@ public class RobotMap
 	
 	
 	// PWM Ports on RoboRIO
-	//public static final int CLIMBER_SERVO_PWM_ADDRESS = 0;
+	public static final int PWM_LED_PORT = 0;
 	
 	// PCM Ports
 	//public static final int CARRIAGE_SQUEEZE_PCM_PORT = 0;
