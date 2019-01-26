@@ -27,7 +27,7 @@ public class problem{
     private static final double newtonsMethodC = 1;
     private static final double newtonsMethodLambdaFac = .5;
     private static final double cruiseVelo = 40;
-    private static final double cruiseAccel = Constants.PATH_DEFAULT_ACCEL;
+    private static final double cruiseAccel = 50;
     private static final double cycleTime = .2;
     public static boolean pathPlanned = false;
     public static Path _path;

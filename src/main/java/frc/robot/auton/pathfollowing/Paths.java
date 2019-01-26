@@ -163,7 +163,7 @@ public class Paths {
 						new Waypoint(100, 180, 0 , 120)));
 		centerPaths.put(Center.L_SWITCH, lSwitchPath);
 		
-		rSwitchPath = buildPathFromWaypoints(0.0030, Arrays.asList(
+		rSwitchPath = buildPathFromWaypoints(0.000, Arrays.asList(
 						new Waypoint(20,166,0,0),
 						new Waypoint(50,166,25,80),
 						new Waypoint(90,217,30,80),

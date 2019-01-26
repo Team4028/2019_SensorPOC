@@ -174,7 +174,7 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
         _leftMaster.config_kD(0, 1.75);
         _rightMaster.config_kF(0, 0.0357942617214836);
         _rightMaster.config_kP(0, 0.175);
-        _rightMaster.config_kI(0, 0);
+        _rightMaster.config_kI(0, 0.);
         _rightMaster.config_kD(0, 1.75);
         _rightMaster.configMotionCruiseVelocity(10000);
         _leftMaster.configMotionCruiseVelocity(10000);
@@ -184,13 +184,13 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
 				
 			case FOLLOW_PATH:
         _leftMaster.config_kF(0, 0.0357942617214836);
-        _leftMaster.config_kP(0, .02);
-        _leftMaster.config_kI(0, 0);
-        _leftMaster.config_kD(0, 0.);
+        _leftMaster.config_kP(0, .05);
+        _leftMaster.config_kI(0, .00);
+        _leftMaster.config_kD(0, .85);
         _rightMaster.config_kF(0, 0.0357942617214836);
-        _rightMaster.config_kP(0, 0.02);
-        _rightMaster.config_kI(0, 0);
-        _rightMaster.config_kD(0, 0);
+        _rightMaster.config_kP(0, 0.05);
+        _rightMaster.config_kI(0, 0.00);
+        _rightMaster.config_kD(0, .85);
 
           
 				
