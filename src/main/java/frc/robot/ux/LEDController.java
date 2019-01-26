@@ -16,8 +16,6 @@ import frc.robot.RobotMap;
 public class LEDController {
 
 	private Spark LEDstrip;
-	public boolean _areledsorange;
-    public boolean _areledsblinking;
     private static final double REDZONE = 27.0; 
 	private static final double YELLOWZONE = 10.0;
     private static final double GREENZONE = 2.0;
@@ -77,12 +75,10 @@ public class LEDController {
     }
 	private void greenLights(){
         LEDstrip.set(0.75);
-        _areledsblinking = true;
     }
 
     private void orangeLEDstrip(){
         LEDstrip.set(0.67);
-        _areledsorange = true;
     }
 
     private void redLEDstrip(){
@@ -91,51 +87,9 @@ public class LEDController {
 
     private void fireLEDS(){
         LEDstrip.set(0.57);
-        _areledsblinking = false; 
     }
     
     private void oceanicPaletteLEDs(){
         LEDstrip.set(-0.95);
-        _areledsorange = false;
 	}
-	
-	
-    /* Old Testing Code I did not want to part with, could be used in future dates for diagonistics and whatnot;
-    
-    
-    public void redZoneCheck()
-    {
-        if(getCurrentDistance() >= YELLOWZONE && getCurrentDistance() <= REDZONE)
-        {
-            orangeLEDstrip();
-        }
-        else
-        {
-            negRedZoneCheck();
-            _areledsorange = false;
-        }
-    }
-    public void negRedZoneCheck()
-    {
-        if(getCurrentDistance() <= NEGREDZONE && getCurrentDistance() >= NEGYEllOWZONE)
-        {
-            orangeLEDstrip();
-        }
-        else
-        {
-            redLEDstrip();
-            _areledsorange = false;
-        }
-    }
-    public void isTargetLocked()
-    {
-        if(getCurrentDistance() <= YELLOWZONE && getCurrentDistance() >= NEGYEllOWZONE)
-        {
-            strobegreenLights();
-        }
-        else
-        {
-            redZoneCheck();
-        }
-    }*/
 }
