@@ -1,5 +1,6 @@
 package frc.robot.commands.auton;
 
+import frc.robot.auton.path_planning.problem;
 import frc.robot.auton.pathfollowing.RobotState;
 import frc.robot.auton.pathfollowing.control.Path;
 import frc.robot.subsystems.Chassis;
@@ -7,7 +8,7 @@ import frc.robot.subsystems.Chassis;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 
-public class Auton_RunTimedMotionProfileCommand extends Command
+public class Auton_RunProfileFromVision extends Command
 {
     Chassis _chassis = Chassis.getInstance();
     private Path _path;
@@ -15,15 +16,15 @@ public class Auton_RunTimedMotionProfileCommand extends Command
     double _maxTime;
     RobotState _inst = RobotState.getInstance();
 
-    public Auton_RunTimedMotionProfileCommand(Path p, double maxTime)
+    public Auton_RunProfileFromVision( double maxTime)
     {
         requires(_chassis);
         _maxTime = maxTime;
-        _path = p;
     }
 
     @Override
     protected void initialize() {
+        _path = problem._path;
         System.out.println(_path);
         _inst.reset(Timer.getFPGATimestamp(), _path.getStartPose());
 		_chassis.setWantDrivePath(_path, _path.isReversed());

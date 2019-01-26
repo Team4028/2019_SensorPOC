@@ -21,7 +21,7 @@ import frc.robot.auton.path_planning.math.ezOptimizer;
 public class problem{
 
     private static final int linearHermiteSplineLengthForArcLength = 100;
-    private static final double maxKappaSquared = 0.000074517;
+    private static final double maxKappaSquared = 1.;
     private static final double epsilon = Constants.EPSILON_NEGATIVE_6;
     private static final int numStepsNewtonsMethod = 100;
     private static final double newtonsMethodC = 1;
@@ -162,7 +162,7 @@ public class problem{
             point intPoint = geometry.get_intersect(Xi, Yi, THETAi, Xf, Yf, THETAf);
             double d1 = geometry.dist(new point(Xi, Yi), intPoint);
             double d2 = geometry.dist(intPoint, new point(Xf, Yf));
-            return new double[] {d1 * -1.5, d1 * -.1,  .3 * d2 , 1.5 * d2};
+            return new double[] {d1 * -1.5, d1 * -.1, -1.5 * d2 , -.3 * d2 };
         } else {
             double d = geometry.dist(new point(Xi, Yi), new point(Xf, Yf));
             return new double[] {d * .06,  d * 1.25,  d * -1.25, d * -.3};
@@ -188,6 +188,9 @@ public class problem{
         System.out.println("Bezier generation time [s]:  " + dt1);
         System.out.println("Linear Hermite Spline Generation Time [s]:  " + dt2);
         System.out.println("Path Generation Time [s]:  " + dt3);
+        _path = sol;
+        System.out.println(sol);
+        System.out.println(_path);
         return sol;
     }
 
@@ -197,7 +200,7 @@ public class problem{
 
     public static Path ezMoneySolveFromVisionData(double a1, double a2, double l, RigidTransform curPose){
         // problem p = geometry.genProblemFromVisionData(a1, a2, l, curPose);
-        problem p = new problem(0, 0, Math.PI/3, 150, 350, Math.PI/2);
+        problem p = new problem(0, 0, Math.PI/3, 30, 40, -1 * Math.PI/2);
         System.out.println(p.Xi);
         return p.ezSolve();
     }

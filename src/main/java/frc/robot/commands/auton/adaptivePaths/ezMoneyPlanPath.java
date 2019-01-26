@@ -9,6 +9,7 @@ import frc.robot.auton.pathfollowing.motion.RigidTransform;
 public class ezMoneyPlanPath extends Command
 {
     Path sol;
+    Path iPath;
     double A1;
     double A2;
     double L;
@@ -16,6 +17,7 @@ public class ezMoneyPlanPath extends Command
     
 
     public ezMoneyPlanPath(double a1, double a2, double l) {
+        iPath =  null; //problem._path;
         curPose = RobotState.getInstance().getLatestFieldToVehicle().getValue();
         A1 = a1;
         A2 = a2;
@@ -24,13 +26,12 @@ public class ezMoneyPlanPath extends Command
 
     @Override
     protected void initialize() {
-        sol = problem.ezMoneySolveFromVisionData(A1, A2, L, curPose);
-        problem._path = sol;
+        problem._path  = problem.ezMoneySolveFromVisionData(A1, A2, L, curPose);
     }
 
     @Override
     protected boolean isFinished() {
-        return true; 
+        return !(problem._path == iPath);
     }
 
 }

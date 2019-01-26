@@ -52,7 +52,8 @@ public class Path {
     }
     
     public RigidTransform getStartPose() {
-		return new RigidTransform(segments.get(0).getStart(), new Rotation(Rotation.fromDegrees(0.0)));
+        return RigidTransform.identity();
+		// return new RigidTransform(segments.get(0).getStart(), new Rotation(Rotation.fromDegrees(0.0)));
     }
 
     /**

@@ -10,6 +10,8 @@ public class followVisionProfile extends CommandGroup{
     public followVisionProfile(double timeOut)
     {
         addParallel(new Auton_ParallelStarter());
-        addSequential( new Auton_RunTimedMotionProfileCommand(problem.getPath(), timeOut));
+        // addSequential(new Auton_WaitUntilPathPlanned());
+        System.out.println(problem._path);
+        addSequential( new Auton_RunTimedMotionProfileCommand(problem._path, timeOut));
     }
 }

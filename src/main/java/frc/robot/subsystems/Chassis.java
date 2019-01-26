@@ -72,7 +72,7 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
 
   public static double _autoStartTime;
 
-  static double ENCODER_COUNTS_PER_WHEEL_REV= 13582.78; // 30028.471298;
+  static double ENCODER_COUNTS_PER_WHEEL_REV = 30028.471298; // 13582.78; 
 	public static Chassis getInstance() {
 		return _instance;
 	}
