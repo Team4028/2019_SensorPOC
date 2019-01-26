@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-import frc.robot.sensors.MagneticLS;
 import frc.robot.sensors.VisionLL;
 
 import frc.robot.sensors.DistanceRev2mSensor;
@@ -46,7 +45,7 @@ public class Robot extends TimedRobot {
   private Chassis _chassis = Chassis.getInstance();
   private LEDController _leds = LEDController.getInstance();
   private VisionLL _vision = VisionLL.getInstance();
-  private MagneticLS _magnetls = MagneticLS.getInstance();
+
 
 
   private DistanceRev2mSensor _DistanceRev2mSensor = DistanceRev2mSensor.getInstance();
