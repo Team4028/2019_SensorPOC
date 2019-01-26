@@ -6,6 +6,8 @@ import frc.robot.auton.path_planning.math.point;
 import frc.robot.auton.path_planning.math.lineSegment;
 import frc.robot.auton.path_planning.math.linearHermiteSpline;
 import java.util.function.Function;
+
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.auton.pathfollowing.control.Path;
 import frc.robot.auton.pathfollowing.motion.RigidTransform;
 import frc.robot.auton.path_planning.PathPlanner;
@@ -24,17 +26,17 @@ public class problem{
     private static final int numStepsNewtonsMethod = 100;
     private static final double newtonsMethodC = 1;
     private static final double newtonsMethodLambdaFac = .5;
-    private static final int numSegmentsApproxForPathGen = 10000;
     private static final double cruiseVelo = 40;
     private static final double cruiseAccel = Constants.PATH_DEFAULT_ACCEL;
     private static final double cycleTime = .2;
     public static boolean pathPlanned = false;
     public static Path _path;
 
-    private static final int rGrid = 100;
-    private static final int sGrid = 100;
-    private static final int kapNum = 100;
-    private static final int numLinSegs = 100;
+    private static final int rGrid = 10;
+    private static final int sGrid = 10;
+    private static final int kapNum = 10;
+    private static final int numLinSegs = 10;
+    private static final int numSegmentsApproxForPathGen = 100;
 
     double Xi;
     double Yi; 
@@ -169,11 +171,23 @@ public class problem{
 
     public Path ezSolve(){
         double[] minMaxs = this.getMinMaxs();
+        double t0 = Timer.getFPGATimestamp();
         double[] params = ezOptimizer.optimizeRS(this, minMaxs[0], minMaxs[1], minMaxs[2], minMaxs[3], maxKappaSquared, rGrid, sGrid, kapNum, numLinSegs);
+        double dt0 = Timer.getFPGATimestamp() - t0;
+        double t1 = Timer.getFPGATimestamp();
         cubicBezier bezSol = this.genBezier(params[0], params[1]);
+        double dt1 = Timer.getFPGATimestamp() - t1;
         bezSol._print_control_points();
+        double t2 = Timer.getFPGATimestamp();
         linearHermiteSpline lhSpline = bezSol.approx_with_segs(numSegmentsApproxForPathGen);
+        double dt2 = Timer.getFPGATimestamp() - t2;
+        double t3 = Timer.getFPGATimestamp();
         Path sol = PathPlanner.planPath(PathPlanner.genWaypointsFromSpline(lhSpline, cruiseVelo, cruiseAccel, cycleTime));
+        double dt3 = Timer.getFPGATimestamp() - t3;
+        System.out.println("RS calculation time [s]:  " + dt0);
+        System.out.println("Bezier generation time [s]:  " + dt1);
+        System.out.println("Linear Hermite Spline Generation Time [s]:  " + dt2);
+        System.out.println("Path Generation Time [s]:  " + dt3);
         return sol;
     }
 

@@ -16,25 +16,22 @@ public class PathPlanner {
     public static List<Waypoint>  genWaypointsFromSpline(linearHermiteSpline spline, double cruiseVelo, double accel, double cycleTime){
         List<oneDimMotionPrimitive> lengths = PathPlanner.getLengthsAndVelos(spline.get_arc_len(), cruiseVelo, accel, cycleTime);
         List<Waypoint> waypts = new ArrayList<Waypoint>();
-        List<pointSlope> pointSlopes = new ArrayList<pointSlope>();
-        List<Double> radii = new ArrayList<Double>();
-        List<Double> velos = new ArrayList<Double>();
+        pointSlope ps = spline.pointSlopeFromLength(lengths.get(0).len);
+        pointSlope prevPointSlope;
+        double velo;
+        double radius;
         for (int i = 0; i < lengths.size(); i++){
-            velos.add(lengths.get(i).velo);
-        }
-        for (int i = 0; i < lengths.size(); i++){
-            pointSlopes.add(spline.pointSlopeFromLength(lengths.get(i).len));            
-        }
-        for (int i = 0; i < lengths.size() - 1; i++){
-            radii.add(geometry.getRadiusFromPointSlopes(pointSlopes.get(i), pointSlopes.get(i+1)));            
-        }
-        radii.add(0.);
-        for (int i = 0; i < lengths.size(); i++){
-            System.out.println("X: " + pointSlopes.get(i).pt.x);
-            System.out.println("Y: " + pointSlopes.get(i).pt.y);
-            System.out.println("R: " + radii.get(i));
-            System.out.println("V: " + velos.get(i));
-            waypts.add(new Waypoint(pointSlopes.get(i).pt.x, pointSlopes.get(i).pt.y, radii.get(i), velos.get(i)));
+            if (i == lengths.size()-1){
+                radius = 0;
+                velo = lengths.get(i).velo;
+                prevPointSlope = ps;                
+            } else {
+                velo = lengths.get(i).velo;
+                prevPointSlope = ps;
+                ps = spline.pointSlopeFromLength(lengths.get(i + 1).len);
+                radius = geometry.getRadiusFromPointSlopes(prevPointSlope, ps);
+            }
+            waypts.add(new Waypoint(prevPointSlope.pt.x, prevPointSlope.pt.y, radius, velo));
         }
         return waypts;         
     }

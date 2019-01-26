@@ -70,6 +70,8 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
   RobotState _robotState = RobotState.getInstance();
   double _leftEncoderPrevDistance, _rightEncoderPrevDistance;
 
+  public static double _autoStartTime;
+
   static double ENCODER_COUNTS_PER_WHEEL_REV= 13582.78; // 30028.471298;
 	public static Chassis getInstance() {
 		return _instance;

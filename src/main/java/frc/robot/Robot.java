@@ -68,7 +68,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     _buildMsg = GeneralUtilities.WriteBuildInfoToDashboard(ROBOT_NAME);
-    Paths.buildPaths();
+    // Paths.buildPaths();
     
   }
 
@@ -86,6 +86,7 @@ public class Robot extends TimedRobot {
     _lastDashboardWriteTimeMSec = new Date().getTime(); // snapshot time to control spamming
     _dataLogger = GeneralUtilities.setupLogging("Auton"); // init data logging	
     _autonChoosers.getSelectedAuton().start();
+    Chassis._autoStartTime = Timer.getFPGATimestamp();
   }
 
   /**
