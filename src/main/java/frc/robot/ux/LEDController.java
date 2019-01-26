@@ -20,7 +20,8 @@ public class LEDController {
     public boolean _areledsblinking;
     private static final double REDZONE = 27.0; 
 	private static final double YELLOWZONE = 10.0;
-	private static final double GREENZONE = 2.0;
+    private static final double GREENZONE = 2.0;
+    
 
     //=====================================================================================
 	// Define Singleton Pattern
@@ -31,13 +32,18 @@ public class LEDController {
 		return _instance;
 	}
 	
-	// private constructor for singleton pattern
+    // private constructor for singleton pattern - this LED Controller is like a motor in regards to set speed, colors are on rev
+    // robotics Blinkin LED User manual. 
 	private LEDController() {	
 		LEDstrip = new Spark(RobotMap.PWM_LED_PORT);
 	}
 	
-	// call this method to display the correct LED Color
-	public void set_targetangle (double currentAngleInDegrees, boolean istargetaquired){
+    /* call this method to display the correct LED Color, the method checks to see if a target is aquired using vision, 
+    then goes though a series of if/ else statements to determine the position of angle one. When the target is homed +/- two degrees 
+    Izzy's distance sensor determines whether the target is within one foot, if it is, it lights up in partymode (yass), if not 
+    it is a solid green color*/ 
+	public void set_targetangle (double currentAngleInDegrees, boolean istargetaquired, double inchesout){
+        
         if(istargetaquired == true){
             if(Math.abs(currentAngleInDegrees) > REDZONE){
                 whiteLights();
@@ -48,15 +54,18 @@ public class LEDController {
             else if(Math.abs(currentAngleInDegrees) >= GREENZONE && Math.abs(currentAngleInDegrees)<= YELLOWZONE){
                 orangeLEDstrip();
             }
-            else if(Math.abs(currentAngleInDegrees) <= YELLOWZONE)
-            {
+            else if(Math.abs(currentAngleInDegrees) <= GREENZONE && inchesout <= 12 ){
                 partyMode();
+            }
+            else if(Math.abs(currentAngleInDegrees) <= GREENZONE && inchesout >= 12){
+                greenLights();
             }
         } else {
             redBlinkLights();
         }
 
-	}
+    }
+    //Different methods that set the LEDs to a certain color, the names are self-explainitory
 	private void partyMode(){
 		LEDstrip.set(-0.99);
 	}
@@ -85,13 +94,16 @@ public class LEDController {
         _areledsblinking = false; 
     }
     
-    private void blueLEDs(){
+    private void oceanicPaletteLEDs(){
         LEDstrip.set(-0.95);
         _areledsorange = false;
 	}
 	
 	
-    /*public void redZoneCheck()
+    /* Old Testing Code I did not want to part with, could be used in future dates for diagonistics and whatnot;
+    
+    
+    public void redZoneCheck()
     {
         if(getCurrentDistance() >= YELLOWZONE && getCurrentDistance() <= REDZONE)
         {
