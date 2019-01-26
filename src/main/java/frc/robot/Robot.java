@@ -68,7 +68,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     _buildMsg = GeneralUtilities.WriteBuildInfoToDashboard(ROBOT_NAME);
-    // Paths.buildPaths();
+    Paths.buildPaths();
     
   }
 

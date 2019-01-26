@@ -1,6 +1,7 @@
 package frc.robot.commands.auton;
 
 import frc.robot.auton.pathfollowing.RobotState;
+import frc.robot.auton.pathfollowing.Paths.Center;
 import frc.robot.auton.pathfollowing.control.Path;
 import frc.robot.subsystems.Chassis;
 
