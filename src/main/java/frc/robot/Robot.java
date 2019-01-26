@@ -14,8 +14,12 @@ import java.util.Date;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import frc.robot.sensors.MagneticLS;
 import frc.robot.sensors.VisionLL;
+
+import frc.robot.sensors.DistanceRev2mSensor;
+
 import frc.robot.subsystems.Chassis;
 import frc.robot.util.DataLogger;
 import frc.robot.util.GeneralUtilities;
@@ -45,6 +49,8 @@ public class Robot extends TimedRobot {
   private MagneticLS _magnetls = MagneticLS.getInstance();
 
 
+  private DistanceRev2mSensor _DistanceRev2mSensor = DistanceRev2mSensor.getInstance();
+
 	// class level working variables
 	private DataLogger _dataLogger = null;
 	private String _buildMsg = "?";
@@ -72,7 +78,7 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     _scanTimeSamples = new MovingAverage(20);
     _lastDashboardWriteTimeMSec = new Date().getTime(); // snapshot time to control spamming
-    _dataLogger = GeneralUtilities.setupLogging("Auton"); // init data logging	
+    _dataLogger = GeneralUtilities.setupLogging("Auton"); // init data logging
     
   }
 
@@ -82,8 +88,8 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     Scheduler.getInstance().run();
-    _leds.set_targetangle(_vision.get_angle1InDegrees(), _vision.canLLSeeTarget());
-    System.out.println(_vision.canLLSeeTarget());
+    _leds.set_targetangle(_vision.get_angle1InDegrees(), _vision.canLLSeeTarget(), _DistanceRev2mSensor.get_distanceToTargetInInches());
+       System.out.println(_vision.canLLSeeTarget());
     
   }
 
@@ -159,7 +165,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    // ============= Refresh Dashboard =============
+    // ============= Refresh Dashboard ============= 
     this.outputAllToDashboard();
     
     if(!isDisabled())
@@ -183,7 +189,8 @@ public class Robot extends TimedRobot {
     		// to push its data out to the dashboard
         // ----------------------------------------------
         _autonChoosers.updateDashboard();
-    		_chassis.updateDashboard(); 
+        _chassis.updateDashboard(); 
+        _DistanceRev2mSensor.updateDashboard();
 	    	
     		// write the overall robot dashboard info
 	    	SmartDashboard.putString("Robot Build", _buildMsg);
@@ -211,7 +218,8 @@ public class Robot extends TimedRobot {
         // ----------------------------------------------
         _autonChoosers.updateLogData(logData);
 	    	_chassis.updateLogData(logData);
-	    	
+        _DistanceRev2mSensor.updateLogData(logData);
+        
 	    	_dataLogger.WriteDataLine(logData);
     	}
 	}
