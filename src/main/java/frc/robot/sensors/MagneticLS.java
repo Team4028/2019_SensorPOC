@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotMap;
 
 /**
- * This class exposes the OnBoard Analog Pressure Sensor Lead Student:
+ * This class tests Magnetic Limit Switches Lead Student: Parker Johnson
  */
 public class MagneticLS 
 {
@@ -36,12 +36,17 @@ public class MagneticLS
 	{
 		magneticSwitch = new DigitalInput(RobotMap.REV_ROBOTICS_MAG_LIMIT);
 		_lstalon = new TalonSRX(RobotMap.MAG_LS_TEST_TALON);
+		
 	}
 	public void runTalonWithInputFromMagLimitSwitch(){
 		if (!magneticSwitch.get())
 		{
 		_lstalon.set(ControlMode.PercentOutput, -0.1);
 		}
+	}
+	public void runMotorForTestPurposes()
+	{
+		_lstalon.set(ControlMode.PercentOutput, 0.2);
 	}
 	public void putStatusofLsToSmartDash()
 	{
