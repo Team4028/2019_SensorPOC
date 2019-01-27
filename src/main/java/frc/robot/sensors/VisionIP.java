@@ -8,25 +8,26 @@
 package frc.robot.sensors;
 
 import frc.robot.interfaces.IVisionSensor;
+import frc.robot.util.LogDataBE;
 
 /**
  * This class exposes the OnBoard IPhone Vision sensor
- *  Lead Student: 
+ * 
+ * Lead Student: Conner
  */
 public class VisionIP implements IVisionSensor {
 
-    //=====================================================================================
-	// Define Singleton Pattern
-	//=====================================================================================
-	private static VisionIP _instance = new VisionIP();
-	
-	public static VisionIP getInstance() {
-		return _instance;
-	}
-	
-	// private constructor for singleton pattern
-	private VisionIP() 
-	{	
+    // =====================================================================================
+    // Define Singleton Pattern
+    // =====================================================================================
+    private static VisionIP _instance = new VisionIP();
+
+    public static VisionIP getInstance() {
+        return _instance;
+    }
+
+    // private constructor for singleton pattern
+    private VisionIP() {
     }
 
     @Override
@@ -37,6 +38,16 @@ public class VisionIP implements IVisionSensor {
     @Override
     public double get_distanceToTargetInInches() {
         return 0;
+    }
+
+    @Override
+    public void updateLogData(LogDataBE logData) {
+
+    }
+
+    @Override
+    public void updateDashboard() {
+
     }
 
 }

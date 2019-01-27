@@ -10,7 +10,6 @@ package frc.robot.sensors;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.I2C.Port;
 import frc.robot.RobotMap;
 
 /**

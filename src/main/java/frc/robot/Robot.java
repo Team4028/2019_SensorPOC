@@ -22,7 +22,18 @@ import frc.robot.auton.pathfollowing.PathBuilder;
 import frc.robot.auton.pathfollowing.Paths;
 import frc.robot.commands.auton.autons.TurnTest;
 import frc.robot.sensors.GyroNavX;
+
+import frc.robot.sensors.VisionLL;
+
+import frc.robot.sensors.DistanceRev2mSensor;
+import frc.robot.sensors.StoredPressureSensor;
+import frc.robot.sensors.VisionIP;
+import frc.robot.subsystems.Cargo;
+
 import frc.robot.subsystems.Chassis;
+import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Hatch;
 import frc.robot.util.DataLogger;
 import frc.robot.util.GeneralUtilities;
 import frc.robot.util.LogDataBE;
@@ -45,10 +56,25 @@ public class Robot extends TimedRobot {
 
   // create instance of each Subsystem (singleton)
   //  Note: add each one to the outputAllToDashboard & logAllData methods below
-  private AutonChoosers _autonChoosers = AutonChoosers.getInstance();
+
+
+  // sensors
+  private DistanceRev2mSensor _distanceRev2mSensor = DistanceRev2mSensor.getInstance();
+  private StoredPressureSensor _pressureSensor = StoredPressureSensor.getInstance();
+  private VisionLL _vision = VisionLL.getInstance();      // Limelight
+  //private VisionLIP _vision = VisionIP.getInstance();   // IPhone
+
+  // ux
 
   private LEDController _leds = LEDController.getInstance();
+  private AutonChoosers _autonChoosers = AutonChoosers.getInstance();
 
+  // subsystems
+  private Chassis _chassis = Chassis.getInstance();
+  private Cargo _cargo = Cargo.getInstance();
+  private Climber _climber = Climber.getInstance();
+  private Elevator _elevator = Elevator.getInstance();
+  private Hatch _hatch = Hatch.getInstance();
 
   // class level working variables
 
@@ -58,7 +84,7 @@ public class Robot extends TimedRobot {
  	long _lastDashboardWriteTimeMSec;
 	MovingAverage _scanTimeSamples;
   public double _startTime;
-  private Chassis _chassis = Chassis.getInstance();
+
   private GyroNavX _navX=GyroNavX.getInstance();
 
   /********************************************************************************************
@@ -87,22 +113,22 @@ public class Robot extends TimedRobot {
     _dataLogger = GeneralUtilities.setupLogging("Auton"); // init data logging	
     _autonChoosers.getSelectedAuton().start();
     Chassis._autoStartTime = Timer.getFPGATimestamp();
+
   }
 
   /**
    * This function is called periodically during autonomous mode.
    */
   @Override
+
   public void autonomousPeriodic() 
   {
 
     _chassis.updateChassis(Timer.getFPGATimestamp());
     Scheduler.getInstance().run();
-    _leds.set_targetangle( Math.random() * 27.0);
-    
-    // System.out.println(_chassis.getHeading());
+    _leds.set_targetangle(_vision.get_angle1InDegrees(), _vision.canLLSeeTarget(), _distanceRev2mSensor.get_distanceToTargetInInches());
+    System.out.println(_vision.canLLSeeTarget());
 
-   // _chassis.setLeftRightCommand(ControlMode.PercentOutput, 1, 1);
   }
 
   /********************************************************************************************
@@ -180,7 +206,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    // ============= Refresh Dashboard =============
+    // ============= Refresh Dashboard ============= 
     this.outputAllToDashboard();
     
     if(!isDisabled())
@@ -203,8 +229,16 @@ public class Robot extends TimedRobot {
     		// each subsystem should add a call to a outputToSmartDashboard method
     		// to push its data out to the dashboard
         // ----------------------------------------------
-        _autonChoosers.updateDashboard();
-    		_chassis.updateDashboard(); 
+        if(_chassis != null)              { _chassis.updateDashboard(); }
+        if(_cargo != null)                { _cargo.updateDashboard(); }
+        if(_climber != null)              { _climber.updateDashboard(); }
+        if(_elevator != null)             { _elevator.updateDashboard(); }
+        if(_hatch != null)                { _hatch.updateDashboard(); }
+
+        if(_autonChoosers != null)        { _autonChoosers.updateDashboard(); }
+	    	if(_distanceRev2mSensor != null)  { _distanceRev2mSensor.updateDashboard(); }
+        if(_vision != null)               { _vision.updateDashboard(); }
+        if(_pressureSensor != null)       { _pressureSensor.updateDashboard(); }
 	    	
     		// write the overall robot dashboard info
 	    	SmartDashboard.putString("Robot Build", _buildMsg);
@@ -230,9 +264,17 @@ public class Robot extends TimedRobot {
         // ----------------------------------------------
         // ask each subsystem that exists to add its data
         // ----------------------------------------------
-        _autonChoosers.updateLogData(logData);
-	    	_chassis.updateLogData(logData);
-	    	
+        if(_chassis != null)              { _chassis.updateLogData(logData); }
+        if(_cargo != null)                { _cargo.updateLogData(logData); }
+        if(_climber != null)              { _climber.updateLogData(logData); }
+        if(_elevator != null)             { _elevator.updateLogData(logData); }
+        if(_hatch != null)                { _hatch.updateLogData(logData); }
+
+        if(_autonChoosers != null)        { _autonChoosers.updateLogData(logData); }
+	    	if(_distanceRev2mSensor != null)  { _distanceRev2mSensor.updateLogData(logData); }
+        if(_vision != null)               { _vision.updateLogData(logData); }
+        if(_pressureSensor != null)       { _pressureSensor.updateLogData(logData); }
+    
 	    	_dataLogger.WriteDataLine(logData);
     	}
 	}
