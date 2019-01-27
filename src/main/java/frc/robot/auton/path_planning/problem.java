@@ -202,15 +202,28 @@ public class problem{
         return sol;
     }
 
+    public void printStuff(){
+        System.out.println("Xi: " + Xi);
+        System.out.println("Yi: " + Yi);
+        System.out.println("Theta i: " + THETAi);
+        System.out.println("Xf: " + Xf);
+        System.out.println("Yf: " + Yf);
+        System.out.println("Theta f: " + THETAf);
+    }
+
     public static void solveFromVisionData(double a1, double a2, double l, RigidTransform curPose){
         geometry.genProblemFromVisionData(a1, a2, l, curPose).pSolve();
     }
 
-    public static void ezMoneySolveFromVisionData(double a1, double a2, double l, RigidTransform curPose){
-        // problem p = geometry.genProblemFromVisionData(a1, a2, l, curPose);
-        problem p = new problem(0, 0,0, 30, 43.3,Math.PI/3);
-        System.out.println(p.Xi);
-        p.pSolve();
+    public static void ezMoneySolveFromVisionData(double a1, double a2, double distance, RigidTransform curPose){
+        problem p = geometry.genProblemFromVisionData(problem.deg2rad(a1), problem.deg2rad(a2), distance, curPose);
+        p.printStuff();
+        //problem p = new problem(0, 0,0, 30, 43.3,Math.PI/3);
+        //System.out.println(p.Xi);
+        System.out.println("Angle1:"+a1);
+        System.out.println("Angle2:"+a2);
+        System.out.println("Distance"+ distance);
+        //p.pSolve();
     }
 
     // public static void solveItFromVisionsData(){
@@ -251,6 +264,10 @@ public class problem{
     public static double rad2deg(double rad){
         return rad * 180 / Math.PI;
     }
+    public static double deg2rad(double deg){
+        return deg*Math.PI /180 ;
+    }
+
 
     public static boolean isIntViable(double x0, double y0, double x1, double y1, point intP, double thetaF){
         double m = Math.tan(thetaF + Math.PI/2);

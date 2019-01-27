@@ -1,10 +1,13 @@
 package frc.robot.commands.auton.adaptivePaths;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import frc.robot.auton.path_planning.problem;
 import frc.robot.auton.pathfollowing.RobotState;
 import frc.robot.auton.pathfollowing.control.Path;
 import frc.robot.auton.pathfollowing.motion.RigidTransform;
+import frc.robot.sensors.GyroNavX;
+import frc.robot.sensors.VisionLL;
 
 public class ezMoneyPlanPath extends Command
 {
@@ -14,19 +17,23 @@ public class ezMoneyPlanPath extends Command
     double A2;
     double L;
     RigidTransform curPose;
+    VisionLL _limeLight = VisionLL.getInstance();
+    GyroNavX _navX = GyroNavX.getInstance();
     
 
-    public ezMoneyPlanPath(double a1, double a2, double l) {
+    public ezMoneyPlanPath() {
         iPath =  null; //problem._path;
-        curPose = RobotState.getInstance().getLatestFieldToVehicle().getValue();
-        A1 = a1;
-        A2 = a2;
-        L = l;
+
+
     }
 
     @Override
     protected void initialize() {
-        problem.ezMoneySolveFromVisionData(A1, A2, L, curPose);
+        double A1 = _limeLight.get_angle1InDegrees();
+        double A2= _navX.get_angle2InDegreesFromLL();
+        double distance= _limeLight.get_distanceToTargetInInches();
+        curPose = RobotState.getInstance().getLatestFieldToVehicle().getValue();
+        problem.ezMoneySolveFromVisionData(A1, A2, distance, curPose);
     }
 
     @Override

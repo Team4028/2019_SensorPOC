@@ -40,7 +40,7 @@ public class GyroNavX {
 	}
 
 	public double get_angle2InDegreesFromLL() {
-		double angle2 = 90 - _visionLL.get_angle1InDegrees() - _navXSensor.getYaw();
+		double angle2 =-90 - _visionLL.get_angle1InDegrees() - _navXSensor.getYaw();
 		return angle2;
 	}
 	

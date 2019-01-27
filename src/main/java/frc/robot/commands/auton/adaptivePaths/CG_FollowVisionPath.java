@@ -10,24 +10,25 @@ import frc.robot.commands.auton.Auton_RunProfileFromVision;
 import frc.robot.commands.auton.Auton_turnFromVision;
 import frc.robot.commands.auton.printTimeFromStart;
 import frc.robot.commands.auton.adaptivePaths.planPath;
+import frc.robot.sensors.GyroNavX;
+import frc.robot.sensors.VisionLL;
 import frc.robot.commands.auton.adaptivePaths.ezMoneyPlanPath;
+ 
 
 public class CG_FollowVisionPath extends CommandGroup {
-
+    VisionLL _limeLight = VisionLL.getInstance();
+    GyroNavX _navX = GyroNavX.getInstance();
     double timeOut = 10;
     
     public CG_FollowVisionPath(double a1, double a2, double l, boolean izCool){
         addParallel(new Auton_ParallelStarter());
-        if (izCool){
-            addSequential(new ezMoneyPlanPath(a1, a2, l));
-        } else {
-            addSequential(new planPath(a1, a2, l));
-        }
+        addSequential(new WaitCommand(10));
+        addSequential(new ezMoneyPlanPath());
         addSequential(new printTimeFromStart());
         addSequential(new Auton_ParallelStarter());
         addSequential(new PrintCommand("Planned"));
-        addSequential(new Auton_turnFromVision());
-        addSequential(new Auton_RunProfileFromVision(5.));
-        //addSequential(new followVisionProfile(timeOut));
+        //addSequential(new Auton_turnFromVision());
+        //addSequential(new Auton_RunProfileFromVision(5.));
     }
+
 }
