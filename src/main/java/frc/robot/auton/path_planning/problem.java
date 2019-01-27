@@ -5,9 +5,14 @@ import frc.robot.auton.path_planning.math.geometry;
 import frc.robot.auton.path_planning.math.point;
 import frc.robot.auton.path_planning.math.lineSegment;
 import frc.robot.auton.path_planning.math.linearHermiteSpline;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 
 import edu.wpi.first.wpilibj.Timer;
+import frc.robot.auton.pathfollowing.PathBuilder;
+import frc.robot.auton.pathfollowing.PathBuilder.Waypoint;
 import frc.robot.auton.pathfollowing.control.Path;
 import frc.robot.auton.pathfollowing.motion.RigidTransform;
 import frc.robot.auton.path_planning.PathPlanner;
@@ -17,20 +22,22 @@ import frc.robot.auton.path_planning.math.ThreeD_Vector;
 import frc.robot.auton.path_planning.math.calculus;
 import frc.robot.auton.path_planning.math.rootFinding;
 import frc.robot.auton.path_planning.math.ezOptimizer;
+import frc.robot.auton.pathfollowing.PathBuilder;
 
 public class problem{
 
     private static final int linearHermiteSplineLengthForArcLength = 100;
-    private static final double maxKappaSquared = 1.;
+    private static final double maxKappaSquared = 1;
     private static final double epsilon = Constants.EPSILON_NEGATIVE_6;
     private static final int numStepsNewtonsMethod = 100;
     private static final double newtonsMethodC = 1;
     private static final double newtonsMethodLambdaFac = .5;
-    private static final double cruiseVelo = 40;
+    private static final double cruiseVelo = 50;
     private static final double cruiseAccel = 50;
     private static final double cycleTime = .2;
     public static boolean pathPlanned = false;
     public static Path _path;
+    public static double _theta;
 
     private static final int rGrid = 10;
     private static final int sGrid = 10;
@@ -162,7 +169,7 @@ public class problem{
             point intPoint = geometry.get_intersect(Xi, Yi, THETAi, Xf, Yf, THETAf);
             double d1 = geometry.dist(new point(Xi, Yi), intPoint);
             double d2 = geometry.dist(intPoint, new point(Xf, Yf));
-            return new double[] {d1 * -1.5, d1 * -.1, -1.5 * d2 , -.3 * d2 };
+            return new double[] {d1 * .1, d1 * .9, .1 * d2 , .9 * d2 };
         } else {
             double d = geometry.dist(new point(Xi, Yi), new point(Xf, Yf));
             return new double[] {d * .06,  d * 1.25,  d * -1.25, d * -.3};
@@ -178,31 +185,81 @@ public class problem{
         cubicBezier bezSol = this.genBezier(params[0], params[1]);
         double dt1 = Timer.getFPGATimestamp() - t1;
         bezSol._print_control_points();
-        double t2 = Timer.getFPGATimestamp();
-        linearHermiteSpline lhSpline = bezSol.approx_with_segs(numSegmentsApproxForPathGen);
-        double dt2 = Timer.getFPGATimestamp() - t2;
-        double t3 = Timer.getFPGATimestamp();
-        Path sol = PathPlanner.planPath(PathPlanner.genWaypointsFromSpline(lhSpline, cruiseVelo, cruiseAccel, cycleTime));
-        double dt3 = Timer.getFPGATimestamp() - t3;
+        Path sol = PathPlanner.buildPathsFromBez(bezSol, cruiseVelo);
+        // double t2 = Timer.getFPGATimestamp();
+        // linearHermiteSpline lhSpline = bezSol.approx_with_segs(numSegmentsApproxForPathGen);
+        // double dt2 = Timer.getFPGATimestamp() - t2;
+        // double t3 = Timer.getFPGATimestamp();
+        // Path sol = PathPlanner.planPath(PathPlanner.genWaypointsFromSpline(lhSpline, cruiseVelo, cruiseAccel, cycleTime));
+        // double dt3 = Timer.getFPGATimestamp() - t3;
         System.out.println("RS calculation time [s]:  " + dt0);
         System.out.println("Bezier generation time [s]:  " + dt1);
-        System.out.println("Linear Hermite Spline Generation Time [s]:  " + dt2);
-        System.out.println("Path Generation Time [s]:  " + dt3);
+        // System.out.println("Linear Hermite Spline Generation Time [s]:  " + dt2);
+        // System.out.println("Path Generation Time [s]:  " + dt3);
         _path = sol;
         System.out.println(sol);
         System.out.println(_path);
         return sol;
     }
 
-    public static Path solveFromVisionData(double a1, double a2, double l, RigidTransform curPose){
-        return geometry.genProblemFromVisionData(a1, a2, l, curPose).solve();
+    public static void solveFromVisionData(double a1, double a2, double l, RigidTransform curPose){
+        geometry.genProblemFromVisionData(a1, a2, l, curPose).pSolve();
     }
 
-    public static Path ezMoneySolveFromVisionData(double a1, double a2, double l, RigidTransform curPose){
+    public static void ezMoneySolveFromVisionData(double a1, double a2, double l, RigidTransform curPose){
         // problem p = geometry.genProblemFromVisionData(a1, a2, l, curPose);
-        problem p = new problem(0, 0, Math.PI/3, 30, 40, -1 * Math.PI/2);
+        problem p = new problem(0, 0,0, 30, 43.3,Math.PI/3);
         System.out.println(p.Xi);
-        return p.ezSolve();
+        p.pSolve();
+    }
+
+    // public static void solveItFromVisionsData(){
+    //      // problem p = geometry.genProblemFromVisionData(a1, a2, l, curPose);
+    //      problem p = new problem(0, 0,0, 30, 43.3, Math.PI/3);
+    //      p.pSolve();
+    // }
+
+    public void pSolve(){
+        double m1 = Math.tan(THETAi);
+        double m2 = Math.tan(THETAf);
+        point intPoint = geometry.get_intersect(Xi, Yi, THETAi, Xf, Yf, THETAf);
+        boolean isViable = problem.isIntViable(Xi, Yi, Xf, Yf, intPoint, THETAf);
+        double thetaTurn;
+        List<Waypoint> sWaypoints = new ArrayList<Waypoint>();
+        if (isViable && geometry.dist(intPoint, new point(Xf,Yf))>16)
+        {
+            sWaypoints.add(new Waypoint(Xi,Yi,0,0));
+            sWaypoints.add(new Waypoint(intPoint.x, intPoint.y, Math.min(geometry.dist(intPoint, new point(Xi,Yi)),geometry.dist(intPoint, new point(Xf,Yf))),cruiseVelo));
+            sWaypoints.add(new Waypoint(Xf,Yf, 0, cruiseVelo));
+            thetaTurn = 0;
+        }
+        else
+        {
+            point newMiddlePoint = new point(Xf - 15 * Math.cos(THETAf), Yf - 15 * Math.sin(THETAf));
+            thetaTurn = Math.atan2(newMiddlePoint.y - Yi, newMiddlePoint.x - Xi);
+            sWaypoints.add(new Waypoint(Xi,Yi,0,0));
+            sWaypoints.add(new Waypoint(newMiddlePoint.x, newMiddlePoint.y, Math.min(geometry.dist(newMiddlePoint, new point(Xi,Yi)),geometry.dist(newMiddlePoint, new point(Xf,Yf))),cruiseVelo));
+            sWaypoints.add(new Waypoint(Xf,Yf, 0, cruiseVelo));
+        }
+        System.out.println(sWaypoints);
+        System.out.println("Target Angle: " + thetaTurn);
+        _path = PathBuilder.buildPathFromWaypoints(sWaypoints);
+        _theta = problem.rad2deg(thetaTurn);
+    }
+
+
+    public static double rad2deg(double rad){
+        return rad * 180 / Math.PI;
+    }
+
+    public static boolean isIntViable(double x0, double y0, double x1, double y1, point intP, double thetaF){
+        double m = Math.tan(thetaF + Math.PI/2);
+        double b = y1 - m * x1;
+        return isAbove(x0, y0, m , b) == isAbove(intP.x, intP.y, m , b);
+    }
+
+    public static boolean isAbove(double x0, double y0, double m, double  b){
+        return y0 > m * x0 + b;        
     }
 
     public static Path getPath()

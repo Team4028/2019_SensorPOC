@@ -1,8 +1,11 @@
 package frc.robot.auton.path_planning;
 
+import frc.robot.auton.path_planning.math.cubicBezier;
 import frc.robot.auton.path_planning.math.geometry;
 import frc.robot.auton.path_planning.math.linearHermiteSpline;
+import frc.robot.auton.path_planning.math.point;
 import frc.robot.auton.pathfollowing.control.Path;
+import frc.robot.auton.pathfollowing.motion.Translation;
 import frc.robot.auton.pathfollowing.PathBuilder;
 import frc.robot.auton.pathfollowing.PathBuilder.Waypoint;
 import frc.robot.auton.path_planning.math.linearHermiteSpline.pointSlope;
@@ -14,6 +17,7 @@ import java.lang.Math;
 public class PathPlanner {
 
     public static List<Waypoint>  genWaypointsFromSpline(linearHermiteSpline spline, double cruiseVelo, double accel, double cycleTime){
+        System.out.println("Length: " + spline.get_arc_len());
         List<oneDimMotionPrimitive> lengths = PathPlanner.getLengthsAndVelos(spline.get_arc_len(), cruiseVelo, accel, cycleTime);
         List<Waypoint> waypts = new ArrayList<Waypoint>();
         pointSlope ps = spline.pointSlopeFromLength(lengths.get(0).len);
@@ -35,7 +39,27 @@ public class PathPlanner {
         }
         return waypts;         
     }
-
+    
+    public static Path buildPathsFromBez(cubicBezier bez, double velo){
+        point p1 = bez.get_first_point();
+        point p2 = bez.get_second_point();
+        point p3 = bez.get_third_point();
+        point p4 = bez.get_fourth_point();
+        Waypoint wp1 = new Waypoint(new Translation(p1.x, p1.y), 0, 0);
+        Waypoint wp2 = new Waypoint(new Translation(p2.x, p2.y), Math.min(geometry.dist(p1, p2), geometry.dist(p2, p3)), velo);
+        Waypoint wp3 = new Waypoint(new Translation(p3.x, p3.y),  Math.min(geometry.dist(p2, p3), geometry.dist(p4, p3)), velo );
+        Waypoint wp4 = new Waypoint(new Translation(p4.x, p4.y),0, velo);
+        System.out.println(wp1);
+        System.out.println(wp2);
+        System.out.println(wp3);
+        System.out.println(wp4);
+        List<Waypoint> w = new ArrayList<Waypoint>();
+        w.add(wp1);
+        w.add(wp2);
+        w.add(wp3);
+        w.add(wp4);
+        return PathPlanner.planPath(w);
+    }
     public static List<oneDimMotionPrimitive> getLengthsAndVelos(double len, double velo, double accel, double cycleTime){
         List<oneDimMotionPrimitive> lensAndVelos = new ArrayList<oneDimMotionPrimitive>();
         lensAndVelos.add(new oneDimMotionPrimitive(0, 0));

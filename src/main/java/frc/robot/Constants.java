@@ -56,7 +56,7 @@ public class Constants {
 
 	/* Robot Physical Constants */
 	// Wheels
-	public static final double DRIVE_WHEEL_DIAMETER_IN = 6.258;
+	public static final double DRIVE_WHEEL_DIAMETER_IN = 6;
 	public static final double TRACK_WIDTH_INCHES = 24.25;
     // Logging
 	// this is where the USB stick is mounted on the RoboRIO filesystem.  

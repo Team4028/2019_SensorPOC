@@ -22,8 +22,8 @@ public class geometry{
     }    
 
     public static point get_intersect(double x0, double y0, double t0, double x1, double y1, double t1){
-        double x = (y0 - y1 + x1 * Math.tan(t1) - x0 * Math.tan(t0))/(Math.tan(t1) - Math.tan(t0));
-        double y = y0 + Math.tan(t0)*(x - x0);
+        double x = Math.abs((y0 - y1 + x1 * Math.tan(t1) - x0 * Math.tan(t0))/(Math.tan(t1) - Math.tan(t0)));
+        double y = Math.abs(y0 + Math.tan(t0)*(x - x0));
         return new point(x, y); 
     }
 

@@ -30,7 +30,10 @@ public class Auton_RunMotionProfileAction extends Command
     @Override
     protected void execute() {
         if(Timer.getFPGATimestamp() - _startTime > 0.25) {
-			if(_chassis.getLeftPos() == 0 || _chassis.getRightPos() == 0) {
+            if(_chassis.getLeftPos() == 0 || _chassis.getRightPos() == 0) 
+            {
+                System.out.println(_chassis.getLeftPos());
+                System.out.println(_chassis.getRightPos());
 				_chassis.forceDoneWithPath();
 				System.out.println("Attention Idiots: You Morons Forgot to Plug in The Encoder");
 			}

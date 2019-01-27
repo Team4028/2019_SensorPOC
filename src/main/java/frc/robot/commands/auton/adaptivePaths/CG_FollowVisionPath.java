@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 import frc.robot.auton.path_planning.problem;
 import frc.robot.commands.auton.Auton_ParallelStarter;
 import frc.robot.commands.auton.Auton_RunProfileFromVision;
+import frc.robot.commands.auton.Auton_turnFromVision;
 import frc.robot.commands.auton.printTimeFromStart;
 import frc.robot.commands.auton.adaptivePaths.planPath;
 import frc.robot.commands.auton.adaptivePaths.ezMoneyPlanPath;
@@ -25,6 +26,7 @@ public class CG_FollowVisionPath extends CommandGroup {
         addSequential(new printTimeFromStart());
         addSequential(new Auton_ParallelStarter());
         addSequential(new PrintCommand("Planned"));
+        addSequential(new Auton_turnFromVision());
         addSequential(new Auton_RunProfileFromVision(5.));
         //addSequential(new followVisionProfile(timeOut));
     }

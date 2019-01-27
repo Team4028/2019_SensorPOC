@@ -18,7 +18,7 @@ public class planPath extends Command
         RigidTransform curPose = RobotState.getInstance().getLatestFieldToVehicle().getValue();
         t = new Thread("Computation Thread") {
             public void run(){
-                container[0] = problem.solveFromVisionData(a1, a2, l, curPose);
+                // container[0] = problem.solveFromVisionData(a1, a2, l, curPose);
                 problem.pathPlanned = true;
             }
          };

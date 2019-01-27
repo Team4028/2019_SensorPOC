@@ -26,7 +26,7 @@ public class ezMoneyPlanPath extends Command
 
     @Override
     protected void initialize() {
-        problem._path  = problem.ezMoneySolveFromVisionData(A1, A2, L, curPose);
+        problem.ezMoneySolveFromVisionData(A1, A2, L, curPose);
     }
 
     @Override

@@ -187,6 +187,22 @@ public class cubicBezier{
         return ezOptimizer.lazyOptimize(kappaSquared, 0, 1, num);
     }
 
+    public point get_first_point(){
+        return first_point;
+    }
+
+    public point get_second_point(){
+        return second_point;
+    }
+
+    public point get_third_point(){
+        return third_point;
+    }
+
+    public point get_fourth_point(){
+        return fourth_point;
+    }
+
     public void _print_control_points(){
         first_point.print();
         second_point.print();

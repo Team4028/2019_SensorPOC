@@ -15,6 +15,7 @@ public class Auton_RunProfileFromVision extends Command
     private double _startTime;
     double _maxTime;
     RobotState _inst = RobotState.getInstance();
+    int count = 0;
 
     public Auton_RunProfileFromVision( double maxTime)
     {
@@ -35,8 +36,19 @@ public class Auton_RunProfileFromVision extends Command
     protected void execute() {
         if(Timer.getFPGATimestamp() - _startTime > 0.25) {
 			if(_chassis.getLeftPos() == 0 || _chassis.getRightPos() == 0) {
-				_chassis.forceDoneWithPath();
-				System.out.println("Attention Idiots: You Morons Forgot to Plug in The Encoder");
+                count++;
+                if(count==8)
+                {
+                    _chassis.forceDoneWithPath();
+                    System.out.println(_chassis.getLeftPos());
+                    System.out.println(_chassis.getRightPos());
+				    System.out.println("Attention Idiots: You Morons Forgot to Plug in The Encoder");
+                }
+                else
+                {
+                    count=0;
+                }
+                
 			}
 		}
     }
