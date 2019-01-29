@@ -216,14 +216,14 @@ public class problem{
     }
 
     public static void ezMoneySolveFromVisionData(double a1, double a2, double distance, RigidTransform curPose){
-        problem p = geometry.genProblemFromVisionData(problem.deg2rad(a1), problem.deg2rad(a2), distance, curPose);
-        p.printStuff();
-        //problem p = new problem(0, 0,0, 30, 43.3,Math.PI/3);
-        //System.out.println(p.Xi);
         System.out.println("Angle1:"+a1);
         System.out.println("Angle2:"+a2);
         System.out.println("Distance"+ distance);
-        //p.pSolve();
+        problem p = geometry.genProblemFromVisionData(a1, a2, distance, curPose);
+        p.printStuff();
+        //problem p = new problem(0, 0,0, 30, 43.3,Math.PI/3);
+        //System.out.println(p.Xi);
+        p.pSolve();
     }
 
     // public static void solveItFromVisionsData(){
@@ -241,18 +241,18 @@ public class problem{
         List<Waypoint> sWaypoints = new ArrayList<Waypoint>();
         if (isViable && geometry.dist(intPoint, new point(Xf,Yf))>16)
         {
-            sWaypoints.add(new Waypoint(Xi,Yi,0,0));
-            sWaypoints.add(new Waypoint(intPoint.x, intPoint.y, Math.min(geometry.dist(intPoint, new point(Xi,Yi)),geometry.dist(intPoint, new point(Xf,Yf))),cruiseVelo));
-            sWaypoints.add(new Waypoint(Xf,Yf, 0, cruiseVelo));
+            sWaypoints.add(new Waypoint(Xi,Math.abs(Yi),0,0));
+            sWaypoints.add(new Waypoint(intPoint.x, Math.abs(intPoint.y), Math.min(geometry.dist(intPoint, new point(Xi,Yi)),geometry.dist(intPoint, new point(Xf,Yf))),cruiseVelo));
+            sWaypoints.add(new Waypoint(Xf,Math.abs(Yf), 0, cruiseVelo));
             thetaTurn = 0;
         }
         else
         {
             point newMiddlePoint = new point(Xf - 15 * Math.cos(THETAf), Yf - 15 * Math.sin(THETAf));
             thetaTurn = Math.atan2(newMiddlePoint.y - Yi, newMiddlePoint.x - Xi);
-            sWaypoints.add(new Waypoint(Xi,Yi,0,0));
-            sWaypoints.add(new Waypoint(newMiddlePoint.x, newMiddlePoint.y, Math.min(geometry.dist(newMiddlePoint, new point(Xi,Yi)),geometry.dist(newMiddlePoint, new point(Xf,Yf))),cruiseVelo));
-            sWaypoints.add(new Waypoint(Xf,Yf, 0, cruiseVelo));
+            sWaypoints.add(new Waypoint(Xi,Math.abs(Yi),0,0));
+            sWaypoints.add(new Waypoint(newMiddlePoint.x, Math.abs(newMiddlePoint.y), Math.min(geometry.dist(newMiddlePoint, new point(Xi,Yi)),geometry.dist(newMiddlePoint, new point(Xf,Yf))),cruiseVelo));
+            sWaypoints.add(new Waypoint(Xf,Math.abs(Yf), 0, cruiseVelo));
         }
         System.out.println(sWaypoints);
         System.out.println("Target Angle: " + thetaTurn);

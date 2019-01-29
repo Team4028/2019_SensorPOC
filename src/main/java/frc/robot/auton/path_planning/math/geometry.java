@@ -22,8 +22,8 @@ public class geometry{
     }    
 
     public static point get_intersect(double x0, double y0, double t0, double x1, double y1, double t1){
-        double x = Math.abs((y0 - y1 + x1 * Math.tan(t1) - x0 * Math.tan(t0))/(Math.tan(t1) - Math.tan(t0)));
-        double y = Math.abs(y0 + Math.tan(t0)*(x - x0));
+        double x = ((y0 - y1 + x1 * Math.tan(t1) - x0 * Math.tan(t0))/(Math.tan(t1) - Math.tan(t0)));
+        double y = (y0 + Math.tan(t0)*(x - x0));
         return new point(x, y); 
     }
 
@@ -57,11 +57,16 @@ public class geometry{
     }
 
     public static problem genProblemFromVisionData(double A1, double A2, double l, RigidTransform curPose){
-        double beta = l * Math.sin(A1) / Math.sin(Math.PI - A1 - A2);
-        double x = l * Math.sin(A1);
-        double y = l * Math.cos(A1);
-        double theta = Math.asin(x/beta);
-        RigidTransform goalPose = new RigidTransform(new Translation(x, y), Rotation.fromRadians(theta));
-        return new problem(curPose.getTranslation().x(), curPose.getTranslation().y(), curPose.getRotation().getRadians(),goalPose.getTranslation().x(), goalPose.getTranslation().y(), goalPose.getRotation().getRadians());
+        double dx = l * Math.cos(geometry.deg2rad(A1));
+        double dy = l * Math.sin(geometry.deg2rad(A1));
+        double dtheta = geometry.deg2rad(A1) + geometry.deg2rad(A2);
+        RigidTransform rt = new RigidTransform( new Translation(dx, dy), Rotation.fromRadians(Math.abs(dtheta)));
+        RigidTransform finalPose = curPose.transformBy(rt);
+        finalPose.transformBy(new RigidTransform(new Translation(-50 * Math.sin(A1), -50 * Math.cos(A1)), Rotation.fromDegrees(0)));
+        return new problem(curPose.getTranslation().x(), curPose.getTranslation().y(), curPose.getRotation().getRadians(), finalPose.getTranslation().x(), finalPose.getTranslation().y(), finalPose.getRotation().getRadians());
+    }
+
+    public static double deg2rad(double deg){
+        return deg * Math.PI / 180;
     }
 }
