@@ -69,6 +69,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    _DistanceRev2mSensor.setLongRangeMode(true);
     _scanTimeSamples = new MovingAverage(20);
     _lastDashboardWriteTimeMSec = new Date().getTime(); // snapshot time to control spamming
 		_dataLogger = GeneralUtilities.setupLogging("Auton"); // init data logging	

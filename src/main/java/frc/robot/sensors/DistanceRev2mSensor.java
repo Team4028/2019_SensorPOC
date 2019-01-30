@@ -54,6 +54,14 @@ public class DistanceRev2mSensor implements IDistanceSensor{
 		
 	}
 
+	public void setLongRangeMode(boolean mode) {
+		if (mode) {
+			_distanceSensor.setSignalRateLimit((float) 0.12);
+			_distanceSensor.setVcselPulsePeriod(VL53L0X.vcselPeriodType.VcselPeriodPreRange, 18);
+			_distanceSensor.setVcselPulsePeriod(VL53L0X.vcselPeriodType.VcselPeriodFinalRange, 14);
+		}
+	}
+
 	public void updateDashboard(){
 		SmartDashboard.putNumber("VL53LOX:DistanceInInches", get_distanceToTargetInInches());
 		SmartDashboard.putBoolean("VL53LOX:didTimeoutOccur", _didTimeoutOccur);
