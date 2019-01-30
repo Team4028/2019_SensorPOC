@@ -7,6 +7,7 @@
 
 package frc.robot.sensors;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.interfaces.IVisionSensor;
 import frc.robot.util.LogDataBE;
 
@@ -47,7 +48,8 @@ public class VisionIP implements IVisionSensor {
 
     @Override
     public void updateDashboard() {
-
+        SmartDashboard.putNumber("VisionLL:Angle1InDegrees", get_angle1InDegrees());
+        SmartDashboard.putNumber("VisionLL:DistanceInInches", get_distanceToTargetInInches());
     }
 
 }
