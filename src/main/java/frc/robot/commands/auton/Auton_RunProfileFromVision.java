@@ -68,6 +68,7 @@ public class Auton_RunProfileFromVision extends Command
     protected void end() {
         System.out.println("Motion Profile Properly Terminated");
         _chassis.stop();
+        System.out.println("cAngle: " + _chassis.getHeading());
     }
 
 }

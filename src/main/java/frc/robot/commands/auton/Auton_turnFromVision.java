@@ -26,10 +26,10 @@ public class Auton_turnFromVision extends Command
             isLegit = false;
         } else if (dTheta < 0) {
             isLegit = true;
-            _chassis.setTargetAngleAndTurnDirection(_targetAngle, false);
+            _chassis.setTargetAngleAndTurnDirection(_targetAngle, true);
         } else {
             isLegit = true;
-            _chassis.setTargetAngleAndTurnDirection(_targetAngle, true);
+            _chassis.setTargetAngleAndTurnDirection(_targetAngle, false);
         }
     }
 

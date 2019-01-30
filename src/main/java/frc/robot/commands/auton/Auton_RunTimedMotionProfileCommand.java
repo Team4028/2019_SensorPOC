@@ -54,6 +54,7 @@ public class Auton_RunTimedMotionProfileCommand extends Command
     @Override
     protected void end() {
         System.out.println("Motion Profile Properly Terminated");
+        System.out.println("Final cAngle: " + _chassis.getHeading());
         _chassis.stop();
     }
 

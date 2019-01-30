@@ -6,6 +6,8 @@ import frc.robot.auton.path_planning.problem;
 import frc.robot.auton.pathfollowing.RobotState;
 import frc.robot.auton.pathfollowing.control.Path;
 import frc.robot.auton.pathfollowing.motion.RigidTransform;
+import frc.robot.auton.pathfollowing.motion.Rotation;
+import frc.robot.auton.pathfollowing.motion.Translation;
 import frc.robot.sensors.GyroNavX;
 import frc.robot.sensors.VisionLL;
 
@@ -32,7 +34,8 @@ public class ezMoneyPlanPath extends Command
         double A1 = _limeLight.get_angle1InDegrees();
         double A2= _navX.get_angle2InDegreesFromLL();
         double distance= _limeLight.get_distanceToTargetInInches();
-        curPose = RobotState.getInstance().getLatestFieldToVehicle().getValue();
+        RigidTransform rt = RobotState.getInstance().getLatestFieldToVehicle().getValue();
+        curPose = new RigidTransform(new Translation(rt.getTranslation().x(), rt.getTranslation().y()), Rotation.fromDegrees(_navX.getYaw()));
         problem.ezMoneySolveFromVisionData(A1, A2, distance, curPose);
     }
 

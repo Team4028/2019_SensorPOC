@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.RobotMap;
 import frc.robot.auton.pathfollowing.RobotState;
+import frc.robot.auton.pathfollowing.chassisNavX;
 import frc.robot.auton.pathfollowing.control.Path;
 import frc.robot.auton.pathfollowing.control.PathFollower;
 import frc.robot.auton.pathfollowing.motion.RigidTransform;
@@ -274,11 +275,11 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
         }
     }
 
-  private void estimateRobotState( double timestamp)
+  public void estimateRobotState( double timestamp)
   {
     final double left_distance = NUtoInches(getLeftPos());
     final double right_distance = NUtoInches(getRightPos());
-    final Rotation gyro_angle = Rotation.fromDegrees(getHeading());
+    final Rotation gyro_angle = Rotation.fromDegrees(_navX.getYaw());
     final Twist odometry_velocity = _robotState.generateOdometryFromSensors(
         left_distance - _leftEncoderPrevDistance, right_distance - _rightEncoderPrevDistance, gyro_angle);
     final Twist predicted_velocity = Kinematics.forwardKinematics(getLeftVelocityInchesPerSec(),
@@ -377,6 +378,12 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
     _rightMaster.setSelectedSensorPosition(0);
     _navX.zeroYaw();
   }
+  // public void setOffset(double os){
+  //   _navX.setOffset(os);
+  // }
+  // public void setGyroToZero(){
+  //   _navX.reAxizeNow();
+  // }
   private static double rpmToInchesPerSecond(double rpm) 
 	{
         return rotationsToInches(rpm) / 60;
@@ -396,6 +403,9 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
 		return NU *Constants.DRIVE_WHEEL_DIAMETER_IN*Math.PI / ENCODER_COUNTS_PER_WHEEL_REV;
 	}
 
+  // public double getCurOffset(){
+  //   return _navX.getOffset();
+  // }
 	public static double inchesPerSecToNU(double inches_per_second) 
 	{
         return inches_per_second * ENCODER_COUNTS_PER_WHEEL_REV / (Constants.DRIVE_WHEEL_DIAMETER_IN * Math.PI * 10);

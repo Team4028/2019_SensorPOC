@@ -20,9 +20,10 @@ public class CG_FollowVisionPath extends CommandGroup {
     GyroNavX _navX = GyroNavX.getInstance();
     double timeOut = 10;
     
-    public CG_FollowVisionPath(double a1, double a2, double l, boolean izCool){
+    public CG_FollowVisionPath(){
         addParallel(new Auton_ParallelStarter());
         addSequential(new WaitCommand(10));
+        addSequential(new resetRobotPose());
         addSequential(new ezMoneyPlanPath());
         addSequential(new printTimeFromStart());
         addSequential(new Auton_ParallelStarter());

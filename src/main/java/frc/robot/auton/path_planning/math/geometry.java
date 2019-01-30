@@ -8,6 +8,7 @@ import frc.robot.auton.path_planning.math.linearHermiteSpline.pointSlope;
 import frc.robot.auton.pathfollowing.motion.RigidTransform;
 import frc.robot.auton.pathfollowing.motion.Rotation;
 import frc.robot.auton.pathfollowing.motion.Translation;
+import frc.robot.subsystems.Chassis;
 import frc.robot.auton.path_planning.problem;
 
 public class geometry{
@@ -57,13 +58,13 @@ public class geometry{
     }
 
     public static problem genProblemFromVisionData(double A1, double A2, double l, RigidTransform curPose){
-        double dx = l * Math.cos(geometry.deg2rad(A1));
-        double dy = l * Math.sin(geometry.deg2rad(A1));
-        double dtheta = geometry.deg2rad(A1) + geometry.deg2rad(A2);
-        RigidTransform rt = new RigidTransform( new Translation(dx, dy), Rotation.fromRadians(Math.abs(dtheta)));
+        double dx = Math.abs(l * Math.cos(geometry.deg2rad(A1)));
+        double dy = Math.abs(l * Math.sin(geometry.deg2rad(A1)));
+        double dtheta = geometry.deg2rad(Math.abs(A1)) + geometry.deg2rad(Math.abs(A2));
+        RigidTransform rt = new RigidTransform( new Translation(dx, dy), Rotation.fromRadians(dtheta));
         RigidTransform finalPose = curPose.transformBy(rt);
-        finalPose.transformBy(new RigidTransform(new Translation(-50 * Math.sin(A1), -50 * Math.cos(A1)), Rotation.fromDegrees(0)));
-        return new problem(curPose.getTranslation().x(), curPose.getTranslation().y(), curPose.getRotation().getRadians(), finalPose.getTranslation().x(), finalPose.getTranslation().y(), finalPose.getRotation().getRadians());
+        finalPose.transformBy(new RigidTransform(new Translation(50 * Math.sin(A2), 50 * Math.cos(A2)), Rotation.fromDegrees(0)));
+        return new problem(curPose.getTranslation().x(), curPose.getTranslation().y(), curPose.getRotation().getRadians(), finalPose.getTranslation().x(), finalPose.getTranslation().y(), dtheta + curPose.getRotation().getRadians());
     }
 
     public static double deg2rad(double deg){

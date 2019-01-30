@@ -15,6 +15,7 @@ import frc.robot.auton.pathfollowing.PathBuilder;
 import frc.robot.auton.pathfollowing.PathBuilder.Waypoint;
 import frc.robot.auton.pathfollowing.control.Path;
 import frc.robot.auton.pathfollowing.motion.RigidTransform;
+import frc.robot.subsystems.Chassis;
 import frc.robot.auton.path_planning.PathPlanner;
 import frc.robot.Constants;
 import frc.robot.auton.path_planning.math.ThreeD_Matrix;
@@ -233,27 +234,25 @@ public class problem{
     // }
 
     public void pSolve(){
-        double m1 = Math.tan(THETAi);
-        double m2 = Math.tan(THETAf);
         point intPoint = geometry.get_intersect(Xi, Yi, THETAi, Xf, Yf, THETAf);
         boolean isViable = problem.isIntViable(Xi, Yi, Xf, Yf, intPoint, THETAf);
         double thetaTurn;
         List<Waypoint> sWaypoints = new ArrayList<Waypoint>();
-        if (isViable && geometry.dist(intPoint, new point(Xf,Yf))>16)
-        {
-            sWaypoints.add(new Waypoint(Xi,Math.abs(Yi),0,0));
-            sWaypoints.add(new Waypoint(intPoint.x, Math.abs(intPoint.y), Math.min(geometry.dist(intPoint, new point(Xi,Yi)),geometry.dist(intPoint, new point(Xf,Yf))),cruiseVelo));
-            sWaypoints.add(new Waypoint(Xf,Math.abs(Yf), 0, cruiseVelo));
+        // if (isViable && geometry.dist(intPoint, new point(Xf,Yf))>20)
+        // {
+            sWaypoints.add(new Waypoint(Math.abs(Yi),-1 * Math.abs(Xi), 0,0));
+            sWaypoints.add(new Waypoint(Math.abs(intPoint.y), -1 *Math.abs(intPoint.x), Math.min(geometry.dist(intPoint, new point(Xi,Yi)),geometry.dist(intPoint, new point(Xf,Yf))),cruiseVelo));
+            sWaypoints.add(new Waypoint(Math.abs(Yf), -1 * Math.abs(Xf), 0, cruiseVelo));
             thetaTurn = 0;
-        }
-        else
-        {
-            point newMiddlePoint = new point(Xf - 15 * Math.cos(THETAf), Yf - 15 * Math.sin(THETAf));
-            thetaTurn = Math.atan2(newMiddlePoint.y - Yi, newMiddlePoint.x - Xi);
-            sWaypoints.add(new Waypoint(Xi,Math.abs(Yi),0,0));
-            sWaypoints.add(new Waypoint(newMiddlePoint.x, Math.abs(newMiddlePoint.y), Math.min(geometry.dist(newMiddlePoint, new point(Xi,Yi)),geometry.dist(newMiddlePoint, new point(Xf,Yf))),cruiseVelo));
-            sWaypoints.add(new Waypoint(Xf,Math.abs(Yf), 0, cruiseVelo));
-        }
+        // }
+        // else
+        // {
+        //     point newMiddlePoint = new point(Xf - 20 * Math.sin(THETAf), Yf - 20 * Math.cos(THETAf));
+        //     thetaTurn = Math.abs(Math.atan2(newMiddlePoint.y - Yi, newMiddlePoint.x - Xi));
+        //     sWaypoints.add(new Waypoint(Math.abs(Yi), -1 * Math.abs(Xi), 0,0));
+        //     sWaypoints.add(new Waypoint(Math.abs(newMiddlePoint.y), -1 * Math.abs(newMiddlePoint.x), Math.min(geometry.dist(newMiddlePoint, new point(Xi,Yi)), 18), cruiseVelo));
+        //     sWaypoints.add(new Waypoint(Math.abs(Yf), -1 * Math.abs(Xf),  0, cruiseVelo));
+        // }
         System.out.println(sWaypoints);
         System.out.println("Target Angle: " + thetaTurn);
         _path = PathBuilder.buildPathFromWaypoints(sWaypoints);
