@@ -9,7 +9,6 @@ import frc.robot.commands.auton.Auton_ParallelStarter;
 import frc.robot.commands.auton.Auton_RunProfileFromVision;
 import frc.robot.commands.auton.Auton_turnFromVision;
 import frc.robot.commands.auton.printTimeFromStart;
-import frc.robot.commands.auton.adaptivePaths.planPath;
 import frc.robot.sensors.GyroNavX;
 import frc.robot.sensors.VisionLL;
 import frc.robot.commands.auton.adaptivePaths.ezMoneyPlanPath;
