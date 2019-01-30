@@ -7,7 +7,6 @@
 
 package frc.robot.sensors.revSrc;
 
-import frc.robot.interfaces.IDistanceSensor;
 import frc.robot.sensors.revSrc.DistanceUnit;
 import frc.robot.sensors.revSrc.ElapsedTime;
 import frc.robot.sensors.revSrc.TypeConversion;
@@ -1136,6 +1135,17 @@ public class VL53L0X {
             if (ioElapsedTime.milliseconds() > io_timeout) {
                 did_timeout = true;
                 return 65535;
+            }
+
+            // read the sensor ever 5 msec (sensor gets data every 30 msec)
+            // without sensor 30% CPU
+            // with sensor only 50% CPU
+            // with thread.sleep 35% CPU
+            try {
+                Thread.sleep(5);
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
         }
 
