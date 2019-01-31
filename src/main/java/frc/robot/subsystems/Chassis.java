@@ -222,17 +222,17 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
   
   public void moveToTargetAngle()
     {
-        if((!_isTurnRight && getHeading() > _targetAngle) || (_isTurnRight && getHeading() < _targetAngle))
+        if((!_isTurnRight && getPositiveHeading() > _targetAngle) || (_isTurnRight && getPositiveHeading() < _targetAngle))
         {
-            _angleError = _targetAngle - getHeading();
+            _angleError = _targetAngle - getPositiveHeading();
         }           
-        else if(!_isTurnRight && getHeading() < _targetAngle)
+        else if(!_isTurnRight && getPositiveHeading() < _targetAngle)
         {
-            _angleError = _targetAngle - getHeading() - 360;
+            _angleError = _targetAngle - getPositiveHeading() - 360;
         }
-        else if(_isTurnRight && getHeading() > _targetAngle)
+        else if(_isTurnRight && getPositiveHeading() > _targetAngle)
         {
-            _angleError = 360 - getHeading() + _targetAngle;
+            _angleError = 360 - getPositiveHeading() + _targetAngle;
         }
         System.out.println("AngleError:"+_angleError);
         double encoderError = ENCODER_CODES_PER_DEGREE * _angleError;       
@@ -353,6 +353,10 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
 	}
   public double getHeading()
   {
+    return _navX.getYaw();
+  }
+
+  public double getPositiveHeading(){
     if(_navX.getYaw()<0)
     {
       return 360+_navX.getYaw();

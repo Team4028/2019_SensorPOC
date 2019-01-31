@@ -25,8 +25,8 @@ public class InPlaceTurn extends Command
     protected void execute() 
     {
         _chassis.moveToTargetAngle();
-        System.out.println("Heading"+_chassis.getHeading());
-        System.out.println("Error"+(_targetAngle-_chassis.getHeading()));
+        System.out.println("Heading"+_chassis.getPositiveHeading());
+        System.out.println("Error"+(_targetAngle-_chassis.getPositiveHeading()));
     }
     
     @Override

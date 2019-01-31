@@ -15,8 +15,8 @@ public class TurnTest extends CommandGroup
     {
         addParallel(new Auton_ParallelStarter());
         //addSequential(new InPlaceTurn(180, true));
-        addSequential(new DriveSetDistance(30));
-       // addSequential(new CG_FollowVisionPath());
+        // addSequential(new DriveSetDistance(30));
+       addSequential(new CG_FollowVisionPath());
         // addSequential(new Auton_RunMotionProfileAction(Paths.getPath(Center.R_SWITCH)));
         // addSequential(new Auton_RunMotionProfileAction(Paths.getPath(Center.L_SWITCH)));
     }
