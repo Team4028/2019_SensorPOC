@@ -56,13 +56,15 @@ public class VisionLL implements IVisionSensor {
             return false;
         }
     }
-
-    @Override
+    //=====================================================================================
+	// Helper Methods
+	//=====================================================================================  
+	
     public void updateLogData(LogDataBE logData) {
 
     }
 
-    @Override
+
     public void updateDashboard() {
         SmartDashboard.putNumber("VisionLL:Angle1InDegrees", get_angle1InDegrees());
         SmartDashboard.putNumber("VisionLL:DistanceInInches", get_distanceToTargetInInches());
