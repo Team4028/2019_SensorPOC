@@ -1,4 +1,4 @@
-package frc.robot.commands.auton.adaptivePaths;
+package frc.robot.commands.auton.adaptivepaths;
 
 import frc.robot.auton.path_planning.problem;
 import frc.robot.auton.pathfollowing.control.Path;

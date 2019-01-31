@@ -1,4 +1,4 @@
-package frc.robot.commands.auton.adaptivePaths;
+package frc.robot.commands.auton.adaptivepaths;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.PrintCommand;
@@ -9,10 +9,10 @@ import frc.robot.commands.auton.Auton_ParallelStarter;
 import frc.robot.commands.auton.Auton_RunProfileFromVision;
 import frc.robot.commands.auton.Auton_turnFromVision;
 import frc.robot.commands.auton.printTimeFromStart;
-import frc.robot.commands.auton.adaptivePaths.planPath;
+import frc.robot.commands.auton.adaptivepaths.planPath;
 import frc.robot.sensors.GyroNavX;
 import frc.robot.sensors.VisionLL;
-import frc.robot.commands.auton.adaptivePaths.ezMoneyPlanPath;
+import frc.robot.commands.auton.adaptivepaths.ezMoneyPlanPath;
  
 
 public class CG_FollowVisionPath extends CommandGroup {
@@ -28,8 +28,7 @@ public class CG_FollowVisionPath extends CommandGroup {
         addSequential(new printTimeFromStart());
         addSequential(new Auton_ParallelStarter());
         addSequential(new PrintCommand("Planned"));
-        //addSequential(new Auton_turnFromVision());
-        addSequential(new WaitCommand(0.5));
+        addSequential(new Auton_turnFromVision());
         addSequential(new Auton_RunProfileFromVision(5.));
     }
 

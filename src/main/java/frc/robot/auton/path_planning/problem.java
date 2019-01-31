@@ -11,10 +11,12 @@ import java.util.List;
 import java.util.function.Function;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import frc.robot.auton.pathfollowing.PathBuilder;
 import frc.robot.auton.pathfollowing.PathBuilder.Waypoint;
 import frc.robot.auton.pathfollowing.control.Path;
 import frc.robot.auton.pathfollowing.motion.RigidTransform;
+import frc.robot.sensors.GyroNavX;
 import frc.robot.subsystems.Chassis;
 import frc.robot.auton.path_planning.PathPlanner;
 import frc.robot.Constants;
@@ -53,6 +55,7 @@ public class problem{
     double Xf;
     double Yf;
     double THETAf;
+
 
     public problem(double x0, double y0, double t0, double x1, double y1, double t1){
         Xi = x0;
@@ -283,16 +286,34 @@ public class problem{
     }
     public static void planPathFromVisionData(double A1, double A2, double l, RigidTransform curPose)
     {
-    List<Waypoint> sWaypoints = new ArrayList<Waypoint>();
-    sWaypoints.add(new Waypoint(curPose.getTranslation().x(),curPose.getTranslation().y(),0 ,0));
-    double k = (l*Math.sin(deg2rad(A2)))/Math.sin(deg2rad(180-A1-A2));
-    sWaypoints.add(new Waypoint(curPose.getTranslation().x()+k*Math.cos(curPose.getRotation().getRadians()),curPose.getTranslation().y()+k*Math.sin(curPose.getRotation().getRadians()),20,40));
-    sWaypoints.add(new Waypoint(curPose.getTranslation().x()+l*Math.cos(deg2rad(A1+curPose.getRotation().getDegrees())),curPose.getTranslation().y()+l*Math.sin(deg2rad(A1+curPose.getRotation().getDegrees())),0,40));
-    System.out.println(sWaypoints);
-    System.out.println("Angle 1:"+A1);
-    System.out.println("Angle2:"+ A2);
-    System.out.println("Distance:"+l);
-    _path = PathBuilder.buildPathFromWaypoints(sWaypoints);
-    _theta = 0;
+        double k = (l*Math.sin(deg2rad(A2)))/Math.sin(deg2rad(180-A1-A2));
+        if(k*Math.sin(curPose.getRotation().getRadians())>70+curPose.getTranslation().y()+l*Math.sin(deg2rad(A1+curPose.getRotation().getDegrees())))
+        {
+            List<Waypoint> sWaypoints = new ArrayList<Waypoint>();
+            sWaypoints.add(new Waypoint(curPose.getTranslation().x(),curPose.getTranslation().y(),0 ,0));
+            sWaypoints.add(new Waypoint(curPose.getTranslation().x()+k*Math.cos(curPose.getRotation().getRadians()),curPose.getTranslation().y()+k*Math.sin(curPose.getRotation().getRadians()),20,50));
+            sWaypoints.add(new Waypoint(curPose.getTranslation().x()+l*Math.cos(deg2rad(A1+curPose.getRotation().getDegrees())),40+curPose.getTranslation().y()+l*Math.sin(deg2rad(A1+curPose.getRotation().getDegrees())),0,50));
+            System.out.println(sWaypoints);
+            System.out.println("Angle 1:"+A1);
+            System.out.println("Angle2:"+ A2);
+            System.out.println("Distance:"+l);
+            _path = PathBuilder.buildPathFromWaypoints(sWaypoints);
+            _theta = GyroNavX.getInstance().getYaw();
+        }
+        else
+        {
+            List<Waypoint> sWaypoints = new ArrayList<Waypoint>();
+            sWaypoints.add(new Waypoint(curPose.getTranslation().x(),curPose.getTranslation().y(),0 ,0));
+            sWaypoints.add(new Waypoint(curPose.getTranslation().x()+k*Math.cos(curPose.getRotation().getRadians()),71+curPose.getTranslation().y()+l*Math.sin(deg2rad(A1+curPose.getRotation().getDegrees())),20,50));
+            sWaypoints.add(new Waypoint(curPose.getTranslation().x()+l*Math.cos(deg2rad(A1+curPose.getRotation().getDegrees())),40+curPose.getTranslation().y()+l*Math.sin(deg2rad(A1+curPose.getRotation().getDegrees())),0,50));
+            System.out.println(sWaypoints);
+            System.out.println("Angle 1:"+A1);
+            System.out.println("Angle2:"+ A2);
+            System.out.println("Distance:"+l);
+            _path = PathBuilder.buildPathFromWaypoints(sWaypoints);
+            _theta = 180/Math.PI*(Math.atan2(70+l*Math.sin(deg2rad(A1+curPose.getRotation().getDegrees())),l*Math.cos(deg2rad(A1+curPose.getRotation().getDegrees()))));
+        }
+        System.out.println("Theta Turn:" + Double.toString(GyroNavX.getInstance().getYaw()-_theta));
+    
     }
 }

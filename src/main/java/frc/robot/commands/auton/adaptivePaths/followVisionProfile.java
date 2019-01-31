@@ -1,4 +1,4 @@
-package frc.robot.commands.auton.adaptivePaths;
+package frc.robot.commands.auton.adaptivepaths;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import frc.robot.commands.auton.Auton_RunTimedMotionProfileCommand;

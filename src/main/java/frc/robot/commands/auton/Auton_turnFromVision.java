@@ -20,25 +20,13 @@ public class Auton_turnFromVision extends Command
     @Override
     protected void initialize()
     {
-        _targetAngle = problem._theta;
-        double dTheta = _targetAngle -  RobotState.getInstance().getLatestFieldToVehicle().getValue().getRotation().getDegrees();
-        if (dTheta == 0){
-            isLegit = false;
-        } else if (dTheta < 0) {
-            isLegit = true;
-            _chassis.setTargetAngleAndTurnDirection(_targetAngle, true);
-        } else {
-            isLegit = true;
-            _chassis.setTargetAngleAndTurnDirection(_targetAngle, false);
-        }
+        _chassis.setTargetAngleAndTurnDirection(problem._theta, true);
     }
 
     @Override
     protected void execute() 
     {
-        if (isLegit){
-            _chassis.moveToTargetAngle();
-        }
+        _chassis.moveToTargetAngle();
         // System.out.println("Heading"+_chassis.getHeading());
         // System.out.println("Error"+(_targetAngle-_chassis.getHeading()));
     }
