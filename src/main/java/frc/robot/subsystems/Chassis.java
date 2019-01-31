@@ -21,7 +21,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.RobotMap;
 import frc.robot.auton.pathfollowing.RobotState;
-import frc.robot.auton.pathfollowing.chassisNavX;
 import frc.robot.auton.pathfollowing.control.Path;
 import frc.robot.auton.pathfollowing.control.PathFollower;
 import frc.robot.auton.pathfollowing.motion.RigidTransform;

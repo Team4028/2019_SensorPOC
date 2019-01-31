@@ -28,7 +28,8 @@ public class CG_FollowVisionPath extends CommandGroup {
         addSequential(new printTimeFromStart());
         addSequential(new Auton_ParallelStarter());
         addSequential(new PrintCommand("Planned"));
-        addSequential(new Auton_turnFromVision());
+        //addSequential(new Auton_turnFromVision());
+        addSequential(new WaitCommand(0.5));
         addSequential(new Auton_RunProfileFromVision(5.));
     }
 

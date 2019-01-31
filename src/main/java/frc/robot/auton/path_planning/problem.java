@@ -286,8 +286,12 @@ public class problem{
     List<Waypoint> sWaypoints = new ArrayList<Waypoint>();
     sWaypoints.add(new Waypoint(curPose.getTranslation().x(),curPose.getTranslation().y(),0 ,0));
     double k = (l*Math.sin(deg2rad(A2)))/Math.sin(deg2rad(180-A1-A2));
-    sWaypoints.add(new Waypoint(curPose.getTranslation().x()+k*Math.cos(curPose.getRotation().getRadians()),currPose.getTranslation().y()+k*Math.sin(curPose.getRotation().getRadians()),20,60));
-    sWaypoints.add(new Waypoint(curPose.getTranslation().x()+l*Math.cos(deg2rad(A1+curPose.getRotation().getDegrees())),curPose.getTranslation().y()+l*Math.sin(deg2rad(A1+curPose.getRotation().getDegrees())),0,60));
+    sWaypoints.add(new Waypoint(curPose.getTranslation().x()+k*Math.cos(curPose.getRotation().getRadians()),curPose.getTranslation().y()+k*Math.sin(curPose.getRotation().getRadians()),20,40));
+    sWaypoints.add(new Waypoint(curPose.getTranslation().x()+l*Math.cos(deg2rad(A1+curPose.getRotation().getDegrees())),curPose.getTranslation().y()+l*Math.sin(deg2rad(A1+curPose.getRotation().getDegrees())),0,40));
+    System.out.println(sWaypoints);
+    System.out.println("Angle 1:"+A1);
+    System.out.println("Angle2:"+ A2);
+    System.out.println("Distance:"+l);
     _path = PathBuilder.buildPathFromWaypoints(sWaypoints);
     _theta = 0;
     }
