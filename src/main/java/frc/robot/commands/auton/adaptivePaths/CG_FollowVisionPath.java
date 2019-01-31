@@ -23,7 +23,7 @@ public class CG_FollowVisionPath extends CommandGroup {
     public CG_FollowVisionPath(){
         addParallel(new Auton_ParallelStarter());
         addSequential(new WaitCommand(10));
-        addSequential(new resetRobotPose());
+        // addSequential(new resetRobotPose());
         addSequential(new ezMoneyPlanPath());
         addSequential(new printTimeFromStart());
         addSequential(new Auton_ParallelStarter());

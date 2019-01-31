@@ -36,7 +36,7 @@ public class ezMoneyPlanPath extends Command
         double distance= _limeLight.get_distanceToTargetInInches();
         RigidTransform rt = RobotState.getInstance().getLatestFieldToVehicle().getValue();
         curPose = new RigidTransform(new Translation(rt.getTranslation().x(), rt.getTranslation().y()), Rotation.fromDegrees(_navX.getYaw()));
-        problem.ezMoneySolveFromVisionData(A1, A2, distance, curPose);
+        problem.planPathFromVisionData(A1, A2, distance, curPose);
     }
 
     @Override

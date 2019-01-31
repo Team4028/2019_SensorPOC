@@ -25,6 +25,7 @@ import frc.robot.auton.path_planning.math.rootFinding;
 import frc.robot.auton.path_planning.math.ezOptimizer;
 import frc.robot.auton.pathfollowing.PathBuilder;
 
+
 public class problem{
 
     private static final int linearHermiteSplineLengthForArcLength = 100;
@@ -267,7 +268,6 @@ public class problem{
         return deg*Math.PI /180 ;
     }
 
-
     public static boolean isIntViable(double x0, double y0, double x1, double y1, point intP, double thetaF){
         double m = Math.tan(thetaF + Math.PI/2);
         double b = y1 - m * x1;
@@ -277,9 +277,18 @@ public class problem{
     public static boolean isAbove(double x0, double y0, double m, double  b){
         return y0 > m * x0 + b;        
     }
-
     public static Path getPath()
     {
         return _path;
+    }
+    public static void planPathFromVisionData(double A1, double A2, double l, RigidTransform curPose)
+    {
+    List<Waypoint> sWaypoints = new ArrayList<Waypoint>();
+    sWaypoints.add(new Waypoint(curPose.getTranslation().x(),curPose.getTranslation().y(),0 ,0));
+    double k = (l*Math.sin(deg2rad(A2)))/Math.sin(deg2rad(180-A1-A2));
+    sWaypoints.add(new Waypoint(curPose.getTranslation().x()+k*Math.cos(curPose.getRotation().getRadians()),currPose.getTranslation().y()+k*Math.sin(curPose.getRotation().getRadians()),20,60));
+    sWaypoints.add(new Waypoint(curPose.getTranslation().x()+l*Math.cos(deg2rad(A1+curPose.getRotation().getDegrees())),curPose.getTranslation().y()+l*Math.sin(deg2rad(A1+curPose.getRotation().getDegrees())),0,60));
+    _path = PathBuilder.buildPathFromWaypoints(sWaypoints);
+    _theta = 0;
     }
 }
