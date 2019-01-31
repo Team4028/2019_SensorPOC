@@ -8,6 +8,7 @@
 package frc.robot.sensors;
 
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.interfaces.IVisionSensor;
 
 /**
@@ -41,4 +42,12 @@ public class VisionLL implements IVisionSensor {
 
         return distanceInIn;
     }
+
+    //=====================================================================================
+	// Helper Methods
+	//=====================================================================================  
+	public void updateDashboard() {
+        SmartDashboard.putNumber("Angle1", get_angle1InDegrees());
+        SmartDashboard.putNumber("Distance", get_distanceToTargetInInches());
+	}
 }

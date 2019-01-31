@@ -15,6 +15,8 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.sensors.DistanceRev2mSensor;
+import frc.robot.sensors.GyroNavX;
+import frc.robot.sensors.VisionLL;
 import frc.robot.subsystems.Chassis;
 import frc.robot.util.DataLogger;
 import frc.robot.util.GeneralUtilities;
@@ -40,6 +42,8 @@ public class Robot extends TimedRobot {
 
   private Chassis _chassis = Chassis.getInstance();
   private LEDController _leds = LEDController.getInstance();
+  private GyroNavX _navX = GyroNavX.getInstance();
+  private VisionLL _visionLL = VisionLL.getInstance();
 
 
   private DistanceRev2mSensor _DistanceRev2mSensor = DistanceRev2mSensor.getInstance();
@@ -182,6 +186,8 @@ public class Robot extends TimedRobot {
         _autonChoosers.updateDashboard();
         _chassis.updateDashboard(); 
         _DistanceRev2mSensor.updateDashboard();
+        _navX.updateDashboard();
+        _visionLL.updateDashboard();
 	    	
     		// write the overall robot dashboard info
 	    	SmartDashboard.putString("Robot Build", _buildMsg);
