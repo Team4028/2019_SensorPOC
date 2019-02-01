@@ -274,6 +274,16 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
         }
     }
 
+  public synchronized void SetDynamicWantDrivePath(Path path, boolean reversed)
+  {
+    _leftEncoderPrevDistance = getLeftPos()/ENCODER_COUNTS_PER_WHEEL_REV * Constants.DRIVE_WHEEL_DIAMETER_IN * Math.PI;
+	        _rightEncoderPrevDistance = getLeftPos()/ENCODER_COUNTS_PER_WHEEL_REV * Constants.DRIVE_WHEEL_DIAMETER_IN * Math.PI;
+            RobotState.getInstance().resetDistanceDriven();
+            _pathFollower = new PathFollower(path, reversed, path.maxAccel, path.maxDecel, path.inertiaSteeringGain);
+            _chassisState = ChassisState.FOLLOW_PATH;
+            _currentPath = path; 
+  }
+
   public void estimateRobotState( double timestamp)
   {
     final double left_distance = NUtoInches(getLeftPos());

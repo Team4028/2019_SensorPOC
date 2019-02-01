@@ -61,6 +61,13 @@ public class PathBuilder {
     	sWaypoints.add(new Waypoint(endPose, 0, 140));
     	return sWaypoints;
     }
+    public static ArrayList<Waypoint> getVisionStraightPathWaypoints(Translation startPose, double startAngle, double distance) {
+    	Translation endPose = startPose.extrapolate(startPose.translateBy(Rotation.fromDegrees(startAngle).toTranslation()), distance);
+    	ArrayList<Waypoint> sWaypoints = new ArrayList<Waypoint>();
+    	sWaypoints.add(new Waypoint(startPose, 0, 60));
+    	sWaypoints.add(new Waypoint(endPose, 0, 60));
+    	return sWaypoints;
+    }
 
     private static Waypoint getPoint(List<Waypoint> w, int i) {
     	return i > w.size() ? w.get(w.size() - 1) : w.get(i);

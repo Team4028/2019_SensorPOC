@@ -5,7 +5,7 @@ import frc.robot.auton.pathfollowing.Paths;
 import frc.robot.auton.pathfollowing.Paths.Center;
 import frc.robot.commands.auton.Auton_ParallelStarter;
 import frc.robot.commands.auton.Auton_RunMotionProfileAction;
-import frc.robot.commands.auton.adaptivePaths.CG_FollowVisionPath;
+import frc.robot.commands.auton.adaptivepaths.CG_FollowVisionPath;
 import frc.robot.commands.chassis.DriveSetDistance;
 import frc.robot.commands.chassis.InPlaceTurn;
 
