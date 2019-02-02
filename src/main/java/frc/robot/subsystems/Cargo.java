@@ -90,7 +90,7 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
   
   public void moveEntireMechanismForward()
     {
-      if(_isBeakOpen= false)
+      if(_isBeakOpen = true)
       {
         Value currentMechPos = _inOutSolenoid.get();
         if(currentMechPos == INIT_NOT_MOVED)
@@ -121,7 +121,7 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
     
     public void pushHatchOffBeak()
     {
-      if(_isBeakOpen = false)
+      if(_isBeakOpen = true)
       {
         Value currentPushPos = _punchSolenoid.get();
         if(currentPushPos == SOLENOID_PUSHED)
