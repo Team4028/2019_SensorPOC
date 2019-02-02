@@ -155,8 +155,9 @@ public class Paths {
 		//DEMO PATH
 		demoPath = buildPathFromWaypoints(Arrays.asList(
 			new Waypoint(140,150,0,0),
-			new Waypoint(200,150,30,40),
-			new Waypoint(240,95,0,40)));
+			new Waypoint(170,150,0, 40),
+			new Waypoint(200,150,30,60),
+			new Waypoint(230,95,0,60)));
 		centerPaths.put(Center.DEMO_PATH, demoPath);
 		// Auto Run
 		autoRunPath = buildPathFromWaypoints(getStraightPathWaypoints(new Translation(20, 46), 0, 120));
