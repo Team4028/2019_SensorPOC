@@ -35,7 +35,7 @@ public class Auton_turnFromVision extends Command
     protected boolean isFinished() 
     { 
         
-        if(_chassis._angleError < 5)
+        if(_chassis._angleError < 2.5)
         {
             System.out.println("Done");
             return true;
