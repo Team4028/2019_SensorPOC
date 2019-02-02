@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.sensors.VisionLL;
 
 import frc.robot.sensors.DistanceRev2mSensor;
+import frc.robot.sensors.GyroNavX;
 import frc.robot.sensors.StoredPressureSensor;
 import frc.robot.sensors.VisionIP;
 import frc.robot.subsystems.Cargo;
@@ -46,12 +47,17 @@ public class Robot extends TimedRobot {
   // create instance of each Subsystem (singleton)
   //  Note: add each one to the outputAllToDashboard & logAllData methods below
 
+
+ 
+
   // sensors
   private DistanceRev2mSensor _distanceRev2mSensor = DistanceRev2mSensor.getInstance();
   private StoredPressureSensor _pressureSensor = StoredPressureSensor.getInstance();
+
+  private VisionLL _visionLL = VisionLL.getInstance();      // Limelight
+  //private VisionLIP _visionIP = VisionIP.getInstance();   // IPhone
+  private GyroNavX _navX = GyroNavX.getInstance();
   private VisionIP _VisionIP = VisionIP.getInstance();
-  private VisionLL _vision = VisionLL.getInstance();      // Limelight
-  //private VisionLIP _vision = VisionIP.getInstance();   // IPhone
 
   // ux
   private LEDController _leds = LEDController.getInstance();
@@ -101,8 +107,8 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     Scheduler.getInstance().run();
-    _leds.set_targetangle(_vision.get_angle1InDegrees(), _vision.canLLSeeTarget(), _distanceRev2mSensor.get_distanceToTargetInInches());
-       System.out.println(_vision.canLLSeeTarget());
+    _leds.set_targetangle(_visionLL.get_angle1InDegrees(), _visionLL.canLLSeeTarget(), _distanceRev2mSensor.get_distanceToTargetInInches());
+       System.out.println(_visionLL.canLLSeeTarget());
     
   }
 
@@ -209,7 +215,7 @@ public class Robot extends TimedRobot {
 
         if(_autonChoosers != null)        { _autonChoosers.updateDashboard(); }
 	    	if(_distanceRev2mSensor != null)  { _distanceRev2mSensor.updateDashboard(); }
-        if(_vision != null)               { _vision.updateDashboard(); }
+        if(_visionLL != null)             { _visionLL.updateDashboard(); }
         if(_pressureSensor != null)       { _pressureSensor.updateDashboard(); }
         if(_VisionIP != null)               { _VisionIP.updateDashboard(); }
 	    	
@@ -245,7 +251,7 @@ public class Robot extends TimedRobot {
 
         if(_autonChoosers != null)        { _autonChoosers.updateLogData(logData); }
 	    	if(_distanceRev2mSensor != null)  { _distanceRev2mSensor.updateLogData(logData); }
-        if(_vision != null)               { _vision.updateLogData(logData); }
+        if(_visionLL != null)             { _visionLL.updateLogData(logData); }
         if(_pressureSensor != null)       { _pressureSensor.updateLogData(logData); }
         if(_VisionIP != null)               { _VisionIP.updateLogData(logData); }
     
