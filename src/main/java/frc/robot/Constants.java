@@ -23,6 +23,8 @@ public class Constants {
 	// this is where the USB stick is mounted on the RoboRIO filesystem.  
 	// You can confirm by logging into the RoboRIO using WinSCP
 	public static final String PRIMARY_LOG_FILE_PATH = "/media/sda1/logging";
-    public static final String ALTERNATE_LOG_FILE_PATH = "/media/sdb1/logging";
+	public static final String ALTERNATE_LOG_FILE_PATH = "/media/sdb1/logging";
+	
+	
     
 }

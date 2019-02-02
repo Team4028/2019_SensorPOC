@@ -7,6 +7,13 @@
 
 package frc.robot.sensors;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import frc.robot.RobotMap;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.interfaces.IVisionSensor;
 import frc.robot.util.LogDataBE;
@@ -17,6 +24,19 @@ import frc.robot.util.LogDataBE;
  * Lead Student: Conner
  */
 public class VisionIP implements IVisionSensor {
+    private Socket _clientSocket;
+    private PrintWriter _out;
+    private BufferedReader _in;
+    private boolean _inFov;
+    private double _distanceInInches;
+    private double _angle1InDegrees;
+    private boolean _isSocketConnected;
+    private double _time;
+    private long _timeElapsed;
+    private boolean _isVisionThreadRunning;
+    private int i = 1;
+    private int _restartThreadTimes = 20;
+    private int _threadSleepingTimeInMillis = 3000;
 
     // =====================================================================================
     // Define Singleton Pattern
@@ -29,16 +49,122 @@ public class VisionIP implements IVisionSensor {
 
     // private constructor for singleton pattern
     private VisionIP() {
+        while (i <= _restartThreadTimes && !_isSocketConnected) {
+            openConnection(RobotMap.SOCKET_CLIENT_CONNECTION_IPADRESS, RobotMap.SOCKET_CLIENT_CONNECTION_PORT);
+            if (!_isSocketConnected) { 
+                i++;
+                try {
+                    Thread.sleep(_threadSleepingTimeInMillis);
+                    System.out .println("sleeping loop: " + i);
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            } else {
+                startThread();
+            }
+        }
+
+        System.out.println("is Socket Connected: " + get_isSocketConnected());
     }
 
-    @Override
-    public double get_angle1InDegrees() {
-        return 0;
+    private void openConnection(String ipAddress, int port) {
+        
+        try {
+            _clientSocket = new Socket();
+            _clientSocket.connect(new InetSocketAddress(ipAddress, port), 500);
+            _out = new PrintWriter(_clientSocket.getOutputStream(), true);
+            _in = new BufferedReader(new InputStreamReader(_clientSocket.getInputStream()));
+            _isSocketConnected = true;
+        } catch (IOException e) {
+            _isSocketConnected = false;
+        }
     }
 
+    private void startThread() {
+        _isVisionThreadRunning = false;
+        Thread t = new Thread(() -> {
+            while (!Thread.interrupted()) {
+                long start = System.nanoTime();
+                String resp = sendMessage("THREAD: running#");
+                _isVisionThreadRunning = true;
+                long finish = System.nanoTime();
+                _timeElapsed = finish - start;
+                String[] kvPairs = resp.split("\\|");
+
+                for (String kvPair : kvPairs) {
+                    String[] kv = kvPair.split("\\:");
+                    String key = kv[0];
+                    String value = kv[1];
+
+                    if (key.equals("InFov")) {
+                        _inFov = Boolean.parseBoolean(value);
+                     
+                    } else if (key.equals("angle1")) {
+                        _angle1InDegrees = Double.parseDouble(value);
+                    } else if (key.equals("distance")) {
+                        _distanceInInches = Double.parseDouble(value);
+                        
+                    }else if (key.equals("time")){
+                        _time = Double.parseDouble(value);
+                    }
+                }
+            }
+        });t.start();
+    }
+
+    private String sendMessage(String msg) {
+        _out.println(msg);
+        String _resp = "";
+        try {
+            _resp = _in.readLine();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            System.out.println(e.toString());
+        }
+        return _resp;
+    }
+
+    public void stopConnection() {
+        try {
+            _in.close();
+        } catch (IOException e1) {
+        // TODO Auto-generated catch block
+        e1.printStackTrace();
+        }
+        _out.close();
+        try {
+        _clientSocket.close();
+        } catch (IOException e) {
+      // TODO Auto-generated catch block
+        e.printStackTrace();
+        }
+    }
+
+    public boolean get_inFov(){
+        return _inFov;
+    }
+
+    public double get_angle1InDegrees(){
+        return _angle1InDegrees;
+    }
+
+    public boolean get_isSocketConnected(){
+        return _isSocketConnected;
+    }
+
+    public double get_time(){
+        return _time;
+    }
+
+    public boolean get_isVisionThreadRunning(){
+        return _isVisionThreadRunning;
+    }
+
+   
     @Override
     public double get_distanceToTargetInInches() {
-        return 0;
+        return _distanceInInches;
     }
 
     @Override
@@ -48,8 +174,14 @@ public class VisionIP implements IVisionSensor {
 
     @Override
     public void updateDashboard() {
+        SmartDashboard.putBoolean("isSocketConnected", get_isSocketConnected());
+        SmartDashboard.putNumber("Socket:Message Time(msec)", _timeElapsed / 1000000);
+        SmartDashboard.putBoolean("VisionLL:isInFovRunning", get_inFov());
         SmartDashboard.putNumber("VisionLL:Angle1InDegrees", get_angle1InDegrees());
         SmartDashboard.putNumber("VisionLL:DistanceInInches", get_distanceToTargetInInches());
+        SmartDashboard.putNumber("VisionLL:time", get_time());
+        SmartDashboard.putBoolean("VisionLL:IsVisionThreadRunning", get_isVisionThreadRunning());
     }
 
+    
 }
