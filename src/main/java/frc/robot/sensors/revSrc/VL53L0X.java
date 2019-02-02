@@ -522,7 +522,7 @@ public class VL53L0X {
         // fast as possible).  To use continuous timed mode
         // instead, provide a desired inter-measurement period in
         // ms (e.g. sensor.startContinuous(100)).
-        startContinuous();
+        // startContinuous();
 
         return true;
 
@@ -887,7 +887,7 @@ public class VL53L0X {
         writeRegister(SYSTEM_SEQUENCE_CONFIG, (byte) 0x02);
         performSingleRefCalibration(0x0);
         writeRegister(SYSTEM_SEQUENCE_CONFIG, sequence_config);
-        startContinuous();
+        // startContinuous();
 
         // VL53L0X_perform_phase_calibration() end
 
@@ -1068,7 +1068,7 @@ public class VL53L0X {
         return true;
     }
 
-    protected void startContinuous() {
+    public void startContinuous() {
         this.startContinuous(0);
     }
     
@@ -1078,7 +1078,7 @@ public class VL53L0X {
     // inter-measurement period in milliseconds determining how often the sensor
     // takes a measurement.
     // based on VL53L0X_StartMeasurement()
-    protected void startContinuous(int period_ms) {
+    public void startContinuous(int period_ms) {
         writeRegister(0x80, 0x01);
         writeRegister(0xFF, 0x01);
         writeRegister(0x00, 0x00);

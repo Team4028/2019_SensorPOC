@@ -25,6 +25,7 @@ public class DistanceRev2mSensor implements IDistanceSensor{
 	private double _distanceToTargetInInches;
 	private boolean _didTimeoutOccur;
 	private boolean _isSensorPresent;
+	private final static double MAX_RANGE = 65;
 
     //=====================================================================================
 	// Define Singleton Pattern
@@ -39,6 +40,8 @@ public class DistanceRev2mSensor implements IDistanceSensor{
 	private DistanceRev2mSensor() {	
 		_distanceSensor = new VL53L0X(RobotMap.I2C_SENSOR_PORT, 0x29);
 		_isSensorPresent = _distanceSensor.doInitialize();
+		setLongRangeMode();
+		_distanceSensor.startContinuous();
 
 		SmartDashboard.putBoolean("VL53LOX:isSensorPresent", get_isSensorPresent());
 
@@ -52,13 +55,12 @@ public class DistanceRev2mSensor implements IDistanceSensor{
 		t.start();
 	}
 
-	public void setLongRangeMode(boolean mode) {
-		if (mode) {
-			_distanceSensor.setSignalRateLimit((float) 0.12);
+	private void setLongRangeMode() {
+			_distanceSensor.setSignalRateLimit((float) 0.1);
 			_distanceSensor.setVcselPulsePeriod(VL53L0X.vcselPeriodType.VcselPeriodPreRange, 18);
 			_distanceSensor.setVcselPulsePeriod(VL53L0X.vcselPeriodType.VcselPeriodFinalRange, 14);
-		}
 	}
+
 
 	public void updateDashboard(){
 		SmartDashboard.putNumber("VL53LOX:DistanceInInches", get_distanceToTargetInInches());
@@ -71,7 +73,11 @@ public class DistanceRev2mSensor implements IDistanceSensor{
 
 	@Override
 	public double get_distanceToTargetInInches() {
-		return GeneralUtilities.roundDouble(_distanceToTargetInInches, 2);
+		_distanceToTargetInInches = GeneralUtilities.roundDouble(_distanceToTargetInInches, 2);
+		if(_distanceToTargetInInches > MAX_RANGE){
+			_distanceToTargetInInches = -1;
+		}
+		return _distanceToTargetInInches;
 	}
 
 	public boolean get_didTimeoutOccur(){
