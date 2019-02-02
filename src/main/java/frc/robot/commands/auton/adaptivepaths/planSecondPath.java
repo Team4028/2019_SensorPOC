@@ -13,7 +13,7 @@ import frc.robot.sensors.VisionLL;
 import frc.robot.sensors.GyroNavX.SCORING_TARGET;
 import frc.robot.sensors.GyroNavX.SIDE;
 
-public class ezMoneyPlanPath extends Command
+public class planSecondPath extends Command
 {
     Path sol;
     Path iPath;
@@ -25,10 +25,8 @@ public class ezMoneyPlanPath extends Command
     GyroNavX _navX = GyroNavX.getInstance();
     
 
-    public ezMoneyPlanPath() {
-        iPath =  null; //problem._path;
-
-
+    public planSecondPath() {
+        iPath =  problem._path;
     }
 
     @Override
@@ -38,7 +36,7 @@ public class ezMoneyPlanPath extends Command
         double distance= _limeLight.get_distanceToTargetInInches();
         RigidTransform rt = RobotState.getInstance().getLatestFieldToVehicle().getValue();
         curPose = new RigidTransform(new Translation(rt.getTranslation().x(), rt.getTranslation().y()), Rotation.fromDegrees(_navX.getYaw()));
-        problem.planPathFromVisionData(A1, A2, distance, curPose);
+        problem.planSecondPathFromVisionData(A1, A2, distance, curPose);
     }
 
     @Override

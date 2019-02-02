@@ -316,4 +316,20 @@ public class problem{
         System.out.println("Theta Turn:" + Double.toString(GyroNavX.getInstance().getYaw()-_theta));
     
     }
+
+    public static void planSecondPathFromVisionData(double A1, double A2, double l, RigidTransform curPose)
+    {
+        List<Waypoint> sWaypoints = new ArrayList<Waypoint>();
+        double a1 = deg2rad(A1);
+        double H = deg2rad(curPose.getRotation().getDegrees());
+        sWaypoints.add(new Waypoint(curPose.getTranslation().x(),curPose.getTranslation().y(),0 ,0));
+        sWaypoints.add(new Waypoint(curPose.getTranslation().x()+l * Math.cos(a1 + H),28+curPose.getTranslation().y()+l*Math.sin(a1+H), 12 ,50));
+        sWaypoints.add(new Waypoint(curPose.getTranslation().x()+l*Math.cos(a1+H),15+curPose.getTranslation().y()+l*Math.sin(a1+H),0,50));
+        System.out.println(sWaypoints);
+        
+        System.out.println("Angle 1:"+A1);
+        System.out.println("Distance:"+l);
+        _path = PathBuilder.buildPathFromWaypoints(sWaypoints);
+        _theta = 180/Math.PI*(Math.atan2(28+l*Math.sin(a1 + H),l*Math.cos(a1 + H)));
+    }
 }

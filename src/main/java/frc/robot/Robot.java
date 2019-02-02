@@ -24,7 +24,8 @@ import frc.robot.commands.auton.autons.TurnTest;
 import frc.robot.sensors.GyroNavX;
 
 import frc.robot.sensors.VisionLL;
-
+import frc.robot.sensors.GyroNavX.SCORING_TARGET;
+import frc.robot.sensors.GyroNavX.SIDE;
 import frc.robot.sensors.DistanceRev2mSensor;
 import frc.robot.sensors.GyroNavX;
 import frc.robot.sensors.StoredPressureSensor;
@@ -154,7 +155,9 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     Scheduler.getInstance().run();
-    System.out.println(_chassis.getHeading());
+    // System.out.println("Angle 1: " + _vision.get_angle1InDegrees());
+    // System.out.println(_vision.get_distanceToTargetInInches());
+    // System.out.println(_navX.get_angle2InDegreesFromLL(SCORING_TARGET.CARGOSHIP_SIDE_ROCKET, SIDE.LEFT));
   }
 
   /********************************************************************************************

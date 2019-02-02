@@ -22,15 +22,24 @@ public class CG_FollowVisionPath extends CommandGroup {
     
     public CG_FollowVisionPath(){
         addParallel(new Auton_ParallelStarter());
-        //addSequential(new WaitCommand(10));
+        addSequential(new WaitCommand(10));
+        addSequential(new ezMoneyPlanPath());
+        addSequential(new PrintCommand("Planned First Path"));
+        addSequential(new Auton_turnFromVision());
+        addSequential(new PrintCommand("Turned First Time"));
+        addSequential(new Auton_RunProfileFromVision(5.));
+        addSequential(new PrintCommand("Ran First path"));
+        addSequential(new planSecondPath());
+        addSequential(new PrintCommand("Planned Second Path"));
+        addSequential(new Auton_turnFromVision());
+        addSequential(new PrintCommand("Turned Second Time"));
+        // addSequential(new Auton_RunProfileFromVision(5.));
+        addSequential(new PrintCommand("Yeeted Entirely"));
         // addSequential(new resetRobotPose());
-        //addSequential(new ezMoneyPlanPath());
         //addSequential(new printTimeFromStart());
         //addSequential(new Auton_ParallelStarter());
         //addSequential(new PrintCommand("Planned"));
-        //addSequential(new Auton_turnFromVision());
-        //addSequential(new Auton_RunProfileFromVision(5.));
-        addSequential(new DriveStraightWithVision());
+        // addSequential(new DriveStraightWithVision());
     }
 
 }
