@@ -14,4 +14,7 @@ public interface IVisionSensor extends IDistanceSensor, IBeakSquadSubsystem{
 
     // returns the angle (in degrees) from the robot centerline directly to the target centerline
     public double get_angle1InDegrees();
+
+    // returns true if a target is in the Field Of View (FOV)
+    public boolean get_isTargetInFOV();
 }
