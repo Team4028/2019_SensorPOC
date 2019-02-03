@@ -13,6 +13,5 @@ package frc.robot.interfaces;
 public interface IDistanceSensor {
 
     // returns a distance estimate (in inches) from the Robot to the target 
-    // note this is only an approximation and is valid from 3ft -> 10 1ft
     public double get_distanceToTargetInInches();
 }
