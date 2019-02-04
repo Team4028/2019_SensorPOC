@@ -52,7 +52,7 @@ public class DistanceRev2mSensor implements IDistanceSensor{
 				_didTimeoutOccur = _distanceSensor.didTimeoutOccur();
 				long finish = System.nanoTime();
 				long time_elapsed = finish-start;
-				SmartDashboard.putNumber("distance sensor: thread time", time_elapsed);
+				SmartDashboard.putNumber("distance sensor: thread time", time_elapsed/1000000);
 				
 			}
 		});
