@@ -35,8 +35,8 @@ public class VisionIP implements IVisionSensor {
     private long _timeElapsed;
     private boolean _isVisionThreadRunning;
     private int i = 1;
-    private int _restartThreadTimes = 20;
-    private int _threadSleepingTimeInMillis = 3000;
+    private int _restartThreadTimes = 5;
+    private int _threadSleepingTimeInMillis = 2000;
 
     // =====================================================================================
     // Define Singleton Pattern
@@ -86,7 +86,7 @@ public class VisionIP implements IVisionSensor {
         Thread t = new Thread(() -> {
             while (!Thread.interrupted()) {
                 long start = System.nanoTime();
-                String resp = sendMessage("THREAD: running#");
+                String resp = sendMessage("VISION");
                 _isVisionThreadRunning = true;
                 long finish = System.nanoTime();
                 _timeElapsed = finish - start;
@@ -176,11 +176,11 @@ public class VisionIP implements IVisionSensor {
     public void updateDashboard() {
         SmartDashboard.putBoolean("isSocketConnected", get_isSocketConnected());
         SmartDashboard.putNumber("Socket:Message Time(msec)", _timeElapsed / 1000000);
-        SmartDashboard.putBoolean("VisionLL:isInFovRunning", get_inFov());
-        SmartDashboard.putNumber("VisionLL:Angle1InDegrees", get_angle1InDegrees());
-        SmartDashboard.putNumber("VisionLL:DistanceInInches", get_distanceToTargetInInches());
-        SmartDashboard.putNumber("VisionLL:time", get_time());
-        SmartDashboard.putBoolean("VisionLL:IsVisionThreadRunning", get_isVisionThreadRunning());
+        SmartDashboard.putBoolean("VisionIP:isInFovRunning", get_inFov());
+        SmartDashboard.putNumber("VisionIP:Angle1InDegrees", get_angle1InDegrees());
+        SmartDashboard.putNumber("VisionIP:DistanceInInches", get_distanceToTargetInInches());
+        SmartDashboard.putNumber("VisionIP:time", get_time());
+        SmartDashboard.putBoolean("VisionIP:IsVisionThreadRunning", get_isVisionThreadRunning());
     }
 
     
