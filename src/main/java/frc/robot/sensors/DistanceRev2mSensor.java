@@ -47,8 +47,12 @@ public class DistanceRev2mSensor implements IDistanceSensor{
 
 		Thread t = new Thread(() -> {
 			while (!Thread.interrupted()) {
+				long start = System.nanoTime();
 				_distanceToTargetInInches = _distanceSensor.getDistance(DistanceUnit.INCH);
 				_didTimeoutOccur = _distanceSensor.didTimeoutOccur();
+				long finish = System.nanoTime();
+				long time_elapsed = finish-start;
+				SmartDashboard.putNumber("distance sensor: thread time", time_elapsed);
 				
 			}
 		});
