@@ -49,22 +49,26 @@ public class VisionLL implements IVisionSensor {
         return distanceInIn;
     }
 
-    public boolean canLLSeeTarget() {
+    @Override
+    public boolean get_isTargetInFOV() {
         if (NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0) == 1) {
             return true;
         } else {
             return false;
         }
     }
-
-    @Override
+    //=====================================================================================
+	// Helper Methods
+	//=====================================================================================  
+	
     public void updateLogData(LogDataBE logData) {
 
     }
 
-    @Override
     public void updateDashboard() {
-        SmartDashboard.putNumber("VisionLL:Angle1InDegrees", get_angle1InDegrees());
-        SmartDashboard.putNumber("VisionLL:DistanceInInches", get_distanceToTargetInInches());
+        SmartDashboard.putString("Vision:CameraType", "Limelight");
+        SmartDashboard.putBoolean("Vision:IsTargetInFOV", get_isTargetInFOV());
+        SmartDashboard.putNumber("Vision:Angle1InDegrees", get_angle1InDegrees());
+        SmartDashboard.putNumber("Vision:DistanceInInches", get_distanceToTargetInInches());
     }
 }
