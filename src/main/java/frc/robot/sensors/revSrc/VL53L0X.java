@@ -56,9 +56,11 @@ import edu.wpi.first.wpilibj.I2C;
  *
  */
 public class VL53L0X {
-    //***********************************************************************************************
-    // User methods.
-    //***********************************************************************************************
+    /**
+     * Get distance from sensor
+     * @param unit Units either DistanceUnit.METER or DistanceUnit.INCH
+     * @return Distance from sensor in the given units
+     */
     public double getDistance(DistanceUnit unit) {
         double range = (double)this.readRangeContinuousMillimeters();
 
@@ -74,7 +76,8 @@ public class VL53L0X {
     }
 
     /**
-     * Did a timeout occur?
+     * See if a timeout occured
+     * @return boolean, true if a timeout did occur
      */
     public boolean didTimeoutOccur() {
         return did_timeout;
@@ -222,6 +225,11 @@ public class VL53L0X {
         //this(I2C.Port.kOnboard, 0x29);
     }
 
+    /**
+     * Constructor to create an object
+     * @param port Either the MXP breakout or the defualt of the roborio RobotMap.I2C_SENSOR_PORT for onboard
+     * @param deviceAddress the default address to use is 0x29
+     */
     public VL53L0X(I2C.Port port, int deviceAddress) {
         _i2cBus = new I2C(port, deviceAddress);
         ioElapsedTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
@@ -536,6 +544,13 @@ public class VL53L0X {
     // seems to increase the likelihood of getting an inaccurate reading because of
     // unwanted reflections from objects other than the intended target.
     // Defaults to 0.25 MCPS as initialized by the ST API and this library.
+
+    /**
+     * Sets the rate limit in mega counts per second and represents the amplitude of the signal reflected
+     * from the target and detected by the device. Lower limit is greater distance
+     * @param limit_Mcps 0.25 is the default, 0.1 is used in long range mode
+     * @return true if suceeded, but results also printed
+     */
     public boolean setSignalRateLimit(float limit_Mcps) {
         // check range.
         if (limit_Mcps < 0 || limit_Mcps > 511.99) { return false; }
@@ -723,6 +738,14 @@ public class VL53L0X {
     //  pre:  12 to 18 (initialized default: 14)
     //  final: 8 to 14 (initialized default: 10)
     // based on VL53L0X_set_vcsel_pulse_period()
+
+    /**
+     * Sets the pulse period of the laser to get a longer or shorter range
+     * @param type Either the MXP breakout or the defualt of the roborio RobotMap.I2C_SENSOR_PORT for onboard
+     * @param period_pckls Set the pulse period of the laser
+     * pre:  12 to 18 (initialized default: 14), final: 8 to 14 (initialized default: 10)
+     * @return true for succeed 
+     */
     public boolean setVcselPulsePeriod(vcselPeriodType type, int period_pclks)
     {
         int vcsel_period_reg = (((period_pclks) >> 1) - 1);
@@ -1078,6 +1101,11 @@ public class VL53L0X {
     // inter-measurement period in milliseconds determining how often the sensor
     // takes a measurement.
     // based on VL53L0X_StartMeasurement()
+    
+    /**
+     * Starts continous measurement of the distance sensor
+     * @param period_ms Time between measurements, can be 0 for fastest
+     */
     public void startContinuous(int period_ms) {
         writeRegister(0x80, 0x01);
         writeRegister(0xFF, 0x01);
