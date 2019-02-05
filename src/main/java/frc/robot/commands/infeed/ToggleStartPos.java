@@ -15,6 +15,7 @@ public class ToggleStartPos extends Command {
 
   public ToggleStartPos() {
     requires(_cargo);
+    setInterruptible(false);
   }
 
   // Called just before this Command runs the first time
@@ -25,7 +26,7 @@ public class ToggleStartPos extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    _cargo.moveEntireMechanismForward();
+    _cargo.toggleMechanism();
   }
 
   // Make this return true when this Command no longer needs to run execute()

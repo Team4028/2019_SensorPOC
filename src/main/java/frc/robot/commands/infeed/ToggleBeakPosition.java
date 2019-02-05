@@ -14,6 +14,7 @@ public class ToggleBeakPosition extends Command {
   private Cargo _cargo = Cargo.getInstance();
   public ToggleBeakPosition() {
     requires(_cargo);
+    setInterruptible(false);
   }
 
   // Called just before this Command runs the first time

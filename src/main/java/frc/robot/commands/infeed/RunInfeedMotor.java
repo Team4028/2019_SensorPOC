@@ -14,9 +14,10 @@ import frc.robot.util.BeakXboxController.Thumbstick;
 public class RunInfeedMotor extends Command {
   private Cargo _cargo = Cargo.getInstance();
   private Thumbstick _leftThumbstick;
-  public RunInfeedMotor(Thumbstick leftThumbstick) 
-  {
+
+  public RunInfeedMotor(Thumbstick leftThumbstick)  {
     requires(_cargo);
+    setInterruptible(true);
     _leftThumbstick = leftThumbstick;
   }
 
