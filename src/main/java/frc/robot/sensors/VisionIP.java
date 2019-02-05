@@ -35,7 +35,7 @@ public class VisionIP implements IVisionSensor {
     private long _timeElapsed;
     private boolean _isVisionThreadRunning;
     private int i = 1;
-    private int _restartThreadTimes = 5;
+    private int _restartThreadTimes = 30;
     private int _threadSleepingTimeInMillis = 2000;
 
     // =====================================================================================
@@ -49,22 +49,7 @@ public class VisionIP implements IVisionSensor {
 
     // private constructor for singleton pattern
     private VisionIP() {
-        while (i <= _restartThreadTimes && !_isSocketConnected) {
-            openConnection(RobotMap.SOCKET_CLIENT_CONNECTION_IPADRESS, RobotMap.SOCKET_CLIENT_CONNECTION_PORT);
-            if (!_isSocketConnected) { 
-                i++;
-                try {
-                    Thread.sleep(_threadSleepingTimeInMillis);
-                    System.out .println("sleeping loop: " + i);
-                } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            } else {
-                startThread();
-            }
-        }
-
+        startThread();
         System.out.println("is Socket Connected: " + get_isSocketConnected());
     }
 
@@ -84,6 +69,19 @@ public class VisionIP implements IVisionSensor {
     private void startThread() {
         _isVisionThreadRunning = false;
         Thread t = new Thread(() -> {
+            while (i <= _restartThreadTimes && !_isSocketConnected) {
+                openConnection(RobotMap.SOCKET_CLIENT_CONNECTION_IPADRESS, RobotMap.SOCKET_CLIENT_CONNECTION_PORT);
+                if (!_isSocketConnected) { 
+                    i++;
+                    try {
+                        Thread.sleep(_threadSleepingTimeInMillis);
+                        System.out .println("sleeping loop: " + i);
+                    } catch (InterruptedException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
+            }
             while (!Thread.interrupted()) {
                 long start = System.nanoTime();
                 String resp = sendMessage("VISION");
