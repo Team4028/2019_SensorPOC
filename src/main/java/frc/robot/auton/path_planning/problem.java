@@ -12,6 +12,7 @@ public class problem{
     public static Path _path;
     public static double _theta;
     public static double _distance;
+    public static double _targetAngle;
 
     public static double rad2deg(double rad){
         return rad * 180 / Math.PI;
@@ -35,6 +36,7 @@ public class problem{
             System.out.println("Distance:"+l);
             _path = PathBuilder.buildPathFromWaypoints(sWaypoints);
             _theta = GyroNavX.getInstance().getYaw();
+            _targetAngle = A1+A2+GyroNavX.getInstance().getYaw();
         }
         else
         {
