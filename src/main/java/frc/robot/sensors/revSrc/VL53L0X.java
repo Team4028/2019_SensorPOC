@@ -35,6 +35,13 @@ import static frc.robot.sensors.revSrc.VL53L0X.Register.VHV_CONFIG_PAD_SCL_SDA__
 import static frc.robot.sensors.revSrc.VL53L0X.vcselPeriodType.VcselPeriodFinalRange;
 import static frc.robot.sensors.revSrc.VL53L0X.vcselPeriodType.VcselPeriodPreRange;
 
+import static frc.robot.sensors.revSrc.VL53L0X.Register.PRE_RANGE_CONFIG_VALID_PHASE_HIGH;
+import static frc.robot.sensors.revSrc.VL53L0X.Register.PRE_RANGE_CONFIG_VALID_PHASE_LOW;
+import static frc.robot.sensors.revSrc.VL53L0X.Register.FINAL_RANGE_CONFIG_VALID_PHASE_HIGH;
+import static frc.robot.sensors.revSrc.VL53L0X.Register.FINAL_RANGE_CONFIG_VALID_PHASE_LOW;
+import static frc.robot.sensors.revSrc.VL53L0X.Register.GLOBAL_CONFIG_VCSEL_WIDTH;
+import static frc.robot.sensors.revSrc.VL53L0X.Register.ALGO_PHASECAL_CONFIG_TIMEOUT;
+import static frc.robot.sensors.revSrc.VL53L0X.Register.ALGO_PHASECAL_LIM;
 
 import edu.wpi.first.wpilibj.I2C;
 
@@ -49,9 +56,11 @@ import edu.wpi.first.wpilibj.I2C;
  *
  */
 public class VL53L0X {
-    //***********************************************************************************************
-    // User methods.
-    //***********************************************************************************************
+    /**
+     * Get distance from sensor
+     * @param unit Units either DistanceUnit.METER or DistanceUnit.INCH
+     * @return Distance from sensor in the given units
+     */
     public double getDistance(DistanceUnit unit) {
         double range = (double)this.readRangeContinuousMillimeters();
 
@@ -67,7 +76,8 @@ public class VL53L0X {
     }
 
     /**
-     * Did a timeout occur?
+     * See if a timeout occured
+     * @return boolean, true if a timeout did occur
      */
     public boolean didTimeoutOccur() {
         return did_timeout;
@@ -188,7 +198,7 @@ public class VL53L0X {
     //uint32_t measurement_timing_budget_us;
     long measurement_timing_budget_us;
 
-    enum vcselPeriodType { VcselPeriodPreRange, VcselPeriodFinalRange };
+    public enum vcselPeriodType { VcselPeriodPreRange, VcselPeriodFinalRange };
 
     protected int io_timeout = 0;
     protected ElapsedTime ioElapsedTime;
@@ -215,6 +225,11 @@ public class VL53L0X {
         //this(I2C.Port.kOnboard, 0x29);
     }
 
+    /**
+     * Constructor to create an object
+     * @param port Either the MXP breakout or the defualt of the roborio RobotMap.I2C_SENSOR_PORT for onboard
+     * @param deviceAddress the default address to use is 0x29
+     */
     public VL53L0X(I2C.Port port, int deviceAddress) {
         _i2cBus = new I2C(port, deviceAddress);
         ioElapsedTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
@@ -318,7 +333,6 @@ public class VL53L0X {
         writeRegister(SYSTEM_SEQUENCE_CONFIG, (byte)0xFF);
 
         // VL53L0X_DataInit() end
-
         // VL53L0X_StaticInit() begin
 
         // function in driver examples passes args by reference, but Java
@@ -516,7 +530,7 @@ public class VL53L0X {
         // fast as possible).  To use continuous timed mode
         // instead, provide a desired inter-measurement period in
         // ms (e.g. sensor.startContinuous(100)).
-        startContinuous();
+        // startContinuous();
 
         return true;
 
@@ -530,12 +544,20 @@ public class VL53L0X {
     // seems to increase the likelihood of getting an inaccurate reading because of
     // unwanted reflections from objects other than the intended target.
     // Defaults to 0.25 MCPS as initialized by the ST API and this library.
-    private boolean setSignalRateLimit(float limit_Mcps) {
+
+    /**
+     * Sets the rate limit in mega counts per second and represents the amplitude of the signal reflected
+     * from the target and detected by the device. Lower limit is greater distance
+     * @param limit_Mcps 0.25 is the default, 0.1 is used in long range mode
+     * @return true if suceeded, but results also printed
+     */
+    public boolean setSignalRateLimit(float limit_Mcps) {
         // check range.
         if (limit_Mcps < 0 || limit_Mcps > 511.99) { return false; }
 
         // Q9.7 fixed point format (9 integer bits, 7 fractional bits)
         writeShort(FINAL_RANGE_CONFIG_MIN_COUNT_RATE_RTN_LIMIT, (short)(limit_Mcps * (1 << 7)));
+        System.out.format("adjusted sig rate lim (MCPS) %.06f", getSignalRateLimit());
         return true;
     }
 
@@ -709,6 +731,192 @@ public class VL53L0X {
                 (int) ((reg_val & 0xFF00) >> 8)) + 1;
     }
 
+    // Set the VCSEL (vertical cavity surface emitting laser) pulse period for the
+    // given period type (pre-range or final range) to the given value in PCLKs.
+    // Longer periods seem to increase the potential range of the sensor.
+    // Valid values are (even numbers only):
+    //  pre:  12 to 18 (initialized default: 14)
+    //  final: 8 to 14 (initialized default: 10)
+    // based on VL53L0X_set_vcsel_pulse_period()
+
+    /**
+     * Sets the pulse period of the laser to get a longer or shorter range
+     * @param type Either the MXP breakout or the defualt of the roborio RobotMap.I2C_SENSOR_PORT for onboard
+     * @param period_pckls Set the pulse period of the laser
+     * pre:  12 to 18 (initialized default: 14), final: 8 to 14 (initialized default: 10)
+     * @return true for succeed 
+     */
+    public boolean setVcselPulsePeriod(vcselPeriodType type, int period_pclks)
+    {
+        int vcsel_period_reg = (((period_pclks) >> 1) - 1);
+
+        SequenceStepEnables enables = new SequenceStepEnables();
+        SequenceStepTimeouts timeouts = new SequenceStepTimeouts();
+
+
+        getSequenceStepEnables(enables);
+        getSequenceStepTimeouts(enables, timeouts);
+
+        // "Apply specific settings for the requested clock period"
+        // "Re-calculate and apply timeouts, in macro periods"
+
+        // "When the VCSEL period for the pre or final range is changed,
+        // the corresponding timeout must be read from the device using
+        // the current VCSEL period, then the new VCSEL period can be
+        // applied. The timeout then must be written back to the device
+        // using the new VCSEL period.
+        //
+        // For the MSRC timeout, the same applies - this timeout being
+        // dependant on the pre-range vcsel period."
+
+
+        if (type == VcselPeriodPreRange) {
+            // "Set phase check limits"
+            switch (period_pclks) {
+            case 12:
+                writeRegister(PRE_RANGE_CONFIG_VALID_PHASE_HIGH.bVal, 0x18);
+                break;
+            case 14:
+                writeRegister(PRE_RANGE_CONFIG_VALID_PHASE_HIGH.bVal, 0x30);
+                break;
+            case 16:
+                writeRegister(PRE_RANGE_CONFIG_VALID_PHASE_HIGH.bVal, 0x40);
+                break;
+            case 18:
+                writeRegister(PRE_RANGE_CONFIG_VALID_PHASE_HIGH.bVal, 0x50);
+                break;
+            default:
+                // invalid period
+                return false;
+            }
+            writeRegister(PRE_RANGE_CONFIG_VALID_PHASE_LOW.bVal, 0x08);
+
+            // apply new VCSEL period
+            writeRegister(PRE_RANGE_CONFIG_VCSEL_PERIOD.bVal, vcsel_period_reg);
+
+            // update timeouts
+
+            // set_sequence_step_timeout() begin
+            // (SequenceStepId == VL53L0X_SEQUENCESTEP_PRE_RANGE)
+
+            long new_pre_range_timeout_mclks = timeoutMicrosecondsToMclks(timeouts.pre_range_us, period_pclks);
+
+            writeShort(PRE_RANGE_CONFIG_TIMEOUT_MACROP_HI, (short)
+                encodeTimeout((int) new_pre_range_timeout_mclks));
+
+            // set_sequence_step_timeout() end
+
+            // set_sequence_step_timeout() begin
+            // (SequenceStepId == VL53L0X_SEQUENCESTEP_MSRC)
+
+            long new_msrc_timeout_mclks =
+            timeoutMicrosecondsToMclks(timeouts.msrc_dss_tcc_us, period_pclks);
+
+            if (new_msrc_timeout_mclks > 256) {
+                writeRegister(MSRC_CONFIG_TIMEOUT_MACROP, (byte) 0xFF);
+            } else {
+                writeRegister(MSRC_CONFIG_TIMEOUT_MACROP, (byte) (new_msrc_timeout_mclks - 1));
+            }
+
+            // set_sequence_step_timeout() end
+        } else if (type == VcselPeriodFinalRange) {
+            switch (period_pclks)
+            {
+            case 8:
+                writeRegister(FINAL_RANGE_CONFIG_VALID_PHASE_HIGH.bVal, 0x10);
+                writeRegister(FINAL_RANGE_CONFIG_VALID_PHASE_LOW.bVal,  0x08);
+                writeRegister(GLOBAL_CONFIG_VCSEL_WIDTH.bVal, 0x02);
+                writeRegister(ALGO_PHASECAL_CONFIG_TIMEOUT.bVal, 0x0C);
+                writeRegister(0xFF, 0x01);
+                writeRegister(ALGO_PHASECAL_LIM.bVal, 0x30);
+                writeRegister(0xFF, 0x00);
+                break;
+
+            case 10:
+                writeRegister(FINAL_RANGE_CONFIG_VALID_PHASE_HIGH.bVal, 0x28);
+                writeRegister(FINAL_RANGE_CONFIG_VALID_PHASE_LOW.bVal,  0x08);
+                writeRegister(GLOBAL_CONFIG_VCSEL_WIDTH.bVal, 0x03);
+                writeRegister(ALGO_PHASECAL_CONFIG_TIMEOUT.bVal, 0x09);
+                writeRegister(0xFF, 0x01);
+                writeRegister(ALGO_PHASECAL_LIM.bVal, 0x20);
+                writeRegister(0xFF, 0x00);
+                break;
+
+            case 12:
+                writeRegister(FINAL_RANGE_CONFIG_VALID_PHASE_HIGH.bVal, 0x38);
+                writeRegister(FINAL_RANGE_CONFIG_VALID_PHASE_LOW.bVal,  0x08);
+                writeRegister(GLOBAL_CONFIG_VCSEL_WIDTH.bVal, 0x03);
+                writeRegister(ALGO_PHASECAL_CONFIG_TIMEOUT.bVal, 0x08);
+                writeRegister(0xFF, 0x01);
+                writeRegister(ALGO_PHASECAL_LIM.bVal, 0x20);
+                writeRegister(0xFF, 0x00);
+                break;
+
+            case 14:
+                writeRegister(FINAL_RANGE_CONFIG_VALID_PHASE_HIGH.bVal, 0x48);
+                writeRegister(FINAL_RANGE_CONFIG_VALID_PHASE_LOW.bVal,  0x08);
+                writeRegister(GLOBAL_CONFIG_VCSEL_WIDTH.bVal, 0x03);
+                writeRegister(ALGO_PHASECAL_CONFIG_TIMEOUT.bVal, 0x07);
+                writeRegister(0xFF, 0x01);
+                writeRegister(ALGO_PHASECAL_LIM.bVal, 0x20);
+                writeRegister(0xFF, 0x00);
+                break;
+
+            default:
+                // invalid period
+                return false;
+            }
+
+            // apply new VCSEL period
+            writeRegister(FINAL_RANGE_CONFIG_VCSEL_PERIOD.bVal, vcsel_period_reg);
+
+            // update timeouts
+
+            // set_sequence_step_timeout() begin
+            // (SequenceStepId == VL53L0X_SEQUENCESTEP_FINAL_RANGE)
+
+            // "For the final range timeout, the pre-range timeout
+            //  must be added. To do this both final and pre-range
+            //  timeouts must be expressed in macro periods MClks
+            //  because they have different vcsel periods."
+
+            long new_final_range_timeout_mclks = timeoutMicrosecondsToMclks(timeouts.final_range_us, period_pclks);
+
+            if (new_final_range_timeout_mclks > 2147483647) {
+                System.out.println("Value too big!");
+            }
+
+            if (enables.pre_range) {
+                new_final_range_timeout_mclks += timeouts.pre_range_mclks;
+            }
+            // System.out.println(encodeTimeout((int) new_final_range_timeout_mclks));
+            writeShort(FINAL_RANGE_CONFIG_TIMEOUT_MACROP_HI,(short) encodeTimeout((int) new_final_range_timeout_mclks));
+            // set_sequence_step_timeout end
+        } else {
+            // invalid type
+            System.out.println("Here 1");
+            return false;
+        }
+
+        // "Finally, the timing budget must be re-applied"
+        System.out.print("Timing Budget us:  ");
+        System.out.println(measurement_timing_budget_us);
+        setMeasurementTimingBudget(measurement_timing_budget_us);
+
+        // "Perform the phase calibration. This is needed after changing on vcsel period."
+        // VL53L0X_perform_phase_calibration() begin
+
+        byte sequence_config = readRegister(SYSTEM_SEQUENCE_CONFIG);
+        writeRegister(SYSTEM_SEQUENCE_CONFIG, (byte) 0x02);
+        performSingleRefCalibration(0x0);
+        writeRegister(SYSTEM_SEQUENCE_CONFIG, sequence_config);
+        // startContinuous();
+
+        // VL53L0X_perform_phase_calibration() end
+
+        return true;
+    }
+    
     // Get the VCSEL pulse period in PCLKs for the given period type.
     // based on VL53L0X_get_vcsel_pulse_period()
     protected int getVcselPulsePeriod(vcselPeriodType type) {
@@ -883,7 +1091,7 @@ public class VL53L0X {
         return true;
     }
 
-    protected void startContinuous() {
+    public void startContinuous() {
         this.startContinuous(0);
     }
     
@@ -893,7 +1101,12 @@ public class VL53L0X {
     // inter-measurement period in milliseconds determining how often the sensor
     // takes a measurement.
     // based on VL53L0X_StartMeasurement()
-    protected void startContinuous(int period_ms) {
+    
+    /**
+     * Starts continous measurement of the distance sensor
+     * @param period_ms Time between measurements, can be 0 for fastest
+     */
+    public void startContinuous(int period_ms) {
         writeRegister(0x80, 0x01);
         writeRegister(0xFF, 0x01);
         writeRegister(0x00, 0x00);

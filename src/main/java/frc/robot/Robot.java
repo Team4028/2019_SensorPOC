@@ -26,6 +26,7 @@ import frc.robot.sensors.GyroNavX;
 import frc.robot.sensors.VisionLL;
 import frc.robot.sensors.GyroNavX.SCORING_TARGET;
 import frc.robot.sensors.GyroNavX.SIDE;
+import frc.robot.interfaces.IVisionSensor;
 import frc.robot.sensors.DistanceRev2mSensor;
 import frc.robot.sensors.GyroNavX;
 import frc.robot.sensors.StoredPressureSensor;
@@ -52,7 +53,6 @@ import frc.robot.ux.OI;
  * project.
  */
 public class Robot extends TimedRobot {
-  private OI _oi = OI.getInstance();
 
 	private static final String ROBOT_NAME = "2019 DeepSpace SensorPOC";
 
@@ -62,14 +62,18 @@ public class Robot extends TimedRobot {
   // sensors
   private DistanceRev2mSensor _distanceRev2mSensor = DistanceRev2mSensor.getInstance();
   private StoredPressureSensor _pressureSensor = StoredPressureSensor.getInstance();
-  private VisionLL _vision = VisionLL.getInstance();      // Limelight
-  //private VisionLIP _visionIP = VisionIP.getInstance();   // IPhone
+
+
+  private IVisionSensor _vision = VisionLL.getInstance();      // Limelight
+  //private VisionLIP _vision = VisionIP.getInstance();   // IPhone
+
   private GyroNavX _navX = GyroNavX.getInstance();
 
   // ux
 
   private LEDController _leds = LEDController.getInstance();
   private AutonChoosers _autonChoosers = AutonChoosers.getInstance();
+  private OI _oi = OI.getInstance();
 
   // subsystems
   private Chassis _chassis = Chassis.getInstance();
@@ -128,9 +132,10 @@ public class Robot extends TimedRobot {
 
     _chassis.updateChassis(Timer.getFPGATimestamp());
     Scheduler.getInstance().run();
-    _leds.set_targetangle(_vision.get_angle1InDegrees(), _vision.canLLSeeTarget(), _distanceRev2mSensor.get_distanceToTargetInInches());
-    System.out.println(_vision.canLLSeeTarget());
 
+    _leds.set_targetangle(_vision.get_angle1InDegrees(), 
+                          _vision.get_isTargetInFOV(), 
+                          _distanceRev2mSensor.get_distanceToTargetInInches());
 
   }
 
@@ -242,7 +247,7 @@ public class Robot extends TimedRobot {
 
         if(_autonChoosers != null)        { _autonChoosers.updateDashboard(); }
 	    	if(_distanceRev2mSensor != null)  { _distanceRev2mSensor.updateDashboard(); }
-        if(_vision != null)             { _vision.updateDashboard(); }
+        if(_vision != null)               { _vision.updateDashboard(); }
         if(_pressureSensor != null)       { _pressureSensor.updateDashboard(); }
 	    	
     		// write the overall robot dashboard info
@@ -277,7 +282,7 @@ public class Robot extends TimedRobot {
 
         if(_autonChoosers != null)        { _autonChoosers.updateLogData(logData); }
 	    	if(_distanceRev2mSensor != null)  { _distanceRev2mSensor.updateLogData(logData); }
-        if(_vision != null)             { _vision.updateLogData(logData); }
+        if(_vision != null)               { _vision.updateLogData(logData); }
         if(_pressureSensor != null)       { _pressureSensor.updateLogData(logData); }
     
 	    	_dataLogger.WriteDataLine(logData);

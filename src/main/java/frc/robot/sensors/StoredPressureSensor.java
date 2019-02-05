@@ -34,7 +34,7 @@ public class StoredPressureSensor implements IBeakSquadSubsystem {
 
 	// private constructor for singleton pattern
 	private StoredPressureSensor() {
-		_analogPressureSensor = new AnalogInput(RobotMap.STORED_PRESSURE_SENSOR_AI_PORT);
+		_analogPressureSensor = new AnalogInput(RobotMap.AIN_STORED_PRESSURE_SENSOR_PORT);
 	}
 
 	public double get_storedPSI() {

@@ -40,7 +40,7 @@ public class RobotMap
 	// DIO Ports
 	
 	// Analog Ports
-	public static final int STORED_PRESSURE_SENSOR_AI_PORT = 0;
+	public static final int AIN_STORED_PRESSURE_SENSOR_PORT = 0;
 	
 	// NavX (on Roborio)
 
@@ -55,4 +55,8 @@ public class RobotMap
 
 	//I2C Ports
 	public static final I2C.Port I2C_SENSOR_PORT = I2C.Port.kOnboard;
+
+	//socket client (for IP Phone)
+	public static final String SOCKET_CLIENT_CONNECTION_IPADRESS = "10.40.28.180";
+	public static final int SOCKET_CLIENT_CONNECTION_PORT = 8910;
 }

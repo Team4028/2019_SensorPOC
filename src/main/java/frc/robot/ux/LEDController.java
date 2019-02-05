@@ -40,9 +40,9 @@ public class LEDController {
     then goes though a series of if/ else statements to determine the position of angle one. When the target is homed +/- two degrees 
     Izzy's distance sensor determines whether the target is within one foot, if it is, it lights up in partymode (yass), if not 
     it is a solid green color*/ 
-	public void set_targetangle (double currentAngleInDegrees, boolean istargetaquired, double inchesout){
+	public void set_targetangle (double currentAngleInDegrees, boolean isTargetAcquired, double inchesOut){
         
-        if(istargetaquired == true){
+        if(isTargetAcquired == true){
             if(Math.abs(currentAngleInDegrees) > REDZONE){
                 whiteLights();
             }
@@ -52,11 +52,11 @@ public class LEDController {
             else if(Math.abs(currentAngleInDegrees) >= GREENZONE && Math.abs(currentAngleInDegrees)<= YELLOWZONE){
                 orangeLEDstrip();
             }
-            else if(Math.abs(currentAngleInDegrees) <= GREENZONE && inchesout <= 12 ){
-                partyMode();
-            }
-            else if(Math.abs(currentAngleInDegrees) <= GREENZONE && inchesout >= 12){
+            else if(Math.abs(currentAngleInDegrees) <= GREENZONE && inchesOut >= 12){
                 greenLights();
+            }
+            else if(Math.abs(currentAngleInDegrees) <= GREENZONE && inchesOut < 12 ){
+                partyMode();
             }
         } else {
             redBlinkLights();
@@ -66,13 +66,16 @@ public class LEDController {
     //Different methods that set the LEDs to a certain color, the names are self-explainitory
 	private void partyMode(){
 		LEDstrip.set(-0.99);
-	}
+    }
+    
 	private void whiteLights(){
 		LEDstrip.set(0.99);
     }
+
     private void redBlinkLights(){
         LEDstrip.set(-0.11);
     }
+    
 	private void greenLights(){
         LEDstrip.set(0.75);
     }
