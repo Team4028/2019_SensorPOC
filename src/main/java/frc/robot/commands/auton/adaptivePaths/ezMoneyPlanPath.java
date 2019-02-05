@@ -41,7 +41,7 @@ public class ezMoneyPlanPath extends Command
     @Override
     protected void execute(){
         if (!(hasSeenTarget)){
-            if (_limeLight.canLLSeeTarget()){
+            if (_limeLight.get_isTargetInFOV()){
                 double A1 = _limeLight.get_angle1InDegrees();
                 double A2= _navX.get_angle2InDegreesFromLL(SCORING_TARGET.CARGOSHIP_SIDE_ROCKET, SIDE.RIGHT);
                 double distance= _limeLight.get_distanceToTargetInInches();

@@ -8,6 +8,7 @@ import frc.robot.auton.pathfollowing.control.Path;
 import frc.robot.auton.pathfollowing.motion.RigidTransform;
 import frc.robot.auton.pathfollowing.motion.Rotation;
 import frc.robot.auton.pathfollowing.motion.Translation;
+import frc.robot.sensors.DistanceRev2mSensor;
 import frc.robot.sensors.GyroNavX;
 import frc.robot.sensors.VisionLL;
 import frc.robot.sensors.GyroNavX.SCORING_TARGET;
@@ -23,6 +24,7 @@ public class planSecondPath extends Command
     RigidTransform curPose;
     VisionLL _limeLight = VisionLL.getInstance();
     GyroNavX _navX = GyroNavX.getInstance();
+    DistanceRev2mSensor _distanceSensor = DistanceRev2mSensor.getInstance();
     
 
     public planSecondPath() {
@@ -33,7 +35,10 @@ public class planSecondPath extends Command
     protected void initialize() {
         double A1 = _limeLight.get_angle1InDegrees();
         double A2= _navX.get_angle2InDegreesFromLL(SCORING_TARGET.CARGOSHIP_SIDE_ROCKET, SIDE.RIGHT);
-        double distance= _limeLight.get_distanceToTargetInInches();
+        double distance= _distanceSensor.get_distanceToTargetInInches();
+        double llDistance = _limeLight.get_distanceToTargetInInches();
+        System.out.println("Distance Sensor Distance: " + distance);
+        System.out.println("LimeLight Distance: " + llDistance);
         RigidTransform rt = RobotState.getInstance().getLatestFieldToVehicle().getValue();
         curPose = new RigidTransform(new Translation(rt.getTranslation().x(), rt.getTranslation().y()), Rotation.fromDegrees(_navX.getYaw()));
         problem.planSecondPathFromVisionData(A1, A2, distance, curPose);

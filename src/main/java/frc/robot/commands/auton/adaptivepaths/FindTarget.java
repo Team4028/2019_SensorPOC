@@ -46,7 +46,7 @@ public class FindTarget extends Command
 
     @Override
     protected boolean isFinished() {
-        return _limeLight.canLLSeeTarget();
+        return _limeLight.get_isTargetInFOV();
     }
     @Override
     protected void end() 
