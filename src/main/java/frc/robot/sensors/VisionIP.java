@@ -21,7 +21,7 @@ import frc.robot.util.LogDataBE;
 /**
  * This class exposes the OnBoard IPhone Vision sensor
  * 
- * Lead Student: Conner
+ * Lead Student: Izzy
  */
 public class VisionIP implements IVisionSensor {
     private Socket _clientSocket;
@@ -139,7 +139,9 @@ public class VisionIP implements IVisionSensor {
         }
     }
 
-    public boolean get_inFov(){
+    
+    @Override
+    public boolean get_isTargetInFOV() {
         return _inFov;
     }
 
@@ -172,8 +174,11 @@ public class VisionIP implements IVisionSensor {
 
     @Override
     public void updateDashboard() {
+        SmartDashboard.putString("Vision:CameraType", "IPhone");
+        SmartDashboard.putBoolean("Vision:IsTargetInFOV", get_isTargetInFOV());
         SmartDashboard.putBoolean("isSocketConnected", get_isSocketConnected());
         SmartDashboard.putNumber("Socket:Message Time(msec)", _timeElapsed / 1000000);
+<<<<<<< HEAD
         SmartDashboard.putBoolean("VisionIP:isInFovRunning", get_inFov());
         SmartDashboard.putNumber("VisionIP:Angle1InDegrees", get_angle1InDegrees());
         SmartDashboard.putNumber("VisionIP:DistanceInInches", get_distanceToTargetInInches());
@@ -183,3 +188,12 @@ public class VisionIP implements IVisionSensor {
 
     
 }
+=======
+        SmartDashboard.putBoolean("VisionLL:isInFovRunning", get_isTargetInFOV());
+        SmartDashboard.putNumber("VisionLL:Angle1InDegrees", get_angle1InDegrees());
+        SmartDashboard.putNumber("VisionLL:DistanceInInches", get_distanceToTargetInInches());
+        SmartDashboard.putNumber("VisionLL:time", get_time());
+        SmartDashboard.putBoolean("VisionLL:IsVisionThreadRunning", get_isVisionThreadRunning());
+    }    
+}
+>>>>>>> 7ee16efd0c2f2e7e79554094a215616635562fc9
