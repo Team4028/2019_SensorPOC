@@ -59,13 +59,8 @@ public class RobotMap
 	//I2C Ports
 	public static final I2C.Port I2C_SENSOR_PORT = I2C.Port.kOnboard;
 
-<<<<<<< HEAD
 	//socket client
 	public static final String SOCKET_CLIENT_CONNECTION_IPADRESS = "10.40.28.6";
 	public static final int SOCKET_CLIENT_CONNECTION_PORT = 1337;
-=======
-	//socket client (for IP Phone)
-	public static final String SOCKET_CLIENT_CONNECTION_IPADRESS = "10.40.28.180";
-	public static final int SOCKET_CLIENT_CONNECTION_PORT = 8910;
->>>>>>> 7ee16efd0c2f2e7e79554094a215616635562fc9
+
 }

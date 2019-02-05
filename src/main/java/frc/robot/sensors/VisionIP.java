@@ -178,8 +178,7 @@ public class VisionIP implements IVisionSensor {
         SmartDashboard.putBoolean("Vision:IsTargetInFOV", get_isTargetInFOV());
         SmartDashboard.putBoolean("isSocketConnected", get_isSocketConnected());
         SmartDashboard.putNumber("Socket:Message Time(msec)", _timeElapsed / 1000000);
-<<<<<<< HEAD
-        SmartDashboard.putBoolean("VisionIP:isInFovRunning", get_inFov());
+        SmartDashboard.putBoolean("VisionIP:isInFovRunning", get_isTargetInFOV());
         SmartDashboard.putNumber("VisionIP:Angle1InDegrees", get_angle1InDegrees());
         SmartDashboard.putNumber("VisionIP:DistanceInInches", get_distanceToTargetInInches());
         SmartDashboard.putNumber("VisionIP:time", get_time());
@@ -188,12 +187,4 @@ public class VisionIP implements IVisionSensor {
 
     
 }
-=======
-        SmartDashboard.putBoolean("VisionLL:isInFovRunning", get_isTargetInFOV());
-        SmartDashboard.putNumber("VisionLL:Angle1InDegrees", get_angle1InDegrees());
-        SmartDashboard.putNumber("VisionLL:DistanceInInches", get_distanceToTargetInInches());
-        SmartDashboard.putNumber("VisionLL:time", get_time());
-        SmartDashboard.putBoolean("VisionLL:IsVisionThreadRunning", get_isVisionThreadRunning());
-    }    
-}
->>>>>>> 7ee16efd0c2f2e7e79554094a215616635562fc9
+
