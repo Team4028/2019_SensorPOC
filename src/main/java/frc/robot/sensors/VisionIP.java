@@ -21,22 +21,27 @@ import frc.robot.util.LogDataBE;
 /**
  * This class exposes the OnBoard IPhone Vision sensor
  * 
+ * The IPHone exposes a TCP Socket Server that allows us to query for data
+ * We poll the IPHONE asychronously to the main robot thread because of the 20 MSec limit
+ * 
  * Lead Student: Izzy
  */
 public class VisionIP implements IVisionSensor {
+
+    private static final int RETRY_THREAD_LOOPS = 30;
+    private static final int THREAD_SLEEP_TIME_IN_MSEC = 2000;
+
     private Socket _clientSocket;
-    private PrintWriter _out;
-    private BufferedReader _in;
-    private boolean _inFov;
+    private PrintWriter _outBuffer;
+    private BufferedReader _inBuffer;
+    private boolean _isTargetInFOV;
     private double _distanceInInches;
     private double _angle1InDegrees;
     private boolean _isSocketConnected;
-    private double _time;
+    private double _sensorTime;
     private long _timeElapsed;
     private boolean _isVisionThreadRunning;
     private int i = 1;
-    private int _restartThreadTimes = 20;
-    private int _threadSleepingTimeInMillis = 3000;
 
     // =====================================================================================
     // Define Singleton Pattern
@@ -49,44 +54,32 @@ public class VisionIP implements IVisionSensor {
 
     // private constructor for singleton pattern
     private VisionIP() {
-        while (i <= _restartThreadTimes && !_isSocketConnected) {
-            openConnection(RobotMap.SOCKET_CLIENT_CONNECTION_IPADRESS, RobotMap.SOCKET_CLIENT_CONNECTION_PORT);
-            if (!_isSocketConnected) { 
-                i++;
-                try {
-                    Thread.sleep(_threadSleepingTimeInMillis);
-                    System.out .println("sleeping loop: " + i);
-                } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            } else {
-                startThread();
-            }
-        }
-
+        startThread();
         System.out.println("is Socket Connected: " + get_isSocketConnected());
-    }
-
-    private void openConnection(String ipAddress, int port) {
-        
-        try {
-            _clientSocket = new Socket();
-            _clientSocket.connect(new InetSocketAddress(ipAddress, port), 500);
-            _out = new PrintWriter(_clientSocket.getOutputStream(), true);
-            _in = new BufferedReader(new InputStreamReader(_clientSocket.getInputStream()));
-            _isSocketConnected = true;
-        } catch (IOException e) {
-            _isSocketConnected = false;
-        }
     }
 
     private void startThread() {
         _isVisionThreadRunning = false;
+
         Thread t = new Thread(() -> {
+            // try to open a connection to a remote socket server, retry if not available
+            while (i <= RETRY_THREAD_LOOPS && !_isSocketConnected) {
+                openConnection(RobotMap.SOCKET_CLIENT_CONNECTION_IPADRESS, RobotMap.SOCKET_CLIENT_CONNECTION_PORT);
+                if (!_isSocketConnected) { 
+                    i++;
+                    try {
+                        Thread.sleep(THREAD_SLEEP_TIME_IN_MSEC);
+                        System.out .println("sleeping loop: " + i);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            // main loop to poll socket server
             while (!Thread.interrupted()) {
                 long start = System.nanoTime();
-                String resp = sendMessage("THREAD: running#");
+                String resp = sendMessage("VISION");
                 _isVisionThreadRunning = true;
                 long finish = System.nanoTime();
                 _timeElapsed = finish - start;
@@ -98,7 +91,7 @@ public class VisionIP implements IVisionSensor {
                     String value = kv[1];
 
                     if (key.equals("InFov")) {
-                        _inFov = Boolean.parseBoolean(value);
+                        _isTargetInFOV = Boolean.parseBoolean(value);
                      
                     } else if (key.equals("angle1")) {
                         _angle1InDegrees = Double.parseDouble(value);
@@ -106,18 +99,30 @@ public class VisionIP implements IVisionSensor {
                         _distanceInInches = Double.parseDouble(value);
                         
                     }else if (key.equals("time")){
-                        _time = Double.parseDouble(value);
+                        _sensorTime = Double.parseDouble(value);
                     }
                 }
             }
         });t.start();
     }
 
+    private void openConnection(String ipAddress, int port) {
+        try {
+            _clientSocket = new Socket();
+            _clientSocket.connect(new InetSocketAddress(ipAddress, port), 500);
+            _outBuffer = new PrintWriter(_clientSocket.getOutputStream(), true);
+            _inBuffer = new BufferedReader(new InputStreamReader(_clientSocket.getInputStream()));
+            _isSocketConnected = true;
+        } catch (IOException e) {
+            _isSocketConnected = false;
+        }
+    }
+
     private String sendMessage(String msg) {
-        _out.println(msg);
+        _outBuffer.println(msg);
         String _resp = "";
         try {
-            _resp = _in.readLine();
+            _resp = _inBuffer.readLine();
         } catch (IOException e) {
             // TODO Auto-generated catch block
             System.out.println(e.toString());
@@ -127,12 +132,12 @@ public class VisionIP implements IVisionSensor {
 
     public void stopConnection() {
         try {
-            _in.close();
+            _inBuffer.close();
         } catch (IOException e1) {
         // TODO Auto-generated catch block
         e1.printStackTrace();
         }
-        _out.close();
+        _outBuffer.close();
         try {
         _clientSocket.close();
         } catch (IOException e) {
@@ -141,33 +146,38 @@ public class VisionIP implements IVisionSensor {
         }
     }
 
-    
+    // ====================================================================
+    // Property Accessors
+    // ====================================================================
     @Override
     public boolean get_isTargetInFOV() {
-        return _inFov;
+        return _isTargetInFOV;
+    }
+
+    @Override
+    public double get_distanceToTargetInInches() {
+        return _distanceInInches;
     }
 
     public double get_angle1InDegrees(){
         return _angle1InDegrees;
     }
 
-    public boolean get_isSocketConnected(){
+    private boolean get_isSocketConnected(){
         return _isSocketConnected;
     }
 
-    public double get_time(){
-        return _time;
+    private double get_sensorTime(){
+        return _sensorTime;
     }
 
-    public boolean get_isVisionThreadRunning(){
+    private boolean get_isVisionThreadRunning(){
         return _isVisionThreadRunning;
     }
 
-   
-    @Override
-    public double get_distanceToTargetInInches() {
-        return _distanceInInches;
-    }
+    // ====================================================================
+    // Logging Methods
+    // ====================================================================
 
     @Override
     public void updateLogData(LogDataBE logData) {
@@ -178,12 +188,11 @@ public class VisionIP implements IVisionSensor {
     public void updateDashboard() {
         SmartDashboard.putString("Vision:CameraType", "IPhone");
         SmartDashboard.putBoolean("Vision:IsTargetInFOV", get_isTargetInFOV());
-        SmartDashboard.putBoolean("isSocketConnected", get_isSocketConnected());
-        SmartDashboard.putNumber("Socket:Message Time(msec)", _timeElapsed / 1000000);
-        SmartDashboard.putBoolean("VisionLL:isInFovRunning", get_isTargetInFOV());
-        SmartDashboard.putNumber("VisionLL:Angle1InDegrees", get_angle1InDegrees());
-        SmartDashboard.putNumber("VisionLL:DistanceInInches", get_distanceToTargetInInches());
-        SmartDashboard.putNumber("VisionLL:time", get_time());
-        SmartDashboard.putBoolean("VisionLL:IsVisionThreadRunning", get_isVisionThreadRunning());
-    }    
+        SmartDashboard.putNumber("Vision:CycleTimeMSec", _timeElapsed / 1000000);
+        SmartDashboard.putNumber("VisionIP:Angle1InDegrees", get_angle1InDegrees());
+        SmartDashboard.putNumber("VisionIP:DistanceInInches", get_distanceToTargetInInches());
+        SmartDashboard.putNumber("VisionIP:SensorTime", get_sensorTime());
+        SmartDashboard.putBoolean("VisionIP:IsVisionThreadRunning", get_isVisionThreadRunning());
+        SmartDashboard.putBoolean("VisionIP:isSocketConnected", get_isSocketConnected());
+    }
 }
