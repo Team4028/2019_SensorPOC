@@ -35,8 +35,8 @@ public class VisionIP implements IVisionSensor {
     private long _timeElapsed;
     private boolean _isVisionThreadRunning;
     private int i = 1;
-    private int _restartThreadTimes = 20;
-    private int _threadSleepingTimeInMillis = 3000;
+    private int _restartThreadTimes = 30;
+    private int _threadSleepingTimeInMillis = 2000;
 
     // =====================================================================================
     // Define Singleton Pattern
@@ -49,22 +49,7 @@ public class VisionIP implements IVisionSensor {
 
     // private constructor for singleton pattern
     private VisionIP() {
-        while (i <= _restartThreadTimes && !_isSocketConnected) {
-            openConnection(RobotMap.SOCKET_CLIENT_CONNECTION_IPADRESS, RobotMap.SOCKET_CLIENT_CONNECTION_PORT);
-            if (!_isSocketConnected) { 
-                i++;
-                try {
-                    Thread.sleep(_threadSleepingTimeInMillis);
-                    System.out .println("sleeping loop: " + i);
-                } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            } else {
-                startThread();
-            }
-        }
-
+        startThread();
         System.out.println("is Socket Connected: " + get_isSocketConnected());
     }
 
@@ -84,9 +69,22 @@ public class VisionIP implements IVisionSensor {
     private void startThread() {
         _isVisionThreadRunning = false;
         Thread t = new Thread(() -> {
+            while (i <= _restartThreadTimes && !_isSocketConnected) {
+                openConnection(RobotMap.SOCKET_CLIENT_CONNECTION_IPADRESS, RobotMap.SOCKET_CLIENT_CONNECTION_PORT);
+                if (!_isSocketConnected) { 
+                    i++;
+                    try {
+                        Thread.sleep(_threadSleepingTimeInMillis);
+                        System.out .println("sleeping loop: " + i);
+                    } catch (InterruptedException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
+            }
             while (!Thread.interrupted()) {
                 long start = System.nanoTime();
-                String resp = sendMessage("THREAD: running#");
+                String resp = sendMessage("VISION");
                 _isVisionThreadRunning = true;
                 long finish = System.nanoTime();
                 _timeElapsed = finish - start;
@@ -180,10 +178,13 @@ public class VisionIP implements IVisionSensor {
         SmartDashboard.putBoolean("Vision:IsTargetInFOV", get_isTargetInFOV());
         SmartDashboard.putBoolean("isSocketConnected", get_isSocketConnected());
         SmartDashboard.putNumber("Socket:Message Time(msec)", _timeElapsed / 1000000);
-        SmartDashboard.putBoolean("VisionLL:isInFovRunning", get_isTargetInFOV());
-        SmartDashboard.putNumber("VisionLL:Angle1InDegrees", get_angle1InDegrees());
-        SmartDashboard.putNumber("VisionLL:DistanceInInches", get_distanceToTargetInInches());
-        SmartDashboard.putNumber("VisionLL:time", get_time());
-        SmartDashboard.putBoolean("VisionLL:IsVisionThreadRunning", get_isVisionThreadRunning());
-    }    
+        SmartDashboard.putBoolean("VisionIP:isInFovRunning", get_isTargetInFOV());
+        SmartDashboard.putNumber("VisionIP:Angle1InDegrees", get_angle1InDegrees());
+        SmartDashboard.putNumber("VisionIP:DistanceInInches", get_distanceToTargetInInches());
+        SmartDashboard.putNumber("VisionIP:time", get_time());
+        SmartDashboard.putBoolean("VisionIP:IsVisionThreadRunning", get_isVisionThreadRunning());
+    }
+
+    
 }
+
