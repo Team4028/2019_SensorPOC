@@ -126,9 +126,7 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
 		talon.configForwardLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.Disabled, 0);
 		talon.configReverseLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.Disabled, 0);
         
-        talon.enableCurrentLimit(true);
-        talon.configPeakCurrentLimit(25);
-        talon.configPeakCurrentDuration(50);
+        talon.enableCurrentLimit(false);
         
         talon.configPeakOutputForward(1.0, 10);
         talon.configPeakOutputReverse(-1.0, 10);

@@ -12,7 +12,6 @@ import frc.robot.commands.auton.Auton_ParallelStarter;
 import frc.robot.commands.auton.Auton_RunProfileFromVision;
 import frc.robot.commands.auton.Auton_turnFromVision;
 import frc.robot.commands.auton.printTimeFromStart;
-import frc.robot.commands.auton.adaptivepaths.planPath;
 import frc.robot.commands.chassis.DriveSetDistance;
 import frc.robot.sensors.GyroNavX;
 import frc.robot.sensors.VisionLL;
@@ -38,14 +37,7 @@ public class CG_FollowVisionPath extends CommandGroup {
         addSequential(new Auton_turnFromVision());
         addSequential(new PrintCommand("Turned Second Time"));
         addSequential(new DriveVisionDistance(), 2);
-        //addSequential(new Auton_RunProfileFromVision(2.5));
-
         addSequential(new PrintCommand("Yeeted Entirely"));
-        // addSequential(new resetRobotPose());
-        //addSequential(new printTimeFromStart());
-        //addSequential(new Auton_ParallelStarter());
-        //addSequential(new PrintCommand("Planned"));
-        // addSequential(new DriveStraightWithVision());
     }
 
 }
