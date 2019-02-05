@@ -25,12 +25,6 @@ public class DriveStraightWithVision extends Command
     @Override
     protected void initialize() 
     {
-        
-    }
-
-    @Override
-    protected void execute() 
-    {
         System.out.println("Distance Away:"+_distanceSensor.get_distanceToTargetInInches());
         System.out.println("Angle Offset:" + _limeLight.get_angle1InDegrees());
         _chassis.SetDynamicWantDrivePath(PathBuilder.buildPathFromWaypoints(PathBuilder.getVisionStraightPathWaypoints(_robotState.getLatestFieldToVehicle().getValue().getTranslation(),_limeLight.get_angle1InDegrees() + _chassis.getHeading(), _distanceSensor.get_distanceToTargetInInches())),false);
@@ -40,6 +34,13 @@ public class DriveStraightWithVision extends Command
         {
             counter++;
         }
+        
+    }
+
+    @Override
+    protected void execute() 
+    {
+
     }
     @Override
     protected boolean isFinished() 

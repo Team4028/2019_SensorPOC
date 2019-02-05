@@ -234,7 +234,7 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
         {
             _angleError = 360 - getPositiveHeading() + _targetAngle;
         }
-        System.out.println("AngleError:"+_angleError);
+        // System.out.println("AngleError:"+_angleError);
         double encoderError = ENCODER_CODES_PER_DEGREE * _angleError;       
         double leftDriveTargetPos = getLeftPos() + encoderError;
         double rightDriveTargetPos = getRightPos() - encoderError;
