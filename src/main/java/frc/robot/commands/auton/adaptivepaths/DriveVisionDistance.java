@@ -19,12 +19,12 @@ public class DriveVisionDistance extends Command
     @Override
     protected void initialize() 
     {
-        //_inches = problem._distance;
         double distance= _distanceSensor.get_distanceToTargetInInches();
         double llDistance = _limeLight.get_distanceToTargetInInches();
         System.out.println("Distance Sensor Distance: " + distance);
         System.out.println("LimeLight Distance: " + llDistance);
-        _chassis.setMotionMagicCmdInches(distance-20);
+        _chassis.setMotionMagicCmdInches(distance-22);
+
     }
     @Override
     protected void execute() {
@@ -33,23 +33,16 @@ public class DriveVisionDistance extends Command
     @Override
     protected boolean isFinished() 
     {
-        if (isFirstCycle){
-            isFirstCycle = false;
-            return false;
-        } else {
-            return true;
-        }
-
-        // if(Math.abs(_chassis.getLeftPos()-_chassis._leftMtrDriveSetDistanceCmd)<Constants.CHASSIS_DRIVE_SET_DISTANCE_DEADBAND
-		// && Math.abs(_chassis.getRightPos()-_chassis._rightMtrDriveSetDistanceCmd)<Constants.CHASSIS_DRIVE_SET_DISTANCE_DEADBAND)
-		// {
-		// 	System.out.println("Chassis is Finished");
-		// 	return true;
-		// }
-		// else
-		// {
-		// 	return false;
-		// }
+        if(Math.abs(_chassis.getLeftPos()-_chassis._leftMtrDriveSetDistanceCmd)<Constants.CHASSIS_DRIVE_SET_DISTANCE_DEADBAND
+		&& Math.abs(_chassis.getRightPos()-_chassis._rightMtrDriveSetDistanceCmd)<Constants.CHASSIS_DRIVE_SET_DISTANCE_DEADBAND)
+		{
+			System.out.println("Chassis is Finished");
+			return true;
+		}
+		else
+		{
+			return false;
+		}
     }
 
     @Override

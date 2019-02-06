@@ -24,23 +24,24 @@ public class FindTarget extends Command
     public FindTarget() 
     {
 
-    }
+    }                
 
     @Override
     protected void initialize() 
     {
-        _targetAngle = problem._targetAngle;
+        _targetAngle =  problem._targetAngle;
     }
+
     @Override
     protected void execute() 
     {
-        if (_navX.getYaw()>_targetAngle)
+        if (_navX.getYaw() > _targetAngle)
         {
-            _chassis.setLeftRightCommand(ControlMode.PercentOutput, -0.4, 0.4);
+            _chassis.setLeftRightCommand(ControlMode.PercentOutput, -0.2, 0.2);
         }
         else
         {
-            _chassis.setLeftRightCommand(ControlMode.PercentOutput, 0.4, -0.4);
+            _chassis.setLeftRightCommand(ControlMode.PercentOutput, 0.2, -0.2);
         }
     }
 
@@ -51,6 +52,7 @@ public class FindTarget extends Command
     @Override
     protected void end() 
     {
+        System.out.println("LADIES AND GENTLEMAN... WE'VE GOT EM");
         _chassis.stop();
     }
 

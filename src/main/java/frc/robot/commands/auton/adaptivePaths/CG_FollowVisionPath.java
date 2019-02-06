@@ -26,13 +26,20 @@ public class CG_FollowVisionPath extends CommandGroup {
     
     public CG_FollowVisionPath(){
         addParallel(new Auton_ParallelStarter());
+        // addSequential(new FindTarget());
         addSequential(new ezMoneyPlanPath(10));
+        addSequential(new printTimeFromStart());
         addSequential(new Auton_turnFromVision());
+        addSequential(new printTimeFromStart());
         addSequential(new Auton_RunProfileFromVision(5.));
+        addSequential(new printTimeFromStart());
         addSequential(new FindTarget());
+        addSequential(new printTimeFromStart());
         addSequential(new planSecondPath());
+        addSequential(new printTimeFromStart());
         addSequential(new Auton_turnFromVision());
-        addSequential(new DriveVisionDistance(), 2);
+        addSequential(new printTimeFromStart());
+        addSequential(new DriveVisionDistance(), 1);
         addSequential(new printTimeFromStart());
 
     }

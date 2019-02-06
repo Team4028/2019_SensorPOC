@@ -14,6 +14,9 @@ public class problem{
     public static double _distance;
     public static double _targetAngle;
 
+    private static final double DISTANCE_OUT = 45;
+    private static final double VISION_PATH_DRIVE_SPEED = 70;
+
     public static double rad2deg(double rad){
         return rad * 180 / Math.PI;
     }
@@ -24,12 +27,12 @@ public class problem{
     public static void planPathFromVisionData(double A1, double A2, double l, RigidTransform curPose)
     {
         double k = (l*Math.sin(deg2rad(A2)))/Math.sin(deg2rad(180-A1-A2));
-        if(k*Math.sin(curPose.getRotation().getRadians())>70+curPose.getTranslation().y()+l*Math.sin(deg2rad(A1+curPose.getRotation().getDegrees())))
+        if(k*Math.sin(curPose.getRotation().getRadians())> DISTANCE_OUT + 30 +curPose.getTranslation().y()+l*Math.sin(deg2rad(A1+curPose.getRotation().getDegrees())))
         {
             List<Waypoint> sWaypoints = new ArrayList<Waypoint>();
             sWaypoints.add(new Waypoint(curPose.getTranslation().x(),curPose.getTranslation().y(),0 ,0));
-            sWaypoints.add(new Waypoint(curPose.getTranslation().x()+k*Math.cos(curPose.getRotation().getRadians()),curPose.getTranslation().y()+k*Math.sin(curPose.getRotation().getRadians()),20,50));
-            sWaypoints.add(new Waypoint(curPose.getTranslation().x()+l*Math.cos(deg2rad(A1+curPose.getRotation().getDegrees())),40+curPose.getTranslation().y()+l*Math.sin(deg2rad(A1+curPose.getRotation().getDegrees())),0,50));
+            sWaypoints.add(new Waypoint(curPose.getTranslation().x()+k*Math.cos(curPose.getRotation().getRadians()),curPose.getTranslation().y()+k*Math.sin(curPose.getRotation().getRadians()),20,VISION_PATH_DRIVE_SPEED));
+            sWaypoints.add(new Waypoint(curPose.getTranslation().x()+l*Math.cos(deg2rad(A1+curPose.getRotation().getDegrees())), DISTANCE_OUT + curPose.getTranslation().y()+l*Math.sin(deg2rad(A1+curPose.getRotation().getDegrees())),0,VISION_PATH_DRIVE_SPEED));
             System.out.println(sWaypoints);
             System.out.println("Angle 1:"+A1);
             System.out.println("Angle2:"+ A2);
@@ -42,14 +45,14 @@ public class problem{
         {
             List<Waypoint> sWaypoints = new ArrayList<Waypoint>();
             sWaypoints.add(new Waypoint(curPose.getTranslation().x(),curPose.getTranslation().y(),0 ,0));
-            sWaypoints.add(new Waypoint(curPose.getTranslation().x()+k*Math.cos(curPose.getRotation().getRadians()),71+curPose.getTranslation().y()+l*Math.sin(deg2rad(A1+curPose.getRotation().getDegrees())),20,50));
-            sWaypoints.add(new Waypoint(curPose.getTranslation().x()+l*Math.cos(deg2rad(A1+curPose.getRotation().getDegrees())),40+curPose.getTranslation().y()+l*Math.sin(deg2rad(A1+curPose.getRotation().getDegrees())),0,50));
+            sWaypoints.add(new Waypoint(curPose.getTranslation().x()+k*Math.cos(curPose.getRotation().getRadians()),DISTANCE_OUT + 31+curPose.getTranslation().y()+l*Math.sin(deg2rad(A1+curPose.getRotation().getDegrees())),20,VISION_PATH_DRIVE_SPEED));
+            sWaypoints.add(new Waypoint(curPose.getTranslation().x()+l*Math.cos(deg2rad(A1+curPose.getRotation().getDegrees())), DISTANCE_OUT + curPose.getTranslation().y()+l*Math.sin(deg2rad(A1+curPose.getRotation().getDegrees())),0,VISION_PATH_DRIVE_SPEED));
             System.out.println(sWaypoints);
             System.out.println("Angle 1:"+A1);
             System.out.println("Angle2:"+ A2);
             System.out.println("Distance:"+l);
             _path = PathBuilder.buildPathFromWaypoints(sWaypoints);
-            _theta = 180/Math.PI*(Math.atan2(70+l*Math.sin(deg2rad(A1+curPose.getRotation().getDegrees())),l*Math.cos(deg2rad(A1+curPose.getRotation().getDegrees()))));
+            _theta = 180/Math.PI*(Math.atan2(DISTANCE_OUT + 30 +l*Math.sin(deg2rad(A1+curPose.getRotation().getDegrees())),l*Math.cos(deg2rad(A1+curPose.getRotation().getDegrees()))));
         }
         System.out.println("Theta Turn:" + Double.toString(GyroNavX.getInstance().getYaw()-_theta));
     
@@ -75,8 +78,9 @@ public class problem{
         System.out.println("Distance:"+_distance);
         double a1 = deg2rad(A1);
         double H = deg2rad(curPose.getRotation().getDegrees());
-        _theta = 180/Math.PI*(Math.atan2(l*Math.sin(a1 + H),l*Math.cos(a1 + H)));
+        double unsignedTheta = Math.abs(180/Math.PI*(Math.atan2(l*Math.sin(a1 + H),l*Math.cos(a1 + H))));
         double targetAngle = A2+A1+GyroNavX.getInstance().getYaw();
+        _theta = Math.copySign(unsignedTheta, targetAngle);
         System.out.println("TargetAngle:" + targetAngle);
         System.out.println("CurrentAngle:"+_theta);
         _path= PathBuilder.buildPathFromWaypoints(PathBuilder.getStraightPathWaypoints(curPose.getTranslation(), _theta, l-20));
