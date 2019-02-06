@@ -45,6 +45,7 @@ public class DistanceRev2mSensor implements IDistanceSensor{
 
 		SmartDashboard.putBoolean("VL53LOX:isSensorPresent", get_isSensorPresent());
 
+		// start a separate thread to talk to the sensor
 		Thread t = new Thread(() -> {
 			while (!Thread.interrupted()) {
 				long start = System.nanoTime();
@@ -65,15 +66,9 @@ public class DistanceRev2mSensor implements IDistanceSensor{
 			_distanceSensor.setVcselPulsePeriod(VL53L0X.vcselPeriodType.VcselPeriodFinalRange, 14);
 	}
 
-
-	public void updateDashboard(){
-		SmartDashboard.putNumber("VL53LOX:DistanceInInches", get_distanceToTargetInInches());
-		SmartDashboard.putBoolean("VL53LOX:didTimeoutOccur", get_didTimeoutOccur());
-		
-	}
-	
-  	public void updateLogData(LogDataBE logData) {
-	}
+    // ====================================================================
+    // Property Accessors
+    // ====================================================================
 
 	@Override
 	public double get_distanceToTargetInInches() {
@@ -90,4 +85,17 @@ public class DistanceRev2mSensor implements IDistanceSensor{
 	public boolean get_isSensorPresent(){
 		return _isSensorPresent;
 	} 
+
+	// ====================================================================
+    // Logging Methods
+	// ====================================================================
+	
+	public void updateLogData(LogDataBE logData) {
+	}
+
+	public void updateDashboard(){
+		SmartDashboard.putNumber("VL53LOX:DistanceInInches", get_distanceToTargetInInches());
+		SmartDashboard.putBoolean("VL53LOX:didTimeoutOccur", get_didTimeoutOccur());
+		
+	}
 }

@@ -53,7 +53,7 @@ public class Robot extends TimedRobot {
   private StoredPressureSensor _pressureSensor = StoredPressureSensor.getInstance();
 
   private IVisionSensor _vision = VisionLL.getInstance();      // Limelight
-  private VisionIP _visionIP = VisionIP.getInstance();   // IPhone
+  //private IVisionSensor _vision = VisionIP.getInstance();   // IPhone
   private GyroNavX _navX = GyroNavX.getInstance();
 
   // ux
@@ -216,7 +216,6 @@ public class Robot extends TimedRobot {
 	    	if(_distanceRev2mSensor != null)  { _distanceRev2mSensor.updateDashboard(); }
         if(_vision != null)               { _vision.updateDashboard(); }
         if(_pressureSensor != null)       { _pressureSensor.updateDashboard(); }
-        if(_visionIP != null)               { _visionIP.updateDashboard(); }
 	    	
     		// write the overall robot dashboard info
 	    	SmartDashboard.putString("Robot Build", _buildMsg);
@@ -251,7 +250,6 @@ public class Robot extends TimedRobot {
         if(_autonChoosers != null)        { _autonChoosers.updateLogData(logData); }
 	    	if(_distanceRev2mSensor != null)  { _distanceRev2mSensor.updateLogData(logData); }
         if(_vision != null)               { _vision.updateLogData(logData); }
-        if(_visionIP != null)               { _visionIP.updateLogData(logData); }
         if(_pressureSensor != null)       { _pressureSensor.updateLogData(logData); }
     
 	    	_dataLogger.WriteDataLine(logData);
