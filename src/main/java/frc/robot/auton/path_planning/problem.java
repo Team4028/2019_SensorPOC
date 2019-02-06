@@ -26,6 +26,7 @@ public class problem{
 
     public static void planPathFromVisionData(double A1, double A2, double l, RigidTransform curPose)
     {
+        _targetAngle = A1+A2+GyroNavX.getInstance().getYaw();
         double k = (l*Math.sin(deg2rad(A2)))/Math.sin(deg2rad(180-A1-A2));
         if(k*Math.sin(curPose.getRotation().getRadians())> DISTANCE_OUT + 30 +curPose.getTranslation().y()+l*Math.sin(deg2rad(A1+curPose.getRotation().getDegrees())))
         {
@@ -39,7 +40,6 @@ public class problem{
             System.out.println("Distance:"+l);
             _path = PathBuilder.buildPathFromWaypoints(sWaypoints);
             _theta = GyroNavX.getInstance().getYaw();
-            _targetAngle = A1+A2+GyroNavX.getInstance().getYaw();
         }
         else
         {
