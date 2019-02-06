@@ -50,6 +50,7 @@ public class problem{
     public static void planPathFromVisionData(double A1, double A2, double l, RigidTransform curPose)
     {
         _targetAngle = A1+A2+curPose.getRotation().getDegrees();
+        System.out.println("Target Angle:"+_targetAngle);
         double k = (l*Math.sin(deg2rad(A2)))/Math.sin(deg2rad(180-A1-A2));
         Translation endPoint = new Translation(curPose.getTranslation().x()+l*Math.cos(deg2rad(A1+curPose.getRotation().getDegrees())), curPose.getTranslation().y()+l*Math.sin(deg2rad(A1+curPose.getRotation().getDegrees())));
         RigidTransform endPose = new RigidTransform(endPoint, Rotation.fromDegrees(_targetAngle));
@@ -58,8 +59,8 @@ public class problem{
         {
             List<Waypoint> sWaypoints = new ArrayList<Waypoint>();
             sWaypoints.add(new Waypoint(curPose.getTranslation().x(),curPose.getTranslation().y(),0 ,0));
-            sWaypoints.add(new Waypoint(curPose.getTranslation().x()+k*Math.cos(curPose.getRotation().getRadians()),curPose.getTranslation().y()+k*Math.sin(curPose.getRotation().getRadians()),20,VISION_PATH_DRIVE_SPEED));
-            sWaypoints.add(new Waypoint(curPose.getTranslation().x()+l*Math.cos(deg2rad(A1+curPose.getRotation().getDegrees())), DISTANCE_OUT + curPose.getTranslation().y()+l*Math.sin(deg2rad(A1+curPose.getRotation().getDegrees())),0,VISION_PATH_DRIVE_SPEED));
+            sWaypoints.add(new Waypoint(intersectionPoint.x(), intersectionPoint.y(),20,VISION_PATH_DRIVE_SPEED));
+            sWaypoints.add(new Waypoint(endPoint.x()-DISTANCE_OUT*Math.cos(deg2rad(_targetAngle)),endPoint.y()-DISTANCE_OUT*Math.sin(deg2rad(_targetAngle)) ,0,VISION_PATH_DRIVE_SPEED));
             System.out.println(sWaypoints);
             System.out.println("Angle 1:"+A1);
             System.out.println("Angle2:"+ A2);
@@ -71,8 +72,8 @@ public class problem{
         {
             List<Waypoint> sWaypoints = new ArrayList<Waypoint>();
             sWaypoints.add(new Waypoint(curPose.getTranslation().x(),curPose.getTranslation().y(),0 ,0));
-            sWaypoints.add(new Waypoint(curPose.getTranslation().x()+k*Math.cos(curPose.getRotation().getRadians()),DISTANCE_OUT + 31+curPose.getTranslation().y()+l*Math.sin(deg2rad(A1+curPose.getRotation().getDegrees())),20,VISION_PATH_DRIVE_SPEED));
-            sWaypoints.add(new Waypoint(curPose.getTranslation().x()+l*Math.cos(deg2rad(A1+curPose.getRotation().getDegrees())), DISTANCE_OUT + curPose.getTranslation().y()+l*Math.sin(deg2rad(A1+curPose.getRotation().getDegrees())),0,VISION_PATH_DRIVE_SPEED));
+            sWaypoints.add(new Waypoint(endPoint.x()-(DISTANCE_OUT+30)*Math.cos(deg2rad(_targetAngle)),endPoint.y()-(DISTANCE_OUT+30)*Math.sin(deg2rad(_targetAngle)) ,20,VISION_PATH_DRIVE_SPEED));
+            sWaypoints.add(new Waypoint(endPoint.x()-DISTANCE_OUT*Math.cos(deg2rad(_targetAngle)),endPoint.y()-DISTANCE_OUT*Math.sin(deg2rad(_targetAngle)) ,0,VISION_PATH_DRIVE_SPEED));
             System.out.println(sWaypoints);
             System.out.println("Angle 1:"+A1);
             System.out.println("Angle2:"+ A2);

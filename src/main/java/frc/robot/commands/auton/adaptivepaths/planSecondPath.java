@@ -34,7 +34,7 @@ public class planSecondPath extends Command
     @Override
     protected void initialize() {
         double A1 = _limeLight.get_angle1InDegrees();
-        double A2= _navX.get_angle2InDegreesFromLL(SCORING_TARGET.CARGOSHIP_SIDE_ROCKET, SIDE.RIGHT);
+        double A2= _navX.get_angle2InDegreesFromLL(SCORING_TARGET.ROCKET_FRONT, SIDE.LEFT);
         double distance= _distanceSensor.get_distanceToTargetInInches();
         // double llDistance = _limeLight.get_distanceToTargetInInches();
         // System.out.println("Distance Sensor Distance: " + distance);

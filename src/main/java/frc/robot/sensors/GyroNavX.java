@@ -35,7 +35,7 @@ public class GyroNavX {
 
 	private static final double CARGOSHIP_FRONT_ANGLE = 0;
     private static final double CARGOSHIP_SIDE_ROCKET_ANGLE = -90;
-	private static final double ROCKET_FRONT_ANGLE = 61.25;
+	private static final double ROCKET_FRONT_ANGLE = 28.75;
 	private static final double ROCKET_BACK_ANGLE = 151.25;
 
 	private AHRS _navXSensor;

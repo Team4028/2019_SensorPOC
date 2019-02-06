@@ -27,7 +27,8 @@ public class ezMoneyPlanPath extends Command
     int tries = 0;
     boolean hasSeenTarget = false;
 
-    public ezMoneyPlanPath(int numTries) {
+    public ezMoneyPlanPath(int numTries) 
+    {
         iPath =  null; //problem._path;
         _numTries = numTries;
 
@@ -43,7 +44,7 @@ public class ezMoneyPlanPath extends Command
         if (!(hasSeenTarget)){
             if (_limeLight.get_isTargetInFOV()){
                 double A1 = _limeLight.get_angle1InDegrees();
-                double A2= _navX.get_angle2InDegreesFromLL(SCORING_TARGET.CARGOSHIP_SIDE_ROCKET, SIDE.RIGHT);
+                double A2= _navX.get_angle2InDegreesFromLL(SCORING_TARGET.ROCKET_FRONT, SIDE.LEFT);
                 double distance= _limeLight.get_distanceToTargetInInches();
                 RigidTransform rt = RobotState.getInstance().getLatestFieldToVehicle().getValue();
                 curPose = new RigidTransform(new Translation(rt.getTranslation().x(), rt.getTranslation().y()), Rotation.fromDegrees(_navX.getYaw()));

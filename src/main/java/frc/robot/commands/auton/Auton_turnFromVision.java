@@ -4,12 +4,13 @@ import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.auton.path_planning.problem;
 import frc.robot.auton.pathfollowing.RobotState;
 import frc.robot.auton.pathfollowing.motion.RigidTransform;
-
+import frc.robot.sensors.GyroNavX;
 import frc.robot.subsystems.Chassis;
 
 public class Auton_turnFromVision extends Command
 {
     private Chassis _chassis = Chassis.getInstance();
+    GyroNavX _navX = GyroNavX.getInstance();
 
     private double _targetAngle;
 
@@ -20,7 +21,7 @@ public class Auton_turnFromVision extends Command
     @Override
     protected void initialize()
     {
-        _chassis.setTargetAngleAndTurnDirection(problem._theta, true);
+        _chassis.setTargetAngleAndTurnDirection(problem._theta, problem._theta>_navX.getYaw());
     }
 
     @Override
