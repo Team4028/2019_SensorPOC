@@ -9,6 +9,7 @@ package frc.robot.ux;
 
 import frc.robot.RobotMap;
 import frc.robot.commands.chassis.DriveWithControllers;
+import frc.robot.commands.infeed.AquireHatch;
 import frc.robot.commands.infeed.RunInfeedMotor;
 import frc.robot.commands.infeed.ScoreHatch;
 import frc.robot.commands.infeed.ToggleBeakPosition;
@@ -55,8 +56,9 @@ public class OI {
 
 		_operatorController.a.whenPressed(new ToggleBeakPosition());
 		_operatorController.b.whenPressed(new TogglePunch());
-		_operatorController.y.whenPressed(new ToggleStartPos());
+		_operatorController.y.whenPressed(new AquireHatch());
 		_operatorController.x.whenPressed(new ScoreHatch());
+		_operatorController.rb.whenPressed(new ToggleStartPos());;
 		
 	}
 }
