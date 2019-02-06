@@ -6,6 +6,8 @@ import frc.robot.auton.pathfollowing.PathBuilder;
 import frc.robot.auton.pathfollowing.PathBuilder.Waypoint;
 import frc.robot.auton.pathfollowing.control.Path;
 import frc.robot.auton.pathfollowing.motion.RigidTransform;
+import frc.robot.auton.pathfollowing.motion.Rotation;
+import frc.robot.auton.pathfollowing.motion.Translation;
 import frc.robot.sensors.GyroNavX;
 
 public class problem{
@@ -23,12 +25,36 @@ public class problem{
     public static double deg2rad(double deg){
         return deg*Math.PI /180 ;
     }
+    public static double getDistance(Translation t1, Translation t2)
+    {
+        return Math.sqrt((t1.x() - t2.x()) * (t1.x() - t2.x()) + (t1.y() - t2.y()) * (t1.y() - t2.y()));
+    }
+    public static boolean isIntersectionInFrontofTarget(double intersectionYCoordinate, double targetYCoordinate)
+    {
+        return(intersectionYCoordinate>0 && targetYCoordinate>intersectionYCoordinate)||(intersectionYCoordinate<0 && targetYCoordinate<intersectionYCoordinate);
+    }
+
+    public static Translation getIntersect(RigidTransform startPose, RigidTransform endPose){
+        double x0 = startPose.getTranslation().x();
+        double y0 = startPose.getTranslation().y();
+        double theta0 = startPose.getRotation().getRadians();
+        double x1 = endPose.getTranslation().x();
+        double y1 = endPose.getTranslation().y();
+        double theta1 = endPose.getRotation().getRadians();
+        double xt = ((y0 - y1 + x1 * Math.tan(theta1))/(Math.tan(theta1) - Math.tan(theta0)));
+        double yt = (y0 + Math.tan(theta0)*(xt - x0));
+        return new Translation(xt, yt);
+
+    }
 
     public static void planPathFromVisionData(double A1, double A2, double l, RigidTransform curPose)
     {
-        _targetAngle = A1+A2+GyroNavX.getInstance().getYaw();
+        _targetAngle = A1+A2+curPose.getRotation().getDegrees();
         double k = (l*Math.sin(deg2rad(A2)))/Math.sin(deg2rad(180-A1-A2));
-        if(k*Math.sin(curPose.getRotation().getRadians())> DISTANCE_OUT + 30 +curPose.getTranslation().y()+l*Math.sin(deg2rad(A1+curPose.getRotation().getDegrees())))
+        Translation endPoint = new Translation(curPose.getTranslation().x()+l*Math.cos(deg2rad(A1+curPose.getRotation().getDegrees())), curPose.getTranslation().y()+l*Math.sin(deg2rad(A1+curPose.getRotation().getDegrees())));
+        RigidTransform endPose = new RigidTransform(endPoint, Rotation.fromDegrees(_targetAngle));
+        Translation intersectionPoint = getIntersect(curPose, endPose);
+        if(getDistance(intersectionPoint, endPoint)> DISTANCE_OUT + 30 && isIntersectionInFrontofTarget(intersectionPoint.y(), endPoint.y()))
         {
             List<Waypoint> sWaypoints = new ArrayList<Waypoint>();
             sWaypoints.add(new Waypoint(curPose.getTranslation().x(),curPose.getTranslation().y(),0 ,0));
