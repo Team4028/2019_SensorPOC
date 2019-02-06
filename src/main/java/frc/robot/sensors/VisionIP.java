@@ -13,6 +13,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+
 import frc.robot.RobotMap;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.interfaces.IVisionSensor;
@@ -31,7 +32,7 @@ public class VisionIP implements IVisionSensor {
     private double _distanceInInches;
     private double _angle1InDegrees;
     private boolean _isSocketConnected;
-    private double _time;
+    private String _timeDate;
     private long _timeElapsed;
     private boolean _isVisionThreadRunning;
     private int i = 1;
@@ -69,6 +70,7 @@ public class VisionIP implements IVisionSensor {
     private void startThread() {
         _isVisionThreadRunning = false;
         Thread t = new Thread(() -> {
+            //restart connection if not connected within the max time
             while (i <= _restartThreadTimes && !_isSocketConnected) {
                 openConnection(RobotMap.SOCKET_CLIENT_CONNECTION_IPADRESS, RobotMap.SOCKET_CLIENT_CONNECTION_PORT);
                 if (!_isSocketConnected) { 
@@ -80,18 +82,21 @@ public class VisionIP implements IVisionSensor {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
-                }
+                } 
             }
             while (!Thread.interrupted()) {
                 long start = System.nanoTime();
-                String resp = sendMessage("VISION");
+                String resp = sendMessage("VISION\n");
+                //System.out.println(resp);
                 _isVisionThreadRunning = true;
                 long finish = System.nanoTime();
                 _timeElapsed = finish - start;
+                // spilt for the first time into key-value pairs
                 String[] kvPairs = resp.split("\\|");
 
                 for (String kvPair : kvPairs) {
-                    String[] kv = kvPair.split("\\:");
+                    //split key and value
+                    String[] kv = kvPair.split("\\^");
                     String key = kv[0];
                     String value = kv[1];
 
@@ -100,11 +105,12 @@ public class VisionIP implements IVisionSensor {
                      
                     } else if (key.equals("angle1")) {
                         _angle1InDegrees = Double.parseDouble(value);
+
                     } else if (key.equals("distance")) {
                         _distanceInInches = Double.parseDouble(value);
                         
                     }else if (key.equals("time")){
-                        _time = Double.parseDouble(value);
+                        _timeDate = (value);
                     }
                 }
             }
@@ -153,8 +159,8 @@ public class VisionIP implements IVisionSensor {
         return _isSocketConnected;
     }
 
-    public double get_time(){
-        return _time;
+    public String get_time(){
+        return _timeDate;
     }
 
     public boolean get_isVisionThreadRunning(){
@@ -181,7 +187,7 @@ public class VisionIP implements IVisionSensor {
         SmartDashboard.putBoolean("VisionIP:isInFovRunning", get_isTargetInFOV());
         SmartDashboard.putNumber("VisionIP:Angle1InDegrees", get_angle1InDegrees());
         SmartDashboard.putNumber("VisionIP:DistanceInInches", get_distanceToTargetInInches());
-        SmartDashboard.putNumber("VisionIP:time", get_time());
+        SmartDashboard.putString("VisionIP:time", get_time());
         SmartDashboard.putBoolean("VisionIP:IsVisionThreadRunning", get_isVisionThreadRunning());
     }
 
