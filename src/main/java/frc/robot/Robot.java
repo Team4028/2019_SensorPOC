@@ -25,7 +25,6 @@ import frc.robot.subsystems.Cargo;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Hatch;
 import frc.robot.util.DataLogger;
 import frc.robot.util.GeneralUtilities;
 import frc.robot.util.LogDataBE;
@@ -66,7 +65,6 @@ public class Robot extends TimedRobot {
   private Cargo _cargo = Cargo.getInstance();
   private Climber _climber = Climber.getInstance();
   private Elevator _elevator = Elevator.getInstance();
-  private Hatch _hatch = Hatch.getInstance();
 
 	// class level working variables
 	private DataLogger _dataLogger = null;
@@ -130,6 +128,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     Scheduler.getInstance().run();
+  
   }
 
   /********************************************************************************************
@@ -210,7 +209,6 @@ public class Robot extends TimedRobot {
         if(_cargo != null)                { _cargo.updateDashboard(); }
         if(_climber != null)              { _climber.updateDashboard(); }
         if(_elevator != null)             { _elevator.updateDashboard(); }
-        if(_hatch != null)                { _hatch.updateDashboard(); }
 
         if(_autonChoosers != null)        { _autonChoosers.updateDashboard(); }
 	    	if(_distanceRev2mSensor != null)  { _distanceRev2mSensor.updateDashboard(); }
@@ -245,7 +243,6 @@ public class Robot extends TimedRobot {
         if(_cargo != null)                { _cargo.updateLogData(logData); }
         if(_climber != null)              { _climber.updateLogData(logData); }
         if(_elevator != null)             { _elevator.updateLogData(logData); }
-        if(_hatch != null)                { _hatch.updateLogData(logData); }
 
         if(_autonChoosers != null)        { _autonChoosers.updateLogData(logData); }
 	    	if(_distanceRev2mSensor != null)  { _distanceRev2mSensor.updateLogData(logData); }
