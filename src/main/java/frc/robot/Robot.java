@@ -52,7 +52,7 @@ public class Robot extends TimedRobot {
   private StoredPressureSensor _pressureSensor = StoredPressureSensor.getInstance();
 
   private IVisionSensor _vision = VisionLL.getInstance();      // Limelight
-  //private VisionLIP _vision = VisionIP.getInstance();   // IPhone
+  //private IVisionSensor _vision = VisionIP.getInstance();   // IPhone
   private GyroNavX _navX = GyroNavX.getInstance();
 
   // ux

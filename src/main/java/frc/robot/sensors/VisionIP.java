@@ -13,6 +13,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+
 import frc.robot.RobotMap;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.interfaces.IVisionSensor;
@@ -38,7 +39,7 @@ public class VisionIP implements IVisionSensor {
     private double _distanceInInches;
     private double _angle1InDegrees;
     private boolean _isSocketConnected;
-    private double _sensorTime;
+    private String _timeDate;
     private long _timeElapsed;
     private boolean _isVisionThreadRunning;
     private int i = 1;
@@ -73,20 +74,23 @@ public class VisionIP implements IVisionSensor {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                }
+                } 
             }
 
             // main loop to poll socket server
             while (!Thread.interrupted()) {
                 long start = System.nanoTime();
-                String resp = sendMessage("VISION");
+                String resp = sendMessage("VISION\n");
+                //System.out.println(resp);
                 _isVisionThreadRunning = true;
                 long finish = System.nanoTime();
                 _timeElapsed = finish - start;
+                // spilt for the first time into key-value pairs
                 String[] kvPairs = resp.split("\\|");
 
                 for (String kvPair : kvPairs) {
-                    String[] kv = kvPair.split("\\:");
+                    //split key and value
+                    String[] kv = kvPair.split("\\^");
                     String key = kv[0];
                     String value = kv[1];
 
@@ -95,15 +99,17 @@ public class VisionIP implements IVisionSensor {
                      
                     } else if (key.equals("angle1")) {
                         _angle1InDegrees = Double.parseDouble(value);
+
                     } else if (key.equals("distance")) {
                         _distanceInInches = Double.parseDouble(value);
                         
                     }else if (key.equals("time")){
-                        _sensorTime = Double.parseDouble(value);
+                        _timeDate = (value);
                     }
                 }
             }
-        });t.start();
+        });
+        t.start();
     }
 
     private void openConnection(String ipAddress, int port) {
@@ -167,8 +173,8 @@ public class VisionIP implements IVisionSensor {
         return _isSocketConnected;
     }
 
-    private double get_sensorTime(){
-        return _sensorTime;
+    public String get_time(){
+        return _timeDate;
     }
 
     private boolean get_isVisionThreadRunning(){
@@ -191,7 +197,7 @@ public class VisionIP implements IVisionSensor {
         SmartDashboard.putNumber("Vision:CycleTimeMSec", _timeElapsed / 1000000);
         SmartDashboard.putNumber("VisionIP:Angle1InDegrees", get_angle1InDegrees());
         SmartDashboard.putNumber("VisionIP:DistanceInInches", get_distanceToTargetInInches());
-        SmartDashboard.putNumber("VisionIP:SensorTime", get_sensorTime());
+        SmartDashboard.putString("VisionIP:time", get_time());
         SmartDashboard.putBoolean("VisionIP:IsVisionThreadRunning", get_isVisionThreadRunning());
         SmartDashboard.putBoolean("VisionIP:isSocketConnected", get_isSocketConnected());
     }
