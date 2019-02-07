@@ -41,6 +41,9 @@ public class StoredPressureSensor implements IBeakSquadSubsystem {
 		return 250 * (_analogPressureSensor.getVoltage() / SUPPLY_VOLTAGE) - 25;
 	}
 
+	// ====================================================================
+    // Logging Methods
+	// ====================================================================
 	@Override
 	public void updateLogData(LogDataBE logData) {
 
