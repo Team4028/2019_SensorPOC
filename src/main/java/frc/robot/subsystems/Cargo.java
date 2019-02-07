@@ -192,10 +192,10 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
   
       Value currentPunchPos = _punchSolenoid.get();
       if (currentPunchPos == PUNCH_OUT) {
-        setPunch(PUNCH_POSITION.OUT);
+        setPunch(PUNCH_POSITION.IN);
 
       } else {
-        setPunch(PUNCH_POSITION.IN);
+        setPunch(PUNCH_POSITION.OUT);
       }
   }
     

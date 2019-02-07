@@ -59,6 +59,5 @@ public class OI {
 		_operatorController.y.whenPressed(new AquireHatch());
 		_operatorController.x.whenPressed(new ScoreHatch());
 		_operatorController.rb.whenPressed(new ToggleStartPos());;
-		
 	}
 }

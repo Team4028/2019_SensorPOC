@@ -8,6 +8,7 @@
 package frc.robot.commands.infeed;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Cargo;
 import frc.robot.subsystems.Cargo.BEAK_POSITION;
 import frc.robot.subsystems.Cargo.PUNCH_POSITION;
@@ -16,14 +17,18 @@ public class ScoreHatch extends Command {
 
   // local working variables
   private final int SLEEP_TIME_IN_MS = 100;
+  private final int SLEEP_2_TIME_IN_MS = 500;
 
   private long _startTimeInMs = 0;
   private enum SCORE_STEP
   {
     UNDEFINED,
-    BEAK_STEP,
+    BEAK_CLOSE_STEP,
     WAIT_STEP,
-    PUNCH_STEP
+    PUNCH_OUT_STEP,
+    WAIT_PUNCH_IN_STEP,
+    PUNCH_IN_STEP, 
+    FINISHED_STEP
   }
   private SCORE_STEP _currentStep = SCORE_STEP.UNDEFINED;
 
@@ -39,14 +44,14 @@ public class ScoreHatch extends Command {
   @Override
   protected void initialize() 
   { 
-    _currentStep = SCORE_STEP.BEAK_STEP;
+    _currentStep = SCORE_STEP.BEAK_CLOSE_STEP;
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() 
   {
-    if(_currentStep == SCORE_STEP.BEAK_STEP)
+    if(_currentStep == SCORE_STEP.BEAK_CLOSE_STEP)
     {
       _cargo.setBeak(BEAK_POSITION.CLOSED);
       _currentStep = SCORE_STEP.WAIT_STEP;
@@ -58,16 +63,37 @@ public class ScoreHatch extends Command {
       long elapsedTimeInMs = currentTimeInMs - _startTimeInMs;
       if (elapsedTimeInMs > SLEEP_TIME_IN_MS)
       {
-        _currentStep = SCORE_STEP.PUNCH_STEP;
-        _cargo.setPunch(PUNCH_POSITION.OUT);
+        _currentStep = SCORE_STEP.PUNCH_OUT_STEP;
       }
     }
+    else if (_currentStep == SCORE_STEP.PUNCH_OUT_STEP)
+    {
+      _cargo.setPunch(PUNCH_POSITION.OUT);
+      _currentStep = SCORE_STEP.WAIT_PUNCH_IN_STEP;
+      _startTimeInMs = System.nanoTime() / 1000000;
+    }
+    else if(_currentStep == SCORE_STEP.WAIT_PUNCH_IN_STEP)
+    {
+      long currentTimeInMs = System.nanoTime() / 1000000;
+      long elapsedTimeInMs = currentTimeInMs - _startTimeInMs;
+      if (elapsedTimeInMs > SLEEP_2_TIME_IN_MS)
+      {
+        _currentStep = SCORE_STEP.PUNCH_IN_STEP;
+      }
+    }
+    else if(_currentStep == SCORE_STEP.PUNCH_IN_STEP)
+    {
+      _cargo.setPunch(PUNCH_POSITION.IN);
+      _currentStep = SCORE_STEP.FINISHED_STEP;
+    }
+
+    SmartDashboard.putString("CargoCMD:State", _currentStep.toString());
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return (_currentStep == SCORE_STEP.PUNCH_STEP);
+    return (_currentStep == SCORE_STEP.FINISHED_STEP);
   }
 
   // Called once after isFinished returns true
