@@ -98,7 +98,7 @@ DriverStation.reportWarning("The Comand Should Be Schdeuled", false);
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    //_currentStep = AQUIRE_HATCH_STEP.UNDEFINED;
+    //∏_currentStep = AQUIRE_HATCH_STEP.UNDEFINED;
   }
 
   // Called when another command which requires one or more of the same
