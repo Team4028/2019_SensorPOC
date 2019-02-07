@@ -23,8 +23,11 @@ public class DriveVisionDistance extends Command
         double llDistance = _limeLight.get_distanceToTargetInInches();
         System.out.println("Distance Sensor Distance: " + distance);
         System.out.println("LimeLight Distance: " + llDistance);
-        _chassis.setMotionMagicCmdInches(distance-22);
-
+        if (distance > 0){
+            _chassis.setMotionMagicCmdInches(distance-22);
+        } else {
+            _chassis.setMotionMagicCmdInches(llDistance-22);
+        }
     }
     @Override
     protected void execute() {

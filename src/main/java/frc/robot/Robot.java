@@ -160,9 +160,10 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     Scheduler.getInstance().run();
-    System.out.println("Angle 1: " + _vision.get_angle1InDegrees());
-    System.out.println(_vision.get_distanceToTargetInInches());
-    System.out.println(_navX.get_angle2InDegreesFromLL(SCORING_TARGET.CARGOSHIP_SIDE_ROCKET, SIDE.LEFT));
+    System.out.println(_navX.getYaw());
+    // System.out.println("Angle 1: " + _vision.get_angle1InDegrees());
+    // System.out.println(_vision.get_distanceToTargetInInches());
+    // System.out.println(_navX.get_angle2InDegreesFromLL(SCORING_TARGET.CARGOSHIP_SIDE_ROCKET, SIDE.LEFT));
   }
 
   /********************************************************************************************
