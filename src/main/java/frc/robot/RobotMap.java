@@ -26,6 +26,7 @@ public class RobotMap
 	
 	// PCM Can Bus Address
 	public static final int PCM_CAN_ADDR = 0;
+	public static final int CARGO_VICTOR_ADDR = 1;
 	
 	// Motor Controller Can Bus Address
 	//public static final int LEFT_DRIVE_MASTER_CAN_ADDR = 0;
@@ -54,7 +55,15 @@ public class RobotMap
 	public static final int PWM_LED_PORT = 0;
 	
 	// PCM Ports
-	//public static final int CARRIAGE_SQUEEZE_PCM_PORT = 0;
+	public static final int PCM_FORWARD_BEAK_SOLENOID_PORT = 0;
+	public static final int PCM_REVERSE_BEAK_SOLENOID_PORT = 1;
+	public static final int PCM_FORWARD_PUNCH_SOLENOID_PORT = 2;
+	public static final int PCM_REVERSE_PUNCH_SOLENOID_PORT = 3;
+	public static final int PCM_FORWARD_INOUT_SOLENOID_PORT = 4;
+	public static final int PCM_REVERSE_INOUT_SOLENOID_PORT = 5;
+
+
+
 
 	//I2C Ports
 	public static final I2C.Port I2C_SENSOR_PORT = I2C.Port.kOnboard;
