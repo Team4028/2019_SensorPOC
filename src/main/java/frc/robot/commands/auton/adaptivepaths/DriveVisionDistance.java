@@ -13,6 +13,7 @@ public class DriveVisionDistance extends Command
     DistanceRev2mSensor _distanceSensor = DistanceRev2mSensor.getInstance();
     VisionLL _limeLight = VisionLL.getInstance();
     boolean isFirstCycle = true;
+    private static final double OFFSET = 24.5;
 
     public DriveVisionDistance(){}
 
@@ -24,9 +25,9 @@ public class DriveVisionDistance extends Command
         System.out.println("Distance Sensor Distance: " + distance);
         System.out.println("LimeLight Distance: " + llDistance);
         if (distance > 0){
-            _chassis.setMotionMagicCmdInches(distance-22);
+            _chassis.setMotionMagicCmdInches(distance-OFFSET);
         } else {
-            _chassis.setMotionMagicCmdInches(llDistance-22);
+            _chassis.setMotionMagicCmdInches(llDistance-OFFSET);
         }
     }
     @Override

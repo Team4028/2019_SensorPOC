@@ -9,12 +9,14 @@ import frc.robot.auton.pathfollowing.motion.RigidTransform;
 import frc.robot.auton.pathfollowing.motion.Rotation;
 import frc.robot.auton.pathfollowing.motion.Translation;
 import frc.robot.sensors.GyroNavX;
+import frc.robot.subsystems.Chassis;
 
 public class problem{
     public static Path _path;
     public static double _theta;
     public static double _distance;
     public static double _targetAngle;
+    public static Chassis _chassis = Chassis.getInstance();
 
     private static final double DISTANCE_OUT = 45;
     private static final double VISION_PATH_DRIVE_SPEED = 40;
@@ -122,7 +124,12 @@ public class problem{
         double H = deg2rad(curPose.getRotation().getDegrees());
         double unsignedTheta = Math.abs(180/Math.PI*(Math.atan2(l*Math.sin(a1 + H),l*Math.cos(a1 + H))));
         double targetAngle = A2+A1+GyroNavX.getInstance().getYaw();
-        _theta = Math.copySign(unsignedTheta, targetAngle);
+        _theta = _chassis.getPositiveHeading()-A1;
+        if(_theta<0)
+        {
+            _theta+=360;
+        }
+        //_theta = Math.copySign(unsignedTheta, targetAngle);
         System.out.println("TargetAngle:" + targetAngle);
         System.out.println("CurrentAngle:"+_theta);
         _path= PathBuilder.buildPathFromWaypoints(PathBuilder.getStraightPathWaypoints(curPose.getTranslation(), _theta, l-20));

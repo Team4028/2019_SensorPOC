@@ -36,9 +36,8 @@ public class planSecondPath extends Command
         double A1 = _limeLight.get_angle1InDegrees();
         double A2= _navX.get_angle2InDegreesFromLL(SCORING_TARGET.ROCKET_FRONT, SIDE.LEFT);
         double distance= _distanceSensor.get_distanceToTargetInInches();
-        // double llDistance = _limeLight.get_distanceToTargetInInches();
-        // System.out.println("Distance Sensor Distance: " + distance);
-        // System.out.println("LimeLight Distance: " + llDistance);
+        System.out.println("Angle 1: " + A1);
+        System.out.println("Heading: " + _navX.getYaw());
         RigidTransform rt = RobotState.getInstance().getLatestFieldToVehicle().getValue();
         curPose = new RigidTransform(new Translation(rt.getTranslation().x(), rt.getTranslation().y()), Rotation.fromDegrees(_navX.getYaw()));
         problem.planSecondPathFromVisionData(A1, A2, distance, curPose);

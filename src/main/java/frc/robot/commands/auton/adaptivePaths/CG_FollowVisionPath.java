@@ -39,7 +39,7 @@ public class CG_FollowVisionPath extends CommandGroup {
         addSequential(new printTimeFromStart());
         addSequential(new Auton_turnFromVision());
         addSequential(new printTimeFromStart());
-        addSequential(new DriveVisionDistance(), 1);
+       // addSequential(new DriveVisionDistance(), 1);
         addSequential(new printTimeFromStart());
 
     }
