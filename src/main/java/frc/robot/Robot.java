@@ -20,6 +20,7 @@ import frc.robot.interfaces.IVisionSensor;
 import frc.robot.sensors.DistanceRev2mSensor;
 import frc.robot.sensors.GyroNavX;
 import frc.robot.sensors.StoredPressureSensor;
+import frc.robot.sensors.SwitchableCameraServer;
 import frc.robot.sensors.VisionIP;
 import frc.robot.subsystems.Cargo;
 import frc.robot.subsystems.Chassis;
@@ -50,6 +51,7 @@ public class Robot extends TimedRobot {
   // sensors
   private DistanceRev2mSensor _distanceRev2mSensor = DistanceRev2mSensor.getInstance();
   private StoredPressureSensor _pressureSensor = StoredPressureSensor.getInstance();
+  private SwitchableCameraServer _cameraServer = SwitchableCameraServer.getInstance();
 
   private IVisionSensor _vision = VisionLL.getInstance();      // Limelight
   //private IVisionSensor _vision = VisionIP.getInstance();   // IPhone
@@ -214,6 +216,8 @@ public class Robot extends TimedRobot {
 	    	if(_distanceRev2mSensor != null)  { _distanceRev2mSensor.updateDashboard(); }
         if(_vision != null)               { _vision.updateDashboard(); }
         if(_pressureSensor != null)       { _pressureSensor.updateDashboard(); }
+        if(_navX != null)                 {_navX.updateDashboard();}
+        if(_cameraServer != null)         {_cameraServer.updateDashboard();}
 	    	
     		// write the overall robot dashboard info
 	    	SmartDashboard.putString("Robot Build", _buildMsg);
