@@ -9,6 +9,12 @@ package frc.robot.ux;
 
 import frc.robot.RobotMap;
 import frc.robot.commands.chassis.DriveWithControllers;
+import frc.robot.commands.infeed.AquireHatch;
+import frc.robot.commands.infeed.RunInfeedMotor;
+import frc.robot.commands.infeed.ScoreHatch;
+import frc.robot.commands.infeed.ToggleBeakPosition;
+import frc.robot.commands.infeed.TogglePunch;
+import frc.robot.commands.infeed.ToggleStartPos;
 import frc.robot.util.BeakXboxController;
 
 /**
@@ -45,5 +51,13 @@ public class OI {
         // =========== Operator ======================================
 		_operatorController = new BeakXboxController(RobotMap.OPERATOR_GAMEPAD_USB_PORT);
 		//==========================================================
-    }
+		_operatorController.leftStick.whileActive(new RunInfeedMotor(_operatorController.leftStick));
+		_operatorController.leftStick.whenReleased(new RunInfeedMotor(_operatorController.leftStick));
+
+		_operatorController.a.whenPressed(new ToggleBeakPosition());
+		_operatorController.b.whenPressed(new TogglePunch());
+		_operatorController.y.whenPressed(new AquireHatch());
+		_operatorController.x.whenPressed(new ScoreHatch());
+		_operatorController.rb.whenPressed(new ToggleStartPos());;
+	}
 }

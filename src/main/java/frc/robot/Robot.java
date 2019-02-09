@@ -11,26 +11,27 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.Date;
 
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-import frc.robot.sensors.VisionLL;
-
+import frc.robot.interfaces.IVisionSensor;
+import frc.robot.sensors.AirCompressor;
 import frc.robot.sensors.DistanceRev2mSensor;
+import frc.robot.sensors.GyroNavX;
 import frc.robot.sensors.StoredPressureSensor;
-import frc.robot.sensors.VisionIP;
+import frc.robot.sensors.VisionLL;
 import frc.robot.subsystems.Cargo;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Hatch;
 import frc.robot.util.DataLogger;
 import frc.robot.util.GeneralUtilities;
 import frc.robot.util.LogDataBE;
 import frc.robot.util.MovingAverage;
 import frc.robot.ux.AutonChoosers;
 import frc.robot.ux.LEDController;
+import frc.robot.ux.OI;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -49,19 +50,22 @@ public class Robot extends TimedRobot {
   // sensors
   private DistanceRev2mSensor _distanceRev2mSensor = DistanceRev2mSensor.getInstance();
   private StoredPressureSensor _pressureSensor = StoredPressureSensor.getInstance();
-  private VisionLL _vision = VisionLL.getInstance();      // Limelight
-  //private VisionLIP _vision = VisionIP.getInstance();   // IPhone
+  private AirCompressor _compressor = AirCompressor.get_instance();
+
+  private IVisionSensor _vision = VisionLL.getInstance();      // Limelight
+  //private IVisionSensor _vision = VisionIP.getInstance();   // IPhone
+  private GyroNavX _navX = GyroNavX.getInstance();
 
   // ux
   private LEDController _leds = LEDController.getInstance();
   private AutonChoosers _autonChoosers = AutonChoosers.getInstance();
+  private OI _oi = OI.getInstance();
 
   // subsystems
   private Chassis _chassis = Chassis.getInstance();
   private Cargo _cargo = Cargo.getInstance();
   private Climber _climber = Climber.getInstance();
   private Elevator _elevator = Elevator.getInstance();
-  private Hatch _hatch = Hatch.getInstance();
 
 	// class level working variables
 	private DataLogger _dataLogger = null;
@@ -91,7 +95,6 @@ public class Robot extends TimedRobot {
     _scanTimeSamples = new MovingAverage(20);
     _lastDashboardWriteTimeMSec = new Date().getTime(); // snapshot time to control spamming
     _dataLogger = GeneralUtilities.setupLogging("Auton"); // init data logging
-    
   }
 
   /**
@@ -100,9 +103,11 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     Scheduler.getInstance().run();
-    _leds.set_targetangle(_vision.get_angle1InDegrees(), _vision.canLLSeeTarget(), _distanceRev2mSensor.get_distanceToTargetInInches());
-       System.out.println(_vision.canLLSeeTarget());
-    
+
+    _leds.set_targetangle(_vision.get_angle1InDegrees(), 
+                          _vision.get_isTargetInFOV(), 
+                          _distanceRev2mSensor.get_distanceToTargetInInches());
+
   }
 
   /********************************************************************************************
@@ -124,6 +129,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     Scheduler.getInstance().run();
+  
   }
 
   /********************************************************************************************
@@ -194,8 +200,8 @@ public class Robot extends TimedRobot {
     	// add scan time sample to calc scan time rolling average
     	_scanTimeSamples.add(new BigDecimal(scanCycleDeltaInMSecs));
     	
-    	if((new Date().getTime() - _lastDashboardWriteTimeMSec) > 100) {
-
+    	//if((new Date().getTime() - _lastDashboardWriteTimeMSec) > 100) {
+        {
         // ----------------------------------------------
     		// each subsystem should add a call to a outputToSmartDashboard method
     		// to push its data out to the dashboard
@@ -204,12 +210,12 @@ public class Robot extends TimedRobot {
         if(_cargo != null)                { _cargo.updateDashboard(); }
         if(_climber != null)              { _climber.updateDashboard(); }
         if(_elevator != null)             { _elevator.updateDashboard(); }
-        if(_hatch != null)                { _hatch.updateDashboard(); }
 
         if(_autonChoosers != null)        { _autonChoosers.updateDashboard(); }
 	    	if(_distanceRev2mSensor != null)  { _distanceRev2mSensor.updateDashboard(); }
         if(_vision != null)               { _vision.updateDashboard(); }
         if(_pressureSensor != null)       { _pressureSensor.updateDashboard(); }
+        if(_compressor != null)           { _compressor.updateDashboard(); }
 	    	
     		// write the overall robot dashboard info
 	    	SmartDashboard.putString("Robot Build", _buildMsg);
@@ -239,12 +245,12 @@ public class Robot extends TimedRobot {
         if(_cargo != null)                { _cargo.updateLogData(logData); }
         if(_climber != null)              { _climber.updateLogData(logData); }
         if(_elevator != null)             { _elevator.updateLogData(logData); }
-        if(_hatch != null)                { _hatch.updateLogData(logData); }
 
         if(_autonChoosers != null)        { _autonChoosers.updateLogData(logData); }
 	    	if(_distanceRev2mSensor != null)  { _distanceRev2mSensor.updateLogData(logData); }
         if(_vision != null)               { _vision.updateLogData(logData); }
         if(_pressureSensor != null)       { _pressureSensor.updateLogData(logData); }
+        if(_compressor != null)           { _compressor.updateLogData(logData); }
     
 	    	_dataLogger.WriteDataLine(logData);
     	}
