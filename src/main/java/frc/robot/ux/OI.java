@@ -50,7 +50,7 @@ public class OI {
 		_driverController.leftStick.whenReleased(new DriveWithControllers(_driverController.leftStick, _driverController.rightStick));
 		_driverController.rightStick.whenReleased(new DriveWithControllers(_driverController.leftStick, _driverController.rightStick));
 		_driverController.a.whenPressed(new Elevator_MoveElevator(ELEVATOR_UP_OR_DOWN.DOWN));
-		_driverController.a.whenPressed(new Elevator_MoveElevator(ELEVATOR_UP_OR_DOWN.UP));
+		_driverController.y.whenPressed(new Elevator_MoveElevator(ELEVATOR_UP_OR_DOWN.UP));
 
         // =========== Operator ======================================
 		_operatorController = new BeakXboxController(RobotMap.OPERATOR_GAMEPAD_USB_PORT);

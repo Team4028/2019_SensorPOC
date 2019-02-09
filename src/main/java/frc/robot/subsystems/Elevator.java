@@ -51,7 +51,7 @@ public class Elevator extends Subsystem {
 
   private Elevator(){
     _elevatorMasterMotor = new TalonSRX(RobotMap.ELEVATOR_MASTER_CAN_ADDR);
-    _elevatorSlaveMotor = new TalonSRX(RobotMap.ELEVATOR_MASTER_CAN_ADDR);
+    _elevatorSlaveMotor = new TalonSRX(RobotMap.ELEVATOR_SLAVE_CAN_ADDR);
 
     _elevatorSlaveMotor.follow(_elevatorMasterMotor);
 
@@ -59,8 +59,8 @@ public class Elevator extends Subsystem {
     _elevatorMasterMotor.setInverted(false);
 
     // Configure Limit Switch
-    _elevatorMasterMotor.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyClosed);
-    _elevatorMasterMotor.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyClosed);
+    _elevatorMasterMotor.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
+    _elevatorMasterMotor.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
 
     // Turn of all soft limits
     _elevatorMasterMotor.configForwardSoftLimitEnable(false, 0);
@@ -103,10 +103,10 @@ public class Elevator extends Subsystem {
   public void moveElevator(ELEVATOR_UP_OR_DOWN elevatorUpOrDown){
     switch(elevatorUpOrDown){
       case UP:
-          _elevatorMasterMotor.set(ControlMode.PercentOutput, .05);
+          _elevatorMasterMotor.set(ControlMode.PercentOutput, .1);
         break;
       case DOWN:
-        _elevatorMasterMotor.set(ControlMode.PercentOutput, -.05);
+        _elevatorMasterMotor.set(ControlMode.PercentOutput, -.2);
         break;
     }
   }
