@@ -36,8 +36,13 @@ public class SwitchableCameraServer {
             _currentCameraAddress = RobotMap.RASPBERRY_PI_CAMERA_1_ADDRESS;
         }
         else if (_currentCameraIndex == 1) {
-            _currentCameraIndex = 0;
+            _currentCameraIndex = 2;
             _currentCameraAddress = RobotMap.RASPBERRY_PI_CAMERA_2_ADDRESS;
+        }
+        else if (_currentCameraIndex == 2) {
+            _currentCameraIndex = 0;
+            _currentCameraAddress = RobotMap.LIMELIGHT_CAMERA_ADDRESS;
+            
         } else {
             DriverStation.reportWarning("Camera Index Out of Range", false);
             _currentCameraIndex = 0;
