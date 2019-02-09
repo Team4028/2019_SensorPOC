@@ -38,21 +38,21 @@ public class CG_FollowVisionPath extends CommandGroup {
         addSequential(new Auton_turnFromVision());
         addSequential(new PrintCommand("VISION TURN TERMINATING"));
         addSequential(new printTimeFromStart());
-        addSequential(new Auton_RunProfileFromVision(5.));
+        addSequential(new Auton_RunProfileFromVision());
         addSequential(new PrintCommand("VISION PATH TERMINATING"));
         addSequential(new printTimeFromStart());
-        // addSequential(new FindTarget(target, side));
-        // addSequential(new PrintCommand("VISION TARGET FOUND"));
-        // addSequential(new printTimeFromStart());
-        // addSequential(new planSecondPath(target, side));
-        // addSequential(new PrintCommand("SECOND PATH PLANNED"));
-        // addSequential(new printTimeFromStart());
-        // addSequential(new Auton_turnFromVision());
-        // addSequential(new PrintCommand("SECOND VISION TURN TERMINATING"));
-        // addSequential(new printTimeFromStart());
-        // addSequential(new DriveVisionDistance(), 1.5);
-        // addSequential(new PrintCommand("VISION DRIVE STRAIT TERMINATING"));
-        // addSequential(new printTimeFromStart());
+        addSequential(new FindTarget(target, side));
+        addSequential(new PrintCommand("VISION TARGET FOUND"));
+        addSequential(new printTimeFromStart());
+        addSequential(new planSecondPath(target, side));
+        addSequential(new PrintCommand("SECOND PATH PLANNED"));
+        addSequential(new printTimeFromStart());
+        addSequential(new Auton_turnFromVision());
+        addSequential(new PrintCommand("SECOND VISION TURN TERMINATING"));
+        addSequential(new printTimeFromStart());
+        addSequential(new DriveVisionDistance(), 1.5);
+        addSequential(new PrintCommand("VISION DRIVE STRAIT TERMINATING"));
+        addSequential(new printTimeFromStart());
 
     }
 

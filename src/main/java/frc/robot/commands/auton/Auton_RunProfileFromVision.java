@@ -2,6 +2,7 @@ package frc.robot.commands.auton;
 
 import frc.robot.auton.path_planning.problem;
 import frc.robot.auton.pathfollowing.RobotState;
+import frc.robot.auton.pathfollowing.Paths.Center;
 import frc.robot.auton.pathfollowing.control.Path;
 import frc.robot.subsystems.Chassis;
 
@@ -13,64 +14,39 @@ public class Auton_RunProfileFromVision extends Command
     Chassis _chassis = Chassis.getInstance();
     private Path _path;
     private double _startTime;
-    double _maxTime;
-    RobotState _inst = RobotState.getInstance();
-    int count = 0;
-    int latencyCycles;
 
-    public Auton_RunProfileFromVision( double maxTime)
+    public Auton_RunProfileFromVision()
     {
         requires(_chassis);
-        _maxTime = maxTime;
     }
 
     @Override
     protected void initialize() {
-        latencyCycles = 0;        
+        _path = problem._path;
+        RobotState.getInstance().reset(Timer.getFPGATimestamp(), _path.getStartPose());
+		_chassis.setWantDrivePath(_path, _path.isReversed());
+		//_chassis.setHighGear(true);
+		_startTime = Timer.getFPGATimestamp();
     }
-    
     @Override
     protected void execute() {
-        if (latencyCycles > 10){
-            if(Timer.getFPGATimestamp() - _startTime > 0.25) {
-                if(_chassis.getLeftPos() == 0 || _chassis.getRightPos() == 0) {
-                    count++;
-                    if(count==8)
-                    {
-                        _chassis.forceDoneWithPath();
-                        System.out.println(_chassis.getLeftPos());
-                        System.out.println(_chassis.getRightPos());
-                        System.out.println("Attention Idiots: You Morons Forgot to Plug in The Encoder");
-                    }
-                    else
-                    {
-                        count=0;
-                    }
-                    
-                }
-            }
-        } else {
-            latencyCycles++;
-        }
-        
+        if(Timer.getFPGATimestamp() - _startTime > 0.25) {
+            if(_chassis.getLeftPos() == 0 || _chassis.getRightPos() == 0) 
+            {
+                System.out.println(_chassis.getLeftPos());
+                System.out.println(_chassis.getRightPos());
+				_chassis.forceDoneWithPath();
+				System.out.println("Attention Idiots: You Morons Forgot to Plug in The Encoder");
+			}
+		}
     }
     @Override
     protected boolean isFinished() {
-        //System.out.println("Does the bloody Motion Profile Comand know how freaking lucky it is to Finish?");
-        if (Math.floor(Timer.getFPGATimestamp() * 1000) % 1000 == 0){
-            System.out.println("Second gotten to:" + Timer.getFPGATimestamp());
-        } if (_chassis.isDoneWithPath() || Timer.getFPGATimestamp()-_startTime>=_maxTime){
-            System.out.println("Motion Profile Terminating");
-            return true;
-        } else {
-            return false;
-        }
+        return _chassis.isDoneWithPath();
     }
     @Override
     protected void end() {
-        System.out.println("Motion Profile Properly Terminated");
         _chassis.stop();
-        System.out.println("cAngle: " + _chassis.getHeading());
     }
 
 }

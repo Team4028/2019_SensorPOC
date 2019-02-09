@@ -24,6 +24,8 @@ public class FindTarget extends Command
     boolean seenSecondCycle = false;
     boolean seenThirdCycle = false;
     double deltaTheta;
+    double counter = 0;
+
 
 
     public FindTarget(SCORING_TARGET target, SIDE side) 
@@ -45,40 +47,22 @@ public class FindTarget extends Command
     protected void execute() 
     {
         _chassis.setLeftRightCommand(ControlMode.PercentOutput, -1 * Math.copySign(0.2, deltaTheta), Math.copySign(0.2, deltaTheta));
+        System.out.println(Math.copySign(0.2, deltaTheta));
+        if(_limeLight.get_isTargetInFOV())
+        {
+            counter++;
+        }
+        else
+        {
+            counter = 0;
+        }
+
     }
 
     @Override
     protected boolean isFinished() {
-        if (! seenFirstCycle){
-            if (_limeLight.get_isTargetInFOV()){
-                seenFirstCycle = true;
-            } else {
-                seenFirstCycle = false;
-                seenSecondCycle = false;
-                seenThirdCycle = false;
-            }
-            return false;
-        } else if (! seenSecondCycle) {
-            if (_limeLight.get_isTargetInFOV()){
-                seenSecondCycle = true;
-            } else {
-                seenFirstCycle = false;
-                seenSecondCycle = false;
-                seenThirdCycle = false;
-            }
-            return false;
-        } else if (! seenThirdCycle){
-            if (_limeLight.get_isTargetInFOV()){
-                seenThirdCycle = true;
-            } else {
-                seenFirstCycle = false;
-                seenSecondCycle = false;
-                seenThirdCycle = false;
-            }
-            return false;
-        } else {
-            return false;
-        }
+        return counter>=3;
+        
     }
     @Override
     protected void end() 

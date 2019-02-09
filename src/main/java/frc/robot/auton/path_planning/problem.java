@@ -73,7 +73,7 @@ public class problem{
             System.out.println("Intersection Viable Case");
             List<Waypoint> sWaypoints = new ArrayList<Waypoint>();
             sWaypoints.add(new Waypoint(curPose.getTranslation().x(),curPose.getTranslation().y(),0 ,0));
-            sWaypoints.add(new Waypoint(intersectionPoint.x(), intersectionPoint.y(),25,VISION_PATH_DRIVE_SPEED));
+            sWaypoints.add(new Waypoint(intersectionPoint.x(), intersectionPoint.y(),Math.min(25, getDistance(curPose.getTranslation(), intersectionPoint)),VISION_PATH_DRIVE_SPEED));
             sWaypoints.add(new Waypoint(targetPoint.x(), targetPoint.y() ,0,VISION_PATH_DRIVE_SPEED));
             System.out.println(sWaypoints);
             System.out.println("Angle 1:"+A1);
@@ -88,7 +88,7 @@ public class problem{
             Translation middlePoint = getDistanceOutBetween(curPose.getTranslation(), targetPoint, 35, deg2rad(_targetAngle));
             List<Waypoint> sWaypoints = new ArrayList<Waypoint>();
             sWaypoints.add(new Waypoint(curPose.getTranslation().x(),curPose.getTranslation().y(),0 ,0));
-            sWaypoints.add(new Waypoint(middlePoint.x(), middlePoint.y() ,25, VISION_PATH_DRIVE_SPEED));
+            sWaypoints.add(new Waypoint(middlePoint.x(), middlePoint.y() ,Math.min(25, getDistance(curPose.getTranslation(), middlePoint)), VISION_PATH_DRIVE_SPEED));
             sWaypoints.add(new Waypoint(targetPoint.x(), targetPoint.y(),0, VISION_PATH_DRIVE_SPEED));
             System.out.println(sWaypoints);
             System.out.println("Angle 1:"+A1);

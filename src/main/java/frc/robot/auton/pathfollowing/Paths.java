@@ -165,8 +165,8 @@ public class Paths {
 		//DEMO PATH DOS
 		demoPathDos = buildPathFromWaypoints(Arrays.asList(
 			new Waypoint(50,50,0,0),
-			new Waypoint(145,50,28,20),
-			new Waypoint(145,96,0,20)
+			new Waypoint(145,50,20,20),
+			new Waypoint(145,71,0,20)
 		));
 		centerPaths.put(Center.DEMO_PATH_DOS, demoPathDos);
 		// Auto Run
