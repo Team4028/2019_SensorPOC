@@ -34,8 +34,8 @@ public class RobotMap
 	//public static final int RIGHT_DRIVE_MASTER_CAN_ADDR = 0;
 	//public static final int RIGHT_DRIVE_SLAVE_CAN_ADDR = 0;
 
-	//public static final int ELEVATOR_MASTER_CAN_ADDR = 0;
-	//public static final int ELEVATOR_SLAVE_CAN_ADDR = 0;
+	public static final int ELEVATOR_MASTER_CAN_ADDR = 0;
+	public static final int ELEVATOR_SLAVE_CAN_ADDR = 0;
 
 	//public static final int INFEED_CAN_ADDR = 0;
 

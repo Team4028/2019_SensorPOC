@@ -8,6 +8,7 @@
 package frc.robot.ux;
 
 import frc.robot.RobotMap;
+import frc.robot.commands.Elevator_MoveElevator;
 import frc.robot.commands.chassis.DriveWithControllers;
 import frc.robot.commands.infeed.AquireHatch;
 import frc.robot.commands.infeed.RunInfeedMotor;
@@ -15,6 +16,7 @@ import frc.robot.commands.infeed.ScoreHatch;
 import frc.robot.commands.infeed.ToggleBeakPosition;
 import frc.robot.commands.infeed.TogglePunch;
 import frc.robot.commands.infeed.ToggleStartPos;
+import frc.robot.subsystems.Elevator.ELEVATOR_UP_OR_DOWN;
 import frc.robot.util.BeakXboxController;
 
 /**
@@ -47,6 +49,8 @@ public class OI {
  
 		_driverController.leftStick.whenReleased(new DriveWithControllers(_driverController.leftStick, _driverController.rightStick));
 		_driverController.rightStick.whenReleased(new DriveWithControllers(_driverController.leftStick, _driverController.rightStick));
+		_driverController.a.whenPressed(new Elevator_MoveElevator(ELEVATOR_UP_OR_DOWN.DOWN));
+		_driverController.a.whenPressed(new Elevator_MoveElevator(ELEVATOR_UP_OR_DOWN.UP));
 
         // =========== Operator ======================================
 		_operatorController = new BeakXboxController(RobotMap.OPERATOR_GAMEPAD_USB_PORT);
