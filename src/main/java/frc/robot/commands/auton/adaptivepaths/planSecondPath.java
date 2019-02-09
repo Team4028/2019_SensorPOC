@@ -25,16 +25,20 @@ public class planSecondPath extends Command
     VisionLL _limeLight = VisionLL.getInstance();
     GyroNavX _navX = GyroNavX.getInstance();
     DistanceRev2mSensor _distanceSensor = DistanceRev2mSensor.getInstance();
+    SCORING_TARGET _target;
+    SIDE _side;
     
 
-    public planSecondPath() {
+    public planSecondPath(SCORING_TARGET target, SIDE side) {
+        _target = target;
+        _side = side;
         iPath =  problem._path;
     }
 
     @Override
     protected void initialize() {
         double A1 = _limeLight.get_angle1InDegrees();
-        double A2= _navX.get_angle2InDegreesFromLL(SCORING_TARGET.ROCKET_FRONT, SIDE.LEFT);
+        double A2= _navX.get_angle2InDegreesFromLL(_target, _side);
         double distance= _distanceSensor.get_distanceToTargetInInches();
         System.out.println("Angle 1: " + A1);
         System.out.println("Heading: " + _navX.getYaw());

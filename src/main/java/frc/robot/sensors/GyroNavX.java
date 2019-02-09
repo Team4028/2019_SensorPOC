@@ -88,6 +88,35 @@ public class GyroNavX {
 
 		return angle2;
 	}
+
+	public static double getTargetAngle(SCORING_TARGET target, SIDE side){
+		double scoringTargetAngle = 0;
+		double sideFactor = 0;
+		switch(target){
+			case CARGOSHIP_FRONT:
+				scoringTargetAngle = CARGOSHIP_FRONT_ANGLE;
+				break;
+			case CARGOSHIP_SIDE_ROCKET:
+				scoringTargetAngle = CARGOSHIP_SIDE_ROCKET_ANGLE;
+				break;
+			case ROCKET_FRONT:
+				scoringTargetAngle = ROCKET_FRONT_ANGLE;
+				break;
+			case ROCKET_BACK:
+			scoringTargetAngle = ROCKET_BACK_ANGLE;
+				break;
+		}
+
+		switch(side) {
+			case LEFT:
+				sideFactor = -1;
+				break;
+			case RIGHT:
+				sideFactor = 1;
+				break;
+		}
+		return scoringTargetAngle * sideFactor;
+	}
 	
     public double getYaw() { 
 	return _navXSensor.getYaw();

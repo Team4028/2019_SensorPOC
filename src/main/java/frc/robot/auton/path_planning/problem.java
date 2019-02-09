@@ -58,7 +58,8 @@ public class problem{
         return new Translation(xt, yt);
     }
 
-    public static void planPathFromVisionData(double A1, double A2, double l, RigidTransform curPose)
+    public static void 
+    planPathFromVisionData(double A1, double A2, double l, RigidTransform curPose)
     {
         _targetAngle = A1+A2+curPose.getRotation().getDegrees();
         System.out.println("Target Angle:"+_targetAngle);
@@ -124,12 +125,7 @@ public class problem{
         double H = deg2rad(curPose.getRotation().getDegrees());
         double unsignedTheta = Math.abs(180/Math.PI*(Math.atan2(l*Math.sin(a1 + H),l*Math.cos(a1 + H))));
         double targetAngle = A2+A1+GyroNavX.getInstance().getYaw();
-        _theta = _chassis.getPositiveHeading()-A1;
-        if(_theta<0)
-        {
-            _theta+=360;
-        }
-        //_theta = Math.copySign(unsignedTheta, targetAngle);
+        _theta = Math.copySign(unsignedTheta, targetAngle);
         System.out.println("TargetAngle:" + targetAngle);
         System.out.println("CurrentAngle:"+_theta);
         _path= PathBuilder.buildPathFromWaypoints(PathBuilder.getStraightPathWaypoints(curPose.getTranslation(), _theta, l-20));

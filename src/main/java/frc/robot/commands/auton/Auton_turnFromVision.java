@@ -23,7 +23,11 @@ public class Auton_turnFromVision extends Command
     @Override
     protected void initialize()
     {
-        _chassis.setTargetAngleAndTurnDirection(problem._theta, problem._theta > _navX.getYaw());
+        if (problem._theta >= 0){
+            _chassis.setTargetAngleAndTurnDirection(problem._theta, problem._theta > _navX.getYaw());
+        } else {
+            _chassis.setTargetAngleAndTurnDirection(360 + problem._theta, problem._theta > _navX.getYaw());
+        }
     }
 
     @Override

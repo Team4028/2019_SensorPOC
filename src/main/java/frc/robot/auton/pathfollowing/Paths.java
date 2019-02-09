@@ -20,6 +20,7 @@ public class Paths {
 	public enum Center {
 		AUTO_RUN,
 		DEMO_PATH,
+		DEMO_PATH_DOS,
 		// First Cube
 		L_SWITCH,
 		R_SWITCH,
@@ -42,6 +43,7 @@ public class Paths {
 		PYRAMID_AGAIN_FROM_R,
 	}
 	private static Path demoPath;
+	private static Path demoPathDos;
 	private static Path autoRunPath;
 	private static Path lSwitchPath, rSwitchPath;
 	private static Path lSwitchToPyramidFrontPath, rSwitchToPyramidFrontPath;
@@ -159,6 +161,14 @@ public class Paths {
 			new Waypoint(200,150,30,60),
 			new Waypoint(230,95,0,60)));
 		centerPaths.put(Center.DEMO_PATH, demoPath);
+
+		//DEMO PATH DOS
+		demoPathDos = buildPathFromWaypoints(Arrays.asList(
+			new Waypoint(50,50,0,0),
+			new Waypoint(145,50,28,20),
+			new Waypoint(145,96,0,20)
+		));
+		centerPaths.put(Center.DEMO_PATH_DOS, demoPathDos);
 		// Auto Run
 		autoRunPath = buildPathFromWaypoints(getStraightPathWaypoints(new Translation(20, 46), 0, 120));
 		centerPaths.put(Center.AUTO_RUN, autoRunPath);

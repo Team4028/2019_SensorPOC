@@ -16,6 +16,7 @@ public class Auton_RunProfileFromVision extends Command
     double _maxTime;
     RobotState _inst = RobotState.getInstance();
     int count = 0;
+    int latencyCycles;
 
     public Auton_RunProfileFromVision( double maxTime)
     {
@@ -25,32 +26,33 @@ public class Auton_RunProfileFromVision extends Command
 
     @Override
     protected void initialize() {
-        _path = problem._path;
-        System.out.println(_path);
-        _inst.reset(Timer.getFPGATimestamp(), _path.getStartPose());
-		_chassis.setWantDrivePath(_path, _path.isReversed());
-		//_chassis.setHighGear(true);
-		_startTime = Timer.getFPGATimestamp();
+        latencyCycles = 0;        
     }
+    
     @Override
     protected void execute() {
-        if(Timer.getFPGATimestamp() - _startTime > 0.25) {
-			if(_chassis.getLeftPos() == 0 || _chassis.getRightPos() == 0) {
-                count++;
-                if(count==8)
-                {
-                    _chassis.forceDoneWithPath();
-                    System.out.println(_chassis.getLeftPos());
-                    System.out.println(_chassis.getRightPos());
-				    System.out.println("Attention Idiots: You Morons Forgot to Plug in The Encoder");
+        if (latencyCycles > 10){
+            if(Timer.getFPGATimestamp() - _startTime > 0.25) {
+                if(_chassis.getLeftPos() == 0 || _chassis.getRightPos() == 0) {
+                    count++;
+                    if(count==8)
+                    {
+                        _chassis.forceDoneWithPath();
+                        System.out.println(_chassis.getLeftPos());
+                        System.out.println(_chassis.getRightPos());
+                        System.out.println("Attention Idiots: You Morons Forgot to Plug in The Encoder");
+                    }
+                    else
+                    {
+                        count=0;
+                    }
+                    
                 }
-                else
-                {
-                    count=0;
-                }
-                
-			}
-		}
+            }
+        } else {
+            latencyCycles++;
+        }
+        
     }
     @Override
     protected boolean isFinished() {
