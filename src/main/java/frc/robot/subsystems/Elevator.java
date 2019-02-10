@@ -50,13 +50,18 @@ public class Elevator extends Subsystem {
   }
 
   private Elevator(){
+    // define master motor
     _elevatorMasterMotor = new TalonSRX(RobotMap.ELEVATOR_MASTER_CAN_ADDR);
-    _elevatorSlaveMotor = new TalonSRX(RobotMap.ELEVATOR_SLAVE_CAN_ADDR);
+    _elevatorMasterMotor.configFactoryDefault();
 
+    // define slave motor
+    _elevatorSlaveMotor = new TalonSRX(RobotMap.ELEVATOR_SLAVE_CAN_ADDR);
+    _elevatorSlaveMotor.configFactoryDefault();
     _elevatorSlaveMotor.follow(_elevatorMasterMotor);
 
     // Set motor phasing
     _elevatorMasterMotor.setInverted(false);
+    _elevatorSlaveMotor.setInverted(false);
 
     // Configure Limit Switch
     _elevatorMasterMotor.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
@@ -70,7 +75,7 @@ public class Elevator extends Subsystem {
     _elevatorMasterMotor.setNeutralMode(NeutralMode.Brake);
     _elevatorSlaveMotor.setNeutralMode(NeutralMode.Brake);
 
-    // Configure Elevator
+    // Configure Encoder
     _elevatorMasterMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
     _elevatorMasterMotor.setSensorPhase(true);
     _elevatorMasterMotor.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 5, 0);
@@ -81,7 +86,7 @@ public class Elevator extends Subsystem {
     _elevatorMasterMotor.configPeakOutputForward(1, 0);
     _elevatorMasterMotor.configPeakOutputReverse(-1, 0);
     
-    //Configur velocity measurement (2X of scan time, looper is 10 mS)
+    //Configur velocity measurement
     _elevatorMasterMotor.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_5Ms, 0);
     _elevatorMasterMotor.configVelocityMeasurementWindow(32, 0);
 
@@ -103,10 +108,10 @@ public class Elevator extends Subsystem {
   public void moveElevator(ELEVATOR_UP_OR_DOWN elevatorUpOrDown){
     switch(elevatorUpOrDown){
       case UP:
-          _elevatorMasterMotor.set(ControlMode.PercentOutput, .1);
+          _elevatorMasterMotor.set(ControlMode.PercentOutput, .3);
         break;
       case DOWN:
-        _elevatorMasterMotor.set(ControlMode.PercentOutput, -.2);
+        _elevatorMasterMotor.set(ControlMode.PercentOutput, -.1);
         break;
     }
   }
