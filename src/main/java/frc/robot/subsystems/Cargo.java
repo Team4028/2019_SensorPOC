@@ -34,6 +34,7 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
   private DoubleSolenoid _beakSolenoid;
   private DoubleSolenoid _punchSolenoid;
   private DoubleSolenoid _mechansimSolenoid;
+  private DoubleSolenoid _releaseSolenoid;
   private Servo _infeedServo;
   private static final Value MECHANISM_EXTENDED = DoubleSolenoid.Value.kForward;
   private static final Value MECHANISM_RETRACTED = DoubleSolenoid.Value.kReverse;
@@ -41,6 +42,9 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
   private static final Value BEAK_CLOSE = DoubleSolenoid.Value.kReverse;
   private static final Value PUNCH_IN = DoubleSolenoid.Value.kForward;
   private static final Value PUNCH_OUT = DoubleSolenoid.Value.kReverse;
+  private static final Value RELEASE_EXTENDED = DoubleSolenoid.Value.kForward;
+  private static final Value RELEASE_RETRACTED= DoubleSolenoid.Value.kReverse;
+
 
   public enum BEAK_POSITION {
     UNDEFINED, 
@@ -57,7 +61,12 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
     EXTENDED,
     RETRACTED
   }
-
+  public enum RELEASE_POSITION {
+    UNDEFINED,
+    EXTENDED,
+    RETRACTED
+  }
+  
   //=====================================================================================
 	// Define Singleton Pattern
 	//=====================================================================================
@@ -75,8 +84,7 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
     _beakSolenoid = new DoubleSolenoid(RobotMap.PCM_FORWARD_BEAK_SOLENOID_PORT,RobotMap.PCM_REVERSE_BEAK_SOLENOID_PORT);
     _punchSolenoid = new DoubleSolenoid(RobotMap.PCM_FORWARD_PUNCH_SOLENOID_PORT, RobotMap.PCM_REVERSE_PUNCH_SOLENOID_PORT);
     _mechansimSolenoid = new DoubleSolenoid(RobotMap.PCM_FORWARD_INOUT_SOLENOID_PORT, RobotMap.PCM_REVERSE_INOUT_SOLENOID_PORT);
-
-    setDefultPosition();
+    _releaseSolenoid = new DoubleSolenoid(RobotMap.PCM_FORWARD_RELEASE_SOLENOID_PORT, RobotMap.PCM_REVERSE_RELEASE_SOLENOID_PORT);
     
   }
 
@@ -92,6 +100,7 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
     _beakSolenoid.set(BEAK_CLOSE);
     _mechansimSolenoid.set(MECHANISM_EXTENDED);
     _punchSolenoid.set(PUNCH_IN);
+    _releaseSolenoid.set(RELEASE_RETRACTED);
   }
 
   // ===================================== 
@@ -162,8 +171,19 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
         {
           DriverStation.reportWarning("MECHANISM SAFETY INTERLOCK U SUC", false);
         }
+      }
     }
-
+    public void setRelease(RELEASE_POSITION releasePosition) {
+  
+      if (releasePosition == RELEASE_POSITION.EXTENDED) {
+        _releaseSolenoid.set(RELEASE_EXTENDED);
+      
+      } 
+      else if (releasePosition == RELEASE_POSITION.RETRACTED) 
+      {
+             _mechansimSolenoid.set(MECHANISM_RETRACTED);
+      }
+    
   }
 
   // =====================================
@@ -198,7 +218,19 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
         setPunch(PUNCH_POSITION.OUT);
       }
   }
-    
+
+  public void toggleRelease()
+  {
+    Value currentReleasePos = _releaseSolenoid.get();
+    if (currentReleasePos == RELEASE_EXTENDED)
+    {
+      setRelease(RELEASE_POSITION.RETRACTED);
+    }
+    else
+    {
+      setRelease(RELEASE_POSITION.EXTENDED);
+    }
+  }
   public void servoStartMatch(){
       _infeedServo.set(1);
     }
@@ -236,6 +268,14 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
         return "Mechanism Extended";
       }
     }
+    private String get_RelasePosition(){
+      Value currentReleasePos = _releaseSolenoid.get();
+      if (currentReleasePos == RELEASE_RETRACTED) {
+        return "Release Retracted";
+      } else {
+        return "Release Extended";
+      }
+    }
 
     //=====================================================================================
     // Helper Methods
@@ -251,5 +291,6 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
       SmartDashboard.putString("MechanismPos", get_MechPosition());
       SmartDashboard.putString("PunchPos", get_PunchPosition());
       SmartDashboard.putString("BeakPos", get_BeakPosition());
+      SmartDashboard.putString("ReleasePos", get_RelasePosition());
     }
 }
