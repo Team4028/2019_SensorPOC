@@ -8,6 +8,11 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
+import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
@@ -42,16 +47,42 @@ public class Climber extends Subsystem implements IBeakSquadSubsystem {
     _liftMtr = new TalonSRX(RobotMap.CLIMBER_LIFT_CAN_ADDR);
     _liftMtr.configFactoryDefault();
 
+    //Configure Limit Switches
+    /*_liftMtr.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyClosed);
+    _liftMtr.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyClosed);
+
+    // Turn of all soft limits
+   _liftMtr.configForwardSoftLimitEnable(false, 0);
+   _liftMtr.configReverseSoftLimitEnable(false, 0);
+
+    //Configure brake mode
+   _liftMtr.setNeutralMode(NeutralMode.Brake);
+  _liftMtr.setNeutralMode(NeutralMode.Brake);
+
+    // Configure Encoder
+   _liftMtr.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
+   _liftMtr.setSensorPhase(true);
+   _liftMtr.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 5, 0);*/
+
+
     _driveMtr = new VictorSPX(RobotMap.CLIMBER_DRIVE_CAN_ADDR);
     _driveMtr.configFactoryDefault();
   }
 
   public void liftClimber(double liftSpeed){
-    _liftMtr.set(ControlMode.PercentOutput, liftSpeed);
+    _liftMtr.set(ControlMode.PercentOutput, .25 * liftSpeed);
   }
 
   public void driveClimber(double driveSpeed){
-    _driveMtr.set(ControlMode.PercentOutput, driveSpeed);
+    _driveMtr.set(ControlMode.PercentOutput, .25 * driveSpeed);
+  }
+
+  public double nativeUnitsToInches(){
+    return _liftMtr.getSelectedSensorPosition() * .0013729128051576489005976;
+  }
+
+  public double getNativeUnits(){
+    return ( _liftMtr).getSelectedSensorPosition();
   }
 
   @Override
