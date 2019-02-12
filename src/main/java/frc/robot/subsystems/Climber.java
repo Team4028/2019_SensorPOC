@@ -7,19 +7,21 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.interfaces.IBeakSquadSubsystem;
 import frc.robot.util.LogDataBE;
+import frc.robot.RobotMap;
 
 /**
  * Climber Subsystem
  *  1 Motor on CAN TalonSPX Motor Controller  w/ encoder + l/s?
  *  1 Motor on CAN VictorSRX Motor Controller open loop
  * 
- * Student Lead: 
+ * Student Lead: Peter Nicholas
  */
 public class Climber extends Subsystem implements IBeakSquadSubsystem {
 
@@ -37,10 +39,20 @@ public class Climber extends Subsystem implements IBeakSquadSubsystem {
 	
 	// private constructor for singleton pattern
 	private Climber() {
+    _liftMtr = new TalonSRX(RobotMap.CLIMBER_LIFT_CAN_ADDR);
+    _liftMtr.configFactoryDefault();
+
+    _driveMtr = new VictorSPX(RobotMap.CLIMBER_DRIVE_CAN_ADDR);
+    _driveMtr.configFactoryDefault();
   }
 
-  // Put methods for controlling this subsystem
-  // here. Call these from Commands.
+  public void liftClimber(double liftSpeed){
+    _liftMtr.set(ControlMode.PercentOutput, liftSpeed);
+  }
+
+  public void driveClimber(double driveSpeed){
+    _driveMtr.set(ControlMode.PercentOutput, driveSpeed);
+  }
 
   @Override
   public void initDefaultCommand() {

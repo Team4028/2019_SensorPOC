@@ -39,8 +39,8 @@ public class RobotMap
 
 	//public static final int INFEED_CAN_ADDR = 0;
 
-	//public static final int CLIMBER_LIFT_CAN_ADDR = 0;
-	//public static final int CLIMBER_DRIVE_CAN_ADDR = 0;
+	public static final int CLIMBER_LIFT_CAN_ADDR = 6;
+	public static final int CLIMBER_DRIVE_CAN_ADDR = 9;
 
 	// DIO Ports
 	

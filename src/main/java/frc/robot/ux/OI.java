@@ -8,6 +8,8 @@
 package frc.robot.ux;
 
 import frc.robot.RobotMap;
+import frc.robot.commands.Climber.LiftClimber;
+import frc.robot.commands.Climber.DriveClimber;
 import frc.robot.commands.chassis.DriveWithControllers;
 import frc.robot.commands.infeed.AquireHatch;
 import frc.robot.commands.infeed.RunInfeedMotor;
@@ -51,8 +53,10 @@ public class OI {
         // =========== Operator ======================================
 		_operatorController = new BeakXboxController(RobotMap.OPERATOR_GAMEPAD_USB_PORT);
 		//==========================================================
-		_operatorController.leftStick.whileActive(new RunInfeedMotor(_operatorController.leftStick));
-		_operatorController.leftStick.whenReleased(new RunInfeedMotor(_operatorController.leftStick));
+		_operatorController.leftStick.whileActive(new LiftClimber(_operatorController.leftStick));
+		_operatorController.leftStick.whenReleased(new LiftClimber(_operatorController.leftStick));
+		_operatorController.rightStick.whileActive(new DriveClimber(_operatorController.rightStick));
+		_operatorController.rightStick.whenReleased(new DriveClimber(_operatorController.rightStick));
 
 		_operatorController.a.whenPressed(new ToggleBeakPosition());
 		_operatorController.b.whenPressed(new TogglePunch());
