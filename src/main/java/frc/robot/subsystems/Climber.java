@@ -57,7 +57,7 @@ public class Climber extends Subsystem implements IBeakSquadSubsystem {
 
     //Configure brake mode
    _liftMtr.setNeutralMode(NeutralMode.Brake);
-  _liftMtr.setNeutralMode(NeutralMode.Brake);
+   _liftMtr.setNeutralMode(NeutralMode.Brake);
 
     // Configure Encoder
    _liftMtr.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
