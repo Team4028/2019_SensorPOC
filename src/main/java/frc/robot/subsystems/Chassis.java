@@ -148,10 +148,11 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
 			case UNKNOWN:
 			return;
       case PERCENT_VBUS:
-
+        estimateRobotState(timestamp);
 				return;
 				
-			case AUTO_TURN:
+      case AUTO_TURN:
+        estimateRobotState(timestamp);
         _leftMaster.config_kF(0, 0.0581);
         _leftMaster.config_kP(0, 0.2);
         _leftMaster.config_kI(0, 0);
@@ -167,7 +168,8 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
 				//moveToTargetAngle();
 				return;
 			
-			case DRIVE_SET_DISTANCE:
+      case DRIVE_SET_DISTANCE:
+        estimateRobotState(timestamp);
         _leftMaster.config_kF(0, 0.0357942617214836);
         _leftMaster.config_kP(0, .175);
         _leftMaster.config_kI(0, 0);
@@ -182,7 +184,8 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
         _leftMaster.configMotionAcceleration(30000);
 				return;
 				
-			case FOLLOW_PATH:
+      case FOLLOW_PATH:
+        estimateRobotState(timestamp);
         _leftMaster.config_kF(0, 0.0357942617214836);
         _leftMaster.config_kP(0, .05);
         _leftMaster.config_kI(0, .00);
@@ -191,9 +194,6 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
         _rightMaster.config_kP(0, 0.05);
         _rightMaster.config_kI(0, 0.00);
         _rightMaster.config_kD(0, .85);
-
-          
-				
 				if (_pathFollower != null) 
 					updatePathFollower(timestamp);
 				return;
@@ -300,7 +300,6 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
 
 	public void updatePathFollower(double timestamp) 
 	{
-		estimateRobotState(timestamp);
 		RigidTransform _robotPose = RobotState.getInstance().getLatestFieldToVehicle().getValue();
 		Twist command = _pathFollower.update(timestamp, _robotPose, RobotState.getInstance().getDistanceDriven(), RobotState.getInstance().getPredictedVelocity().dx);
 		if (!_pathFollower.isFinished()) 
