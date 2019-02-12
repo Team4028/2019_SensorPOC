@@ -209,13 +209,14 @@ public class Robot extends TimedRobot {
         if(_chassis != null)              { _chassis.updateDashboard(); }
         if(_cargo != null)                { _cargo.updateDashboard(); }
         if(_climber != null)              { _climber.updateDashboard(); }
-       // if(_elevator != null)             { _elevator.updateDashboard(); }
+        if(_elevator != null)             { _elevator.updateDashboard(); }
 
         if(_autonChoosers != null)        { _autonChoosers.updateDashboard(); }
 	    	if(_distanceRev2mSensor != null)  { _distanceRev2mSensor.updateDashboard(); }
         if(_vision != null)               { _vision.updateDashboard(); }
         if(_pressureSensor != null)       { _pressureSensor.updateDashboard(); }
         if(_compressor != null)           { _compressor.updateDashboard(); }
+
 	    	
     		// write the overall robot dashboard info
 	    	SmartDashboard.putString("Robot Build", _buildMsg);
@@ -244,7 +245,7 @@ public class Robot extends TimedRobot {
         if(_chassis != null)              { _chassis.updateLogData(logData); }
         if(_cargo != null)                { _cargo.updateLogData(logData); }
         if(_climber != null)              { _climber.updateLogData(logData); }
-        //if(_elevator != null)             { _elevator.updateLogData(logData); }
+        if(_elevator != null)             { _elevator.updateLogData(logData); }
 
         if(_autonChoosers != null)        { _autonChoosers.updateLogData(logData); }
 	    	if(_distanceRev2mSensor != null)  { _distanceRev2mSensor.updateLogData(logData); }

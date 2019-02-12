@@ -34,6 +34,7 @@ public class Elevator_MoveElevator extends Command {
   @Override
   protected void execute() {
     _elevator.moveElevator(_elevatorUpOrDown);
+    
   }
 
   // Make this return true when this Command no longer needs to run execute()

@@ -18,7 +18,10 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotMap;
+import frc.robot.util.GeneralUtilities;
+import frc.robot.util.LogDataBE;
  
 
 /**
@@ -43,6 +46,8 @@ public class Elevator extends Subsystem {
 
   private static TalonSRX _elevatorMasterMotor;
   private static TalonSRX _elevatorSlaveMotor;
+  private double INCHES_TO_NATIVE_UNITS_CONVERSION = 242.7928;
+  private double NATIVE_UNITS_TO_INCHES_CONVERSION = 0.004119;
   private static Elevator _instance = new Elevator();
 
   public static Elevator getInstance(){
@@ -77,7 +82,7 @@ public class Elevator extends Subsystem {
 
     // Configure Encoder
     _elevatorMasterMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
-    _elevatorMasterMotor.setSensorPhase(true);
+    _elevatorMasterMotor.setSensorPhase(false);
     _elevatorMasterMotor.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 5, 0);
     
     // peak/nominal output voltages for both directions for talons configuration
@@ -90,6 +95,7 @@ public class Elevator extends Subsystem {
     _elevatorMasterMotor.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_5Ms, 0);
     _elevatorMasterMotor.configVelocityMeasurementWindow(32, 0);
 
+    _elevatorMasterMotor.setSelectedSensorPosition(0, 0, 0);
     //Set up MotionMagic mode
     //SetPidSlotToUse("constr", MOVING_DOWN_PID_SLOT_INDEX)
 
@@ -116,7 +122,29 @@ public class Elevator extends Subsystem {
     }
   }
 
+  public int get_ElevatorPos(){
+    return _elevatorMasterMotor.getSelectedSensorPosition(0);
+  }
 
+  public double nativeUnitsToInches(double nativeUnitsMeasure) {
+    double inches = nativeUnitsMeasure/ INCHES_TO_NATIVE_UNITS_CONVERSION;
+    inches = GeneralUtilities.roundDouble(inches, 2);
+    return inches;
+  }
+
+  public double InchesToNativeUints (double inchesMeasure) {
+    double nativeUnits = inchesMeasure / NATIVE_UNITS_TO_INCHES_CONVERSION;
+    return nativeUnits;
+  }
+
+  public void updateDashboard(){
+    SmartDashboard.putNumber("Elevator:inches", nativeUnitsToInches(get_ElevatorPos()));
+    SmartDashboard.putNumber("Elevator:nativeUnits", get_ElevatorPos());
+  }
+
+  public void updateLogData(LogDataBE logData) {
+  }
+  
   @Override
   public void initDefaultCommand() {
     // Set the default command for a subsystem here.
