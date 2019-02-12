@@ -14,7 +14,7 @@ public class Auton_turnFromVision extends Command
 
     private double _targetAngle;
 
-    private int latencyCycles = 0;
+    private int latencyCycles;
 
     boolean isLegit;
     
@@ -23,6 +23,7 @@ public class Auton_turnFromVision extends Command
     @Override
     protected void initialize()
     {
+    latencyCycles = 0;
         if (problem._theta >= 0){
             _chassis.setTargetAngleAndTurnDirection(problem._theta, problem._theta > _navX.getYaw());
         } else {
@@ -43,7 +44,7 @@ public class Auton_turnFromVision extends Command
     protected boolean isFinished() 
     { 
         
-        if((_chassis._angleError < 2.5) && (latencyCycles > 10))
+        if((Math.abs(_chassis._angleError) < 5) && (latencyCycles > 10))
         {
             System.out.println("Done");
             return true;

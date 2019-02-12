@@ -18,6 +18,7 @@ public class Auton_RunProfileFromVision extends Command
     public Auton_RunProfileFromVision()
     {
         requires(_chassis);
+        setInterruptible(false);
     }
 
     @Override

@@ -37,6 +37,7 @@ public class FindTarget extends Command
     @Override
     protected void initialize() 
     {
+        counter = 0;
         double targetAngle = GyroNavX.getTargetAngle(_scoringTarget, _side);
         deltaTheta=_navX.getYaw() - targetAngle;
         System.out.println("Target Angle: " + problem._targetAngle);
@@ -46,8 +47,7 @@ public class FindTarget extends Command
     @Override
     protected void execute() 
     {
-        _chassis.setLeftRightCommand(ControlMode.PercentOutput, -1 * Math.copySign(0.2, deltaTheta), Math.copySign(0.2, deltaTheta));
-        System.out.println(Math.copySign(0.2, deltaTheta));
+        _chassis.setLeftRightCommand(ControlMode.PercentOutput, -1 * Math.copySign(0.2, deltaTheta), Math.copySign(0.2, deltaTheta));        
         if(_limeLight.get_isTargetInFOV())
         {
             counter++;
@@ -60,8 +60,12 @@ public class FindTarget extends Command
     }
 
     @Override
-    protected boolean isFinished() {
+    protected boolean isFinished() 
+    {
+        System.out.println("counter"+counter);
+        System.out.print(_limeLight.get_isTargetInFOV());
         return counter>=3;
+
         
     }
     @Override

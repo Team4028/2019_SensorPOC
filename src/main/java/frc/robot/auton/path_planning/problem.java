@@ -105,20 +105,6 @@ public class problem{
 
     public static void planSecondPathFromVisionData(double A1, double A2, double l, RigidTransform curPose)
     {
-        /*
-        List<Waypoint> sWaypoints = new ArrayList<Waypoint>();
-        
-        sWaypoints.add(new Waypoint(curPose.getTranslation().x(),curPose.getTranslation().y(),0 ,0));
-        sWaypoints.add(new Waypoint(curPose.getTranslation().x()+l * Math.cos(a1 + H),28+curPose.getTranslation().y()+l*Math.sin(a1+H), 12 ,50));
-        sWaypoints.add(new Waypoint(curPose.getTranslation().x()+l*Math.cos(a1+H),15+curPose.getTranslation().y()+l*Math.sin(a1+H),0,50));
-        System.out.println(sWaypoints);
-        
-
-        System.out.println("Angle 1:"+A1);
-        System.out.println("Distance:"+l);
-        _path = PathBuilder.buildPathFromWaypoints(sWaypoints);
-        
-        */
         _distance=l;
         System.out.println("Distance:"+_distance);
         double a1 = deg2rad(A1);

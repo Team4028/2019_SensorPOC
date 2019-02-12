@@ -40,6 +40,11 @@ public class planSecondPath extends Command
         double A1 = _limeLight.get_angle1InDegrees();
         double A2= _navX.get_angle2InDegreesFromLL(_target, _side);
         double distance= _distanceSensor.get_distanceToTargetInInches();
+        if(distance<0)
+        {
+            distance = _limeLight.get_distanceToTargetInInches();
+            
+        }        
         System.out.println("Angle 1: " + A1);
         System.out.println("Heading: " + _navX.getYaw());
         RigidTransform rt = RobotState.getInstance().getLatestFieldToVehicle().getValue();

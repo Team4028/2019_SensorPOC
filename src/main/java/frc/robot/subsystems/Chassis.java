@@ -307,9 +307,17 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
 		{
 			Kinematics.DriveVelocity setpoint = Kinematics.inverseKinematics(command);
 			final double maxDesired = Math.max(Math.abs(setpoint.left), Math.abs(setpoint.right));
-            final double scale = maxDesired > Constants.DRIVE_VELOCITY_MAX_SETPOINT ? Constants.DRIVE_VELOCITY_MAX_SETPOINT / maxDesired : 1.0;
-            setLeftRightCommand(ControlMode.Velocity, inchesPerSecToNU(setpoint.left * scale), inchesPerSecToNU(setpoint.right * scale));
-            _centerTargetVelocity = command.dx;
+      double scale;
+      if(maxDesired > Constants.DRIVE_VELOCITY_MAX_SETPOINT)
+      {
+        scale =Constants.DRIVE_VELOCITY_MAX_SETPOINT / maxDesired;
+      } 
+      else
+      {
+        scale=1;
+      }
+      setLeftRightCommand(ControlMode.Velocity, inchesPerSecToNU(setpoint.left * scale), inchesPerSecToNU(setpoint.right * scale));
+      _centerTargetVelocity = command.dx;
 			_leftTargetVelocity = setpoint.left;
 			_rightTargetVelocity = setpoint.right;
 		} 

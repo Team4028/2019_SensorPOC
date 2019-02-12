@@ -18,32 +18,43 @@ import frc.robot.sensors.VisionLL;
 import frc.robot.sensors.GyroNavX.SCORING_TARGET;
 import frc.robot.sensors.GyroNavX.SIDE;
 import frc.robot.commands.auton.adaptivepaths.ezMoneyPlanPath;
-
  
 
-public class CG_FollowVisionPath extends CommandGroup {
+public class CG_FollowFirstVisionPath extends CommandGroup {
     VisionLL _limeLight = VisionLL.getInstance();
     GyroNavX _navX = GyroNavX.getInstance();
     double timeOut = 10;
+    boolean isFirstCycle = true;
+
+ 
     
-    public CG_FollowVisionPath(SCORING_TARGET target, SIDE side){
-        setInterruptible(false);
-        addParallel(new Auton_ParallelStarter());
-        //addSequential(new FindTarget(target, side));
-        addSequential(new PrintCommand("TARGET FOUND"));
-        addSequential(new ezMoneyPlanPath(10, target, side));
-        addSequential(new CG_FollowFirstVisionPath(target, side));
-        //addSequential(new FindTarget(target, side));
-        addSequential(new PrintCommand("VISION TARGET FOUND"));
-        addSequential(new printTimeFromStart());
-        addSequential(new planSecondPath(target, side));
-        addSequential(new PrintCommand("SECOND PATH PLANNED"));
+    public CG_FollowFirstVisionPath(SCORING_TARGET target, SIDE side){
+        setInterruptible(false);       
+        addSequential(new PrintCommand("VISION PATH PLANNED"));
         addSequential(new printTimeFromStart());
         addSequential(new Auton_turnFromVision());
-        addSequential(new PrintCommand("SECOND VISION TURN TERMINATING"));
+        addSequential(new PrintCommand("VISION TURN TERMINATING"));
         addSequential(new printTimeFromStart());
-        addSequential(new DriveVisionDistance(), 1.5);
-        addSequential(new PrintCommand("VISION DRIVE STRAIGHT TERMINATING"));
+        addSequential(new Auton_RunProfileFromVision());
+        addSequential(new PrintCommand("VISION PATH TERMINATING"));
         addSequential(new printTimeFromStart());
     }
+
+@Override
+    protected void initialize() {
+        super.initialize();
+        isFirstCycle = true;
+    }
+
+    @Override
+    protected boolean isFinished() {
+        if (isFirstCycle){
+            isFirstCycle = false;
+            // return (_limeLight.get_distanceToTargetInInches() < 80) || (Math.abs(_limeLight.get_angle1InDegrees()) < 15);
+            return false;
+        } else {
+            return super.isFinished();
+        }
+    }
+
 }

@@ -8,6 +8,7 @@
 package frc.robot.ux;
 
 import frc.robot.RobotMap;
+import frc.robot.commands.auton.adaptivepaths.CG_FollowVisionPath;
 import frc.robot.commands.chassis.DriveWithControllers;
 import frc.robot.commands.infeed.AquireHatch;
 import frc.robot.commands.infeed.RunInfeedMotor;
@@ -15,6 +16,8 @@ import frc.robot.commands.infeed.ScoreHatch;
 import frc.robot.commands.infeed.ToggleBeakPosition;
 import frc.robot.commands.infeed.TogglePunch;
 import frc.robot.commands.infeed.ToggleStartPos;
+import frc.robot.sensors.GyroNavX.SCORING_TARGET;
+import frc.robot.sensors.GyroNavX.SIDE;
 import frc.robot.util.BeakXboxController;
 
 /**
@@ -47,6 +50,7 @@ public class OI {
  
 		_driverController.leftStick.whenReleased(new DriveWithControllers(_driverController.leftStick, _driverController.rightStick));
 		_driverController.rightStick.whenReleased(new DriveWithControllers(_driverController.leftStick, _driverController.rightStick));
+		_driverController.a.whenPressed(new CG_FollowVisionPath(SCORING_TARGET.CARGOSHIP_SIDE_ROCKET, SIDE.RIGHT));
 
         // =========== Operator ======================================
 		_operatorController = new BeakXboxController(RobotMap.OPERATOR_GAMEPAD_USB_PORT);
