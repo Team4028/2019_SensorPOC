@@ -25,11 +25,14 @@ import frc.robot.commands.auton.adaptivepaths.ezMoneyPlanPath;
 public class CG_FollowVisionPath extends CommandGroup {
     VisionLL _limeLight = VisionLL.getInstance();
     GyroNavX _navX = GyroNavX.getInstance();
+    Chassis _chassis = Chassis.getInstance();
     double timeOut = 10;
+
     
-    public CG_FollowVisionPath(SCORING_TARGET target, SIDE side){
+    public CG_FollowVisionPath(SCORING_TARGET target, SIDE side)
+    {
         setInterruptible(false);
-        requires(Chassis.getInstance());
+        requires(_chassis);
         addParallel(new Auton_ParallelStarter());
         addSequential(new Auton_turnFromVision(target, side));
         addSequential(new PrintCommand("SECOND VISION TURN TERMINATING"));

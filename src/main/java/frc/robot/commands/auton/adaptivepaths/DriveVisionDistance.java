@@ -10,7 +10,7 @@ public class DriveVisionDistance extends Command
 {
     double _inches;
     Chassis _chassis = Chassis.getInstance();
-    private static final double OFFSET = 24.5;
+    private static final double OFFSET = 28.5;
 
     public DriveVisionDistance(){}
 

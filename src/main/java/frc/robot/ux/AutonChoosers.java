@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.commands.auton.autons.TurnTest;
+import frc.robot.commands.auton.autons.SingleHatchFront;
 import frc.robot.interfaces.IBeakSquadSubsystem;
 import frc.robot.util.LogDataBE;
 
@@ -23,7 +23,7 @@ public class AutonChoosers implements IBeakSquadSubsystem {
 
     private enum AUTON_MODE {
 		UNDEFINED,
-		TURN_TEST,
+		FRONT_HATCH,
         DO_NOTHING
     }
 
@@ -49,7 +49,7 @@ public class AutonChoosers implements IBeakSquadSubsystem {
 	private AutonChoosers() {
         // Auton Mode
 		_autonAction.setDefaultOption("Do Nothing", AUTON_MODE.DO_NOTHING);
-		_autonAction.addOption("AutoTurn Test", AUTON_MODE.TURN_TEST);
+		_autonAction.addOption("Front Hatch", AUTON_MODE.FRONT_HATCH);
         
         // Auton Starting Side
 		_autonStartingSideChooser.setDefaultOption("LEFT", STARTING_SIDE.LEFT);
@@ -68,8 +68,8 @@ public class AutonChoosers implements IBeakSquadSubsystem {
 		switch(_autonAction.getSelected()) {
 			case DO_NOTHING:
 				return null;
-			case TURN_TEST:
-				return new TurnTest();
+			case FRONT_HATCH:
+				return new SingleHatchFront();
 			default:
 				return null; 
 		}

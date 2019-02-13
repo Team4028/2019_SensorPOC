@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.auton.pathfollowing.PathBuilder;
 import frc.robot.auton.pathfollowing.Paths;
-import frc.robot.commands.auton.autons.TurnTest;
 import frc.robot.sensors.GyroNavX;
 
 import frc.robot.sensors.VisionLL;

@@ -29,10 +29,22 @@ public class Auton_turnFromVision extends Command
         latencyCycles = 0;
         double a1 = VisionLL.getInstance().get_angle1InDegrees()*Math.PI/180;
         double targetAngle = GyroNavX.getTargetAngle(_target, _side);
+        double a2 = _navX.getTargetAngle(_target,_side);
         double H = GyroNavX.getInstance().getYaw()*Math.PI/180;
         double l = VisionLL.getInstance().get_distanceToTargetInInches();
         double unsignedTheta = Math.abs(180/Math.PI*(Math.atan2(l*Math.sin(a1 + H),l*Math.cos(a1 + H))));
-        double angle = Math.copySign(unsignedTheta, targetAngle);
+        double angle;
+        if(!(targetAngle==0))
+        {
+            angle = Math.copySign(unsignedTheta, targetAngle);
+        }
+        else
+        {
+            angle = Math.copySign(unsignedTheta, a2);
+            System.out.println(a2);
+            System.out.println(angle);
+        }
+
         System.out.println("ANGLE: " + angle);
         if (angle >= 0)
         {
