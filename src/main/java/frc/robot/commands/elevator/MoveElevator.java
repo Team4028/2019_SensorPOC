@@ -5,20 +5,18 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands;
+package frc.robot.commands.elevator;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Elevator.ELEVATOR_TARGET_POSITION;
 import frc.robot.subsystems.Elevator.ELEVATOR_UP_OR_DOWN;
-import frc.robot.util.BeakXboxController.Thumbstick;
 
-public class Elevator_MoveElevator extends Command {
+public class MoveElevator extends Command {
 
     private ELEVATOR_UP_OR_DOWN _elevatorUpOrDown;
   private Elevator _elevator = Elevator.getInstance();
 
-  public Elevator_MoveElevator(ELEVATOR_UP_OR_DOWN elevatorUpOrDown){
+  public MoveElevator(ELEVATOR_UP_OR_DOWN elevatorUpOrDown){
     requires(_elevator);
     setInterruptible(true);
     _elevatorUpOrDown = elevatorUpOrDown;
