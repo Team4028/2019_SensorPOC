@@ -17,6 +17,7 @@ import frc.robot.sensors.GyroNavX;
 import frc.robot.sensors.VisionLL;
 import frc.robot.sensors.GyroNavX.SCORING_TARGET;
 import frc.robot.sensors.GyroNavX.SIDE;
+import frc.robot.subsystems.Chassis;
 import frc.robot.commands.auton.adaptivepaths.ezMoneyPlanPath;
 
  
@@ -28,18 +29,9 @@ public class CG_FollowVisionPath extends CommandGroup {
     
     public CG_FollowVisionPath(SCORING_TARGET target, SIDE side){
         setInterruptible(false);
+        requires(Chassis.getInstance());
         addParallel(new Auton_ParallelStarter());
-        //addSequential(new FindTarget(target, side));
-        addSequential(new PrintCommand("TARGET FOUND"));
-        addSequential(new ezMoneyPlanPath(10, target, side));
-        addSequential(new CG_FollowFirstVisionPath(target, side));
-        //addSequential(new FindTarget(target, side));
-        addSequential(new PrintCommand("VISION TARGET FOUND"));
-        addSequential(new printTimeFromStart());
-        addSequential(new planSecondPath(target, side));
-        addSequential(new PrintCommand("SECOND PATH PLANNED"));
-        addSequential(new printTimeFromStart());
-        addSequential(new Auton_turnFromVision());
+        addSequential(new Auton_turnFromVision(target, side));
         addSequential(new PrintCommand("SECOND VISION TURN TERMINATING"));
         addSequential(new printTimeFromStart());
         addSequential(new DriveVisionDistance(), 1.5);

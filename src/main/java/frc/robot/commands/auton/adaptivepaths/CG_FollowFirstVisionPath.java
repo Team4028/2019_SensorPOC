@@ -25,19 +25,24 @@ public class CG_FollowFirstVisionPath extends CommandGroup {
     GyroNavX _navX = GyroNavX.getInstance();
     double timeOut = 10;
     boolean isFirstCycle = true;
+    SCORING_TARGET _target;
+    SIDE _side;
 
  
     
-    public CG_FollowFirstVisionPath(SCORING_TARGET target, SIDE side){
+    public CG_FollowFirstVisionPath(SCORING_TARGET target, SIDE side)
+    {
+        _target = target;
+        _side = side;
         setInterruptible(false);       
         addSequential(new PrintCommand("VISION PATH PLANNED"));
         addSequential(new printTimeFromStart());
-        addSequential(new Auton_turnFromVision());
+        addSequential(new Auton_turnFromVision(target, side));
         addSequential(new PrintCommand("VISION TURN TERMINATING"));
         addSequential(new printTimeFromStart());
         addSequential(new Auton_RunProfileFromVision());
-        addSequential(new PrintCommand("VISION PATH TERMINATING"));
-        addSequential(new printTimeFromStart());
+        // addSequential(new PrintCommand("VISION PATH TERMINATING"));
+        // addSequential(new printTimeFromStart());
     }
 
 @Override
@@ -50,8 +55,8 @@ public class CG_FollowFirstVisionPath extends CommandGroup {
     protected boolean isFinished() {
         if (isFirstCycle){
             isFirstCycle = false;
-            // return (_limeLight.get_distanceToTargetInInches() < 80) || (Math.abs(_limeLight.get_angle1InDegrees()) < 15);
-            return false;
+            //return (_limeLight.get_distanceToTargetInInches() < 80) && (Math.abs(_navX.get_angle2InDegreesFromLL(_target, _side)) < 15);
+            return true;
         } else {
             return super.isFinished();
         }

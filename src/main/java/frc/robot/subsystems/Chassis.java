@@ -72,7 +72,7 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
 
   public static double _autoStartTime;
 
-  static double ENCODER_COUNTS_PER_WHEEL_REV = 30028.471298; // 13582.78; 
+  public static double ENCODER_COUNTS_PER_WHEEL_REV = 30028.471298; // 13582.78; 
 	public static Chassis getInstance() {
 		return _instance;
 	}
@@ -144,15 +144,14 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
 
 
   public void updateChassis(double timestamp){
+    estimateRobotState(timestamp);
 		switch(_chassisState) {
 			case UNKNOWN:
 			return;
       case PERCENT_VBUS:
-        estimateRobotState(timestamp);
 				return;
 				
       case AUTO_TURN:
-        estimateRobotState(timestamp);
         _leftMaster.config_kF(0, 0.0581);
         _leftMaster.config_kP(0, 0.2);
         _leftMaster.config_kI(0, 0);
@@ -169,7 +168,6 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
 				return;
 			
       case DRIVE_SET_DISTANCE:
-        estimateRobotState(timestamp);
         _leftMaster.config_kF(0, 0.0357942617214836);
         _leftMaster.config_kP(0, .175);
         _leftMaster.config_kI(0, 0);
@@ -247,9 +245,10 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
 
     public void setMotionMagicCmdInches(double Distance)
 	{
-		_chassisState=ChassisState.DRIVE_SET_DISTANCE;
+
 		_leftMtrDriveSetDistanceCmd = _leftMaster.getSelectedSensorPosition(0)+ InchestoNU(Distance);
     _rightMtrDriveSetDistanceCmd = _rightMaster.getSelectedSensorPosition(0)+InchestoNU(Distance);
+    _chassisState=ChassisState.DRIVE_SET_DISTANCE;
   }
   
   public void moveToTargetPosDriveSetDistance ()

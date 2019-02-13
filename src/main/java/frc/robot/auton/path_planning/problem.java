@@ -114,6 +114,5 @@ public class problem{
         _theta = Math.copySign(unsignedTheta, targetAngle);
         System.out.println("TargetAngle:" + targetAngle);
         System.out.println("CurrentAngle:"+_theta);
-        _path= PathBuilder.buildPathFromWaypoints(PathBuilder.getStraightPathWaypoints(curPose.getTranslation(), _theta, l-20));
     }
 }

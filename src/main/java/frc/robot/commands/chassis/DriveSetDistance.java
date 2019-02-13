@@ -11,11 +11,14 @@ public class DriveSetDistance extends Command
     public DriveSetDistance(double inches)
     {
         _inches=inches;
+        requires(_chassis);
+        setInterruptible(false);
     }
 
     @Override
     protected void initialize() 
     {
+
         _chassis.setMotionMagicCmdInches(_inches);
     }
     @Override
@@ -33,8 +36,12 @@ public class DriveSetDistance extends Command
 		}
 		else
 		{
-			return false;
+            return false;
 		}
+    }
+    @Override
+    protected void end() {
+        _chassis.stop();
     }
 
 }

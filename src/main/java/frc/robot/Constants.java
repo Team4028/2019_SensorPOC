@@ -9,6 +9,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import frc.robot.subsystems.Chassis;
 
 /**
  * Add your docs here.
@@ -47,7 +48,7 @@ public class Constants {
 	public static final double DRIVE_VELOCITY_NOMINAL_OUTPUT = 0.05;
 	public static final double DRIVE_VELOCITY_MAX_SETPOINT = 15 * 12.0; // 15 fps
 	//Deadbands for Chassis
-	public static final double CHASSIS_DRIVE_SET_DISTANCE_DEADBAND = 1.0;
+	public static final double CHASSIS_DRIVE_SET_DISTANCE_DEADBAND = 1.0*Chassis.getInstance().ENCODER_COUNTS_PER_WHEEL_REV/(6*Math.PI);
 
 
 	public static final int BIG_NUMBER = (int)1e6;

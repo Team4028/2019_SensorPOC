@@ -1,33 +1,46 @@
 package frc.robot.commands.auton;
 
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.auton.path_planning.problem;
-import frc.robot.auton.pathfollowing.RobotState;
-import frc.robot.auton.pathfollowing.motion.RigidTransform;
 import frc.robot.sensors.GyroNavX;
+import frc.robot.sensors.VisionLL;
+import frc.robot.sensors.GyroNavX.SCORING_TARGET;
+import frc.robot.sensors.GyroNavX.SIDE;
 import frc.robot.subsystems.Chassis;
 
 public class Auton_turnFromVision extends Command
 {
     private Chassis _chassis = Chassis.getInstance();
     GyroNavX _navX = GyroNavX.getInstance();
-
-    private double _targetAngle;
-
     private int latencyCycles;
-
     boolean isLegit;
+    SCORING_TARGET _target;
+    SIDE _side;
     
-    public Auton_turnFromVision(){}
+    public Auton_turnFromVision(SCORING_TARGET target, SIDE side){
+        _target = target;
+        _side = side;
+        setInterruptible(false);
+        requires(_chassis);
+    }
 
     @Override
     protected void initialize()
     {
-    latencyCycles = 0;
-        if (problem._theta >= 0){
-            _chassis.setTargetAngleAndTurnDirection(problem._theta, problem._theta > _navX.getYaw());
-        } else {
-            _chassis.setTargetAngleAndTurnDirection(360 + problem._theta, problem._theta > _navX.getYaw());
+        latencyCycles = 0;
+        double a1 = VisionLL.getInstance().get_angle1InDegrees()*Math.PI/180;
+        double targetAngle = GyroNavX.getTargetAngle(_target, _side);
+        double H = GyroNavX.getInstance().getYaw()*Math.PI/180;
+        double l = VisionLL.getInstance().get_distanceToTargetInInches();
+        double unsignedTheta = Math.abs(180/Math.PI*(Math.atan2(l*Math.sin(a1 + H),l*Math.cos(a1 + H))));
+        double angle = Math.copySign(unsignedTheta, targetAngle);
+        System.out.println("ANGLE: " + angle);
+        if (angle >= 0)
+        {
+            _chassis.setTargetAngleAndTurnDirection(angle, angle > _navX.getYaw());
+        } 
+        else 
+        {
+            _chassis.setTargetAngleAndTurnDirection(360 + angle, angle > _navX.getYaw());
         }
     }
 
@@ -36,14 +49,11 @@ public class Auton_turnFromVision extends Command
     {
         _chassis.moveToTargetAngle();
         latencyCycles++;
-        // System.out.println("Heading"+_chassis.getHeading());
-        // System.out.println("Error"+(_targetAngle-_chassis.getHeading()));
     }
     
     @Override
     protected boolean isFinished() 
-    { 
-        
+    {   
         if((Math.abs(_chassis._angleError) < 5) && (latencyCycles > 10))
         {
             System.out.println("Done");

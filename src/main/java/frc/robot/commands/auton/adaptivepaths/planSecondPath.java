@@ -1,7 +1,6 @@
 package frc.robot.commands.auton.adaptivepaths;
 
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 import frc.robot.auton.path_planning.problem;
 import frc.robot.auton.pathfollowing.RobotState;
 import frc.robot.auton.pathfollowing.control.Path;
@@ -27,16 +26,19 @@ public class planSecondPath extends Command
     DistanceRev2mSensor _distanceSensor = DistanceRev2mSensor.getInstance();
     SCORING_TARGET _target;
     SIDE _side;
+    double _initialTheta;
     
 
     public planSecondPath(SCORING_TARGET target, SIDE side) {
         _target = target;
         _side = side;
-        iPath =  problem._path;
+        _initialTheta = problem._theta;
+        //iPath =  problem._path;
     }
 
     @Override
-    protected void initialize() {
+    protected void initialize() 
+    {
         double A1 = _limeLight.get_angle1InDegrees();
         double A2= _navX.get_angle2InDegreesFromLL(_target, _side);
         double distance= _distanceSensor.get_distanceToTargetInInches();
@@ -54,7 +56,7 @@ public class planSecondPath extends Command
 
     @Override
     protected boolean isFinished() {
-        return !(problem._path == iPath);
+        return !(problem._theta == _initialTheta);
     }
 
 }

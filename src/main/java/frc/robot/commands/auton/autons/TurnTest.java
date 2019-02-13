@@ -22,11 +22,11 @@ public class TurnTest extends CommandGroup
     {
         addParallel(new Auton_ParallelStarter());
         //addSequential(new InPlaceTurn(180, true));
-        addSequential(new Auton_RunTimedMotionProfileCommand(_demoPath, 7));
-        addSequential(new printTimeFromStart());
-        addSequential(new CG_FollowVisionPath(SCORING_TARGET.CARGOSHIP_SIDE_ROCKET, SIDE.RIGHT));
+        // addSequential(new Auton_RunTimedMotionProfileCommand(_demoPath, 7));
+        // addSequential(new printTimeFromStart());
+        // addSequential(new CG_FollowVisionPath(SCORING_TARGET.CARGOSHIP_SIDE_ROCKET, SIDE.RIGHT));
         // addSequential(new Auton_RunMotionProfileAction(Paths.getPath(Center.R_SWITCH)));
         // addSequential(new Auton_RunMotionProfileAction(Paths.getPath(Center.L_SWITCH)));
-        // addSequential(new DriveSetDistance(30));
+        addSequential(new DriveSetDistance(30));
     }
 }

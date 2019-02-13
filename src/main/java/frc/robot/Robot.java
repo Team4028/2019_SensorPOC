@@ -145,7 +145,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     _chassis.stop();
-    _scanTimeSamples = new MovingAverage(20);
+        _scanTimeSamples = new MovingAverage(20);
     _dataLogger = GeneralUtilities.setupLogging("Teleop"); // init data logging
     _lastDashboardWriteTimeMSec = new Date().getTime(); // snapshot time to control spamming
     _chassis.zeroSensors();
@@ -156,9 +156,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    Scheduler.getInstance().run();
     _chassis.updateChassis(Timer.getFPGATimestamp());
-    
+    Scheduler.getInstance().run();    
   }
 
   /********************************************************************************************
