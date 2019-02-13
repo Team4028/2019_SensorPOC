@@ -46,8 +46,6 @@ public class Elevator extends Subsystem {
 
   private static TalonSRX _elevatorMasterMotor;
   private static TalonSRX _elevatorSlaveMotor;
-  private double INCHES_TO_NATIVE_UNITS_CONVERSION = 242.7928;
-  private double NATIVE_UNITS_TO_INCHES_CONVERSION = 0.004119;
   private static Elevator _instance = new Elevator();
 
   private static final double FEED_FORWARD_GAIN = 0.4;
@@ -134,27 +132,7 @@ public class Elevator extends Subsystem {
     }
   }
 
-<<<<<<< HEAD
-  public int get_ElevatorPos(){
-    return _elevatorMasterMotor.getSelectedSensorPosition(0);
-  }
 
-  public double nativeUnitsToInches(double nativeUnitsMeasure) {
-    double inches = nativeUnitsMeasure/ INCHES_TO_NATIVE_UNITS_CONVERSION;
-    inches = GeneralUtilities.roundDouble(inches, 2);
-    return inches;
-  }
-
-  public double InchesToNativeUints (double inchesMeasure) {
-    double nativeUnits = inchesMeasure / NATIVE_UNITS_TO_INCHES_CONVERSION;
-    return nativeUnits;
-  }
-
-  public void updateDashboard(){
-    SmartDashboard.putNumber("Elevator:inches", nativeUnitsToInches(get_ElevatorPos()));
-    SmartDashboard.putNumber("Elevator:nativeUnits", get_ElevatorPos());
-  }
-=======
   public void MoveElevatorToSelectedPosition(){
     _elevatorMasterMotor.set(ControlMode.MotionMagic, InchesToNativeUnits(12));
   }
@@ -181,8 +159,6 @@ public class Elevator extends Subsystem {
     double inches = inchesMeasure / NATIVE_UNITS_TO_INCHES_CONVERSION;
     return inches;
   }
-
->>>>>>> 226ce4e7cf93a4cea37c75025a5c6e6a1abde339
 
   public void updateLogData(LogDataBE logData) {
   }
