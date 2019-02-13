@@ -38,6 +38,8 @@ public class GyroNavX {
 	private static final double ROCKET_FRONT_ANGLE = 61.25;
 	private static final double ROCKET_BACK_ANGLE = 151.25;
 
+	private double _currentAngle2;
+
 	private AHRS _navXSensor;
 	
 	private VisionLL _visionLL = VisionLL.getInstance();
@@ -85,6 +87,7 @@ public class GyroNavX {
 		}
 
 		double angle2 = sideFactor * scoringTargetAngle - _visionLL.get_angle1InDegrees() - _navXSensor.getYaw();
+		_currentAngle2 = angle2;
 		return angle2;
 	}
 	
@@ -104,6 +107,6 @@ public class GyroNavX {
 	// Helper Methods
 	//=====================================================================================  
 	public void updateDashboard() {
-		//SmartDashboard.putNumber("Angle2", get_angle2InDegreesFromLL());
+		SmartDashboard.putNumber("Angle2", _currentAngle2);
 	}
 }
