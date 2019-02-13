@@ -10,6 +10,7 @@ package frc.robot.ux;
 import frc.robot.RobotMap;
 import frc.robot.commands.auton.adaptivepaths.CG_FollowVisionPath;
 import frc.robot.commands.chassis.DriveSetDistance;
+import frc.robot.commands.camera.SwitchCamera;
 import frc.robot.commands.chassis.DriveWithControllers;
 import frc.robot.commands.infeed.AquireHatch;
 import frc.robot.commands.infeed.RunInfeedMotor;
@@ -64,5 +65,6 @@ public class OI {
 		_operatorController.y.whenPressed(new AquireHatch());
 		_operatorController.x.whenPressed(new ScoreHatch());
 		_operatorController.rb.whenPressed(new ToggleStartPos());;
+		_operatorController.start.whenPressed(new SwitchCamera());
 	}
 }

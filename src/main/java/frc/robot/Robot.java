@@ -11,8 +11,7 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.Date;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.CommandGroup;
@@ -26,10 +25,13 @@ import frc.robot.sensors.VisionLL;
 import frc.robot.sensors.GyroNavX.SCORING_TARGET;
 import frc.robot.sensors.GyroNavX.SIDE;
 import frc.robot.interfaces.IVisionSensor;
+import frc.robot.sensors.AirCompressor;
 import frc.robot.sensors.DistanceRev2mSensor;
 import frc.robot.sensors.GyroNavX;
 import frc.robot.sensors.StoredPressureSensor;
+import frc.robot.sensors.SwitchableCameraServer;
 import frc.robot.sensors.VisionIP;
+import frc.robot.sensors.VisionLL;
 import frc.robot.subsystems.Cargo;
 
 import frc.robot.subsystems.Chassis;
@@ -60,6 +62,8 @@ public class Robot extends TimedRobot {
   // sensors
   private DistanceRev2mSensor _distanceRev2mSensor = DistanceRev2mSensor.getInstance();
   private StoredPressureSensor _pressureSensor = StoredPressureSensor.getInstance();
+  private SwitchableCameraServer _cameraServer = SwitchableCameraServer.getInstance();
+  private AirCompressor _compressor = AirCompressor.get_instance();
 
 
   private IVisionSensor _vision = VisionLL.getInstance();      // Limelight
@@ -132,7 +136,7 @@ public class Robot extends TimedRobot {
     _leds.set_targetangle(_vision.get_angle1InDegrees(), 
                           _vision.get_isTargetInFOV(), 
                           _distanceRev2mSensor.get_distanceToTargetInInches());
-
+    _vision.turnOnLimelightLEDs();
   }
 
   /********************************************************************************************
@@ -157,6 +161,7 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     _chassis.updateChassis(Timer.getFPGATimestamp());
     Scheduler.getInstance().run();    
+    _vision.turnOnLimelightLEDs();
   }
 
   /********************************************************************************************
@@ -195,6 +200,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledPeriodic() {
     Scheduler.getInstance().run();
+    _vision.turnOffLimelightLEDs();
   }
   
   /********************************************************************************************
@@ -227,8 +233,8 @@ public class Robot extends TimedRobot {
     	// add scan time sample to calc scan time rolling average
     	_scanTimeSamples.add(new BigDecimal(scanCycleDeltaInMSecs));
     	
-    	if((new Date().getTime() - _lastDashboardWriteTimeMSec) > 100) {
-
+    	//if((new Date().getTime() - _lastDashboardWriteTimeMSec) > 100) {
+        {
         // ----------------------------------------------
     		// each subsystem should add a call to a outputToSmartDashboard method
     		// to push its data out to the dashboard
@@ -242,6 +248,9 @@ public class Robot extends TimedRobot {
 	    	if(_distanceRev2mSensor != null)  { _distanceRev2mSensor.updateDashboard(); }
         if(_vision != null)               { _vision.updateDashboard(); }
         if(_pressureSensor != null)       { _pressureSensor.updateDashboard(); }
+        if(_navX != null)                 {_navX.updateDashboard();}
+        if(_cameraServer != null)         {_cameraServer.updateDashboard();}
+        if(_compressor != null)           { _compressor.updateDashboard(); }
 	    	
     		// write the overall robot dashboard info
 	    	SmartDashboard.putString("Robot Build", _buildMsg);
@@ -276,6 +285,7 @@ public class Robot extends TimedRobot {
 	    	if(_distanceRev2mSensor != null)  { _distanceRev2mSensor.updateLogData(logData); }
         if(_vision != null)               { _vision.updateLogData(logData); }
         if(_pressureSensor != null)       { _pressureSensor.updateLogData(logData); }
+        if(_compressor != null)           { _compressor.updateLogData(logData); }
     
 	    	_dataLogger.WriteDataLine(logData);
     	}

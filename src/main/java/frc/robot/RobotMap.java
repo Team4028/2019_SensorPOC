@@ -59,14 +59,16 @@ public class RobotMap
 	public static final int PCM_FORWARD_INOUT_SOLENOID_PORT = 4;
 	public static final int PCM_REVERSE_INOUT_SOLENOID_PORT = 5;
 
-
-
-
 	//I2C Ports
 	public static final I2C.Port I2C_SENSOR_PORT = I2C.Port.kOnboard;
 
 	//socket client
 	public static final String SOCKET_CLIENT_CONNECTION_IPADRESS = "10.40.28.6";
 	public static final int SOCKET_CLIENT_CONNECTION_PORT = 1337;
+
+	//Camera Addresses
+	public static final String RASPBERRY_PI_CAMERA_1_ADDRESS = "http://10.40.28.13:1181/stream.mjpg";
+	public static final String RASPBERRY_PI_CAMERA_2_ADDRESS = "http://10.40.28.13:1182/stream.mjpg";
+	public static final String LIMELIGHT_CAMERA_ADDRESS = "http://10.40.28.11:5800/";
 
 }
