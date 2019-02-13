@@ -45,6 +45,17 @@ public class Elevator extends Subsystem {
   private static TalonSRX _elevatorSlaveMotor;
   private static Elevator _instance = new Elevator();
 
+  private static final double FEED_FORWARD_GAIN = 0.4;
+  private static final double PROPORTIONAL_GAIN = 0;
+  private static final double INTEGRAL_GAIN = 0;
+  private static final int INTEGRAL_ZONE = 0;
+  private static final double DERIVATIVE_GAIN = 0;
+  private static final int CRUISE_VELOCITY = 4000;
+  private static final int CRUISE_ACCELERATION = 4500;
+  private static final int CAN_TIMEOUT_MILLISECONDS = 30;
+  private double INCHES_TO_NATIVE_UNITS_CONVERSION = 242.7928;
+  private double NATIVE_UNITS_TO_INCHES_CONVERSION = 0.004119;
+
   public static Elevator getInstance(){
     return _instance;
   }
@@ -92,16 +103,17 @@ public class Elevator extends Subsystem {
 
     //Set up MotionMagic mode
     //SetPidSlotToUse("constr", MOVING_DOWN_PID_SLOT_INDEX)
+    _elevatorMasterMotor.selectProfileSlot(0, 0);
 
     // Set closed loop gains
-    //_elevatorMasterMotor.config_kF(MOVING_DOWN_PID_SLOT_INDEX, FEED_FORWARD_GAIN+DOWN, 0);
-    //_elevatorMasterMotor.config_kP(MOVING_DOWN_PID_SLOT_INDEX, FEED_FORWARD_GAIN+DOWN, 0);
-    //_elevatorMasterMotor.config_kI(MOVING_DOWN_PID_SLOT_INDEX, FEED_FORWARD_GAIN+DOWN, 0);
-    //_elevatorMasterMotor.config_kD(MOVING_DOWN_PID_SLOT_INDEX, FEED_FORWARD_GAIN+DOWN, 0);
+    _elevatorMasterMotor.config_kF(0, FEED_FORWARD_GAIN, CAN_TIMEOUT_MILLISECONDS);
+    _elevatorMasterMotor.config_kP(0, PROPORTIONAL_GAIN, CAN_TIMEOUT_MILLISECONDS);
+    _elevatorMasterMotor.config_kI(0, INTEGRAL_GAIN, CAN_TIMEOUT_MILLISECONDS);
+    _elevatorMasterMotor.config_kD(0, DERIVATIVE_GAIN, CAN_TIMEOUT_MILLISECONDS);
 
     //Set accel and cruise velocities
-    //_elevatorMasterMotor.configMotionCruiseVelocity(UP_CRUISE_VELOCITY, 0);
-    //_elevatorMasterMotor.configMotionCruiseAcceleration(TELEOP_UP_CRUISE_ACCELERATION, 0);
+    _elevatorMasterMotor.configMotionCruiseVelocity(CRUISE_VELOCITY, 0);
+    _elevatorMasterMotor.configMotionAcceleration(CRUISE_ACCELERATION, 0);
     
   }
 
@@ -114,6 +126,33 @@ public class Elevator extends Subsystem {
         _elevatorMasterMotor.set(ControlMode.PercentOutput, -.1);
         break;
     }
+  }
+
+  public void MoveElevatorToSelectedPosition(){
+    _elevatorMasterMotor.set(ControlMode.MotionMagic, InchesToNativeUnits(12));
+  }
+
+  public void zeroElevatorMotorEncoder(){
+    if(isBottomElevatorLimitSwitchClosed()){
+      _elevatorMasterMotor.setSelectedSensorPosition(0);
+    }
+  }
+
+  public int get_ElevatorPos(){
+    return _elevatorMasterMotor.getSelectedSensorPosition(0);
+  }
+  public boolean isBottomElevatorLimitSwitchClosed(){
+    return _elevatorMasterMotor.getSensorCollection().isRevLimitSwitchClosed();
+  }
+
+  public double NativeUnitsToInches(double nativeUnitsMeasure){
+    double nativeUnits = nativeUnitsMeasure / INCHES_TO_NATIVE_UNITS_CONVERSION;
+    return nativeUnits;
+  }
+
+  public double InchesToNativeUnits(double inchesMeasure){
+    double inches = inchesMeasure / NATIVE_UNITS_TO_INCHES_CONVERSION;
+    return inches;
   }
 
 

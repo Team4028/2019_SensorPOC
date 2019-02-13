@@ -5,25 +5,18 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands;
+package frc.robot.commands.elevator;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Elevator.ELEVATOR_TARGET_POSITION;
-import frc.robot.subsystems.Elevator.ELEVATOR_UP_OR_DOWN;
-import frc.robot.util.BeakXboxController.Thumbstick;
 
-public class Elevator_MoveElevator extends Command {
-
-    private ELEVATOR_UP_OR_DOWN _elevatorUpOrDown;
-  private Elevator _elevator = Elevator.getInstance();
-
-  public Elevator_MoveElevator(ELEVATOR_UP_OR_DOWN elevatorUpOrDown){
+public class ZeroElevatorEncoder extends Command {
+  Elevator _elevator = Elevator.getInstance();
+  public ZeroElevatorEncoder() {
+    // Use requires() here to declare subsystem dependencies
+    // eg. requires(chassis);
     requires(_elevator);
-    setInterruptible(true);
-    _elevatorUpOrDown = elevatorUpOrDown;
-
-}
+  }
 
   // Called just before this Command runs the first time
   @Override
@@ -33,13 +26,13 @@ public class Elevator_MoveElevator extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    _elevator.moveElevator(_elevatorUpOrDown);
+    _elevator.zeroElevatorMotorEncoder();
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return false;
+    return true;
   }
 
   // Called once after isFinished returns true
