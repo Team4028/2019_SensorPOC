@@ -53,7 +53,7 @@ public class Robot extends TimedRobot {
   private StoredPressureSensor _pressureSensor = StoredPressureSensor.getInstance();
   private SwitchableCameraServer _cameraServer = SwitchableCameraServer.getInstance();
 
-  private IVisionSensor _vision = VisionLL.getInstance();      // Limelight
+  private VisionLL _vision = VisionLL.getInstance();      // Limelight
   //private IVisionSensor _vision = VisionIP.getInstance();   // IPhone
   private GyroNavX _navX = GyroNavX.getInstance();
 
@@ -108,7 +108,7 @@ public class Robot extends TimedRobot {
     _leds.set_targetangle(_vision.get_angle1InDegrees(), 
                           _vision.get_isTargetInFOV(), 
                           _distanceRev2mSensor.get_distanceToTargetInInches());
-
+    _vision.turnOnLimelightLEDs();
   }
 
   /********************************************************************************************
@@ -121,7 +121,7 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
     _scanTimeSamples = new MovingAverage(20);
     _dataLogger = GeneralUtilities.setupLogging("Teleop"); // init data logging
-		_lastDashboardWriteTimeMSec = new Date().getTime(); // snapshot time to control spamming
+    _lastDashboardWriteTimeMSec = new Date().getTime(); // snapshot time to control spamming
   }
 
   /**
@@ -130,7 +130,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     Scheduler.getInstance().run();
-  
+    _vision.turnOnLimelightLEDs();
   }
 
   /********************************************************************************************
@@ -169,6 +169,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledPeriodic() {
     Scheduler.getInstance().run();
+    _vision.turnOffLimelightLEDs();
   }
   
   /********************************************************************************************
