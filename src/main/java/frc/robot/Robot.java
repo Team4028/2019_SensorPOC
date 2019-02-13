@@ -11,17 +11,18 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.Date;
 
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-import frc.robot.sensors.VisionLL;
 import frc.robot.interfaces.IVisionSensor;
+import frc.robot.sensors.AirCompressor;
 import frc.robot.sensors.DistanceRev2mSensor;
 import frc.robot.sensors.GyroNavX;
 import frc.robot.sensors.StoredPressureSensor;
 import frc.robot.sensors.SwitchableCameraServer;
 import frc.robot.sensors.VisionIP;
+import frc.robot.sensors.VisionLL;
 import frc.robot.subsystems.Cargo;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.Climber;
@@ -52,6 +53,7 @@ public class Robot extends TimedRobot {
   private DistanceRev2mSensor _distanceRev2mSensor = DistanceRev2mSensor.getInstance();
   private StoredPressureSensor _pressureSensor = StoredPressureSensor.getInstance();
   private SwitchableCameraServer _cameraServer = SwitchableCameraServer.getInstance();
+  private AirCompressor _compressor = AirCompressor.get_instance();
 
   private VisionLL _vision = VisionLL.getInstance();      // Limelight
   //private IVisionSensor _vision = VisionIP.getInstance();   // IPhone
@@ -202,8 +204,8 @@ public class Robot extends TimedRobot {
     	// add scan time sample to calc scan time rolling average
     	_scanTimeSamples.add(new BigDecimal(scanCycleDeltaInMSecs));
     	
-    	if((new Date().getTime() - _lastDashboardWriteTimeMSec) > 100) {
-
+    	//if((new Date().getTime() - _lastDashboardWriteTimeMSec) > 100) {
+        {
         // ----------------------------------------------
     		// each subsystem should add a call to a outputToSmartDashboard method
     		// to push its data out to the dashboard
@@ -219,6 +221,7 @@ public class Robot extends TimedRobot {
         if(_pressureSensor != null)       { _pressureSensor.updateDashboard(); }
         if(_navX != null)                 {_navX.updateDashboard();}
         if(_cameraServer != null)         {_cameraServer.updateDashboard();}
+        if(_compressor != null)           { _compressor.updateDashboard(); }
 	    	
     		// write the overall robot dashboard info
 	    	SmartDashboard.putString("Robot Build", _buildMsg);
@@ -253,6 +256,7 @@ public class Robot extends TimedRobot {
 	    	if(_distanceRev2mSensor != null)  { _distanceRev2mSensor.updateLogData(logData); }
         if(_vision != null)               { _vision.updateLogData(logData); }
         if(_pressureSensor != null)       { _pressureSensor.updateLogData(logData); }
+        if(_compressor != null)           { _compressor.updateLogData(logData); }
     
 	    	_dataLogger.WriteDataLine(logData);
     	}
