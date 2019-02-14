@@ -26,6 +26,7 @@ public class GyroNavX {
 		CARGOSHIP_SIDE_ROCKET,
 		ROCKET_FRONT,
 		ROCKET_BACK,
+		FEEDER_STATION
 	}
 
 	public enum SIDE {
@@ -75,6 +76,8 @@ public class GyroNavX {
 			case ROCKET_BACK:
 			scoringTargetAngle = ROCKET_BACK_ANGLE;
 				break;
+			case FEEDER_STATION:
+			scoringTargetAngle = 180;
 		}
 
 		switch(side) {
@@ -120,7 +123,7 @@ public class GyroNavX {
 	}
 	
     public double getYaw() { 
-	return _navXSensor.getYaw();
+		return _navXSensor.getYaw();
 	}
 	
 	public void zeroYaw() { 
@@ -128,7 +131,7 @@ public class GyroNavX {
 	}
 	
 	public double getPitch() { //Axis Perpendicular to the Front/Back of the robot
-	return _navXSensor.getPitch();
+		return _navXSensor.getPitch();
 	}
 
 	//=====================================================================================

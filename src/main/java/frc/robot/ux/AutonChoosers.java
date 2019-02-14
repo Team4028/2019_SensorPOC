@@ -12,7 +12,9 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.commands.auton.autons.DoubleHatch;
 import frc.robot.commands.auton.autons.SingleHatchFront;
+import frc.robot.commands.auton.autons.SingleHatchSide;
 import frc.robot.interfaces.IBeakSquadSubsystem;
 import frc.robot.util.LogDataBE;
 
@@ -24,6 +26,8 @@ public class AutonChoosers implements IBeakSquadSubsystem {
     private enum AUTON_MODE {
 		UNDEFINED,
 		FRONT_HATCH,
+		SIDE_HATCH,
+		DOUBLE_HATCH,
         DO_NOTHING
     }
 
@@ -50,6 +54,8 @@ public class AutonChoosers implements IBeakSquadSubsystem {
         // Auton Mode
 		_autonAction.setDefaultOption("Do Nothing", AUTON_MODE.DO_NOTHING);
 		_autonAction.addOption("Front Hatch", AUTON_MODE.FRONT_HATCH);
+		_autonAction.addOption("Side Hatch", AUTON_MODE.SIDE_HATCH);
+		_autonAction.addOption("Double Hatch", AUTON_MODE.DOUBLE_HATCH);
         
         // Auton Starting Side
 		_autonStartingSideChooser.setDefaultOption("LEFT", STARTING_SIDE.LEFT);
@@ -70,6 +76,10 @@ public class AutonChoosers implements IBeakSquadSubsystem {
 				return null;
 			case FRONT_HATCH:
 				return new SingleHatchFront();
+			case SIDE_HATCH:
+				return new SingleHatchSide();
+			case DOUBLE_HATCH:
+				return new DoubleHatch();
 			default:
 				return null; 
 		}

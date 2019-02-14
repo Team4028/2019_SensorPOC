@@ -66,7 +66,7 @@ public class Robot extends TimedRobot {
   private AirCompressor _compressor = AirCompressor.get_instance();
 
 
-  private IVisionSensor _vision = VisionLL.getInstance();      // Limelight
+  private VisionLL _vision = VisionLL.getInstance();      // Limelight
   //private IVisionSensor _vision = VisionIP.getInstance();   // IPhone
   private GyroNavX _navX = GyroNavX.getInstance();
 
