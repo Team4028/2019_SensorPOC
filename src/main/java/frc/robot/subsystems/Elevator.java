@@ -29,27 +29,40 @@ import frc.robot.util.LogDataBE;
 
 public class Elevator extends Subsystem implements IBeakSquadSubsystem {
 
+   double _targetElevatorPositionNU;
+   boolean _hasElevatorBeenZeroed = false;
   public enum ELEVATOR_TARGET_POSITION {
-    HOME, HATCH_LEVEL_1, HATCH_LEVEL_2, HATCH_LEVEL_3, CARGO_LEVEL_1, CARGO_LEVEL_2, CARGO_LEVEL_3
-  }
-
-  public enum ELEVATOR_UP_OR_DOWN {
-    UP, DOWN
+    HOME,
+    CARGO_LEVEL_1,
+    CARGO_LEVEL_2,
+    CARGO_LEVEL_3,
+    HATCH_LEVEL_1,
+    HATCH_LEVEL_2,
+    HATCH_LEVEL_3
   }
 
   private static TalonSRX _elevatorMasterMotor;
   private static TalonSRX _elevatorSlaveMotor;
   private static Elevator _instance = new Elevator();
 
-  private static final double FEED_FORWARD_GAIN = 0.4;
-  private static final double PROPORTIONAL_GAIN = 3.0 ;
+  private static final double FEED_FORWARD_GAIN = 0.17427598;
+  private static final double PROPORTIONAL_GAIN = 1.0;
   private static final double INTEGRAL_GAIN = 0;
   private static final int INTEGRAL_ZONE = 0;
   private static final double DERIVATIVE_GAIN = 0;
-  private static final int CRUISE_VELOCITY = 2000;
+  private static final int CRUISE_VELOCITY = 1000;
   private static final int CRUISE_ACCELERATION = 4500;
   private static final int CAN_TIMEOUT_MILLISECONDS = 30;
   private double NATIVE_UNITS_TO_INCHES_CONVERSION = 242.7928;
+
+  private double HOME_POSITION_NU = InchesToNativeUnits(0);
+  private double CARGO_LEVEL_1_POSITION_NU = InchesToNativeUnits(0);
+  private double CARGO_LEVEL_2_POSITION_NU = InchesToNativeUnits(0);
+  private double CARGO_LEVEL_3_POSITION_NU = InchesToNativeUnits(0);
+  private double HATCH_LEVEL_1_POSITION_NU = InchesToNativeUnits(0);
+  private double HATCH_LEVEL_2_POSITION_NU = InchesToNativeUnits(0);
+  private double HATCH_LEVEL_3_POSITION_NU = InchesToNativeUnits(0);
+
 
   public static Elevator getInstance() {
     return _instance;
@@ -113,24 +126,43 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
 
   }
 
-  public void moveElevator(ELEVATOR_UP_OR_DOWN elevatorUpOrDown) {
-    switch (elevatorUpOrDown) {
-    case UP:
-      _elevatorMasterMotor.set(ControlMode.PercentOutput, .3);
-      break;
-    case DOWN:
-      _elevatorMasterMotor.set(ControlMode.PercentOutput, -.1);
-      break;
+  public void MoveToPresetPosition(ELEVATOR_TARGET_POSITION presetPosition){
+    if(get_hasElevatorBeenZeroed()){
+      switch(presetPosition){
+        case HOME:
+          _targetElevatorPositionNU = HOME_POSITION_NU;
+          break;
+        case CARGO_LEVEL_1:
+          _targetElevatorPositionNU = CARGO_LEVEL_1_POSITION_NU;
+          break;
+        case CARGO_LEVEL_2:
+          _targetElevatorPositionNU = CARGO_LEVEL_2_POSITION_NU;
+          break;
+        case CARGO_LEVEL_3:
+          _targetElevatorPositionNU = CARGO_LEVEL_3_POSITION_NU;
+          break;
+        case HATCH_LEVEL_1:
+          _targetElevatorPositionNU = HATCH_LEVEL_1_POSITION_NU;
+          break;
+        case HATCH_LEVEL_2:
+          _targetElevatorPositionNU = HATCH_LEVEL_2_POSITION_NU;
+          break;
+        case HATCH_LEVEL_3:
+          _targetElevatorPositionNU = HATCH_LEVEL_3_POSITION_NU;
+          break;
+      }
     }
+    _elevatorMasterMotor.set(ControlMode.MotionMagic, _targetElevatorPositionNU);
   }
 
-  public void MoveElevatorToSelectedPosition() {
-    _elevatorMasterMotor.set(ControlMode.MotionMagic, InchesToNativeUnits(30));
+  private boolean get_hasElevatorBeenZeroed() {
+    return _hasElevatorBeenZeroed;
   }
 
   public void zeroElevatorMotorEncoder() {
     if (isBottomElevatorLimitSwitchClosed()) {
       _elevatorMasterMotor.setSelectedSensorPosition(0);
+      _hasElevatorBeenZeroed = true;
     }
   }
 
