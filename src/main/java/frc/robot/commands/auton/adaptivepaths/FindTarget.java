@@ -3,7 +3,6 @@ package frc.robot.commands.auton.adaptivepaths;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 import frc.robot.auton.path_planning.problem;
 import frc.robot.sensors.GyroNavX;
 import frc.robot.sensors.VisionLL;
@@ -24,14 +23,17 @@ public class FindTarget extends Command
     boolean seenSecondCycle = false;
     boolean seenThirdCycle = false;
     double deltaTheta;
-    double counter = 0;
+    double counter;
 
 
 
     public FindTarget(SCORING_TARGET target, SIDE side) 
     {
+        setInterruptible(true);
+        requires(_chassis);
         _scoringTarget = target;
         _side = side;
+
     }                
 
     @Override
@@ -71,7 +73,6 @@ public class FindTarget extends Command
     @Override
     protected void end() 
     {
-        System.out.println("LADIES AND GENTLEMAN... WE'VE GOT EM");
         _chassis.stop();
     }
 

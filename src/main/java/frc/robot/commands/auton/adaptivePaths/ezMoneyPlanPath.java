@@ -35,6 +35,7 @@ public class ezMoneyPlanPath extends Command
         _numTries = numTries;
         _target = target;
         _side = side;
+        setInterruptible(false);
 
 
     }
@@ -43,9 +44,12 @@ public class ezMoneyPlanPath extends Command
     protected void initialize() {}
 
     @Override
-    protected void execute(){
-        if (!(hasSeenTarget)){
-            if (_limeLight.get_isTargetInFOV()){
+    protected void execute()
+    {
+        if (!(hasSeenTarget))
+        {
+            if (_limeLight.get_isTargetInFOV())
+            {
                 hasSeenTarget = true;
                 double A1 = _limeLight.get_angle1InDegrees();
                 double A2= _navX.get_angle2InDegreesFromLL(_target, _side);
@@ -57,7 +61,9 @@ public class ezMoneyPlanPath extends Command
                 System.out.println("DISTANCE: " + distance);
                 problem.planPathFromVisionData(A1, A2, distance, curPose);
                 System.out.println("PLAN PATH FROM VISION DATA COMPLETE");
-            } else {
+            } 
+            else 
+            {
                 tries++;
                 System.out.println("Tries: " + tries);
             }

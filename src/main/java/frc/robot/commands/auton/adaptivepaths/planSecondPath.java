@@ -30,6 +30,7 @@ public class planSecondPath extends Command
     
 
     public planSecondPath(SCORING_TARGET target, SIDE side) {
+        setInterruptible(false);
         _target = target;
         _side = side;
         _initialTheta = problem._theta;

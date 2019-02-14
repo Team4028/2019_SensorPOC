@@ -1,4 +1,4 @@
-package frc.robot.commands.auton;
+package frc.robot.commands.auton.util;
 
 import frc.robot.subsystems.Chassis;
 

@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.commands.auton.autons.DoNothing;
 import frc.robot.commands.auton.autons.DoubleHatch;
 import frc.robot.commands.auton.autons.SingleHatchFront;
 import frc.robot.commands.auton.autons.SingleHatchSide;
@@ -73,7 +74,7 @@ public class AutonChoosers implements IBeakSquadSubsystem {
 		
 		switch(_autonAction.getSelected()) {
 			case DO_NOTHING:
-				return null;
+				return new DoNothing();
 			case FRONT_HATCH:
 				return new SingleHatchFront();
 			case SIDE_HATCH:

@@ -12,7 +12,11 @@ public class DriveVisionDistance extends Command
     Chassis _chassis = Chassis.getInstance();
     private static final double OFFSET = 28.5;
 
-    public DriveVisionDistance(){}
+    public DriveVisionDistance()
+    {
+        setInterruptible(true);
+        requires(_chassis);
+    }
 
     @Override
     protected void initialize() 

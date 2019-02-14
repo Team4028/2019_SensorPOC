@@ -1,18 +1,20 @@
-package frc.robot.commands.auton;
+package frc.robot.commands.auton.util;
 
 import edu.wpi.first.wpilibj.command.Command;
 
-public class Auton_ParallelStarter extends Command
+public class PrintCommand extends Command
 {
     String _printCmd;
-    public Auton_ParallelStarter() {
+    public PrintCommand(String printCmd)
+    {
+        _printCmd=printCmd;
     }
     @Override
     protected void initialize() {
+        System.out.println(_printCmd);
     }
     @Override
     protected boolean isFinished() {
-        System.out.println("Parallel Starter Has Finished");
         return true;
     }
 

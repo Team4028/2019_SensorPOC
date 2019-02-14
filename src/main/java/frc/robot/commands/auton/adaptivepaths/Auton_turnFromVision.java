@@ -1,4 +1,4 @@
-package frc.robot.commands.auton;
+package frc.robot.commands.auton.adaptivepaths;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.sensors.GyroNavX;
