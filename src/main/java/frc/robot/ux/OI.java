@@ -8,6 +8,8 @@
 package frc.robot.ux;
 
 import frc.robot.RobotMap;
+import frc.robot.commands.auton.adaptivepaths.CG_FollowVisionPath;
+import frc.robot.commands.chassis.DriveSetDistance;
 import frc.robot.commands.camera.SwitchCamera;
 import frc.robot.commands.chassis.DriveWithControllers;
 import frc.robot.commands.elevator.MoveToPresetPosition;

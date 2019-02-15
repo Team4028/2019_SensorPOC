@@ -13,6 +13,17 @@ import java.util.Date;
 
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.command.CommandGroup;
+import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.auton.pathfollowing.PathBuilder;
+import frc.robot.auton.pathfollowing.Paths;
+import frc.robot.sensors.GyroNavX;
+
+import frc.robot.sensors.VisionLL;
+import frc.robot.sensors.GyroNavX.SCORING_TARGET;
+import frc.robot.sensors.GyroNavX.SIDE;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -26,6 +37,7 @@ import frc.robot.sensors.SwitchableCameraServer;
 import frc.robot.sensors.VisionIP;
 import frc.robot.sensors.VisionLL;
 import frc.robot.subsystems.Cargo;
+
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Elevator;
@@ -57,11 +69,13 @@ public class Robot extends TimedRobot {
   private SwitchableCameraServer _cameraServer = SwitchableCameraServer.getInstance();
   private AirCompressor _compressor = AirCompressor.get_instance();
 
+
   private VisionLL _vision = VisionLL.getInstance();      // Limelight
   //private IVisionSensor _vision = VisionIP.getInstance();   // IPhone
   private GyroNavX _navX = GyroNavX.getInstance();
 
   // ux
+
   private LEDController _leds = LEDController.getInstance();
   private AutonChoosers _autonChoosers = AutonChoosers.getInstance();
   private OI _oi = OI.getInstance();
@@ -72,13 +86,16 @@ public class Robot extends TimedRobot {
   private Climber _climber = Climber.getInstance();
   private Elevator _elevator = Elevator.getInstance();
 
-	// class level working variables
+  // class level working variables
+
 	private DataLogger _dataLogger = null;
 	private String _buildMsg = "?";
  	long _lastScanEndTimeInMSec;
  	long _lastDashboardWriteTimeMSec;
 	MovingAverage _scanTimeSamples;
-	public double _startTime;
+  public double _startTime;
+
+
 
   /********************************************************************************************
    * This function is run when the robot is first started up and should be used
@@ -87,6 +104,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     _buildMsg = GeneralUtilities.WriteBuildInfoToDashboard(ROBOT_NAME);
+    Paths.buildPaths();
+    
   }
 
   /********************************************************************************************
@@ -97,9 +116,13 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    _chassis.zeroSensors();
+    _chassis.stop();
     _scanTimeSamples = new MovingAverage(20);
     _lastDashboardWriteTimeMSec = new Date().getTime(); // snapshot time to control spamming
-    _dataLogger = GeneralUtilities.setupLogging("Auton"); // init data logging
+    _dataLogger = GeneralUtilities.setupLogging("Auton"); // init data logging	
+    _autonChoosers.getSelectedAuton().start();
+    Chassis._autoStartTime = Timer.getFPGATimestamp();
     if(!_elevator.get_hasElevatorBeenZeroed()){
       Command zeroElevatorCommand = new ZeroElevatorEncoder();
       zeroElevatorCommand.start();
@@ -110,7 +133,11 @@ public class Robot extends TimedRobot {
    * This function is called periodically during autonomous mode.
    */
   @Override
-  public void autonomousPeriodic() {
+
+  public void autonomousPeriodic() 
+  {
+
+    _chassis.updateChassis(Timer.getFPGATimestamp());
     Scheduler.getInstance().run();
 
     _leds.set_targetangle(_vision.get_angle1InDegrees(), 
@@ -127,21 +154,21 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopInit() {
-    _scanTimeSamples = new MovingAverage(20);
+    _chassis.stop();
+        _scanTimeSamples = new MovingAverage(20);
     _dataLogger = GeneralUtilities.setupLogging("Teleop"); // init data logging
     _lastDashboardWriteTimeMSec = new Date().getTime(); // snapshot time to control spamming
     if(!_elevator.get_hasElevatorBeenZeroed()){
-      Command zeroElevatorCommand = new ZeroElevatorEncoder();
       zeroElevatorCommand.start();
     }
   }
 
-  /**
-   * This function is called periodically during teleop mode.
+   /* This function is called periodically during teleop mode.
    */
   @Override
   public void teleopPeriodic() {
-    Scheduler.getInstance().run();
+    _chassis.updateChassis(Timer.getFPGATimestamp());
+    Scheduler.getInstance().run();    
     _vision.turnOnLimelightLEDs();
   }
 

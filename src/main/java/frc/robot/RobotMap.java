@@ -28,11 +28,14 @@ public class RobotMap
 	public static final int PCM_CAN_ADDR = 0;
 
 	// Motor Controller Can Bus Address
-	//public static final int LEFT_DRIVE_MASTER_CAN_ADDR = 0;
-	//public static final int LEFT_DRIVE_SLAVE_CAN_ADDR = 0;
-	//public static final int RIGHT_DRIVE_MASTER_CAN_ADDR = 0;
-	//public static final int RIGHT_DRIVE_SLAVE_CAN_ADDR = 0;
 
+	public static final int RIGHT_DRIVE_MASTER_CAN_ADDR = 1;//1;
+	public static final int RIGHT_DRIVE_SLAVE_CAN_ADDR = 2; //2;
+	public static final int LEFT_DRIVE_MASTER_CAN_ADDR = 3; //3;
+	public static final int LEFT_DRIVE_SLAVE_CAN_ADDR = 4; //4;
+
+
+	
 	public static final int ELEVATOR_MASTER_CAN_ADDR = 10;
 	public static final int ELEVATOR_SLAVE_CAN_ADDR = 11;
 
@@ -47,6 +50,7 @@ public class RobotMap
 	public static final int AIN_STORED_PRESSURE_SENSOR_PORT = 0;
 	
 	// NavX (on Roborio)
+
 	public static final SPI.Port NAVX_PORT = SPI.Port.kMXP;
 	
 	
