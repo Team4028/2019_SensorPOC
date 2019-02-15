@@ -24,6 +24,10 @@ import frc.robot.sensors.GyroNavX;
 import frc.robot.sensors.VisionLL;
 import frc.robot.sensors.GyroNavX.SCORING_TARGET;
 import frc.robot.sensors.GyroNavX.SIDE;
+import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.commands.elevator.ZeroElevatorEncoder;
 import frc.robot.interfaces.IVisionSensor;
 import frc.robot.sensors.AirCompressor;
 import frc.robot.sensors.DistanceRev2mSensor;
@@ -119,7 +123,10 @@ public class Robot extends TimedRobot {
     _dataLogger = GeneralUtilities.setupLogging("Auton"); // init data logging	
     _autonChoosers.getSelectedAuton().start();
     Chassis._autoStartTime = Timer.getFPGATimestamp();
-
+    if(!_elevator.get_hasElevatorBeenZeroed()){
+      Command zeroElevatorCommand = new ZeroElevatorEncoder();
+      zeroElevatorCommand.start();
+    }
   }
 
   /**
@@ -151,11 +158,12 @@ public class Robot extends TimedRobot {
         _scanTimeSamples = new MovingAverage(20);
     _dataLogger = GeneralUtilities.setupLogging("Teleop"); // init data logging
     _lastDashboardWriteTimeMSec = new Date().getTime(); // snapshot time to control spamming
-    _chassis.zeroSensors();
+    if(!_elevator.get_hasElevatorBeenZeroed()){
+      zeroElevatorCommand.start();
+    }
   }
 
-  /**
-   * This function is called periodically during teleop mode.
+   /* This function is called periodically during teleop mode.
    */
   @Override
   public void teleopPeriodic() {
@@ -171,15 +179,13 @@ public class Robot extends TimedRobot {
    * This function is called 1x when the robot is 1st enabled test mode
    */
   @Override
-  public void testInit() {
-  }
+  public void testInit() {}
 
   /**
    * This function is called periodically during test mode.
    */
   @Override
-  public void testPeriodic() {
-  }
+  public void testPeriodic() {}
 
   /********************************************************************************************
    * Disabled Mode
@@ -219,8 +225,7 @@ public class Robot extends TimedRobot {
     // ============= Refresh Dashboard ============= 
     this.outputAllToDashboard();
     
-    if(!isDisabled())
-    {
+    if(!isDisabled()) {
       // ============= Optionally Log Data =============
 		  this.logAllData();
     }

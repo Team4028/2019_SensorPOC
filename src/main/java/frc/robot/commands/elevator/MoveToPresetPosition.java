@@ -5,17 +5,20 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.infeed;
+package frc.robot.commands.elevator;
 
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.subsystems.Cargo;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Elevator.ELEVATOR_TARGET_POSITION;
 
-public class ToggleStartPos extends Command {
-  private Cargo _cargo = Cargo.getInstance();
+public class MoveToPresetPosition extends Command {
+  Elevator _elevator = Elevator.getInstance();
+  ELEVATOR_TARGET_POSITION _presetPosition;
 
-  public ToggleStartPos() {
-    requires(_cargo);
-    setInterruptible(false);
+  public MoveToPresetPosition(ELEVATOR_TARGET_POSITION presetPosition) {
+    requires(_elevator);
+    setInterruptible(true);
+    _presetPosition = presetPosition;
   }
 
   // Called just before this Command runs the first time
@@ -25,13 +28,13 @@ public class ToggleStartPos extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    _cargo.toggleMechanism();
+    _elevator.MoveToPresetPosition(_presetPosition);
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return true;
+    return _elevator.get_isElevatorAtTargetPos();
   }
 
   // Called once after isFinished returns true

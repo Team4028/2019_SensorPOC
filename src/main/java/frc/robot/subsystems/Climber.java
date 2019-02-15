@@ -36,28 +36,17 @@ public class Climber extends Subsystem implements IBeakSquadSubsystem {
 	}
 	
 	// private constructor for singleton pattern
-	private Climber() {
-  }
-
-  // Put methods for controlling this subsystem
-  // here. Call these from Commands.
+	private Climber() {}
 
   @Override
-  public void initDefaultCommand() {
-    // Set the default command for a subsystem here.
-    // setDefaultCommand(new MySpecialCommand());
-  }
+  public void initDefaultCommand() {}
 
 	//=====================================================================================
 	// Helper Methods
 	//=====================================================================================
   @Override
-  public void updateLogData(LogDataBE logData) {
-
-  }
+  public void updateLogData(LogDataBE logData) {}
 
   @Override
-  public void updateDashboard() {
-
-  }
+  public void updateDashboard() {}
 }

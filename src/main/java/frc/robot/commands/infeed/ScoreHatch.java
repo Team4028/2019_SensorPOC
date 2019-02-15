@@ -20,8 +20,7 @@ public class ScoreHatch extends Command {
   private final int SLEEP_2_TIME_IN_MS = 500;
 
   private long _startTimeInMs = 0;
-  private enum SCORE_STEP
-  {
+  private enum SCORE_STEP {
     UNDEFINED,
     BEAK_CLOSE_STEP,
     WAIT_STEP,
@@ -42,51 +41,41 @@ public class ScoreHatch extends Command {
 
   // Called just before this Command runs the first time
   @Override
-  protected void initialize() 
-  { 
+  protected void initialize() { 
     _currentStep = SCORE_STEP.BEAK_CLOSE_STEP;
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
-  protected void execute() 
-  {
-    if(_currentStep == SCORE_STEP.BEAK_CLOSE_STEP)
-    {
+  protected void execute() {
+    if(_currentStep == SCORE_STEP.BEAK_CLOSE_STEP) {
       _cargo.setBeak(BEAK_POSITION.CLOSED);
       _currentStep = SCORE_STEP.WAIT_STEP;
       _startTimeInMs = System.nanoTime() / 1000000;
     }
-    else if(_currentStep == SCORE_STEP.WAIT_STEP)
-    {
+    else if(_currentStep == SCORE_STEP.WAIT_STEP) {
       long currentTimeInMs = System.nanoTime() / 1000000;
       long elapsedTimeInMs = currentTimeInMs - _startTimeInMs;
-      if (elapsedTimeInMs > SLEEP_TIME_IN_MS)
-      {
+      if (elapsedTimeInMs > SLEEP_TIME_IN_MS) {
         _currentStep = SCORE_STEP.PUNCH_OUT_STEP;
       }
     }
-    else if (_currentStep == SCORE_STEP.PUNCH_OUT_STEP)
-    {
+    else if (_currentStep == SCORE_STEP.PUNCH_OUT_STEP) {
       _cargo.setPunch(PUNCH_POSITION.OUT);
       _currentStep = SCORE_STEP.WAIT_PUNCH_IN_STEP;
       _startTimeInMs = System.nanoTime() / 1000000;
     }
-    else if(_currentStep == SCORE_STEP.WAIT_PUNCH_IN_STEP)
-    {
+    else if(_currentStep == SCORE_STEP.WAIT_PUNCH_IN_STEP) {
       long currentTimeInMs = System.nanoTime() / 1000000;
       long elapsedTimeInMs = currentTimeInMs - _startTimeInMs;
-      if (elapsedTimeInMs > SLEEP_2_TIME_IN_MS)
-      {
+      if (elapsedTimeInMs > SLEEP_2_TIME_IN_MS) {
         _currentStep = SCORE_STEP.PUNCH_IN_STEP;
       }
     }
-    else if(_currentStep == SCORE_STEP.PUNCH_IN_STEP)
-    {
+    else if(_currentStep == SCORE_STEP.PUNCH_IN_STEP) {
       _cargo.setPunch(PUNCH_POSITION.IN);
       _currentStep = SCORE_STEP.FINISHED_STEP;
     }
-
     SmartDashboard.putString("CargoCMD:State", _currentStep.toString());
   }
 
@@ -98,12 +87,10 @@ public class ScoreHatch extends Command {
 
   // Called once after isFinished returns true
   @Override
-  protected void end() {
-  }
+  protected void end() {}
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
-  protected void interrupted() {
-  }
+  protected void interrupted() {}
 }

@@ -12,14 +12,14 @@ import frc.robot.commands.auton.adaptivepaths.CG_FollowVisionPath;
 import frc.robot.commands.chassis.DriveSetDistance;
 import frc.robot.commands.camera.SwitchCamera;
 import frc.robot.commands.chassis.DriveWithControllers;
+import frc.robot.commands.elevator.MoveToPresetPosition;
 import frc.robot.commands.infeed.AquireHatch;
 import frc.robot.commands.infeed.RunInfeedMotor;
 import frc.robot.commands.infeed.ScoreHatch;
 import frc.robot.commands.infeed.ToggleBeakPosition;
 import frc.robot.commands.infeed.TogglePunch;
 import frc.robot.commands.infeed.ToggleStartPos;
-import frc.robot.sensors.GyroNavX.SCORING_TARGET;
-import frc.robot.sensors.GyroNavX.SIDE;
+import frc.robot.subsystems.Elevator.ELEVATOR_TARGET_POSITION;
 import frc.robot.util.BeakXboxController;
 
 /**
@@ -52,15 +52,15 @@ public class OI {
  
 		_driverController.leftStick.whenReleased(new DriveWithControllers(_driverController.leftStick, _driverController.rightStick));
 		_driverController.rightStick.whenReleased(new DriveWithControllers(_driverController.leftStick, _driverController.rightStick));
-		_driverController.a.whenPressed(new CG_FollowVisionPath());
-		// _driverController.a.whenPressed(new DriveSetDistance(50));
+		_driverController.a.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.HOME));
+		_driverController.b.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.HATCH_LEVEL_2));
         // =========== Operator ======================================
 		_operatorController = new BeakXboxController(RobotMap.OPERATOR_GAMEPAD_USB_PORT);
 		//==========================================================
 		_operatorController.leftStick.whileActive(new RunInfeedMotor(_operatorController.leftStick));
 		_operatorController.leftStick.whenReleased(new RunInfeedMotor(_operatorController.leftStick));
 
-		_operatorController.a.whenPressed(new ToggleBeakPosition());
+		_operatorController.lb.whenPressed(new ToggleBeakPosition());
 		_operatorController.b.whenPressed(new TogglePunch());
 		_operatorController.y.whenPressed(new AquireHatch());
 		_operatorController.x.whenPressed(new ScoreHatch());

@@ -77,7 +77,6 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
     _mechansimSolenoid = new DoubleSolenoid(RobotMap.PCM_FORWARD_INOUT_SOLENOID_PORT, RobotMap.PCM_REVERSE_INOUT_SOLENOID_PORT);
 
     setDefultPosition();
-    
   }
 
   // Put methods for controlling this subsystem
@@ -101,25 +100,19 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
       when the beak has a hatch and the mechanism is retracted. The beak cannot be opened if the 
       sliding mechnaism isnt extended and if the punch is extended. The mechanism cannot slide when
       the beak is open :)
-
   */
   //=======================================
   public void setBeak(BEAK_POSITION beakPosition) {
     Value currentMechPos = _mechansimSolenoid.get();
     Value currentPunchPos = _punchSolenoid.get();
     
-      if (beakPosition == BEAK_POSITION.CLOSED) 
-      {
+      if (beakPosition == BEAK_POSITION.CLOSED) {
            _beakSolenoid.set(BEAK_CLOSE);
       }
-      else if (beakPosition == BEAK_POSITION.OPEN) 
-      {
-        if(currentPunchPos == PUNCH_IN && currentMechPos == MECHANISM_EXTENDED)
-        {
+      else if (beakPosition == BEAK_POSITION.OPEN) {
+        if(currentPunchPos == PUNCH_IN && currentMechPos == MECHANISM_EXTENDED) {
            _beakSolenoid.set(BEAK_OPEN);
-        }
-       else
-        {
+        } else {
           DriverStation.reportWarning("BEAK SAFETY INTERLOCK U SUC", false);
         }
       }
@@ -133,14 +126,10 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
       _punchSolenoid.set(PUNCH_IN);
       
     } 
-    else if (punchPosition == PUNCH_POSITION.OUT) 
-    {
-      if(currentBeakPos== BEAK_CLOSE && currentMechPos == MECHANISM_EXTENDED)
-        {
+    else if (punchPosition == PUNCH_POSITION.OUT) {
+      if(currentBeakPos== BEAK_CLOSE && currentMechPos == MECHANISM_EXTENDED) {
            _punchSolenoid.set(PUNCH_OUT);
-        }
-       else
-        {
+        } else {
           DriverStation.reportWarning("PUNCH SAFETY INTERLOCK U SUC", false);
         }
     }
@@ -152,34 +141,26 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
       _mechansimSolenoid.set(MECHANISM_EXTENDED);
     
     } 
-    else if (mechanismPosition == MECHANISM_POSITION.RETRACTED) 
-    {
-      if(currentBeakPos== BEAK_CLOSE)
-        {
+    else if (mechanismPosition == MECHANISM_POSITION.RETRACTED) {
+      if(currentBeakPos== BEAK_CLOSE) {
            _mechansimSolenoid.set(MECHANISM_RETRACTED);
-        }
-       else
-        {
+        } else {
           DriverStation.reportWarning("MECHANISM SAFETY INTERLOCK U SUC", false);
         }
     }
-
   }
 
   // =====================================
   public void toggleMechanism() {
-    {
-      Value currentMechPos = _mechansimSolenoid.get();
-      if (currentMechPos == MECHANISM_RETRACTED) {
-        setMechanism(MECHANISM_POSITION.EXTENDED);
-      } else {
-        setMechanism(MECHANISM_POSITION.RETRACTED);
-      }
+    Value currentMechPos = _mechansimSolenoid.get();
+    if (currentMechPos == MECHANISM_RETRACTED) {
+      setMechanism(MECHANISM_POSITION.EXTENDED);
+    } else {
+      setMechanism(MECHANISM_POSITION.RETRACTED);
     }
   }
 
   public void toggleBeakPlacement() {
-
     Value currentBeakPos = _beakSolenoid.get();
     if (currentBeakPos == BEAK_CLOSE) {
       setBeak(BEAK_POSITION.OPEN);
@@ -189,11 +170,9 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
   }
 
   public void togglePunch() {
-  
       Value currentPunchPos = _punchSolenoid.get();
       if (currentPunchPos == PUNCH_OUT) {
         setPunch(PUNCH_POSITION.IN);
-
       } else {
         setPunch(PUNCH_POSITION.OUT);
       }
@@ -204,10 +183,7 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
     }
 
     @Override
-    public void initDefaultCommand() {
-      // Set the default command for a subsystem here.
-      // setDefaultCommand(new MySpecialCommand());
-    }
+    public void initDefaultCommand() {}
 
     private String get_BeakPosition(){
       Value currentBeakPos = _beakSolenoid.get();
@@ -222,7 +198,6 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
       Value currentPunchPos = _punchSolenoid.get();
       if (currentPunchPos == PUNCH_OUT) {
         return "Punch Out";
-
       } else {
         return "Punch In";
       }
@@ -241,9 +216,7 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
     // Helper Methods
     //=====================================================================================
     @Override
-    public void updateLogData(LogDataBE logData) {
-
-    }
+    public void updateLogData(LogDataBE logData) {}
 
     @Override
     public void updateDashboard() 

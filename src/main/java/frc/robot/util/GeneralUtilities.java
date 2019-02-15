@@ -52,7 +52,6 @@ public class GeneralUtilities {
     		DriverStation.reportWarning("General Error trying to determine current JAR file", true);
 			//e.printStackTrace();
 		}
-		
 		return buildMsg;
 	}
 	
@@ -93,7 +92,6 @@ public class GeneralUtilities {
     		
     		System.out.println("..Logging Disabled!");
     	}
-    	
     	return dataLogger;
 	}
 	

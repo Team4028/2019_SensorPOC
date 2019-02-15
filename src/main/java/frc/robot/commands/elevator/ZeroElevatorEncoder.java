@@ -5,16 +5,16 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.infeed;
+package frc.robot.commands.elevator;
 
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.subsystems.Cargo;
+import frc.robot.subsystems.Elevator;
 
-public class ToggleStartPos extends Command {
-  private Cargo _cargo = Cargo.getInstance();
+public class ZeroElevatorEncoder extends Command {
+  Elevator _elevator = Elevator.getInstance();
 
-  public ToggleStartPos() {
-    requires(_cargo);
+  public ZeroElevatorEncoder() {
+    requires(_elevator);
     setInterruptible(false);
   }
 
@@ -25,7 +25,7 @@ public class ToggleStartPos extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    _cargo.toggleMechanism();
+    _elevator.zeroElevatorMotorEncoder();
   }
 
   // Make this return true when this Command no longer needs to run execute()
