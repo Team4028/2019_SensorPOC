@@ -17,7 +17,6 @@ public class Auton_WaitUntilRemaingDistance extends Command {
 	@Override
 	public void execute() {}
 
-
 	@Override
 	public boolean isFinished() {
 		return (Chassis.getInstance().getRemainingPathDistance() < _targetDistance) || Chassis.getInstance().isDoneWithPath();

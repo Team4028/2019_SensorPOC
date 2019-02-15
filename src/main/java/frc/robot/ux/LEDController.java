@@ -20,7 +20,6 @@ public class LEDController {
 	private static final double YELLOWZONE = 10.0;
     private static final double GREENZONE = 2.0;
     
-
     //=====================================================================================
 	// Define Singleton Pattern
 	//=====================================================================================
@@ -41,30 +40,29 @@ public class LEDController {
     Izzy's distance sensor determines whether the target is within one foot, if it is, it lights up in partymode (yass), if not 
     it is a solid green color*/ 
 	public void set_targetangle (double currentAngleInDegrees, boolean isTargetAcquired, double inchesOut){
-        
-        if(isTargetAcquired == true){
-            if(Math.abs(currentAngleInDegrees) > REDZONE){
+        if(isTargetAcquired == true) {
+            if(Math.abs(currentAngleInDegrees) > REDZONE) {
                 whiteLights();
             }
-            else if(Math.abs(currentAngleInDegrees) >= YELLOWZONE && Math.abs(currentAngleInDegrees)<= REDZONE){
+            else if(Math.abs(currentAngleInDegrees) >= YELLOWZONE && Math.abs(currentAngleInDegrees)<= REDZONE) {
                 redLEDstrip();
             }
-            else if(Math.abs(currentAngleInDegrees) >= GREENZONE && Math.abs(currentAngleInDegrees)<= YELLOWZONE){
+            else if(Math.abs(currentAngleInDegrees) >= GREENZONE && Math.abs(currentAngleInDegrees)<= YELLOWZONE) {
                 orangeLEDstrip();
             }
-            else if(Math.abs(currentAngleInDegrees) <= GREENZONE && inchesOut >= 12){
+            else if(Math.abs(currentAngleInDegrees) <= GREENZONE && inchesOut >= 12) {
                 greenLights();
             }
-            else if(Math.abs(currentAngleInDegrees) <= GREENZONE && inchesOut < 12 ){
+            else if(Math.abs(currentAngleInDegrees) <= GREENZONE && inchesOut < 12 ) {
                 partyMode();
             }
         } else {
             redBlinkLights();
         }
-
     }
+
     //Different methods that set the LEDs to a certain color, the names are self-explainitory
-	private void partyMode(){
+	private void partyMode() {
 		LEDstrip.set(-0.99);
     }
     
@@ -88,11 +86,13 @@ public class LEDController {
         LEDstrip.set(0.61);
     }
 
+    /*
     private void fireLEDS(){
         LEDstrip.set(0.57);
     }
     
     private void oceanicPaletteLEDs(){
         LEDstrip.set(-0.95);
-	}
+    }
+    */
 }

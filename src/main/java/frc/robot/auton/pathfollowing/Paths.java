@@ -1,16 +1,9 @@
 package frc.robot.auton.pathfollowing;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
 
 import frc.robot.auton.pathfollowing.PathBuilder.Waypoint;
 import frc.robot.auton.pathfollowing.control.Path;
-import frc.robot.auton.pathfollowing.motion.Translation;
-
-import static frc.robot.auton.pathfollowing.PathBuilder.buildPathFromWaypoints;
-import static frc.robot.auton.pathfollowing.PathBuilder.getStraightPathWaypoints;
-import static frc.robot.auton.pathfollowing.PathBuilder.flipPath;
-import static frc.robot.auton.pathfollowing.PathBuilder.reversePath;
 
 public class Paths {
 	private static Hashtable<Center, Path> centerPaths = new Hashtable<Center, Path>();
@@ -19,13 +12,11 @@ public class Paths {
 	
 	public enum Center {
 		TO_FRONT_CARGO_SHIP_L,
-		
-		
 	}
+
 	private static Path _toFrontCargoShipLFromC;
 	
-	public enum Left 
-	{
+	public enum Left {
 		TO_FRONT_CARGO_SHIP_L,
 		TO_LEFT_CARGO_SHIP_FIRST,
 		FROM_FIRST_BAY_TO_FEEDER_STATION,
@@ -63,8 +54,6 @@ public class Paths {
 		R_SWITCH_TO_R_SCALE_THIRD_CUBE
 	}
 
-	
-	
 	public static void buildPaths() {
 		buildCenterPaths();
 		buildLeftPaths();
@@ -83,8 +72,7 @@ public class Paths {
 		return rightPaths.get(pathName);
 	}
 	
-	private static void buildCenterPaths() 
-	{
+	private static void buildCenterPaths() {
 		_toFrontCargoShipLFromC = buildPathFromWaypoints(Arrays.asList(
 			new Waypoint(66,160,0,0),
 			new Waypoint(115,160,20,20),
@@ -92,15 +80,9 @@ public class Paths {
 			new Waypoint(185,151,0,20)
 		));
 		centerPaths.put(Center.TO_FRONT_CARGO_SHIP_L, _toFrontCargoShipLFromC);
-
-
-		
-
-
 	}
 	
-	private static void buildLeftPaths() 
-	{		
+	private static void buildLeftPaths() {		
 		_toFrontCargoShipLFromL = buildPathFromWaypoints(Arrays.asList(
 		new Waypoint(35,120,0,0),
 		new Waypoint(135,120,20,20),
@@ -134,8 +116,5 @@ public class Paths {
 		leftPaths.put(Left.FROM_FRONT_CARGO_SHIP_L_TO_FEEDER_STATION, _toFeederStationFromFrontL);
 	}
 	
-	private static void buildRightPaths() 
-	{
-		
-	}
+	private static void buildRightPaths() {}
 }

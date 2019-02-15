@@ -11,31 +11,20 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.Date;
 
-import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.auton.pathfollowing.PathBuilder;
 import frc.robot.auton.pathfollowing.Paths;
 import frc.robot.sensors.GyroNavX;
 
 import frc.robot.sensors.VisionLL;
-import frc.robot.sensors.GyroNavX.SCORING_TARGET;
-import frc.robot.sensors.GyroNavX.SIDE;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.Scheduler;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.elevator.ZeroElevatorEncoder;
-import frc.robot.interfaces.IVisionSensor;
 import frc.robot.sensors.AirCompressor;
 import frc.robot.sensors.DistanceRev2mSensor;
-import frc.robot.sensors.GyroNavX;
 import frc.robot.sensors.StoredPressureSensor;
 import frc.robot.sensors.SwitchableCameraServer;
-import frc.robot.sensors.VisionIP;
-import frc.robot.sensors.VisionLL;
 import frc.robot.subsystems.Cargo;
 
 import frc.robot.subsystems.Chassis;
@@ -159,6 +148,7 @@ public class Robot extends TimedRobot {
     _dataLogger = GeneralUtilities.setupLogging("Teleop"); // init data logging
     _lastDashboardWriteTimeMSec = new Date().getTime(); // snapshot time to control spamming
     if(!_elevator.get_hasElevatorBeenZeroed()){
+      Command zeroElevatorCommand = new ZeroElevatorEncoder();
       zeroElevatorCommand.start();
     }
   }

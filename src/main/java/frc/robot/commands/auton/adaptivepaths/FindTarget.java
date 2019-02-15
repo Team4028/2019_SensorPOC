@@ -1,4 +1,4 @@
-package frc.robot.commands.auton.adaptivepaths;
+package frc.robot.commands.auton.adaptivePaths;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
@@ -9,8 +9,7 @@ import frc.robot.sensors.GyroNavX.SCORING_TARGET;
 import frc.robot.sensors.GyroNavX.SIDE;
 import frc.robot.subsystems.Chassis;
 
-public class FindTarget extends Command
-{
+public class FindTarget extends Command {
     double conjecturedTarget;
     GyroNavX _navX = GyroNavX.getInstance();
     VisionLL _limeLight= VisionLL.getInstance();
@@ -24,10 +23,7 @@ public class FindTarget extends Command
     double deltaTheta;
     double counter;
 
-
-
-    public FindTarget(SCORING_TARGET target, SIDE side) 
-    {
+    public FindTarget(SCORING_TARGET target, SIDE side) {
         setInterruptible(true);
         requires(_chassis);
         _scoringTarget = target;
@@ -36,8 +32,7 @@ public class FindTarget extends Command
     }                
 
     @Override
-    protected void initialize() 
-    {
+    protected void initialize() {
         counter = 0;
         double targetAngle = _navX.getTargetAngle(_scoringTarget, _side);
         deltaTheta=_navX.getYaw() - targetAngle;
@@ -45,33 +40,24 @@ public class FindTarget extends Command
     }
 
     @Override
-    protected void execute() 
-    {
+    protected void execute() {
         _chassis.setLeftRightCommand(ControlMode.PercentOutput, -1 * Math.copySign(0.2, deltaTheta), Math.copySign(0.2, deltaTheta));        
-        if(_limeLight.get_isTargetInFOV())
-        {
+        if(_limeLight.get_isTargetInFOV()) {
             counter++;
-        }
-        else
-        {
+        } else {
             counter = 0;
         }
-
     }
 
     @Override
-    protected boolean isFinished() 
-    {
+    protected boolean isFinished() {
         System.out.println("counter"+counter);
         System.out.print(_limeLight.get_isTargetInFOV());
         return counter>=3;
-
-        
     }
+
     @Override
-    protected void end() 
-    {
+    protected void end() {
         _chassis.stop();
     }
-
 }

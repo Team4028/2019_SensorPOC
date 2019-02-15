@@ -47,7 +47,7 @@ public class AutonChoosers implements IBeakSquadSubsystem {
     
     private SendableChooser<AUTON_MODE> _autonAction = new SendableChooser<>();
     private SendableChooser<STARTING_SIDE> _autonStartingSideChooser = new SendableChooser<>();
-    private boolean _isStartingLeft = true;
+    //private boolean _isStartingLeft = true;
         
     //=====================================================================================
 	// Define Singleton Pattern

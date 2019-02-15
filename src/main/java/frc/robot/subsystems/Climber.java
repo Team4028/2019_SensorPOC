@@ -1,10 +1,3 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2018 FIRST. All Rights Reserved.                             */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -22,7 +15,8 @@ import frc.robot.util.LogDataBE;
  * Student Lead: 
  */
 public class Climber extends Subsystem implements IBeakSquadSubsystem {
-
+	// =================================================================================================================
+  // define class level working variables
   TalonSRX _liftMtr;
   VictorSPX _driveMtr;
 
@@ -38,13 +32,16 @@ public class Climber extends Subsystem implements IBeakSquadSubsystem {
 	// private constructor for singleton pattern
 	private Climber() {}
 
+	// ===============================================================================================================
+	// Default Command
+	// ===============================================================================================================
   @Override
   public void initDefaultCommand() {}
 
-	//=====================================================================================
-	// Helper Methods
-	//=====================================================================================
-  @Override
+	// ===============================================================================================================
+	// General Purpose Utility Methods
+	// ===============================================================================================================
+	@Override
   public void updateLogData(LogDataBE logData) {}
 
   @Override

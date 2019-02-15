@@ -1,10 +1,3 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2018 FIRST. All Rights Reserved.                             */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -30,6 +23,8 @@ import frc.robot.util.LogDataBE;
  */
 public class Cargo extends Subsystem implements IBeakSquadSubsystem {
 
+  // =================================================================================================================
+  // define class level working variables
   VictorSPX _infeedMtr;
   private DoubleSolenoid _beakSolenoid;
   private DoubleSolenoid _punchSolenoid;
@@ -42,16 +37,20 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
   private static final Value PUNCH_IN = DoubleSolenoid.Value.kForward;
   private static final Value PUNCH_OUT = DoubleSolenoid.Value.kReverse;
 
+  // =================================================================================================================
+  // Define Enums for the Cargo
   public enum BEAK_POSITION {
     UNDEFINED, 
     OPEN,
     CLOSED
   }
+
   public enum PUNCH_POSITION {
     UNDEFINED,
     OUT,
     IN
   }
+
   public enum MECHANISM_POSITION {
     UNDEFINED,
     EXTENDED,
@@ -69,25 +68,25 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
 	
 	// private constructor for singleton pattern
   private Cargo() {
+    //Infeed Motor
     _infeedMtr = new VictorSPX(RobotMap.CARGO_VICTOR_ADDR);
     _infeedMtr.configFactoryDefault();
     _infeedMtr.configForwardLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.Disabled);
+
+    //Hatch Solenoids
     _beakSolenoid = new DoubleSolenoid(RobotMap.PCM_FORWARD_BEAK_SOLENOID_PORT,RobotMap.PCM_REVERSE_BEAK_SOLENOID_PORT);
     _punchSolenoid = new DoubleSolenoid(RobotMap.PCM_FORWARD_PUNCH_SOLENOID_PORT, RobotMap.PCM_REVERSE_PUNCH_SOLENOID_PORT);
     _mechansimSolenoid = new DoubleSolenoid(RobotMap.PCM_FORWARD_INOUT_SOLENOID_PORT, RobotMap.PCM_REVERSE_INOUT_SOLENOID_PORT);
 
-    setDefultPosition();
+    setCargoDefultPosition();
   }
-
-  // Put methods for controlling this subsystem
-  // here. Call these from Commands.
   
   public void setMotorSpeed (double driveSpeed) {
-        double Speed = (.7 * driveSpeed);
-        _infeedMtr.set(ControlMode.PercentOutput, Speed);
+    double Speed = (.7 * driveSpeed);
+    _infeedMtr.set(ControlMode.PercentOutput, Speed);
   } 
 
-  public void setDefultPosition() {
+  public void setCargoDefultPosition() {
     _beakSolenoid.set(BEAK_CLOSE);
     _mechansimSolenoid.set(MECHANISM_EXTENDED);
     _punchSolenoid.set(PUNCH_IN);
@@ -106,17 +105,17 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
     Value currentMechPos = _mechansimSolenoid.get();
     Value currentPunchPos = _punchSolenoid.get();
     
-      if (beakPosition == BEAK_POSITION.CLOSED) {
-           _beakSolenoid.set(BEAK_CLOSE);
+    if (beakPosition == BEAK_POSITION.CLOSED) {
+          _beakSolenoid.set(BEAK_CLOSE);
+    }
+    else if (beakPosition == BEAK_POSITION.OPEN) {
+      if(currentPunchPos == PUNCH_IN && currentMechPos == MECHANISM_EXTENDED) {
+          _beakSolenoid.set(BEAK_OPEN);
+      } else {
+        DriverStation.reportWarning("BEAK SAFETY INTERLOCK U SUC", false);
       }
-      else if (beakPosition == BEAK_POSITION.OPEN) {
-        if(currentPunchPos == PUNCH_IN && currentMechPos == MECHANISM_EXTENDED) {
-           _beakSolenoid.set(BEAK_OPEN);
-        } else {
-          DriverStation.reportWarning("BEAK SAFETY INTERLOCK U SUC", false);
-        }
-      }
-   }
+    }
+  }
 
   public void setPunch(PUNCH_POSITION punchPosition) { 
     Value currentMechPos = _mechansimSolenoid.get();
@@ -170,59 +169,65 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
   }
 
   public void togglePunch() {
-      Value currentPunchPos = _punchSolenoid.get();
-      if (currentPunchPos == PUNCH_OUT) {
-        setPunch(PUNCH_POSITION.IN);
-      } else {
-        setPunch(PUNCH_POSITION.OUT);
-      }
+    Value currentPunchPos = _punchSolenoid.get();
+    if (currentPunchPos == PUNCH_OUT) {
+      setPunch(PUNCH_POSITION.IN);
+    } else {
+      setPunch(PUNCH_POSITION.OUT);
+    }
   }
     
   public void servoStartMatch(){
-      _infeedServo.set(1);
-    }
+    _infeedServo.set(1);
+  }
 
-    @Override
-    public void initDefaultCommand() {}
-
-    private String get_BeakPosition(){
-      Value currentBeakPos = _beakSolenoid.get();
-      if (currentBeakPos == BEAK_CLOSE) {
-      return "Beak Closed";
-      } else {
-        return "Beak Open";
-      }
+  // ===============================================================================================================
+	// Expose Properties of Elevator
+	// ===============================================================================================================
+  private String get_BeakPosition(){
+    Value currentBeakPos = _beakSolenoid.get();
+    if (currentBeakPos == BEAK_CLOSE) {
+    return "Beak Closed";
+    } else {
+      return "Beak Open";
     }
+  }
 
-    private String get_PunchPosition(){
-      Value currentPunchPos = _punchSolenoid.get();
-      if (currentPunchPos == PUNCH_OUT) {
-        return "Punch Out";
-      } else {
-        return "Punch In";
-      }
+  private String get_PunchPosition(){
+    Value currentPunchPos = _punchSolenoid.get();
+    if (currentPunchPos == PUNCH_OUT) {
+      return "Punch Out";
+    } else {
+      return "Punch In";
     }
-    
-    private String get_MechPosition(){
-      Value currentMechPos = _mechansimSolenoid.get();
-      if (currentMechPos == MECHANISM_RETRACTED) {
-        return "Mechanism Retracted";
-      } else {
-        return "Mechanism Extended";
-      }
+  }
+  
+  private String get_MechPosition(){
+    Value currentMechPos = _mechansimSolenoid.get();
+    if (currentMechPos == MECHANISM_RETRACTED) {
+      return "Mechanism Retracted";
+    } else {
+      return "Mechanism Extended";
     }
+  }
 
-    //=====================================================================================
-    // Helper Methods
-    //=====================================================================================
-    @Override
+  // ===============================================================================================================
+	// Default Command
+	// ===============================================================================================================
+  @Override
+  public void initDefaultCommand() {}
+
+  // ===============================================================================================================
+	// General Purpose Utility Methods
+	// ===============================================================================================================
+	@Override
     public void updateLogData(LogDataBE logData) {}
 
-    @Override
-    public void updateDashboard() 
-    {
-      SmartDashboard.putString("MechanismPos", get_MechPosition());
-      SmartDashboard.putString("PunchPos", get_PunchPosition());
-      SmartDashboard.putString("BeakPos", get_BeakPosition());
-    }
+  @Override
+  public void updateDashboard() 
+  {
+    SmartDashboard.putString("MechanismPos", get_MechPosition());
+    SmartDashboard.putString("PunchPos", get_PunchPosition());
+    SmartDashboard.putString("BeakPos", get_BeakPosition());
+  }
 }

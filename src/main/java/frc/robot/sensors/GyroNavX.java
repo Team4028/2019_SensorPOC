@@ -38,6 +38,7 @@ public class GyroNavX {
     private static final double CARGOSHIP_SIDE_ROCKET_ANGLE = -90;
 	private static final double ROCKET_FRONT_ANGLE = 28.75;
 	private static final double ROCKET_BACK_ANGLE = 151.25;
+	private static final double FEEDER_STATION_ANGLE = 180;
 
 	private double _currentAngle2;
 
@@ -107,7 +108,10 @@ public class GyroNavX {
 				scoringTargetAngle = ROCKET_FRONT_ANGLE;
 				break;
 			case ROCKET_BACK:
-			scoringTargetAngle = ROCKET_BACK_ANGLE;
+				scoringTargetAngle = ROCKET_BACK_ANGLE;
+				break;
+			case FEEDER_STATION:
+				scoringTargetAngle = FEEDER_STATION_ANGLE;
 				break;
 		}
 

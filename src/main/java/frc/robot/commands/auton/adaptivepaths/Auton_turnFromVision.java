@@ -1,4 +1,4 @@
-package frc.robot.commands.auton.adaptivepaths;
+package frc.robot.commands.auton.adaptivePaths;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
@@ -7,45 +7,36 @@ import frc.robot.sensors.GyroNavX;
 import frc.robot.sensors.VisionLL;
 import frc.robot.subsystems.Chassis;
 
-public class Auton_turnFromVision extends Command
-{
+public class Auton_turnFromVision extends Command { 
     private Chassis _chassis = Chassis.getInstance();
     GyroNavX _navX = GyroNavX.getInstance();
     VisionLL _limelight = VisionLL.getInstance();
     
-    public Auton_turnFromVision()
-    {
+    public Auton_turnFromVision() {
         setInterruptible(false);
         requires(_chassis);
     }
 
     @Override
-    protected void initialize()
-    {
-    }
+    protected void initialize() {}
 
     @Override
-    protected void execute() 
-    {
-       if(_limelight.get_angle1InDegrees()>0)
-       {
-           _chassis.setLeftRightCommand(ControlMode.PercentOutput, 0.4, -0.4);
-       }
-       else
-       {
-           _chassis.setLeftRightCommand(ControlMode.PercentOutput, -0.4, 0.4);
+    protected void execute() {
+       if(_limelight.get_angle1InDegrees()>0) {
+        _chassis.setLeftRightCommand(ControlMode.PercentOutput, 0.4, -0.4);
+       } else {
+        _chassis.setLeftRightCommand(ControlMode.PercentOutput, -0.4, 0.4);
        }
     }
     
     @Override
-    protected boolean isFinished() 
-    {   
+    protected boolean isFinished() {   
         return Math.abs(_limelight.get_angle1InDegrees())<2.5;                               // deadband
     
     }
+
     @Override
-    protected void end()
-    {
+    protected void end() {
         _chassis.stop();
         System.out.println("Turn Completed");
     }
