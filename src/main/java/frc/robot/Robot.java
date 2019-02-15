@@ -152,15 +152,13 @@ public class Robot extends TimedRobot {
    * This function is called 1x when the robot is 1st enabled test mode
    */
   @Override
-  public void testInit() {
-  }
+  public void testInit() {}
 
   /**
    * This function is called periodically during test mode.
    */
   @Override
-  public void testPeriodic() {
-  }
+  public void testPeriodic() {}
 
   /********************************************************************************************
    * Disabled Mode
@@ -200,8 +198,7 @@ public class Robot extends TimedRobot {
     // ============= Refresh Dashboard ============= 
     this.outputAllToDashboard();
     
-    if(!isDisabled())
-    {
+    if(!isDisabled()) {
       // ============= Optionally Log Data =============
 		  this.logAllData();
     }

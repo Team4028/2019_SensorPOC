@@ -28,14 +28,10 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
 	}
 	
 	// private constructor for singleton pattern
-	private Chassis() {
-  }
+	private Chassis() {}
 
   @Override
-  public void initDefaultCommand() {
-    // Set the default command for a subsystem here.
-    // setDefaultCommand(new MySpecialCommand());
-  }
+  public void initDefaultCommand() {}
 
   // basic driving
   public void arcadeDrive(double throttleCmd, double turnCmd) {}
@@ -44,13 +40,8 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
 	// Helper Methods
 	//=====================================================================================
   @Override
-  public void updateLogData(LogDataBE logData) {
-
-  }
+  public void updateLogData(LogDataBE logData) {}
 
   @Override
-  public void updateDashboard() {
-  }
-
-
+  public void updateDashboard() {}
 }
