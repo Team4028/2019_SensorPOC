@@ -55,8 +55,7 @@ public class OI {
 		_operatorController.leftStick.whileActive(new RunInfeedMotor(_operatorController.leftStick));
 		_operatorController.leftStick.whenReleased(new RunInfeedMotor(_operatorController.leftStick));
 
-		_operatorController.a.whenPressed(new ToggleBeakPosition());
-		_operatorController.b.whenPressed(new TogglePunch());
+	
 		_operatorController.y.whenPressed(new AquireHatch());
 		_operatorController.x.whenPressed(new ScoreHatch());
 		_operatorController.rb.whenPressed(new ToggleStartPos());;
