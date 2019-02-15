@@ -160,8 +160,8 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
         _rightMaster.config_kP(0, 0.2);
         _rightMaster.config_kI(0, 0);
         _rightMaster.config_kD(0, 2);
-        _rightMaster.configMotionCruiseVelocity(5000);
-        _leftMaster.configMotionCruiseVelocity(5000);
+        _rightMaster.configMotionCruiseVelocity(4000);
+        _leftMaster.configMotionCruiseVelocity(4000);
         _rightMaster.configMotionAcceleration(30000);
         _leftMaster.configMotionAcceleration(30000);
 				//moveToTargetAngle();
@@ -213,7 +213,14 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
 
   public synchronized void setTargetAngleAndTurnDirection(double targetAngle, boolean isTurnRight) 
 	{
-		_targetAngle = targetAngle;
+    if(targetAngle>=0)
+    {
+      _targetAngle=targetAngle;
+    }
+    else
+    {
+      _targetAngle=360+targetAngle;
+    }
 		_isTurnRight = isTurnRight;
 		_chassisState = ChassisState.AUTO_TURN;
   }

@@ -3,7 +3,6 @@ package frc.robot.commands.auton.adaptivepaths;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.auton.path_planning.problem;
 import frc.robot.sensors.GyroNavX;
 import frc.robot.sensors.VisionLL;
 import frc.robot.sensors.GyroNavX.SCORING_TARGET;
@@ -40,9 +39,8 @@ public class FindTarget extends Command
     protected void initialize() 
     {
         counter = 0;
-        double targetAngle = GyroNavX.getTargetAngle(_scoringTarget, _side);
+        double targetAngle = _navX.getTargetAngle(_scoringTarget, _side);
         deltaTheta=_navX.getYaw() - targetAngle;
-        System.out.println("Target Angle: " + problem._targetAngle);
         System.out.println("deltaTheta: " + deltaTheta);
     }
 

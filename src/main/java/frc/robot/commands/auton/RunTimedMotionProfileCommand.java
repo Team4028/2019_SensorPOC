@@ -7,7 +7,7 @@ import frc.robot.subsystems.Chassis;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 
-public class Auton_RunTimedMotionProfileCommand extends Command
+public class RunTimedMotionProfileCommand extends Command
 {
     Chassis _chassis = Chassis.getInstance();
     private Path _path;
@@ -15,7 +15,7 @@ public class Auton_RunTimedMotionProfileCommand extends Command
     double _maxTime;
     RobotState _inst = RobotState.getInstance();
 
-    public Auton_RunTimedMotionProfileCommand(Path p, double maxTime)
+    public RunTimedMotionProfileCommand(Path p, double maxTime)
     {
         requires(_chassis);
         _maxTime = maxTime;

@@ -8,13 +8,13 @@ import frc.robot.subsystems.Chassis;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 
-public class Auton_RunMotionProfileAction extends Command
+public class RunMotionProfileCommand extends Command
 {
     Chassis _chassis = Chassis.getInstance();
     private Path _path;
     private double _startTime;
 
-    public Auton_RunMotionProfileAction(Path p)
+    public RunMotionProfileCommand(Path p)
     {
         requires(_chassis);
         _path = p;

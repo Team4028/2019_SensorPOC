@@ -93,7 +93,7 @@ public class GyroNavX {
 		return angle2;
 	}
 
-	public static double getTargetAngle(SCORING_TARGET target, SIDE side){
+	public  double getTargetAngle(SCORING_TARGET target, SIDE side){
 		double scoringTargetAngle = 0;
 		double sideFactor = 0;
 		switch(target){

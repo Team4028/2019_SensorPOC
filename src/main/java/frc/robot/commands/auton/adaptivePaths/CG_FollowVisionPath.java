@@ -20,12 +20,12 @@ public class CG_FollowVisionPath extends CommandGroup {
     double _startTime;
 
     
-    public CG_FollowVisionPath(SCORING_TARGET target, SIDE side)
+    public CG_FollowVisionPath()
     {
         setInterruptible(false);
         requires(_chassis);
         addParallel(new Auton_ParallelStarter());
-        addSequential(new Auton_turnFromVision(target, side));
+        addSequential(new Auton_turnFromVision());
         addSequential(new PrintCommand("SECOND VISION TURN TERMINATING"));
         addSequential(new printTimeFromStart());
         addSequential(new DriveVisionDistance(), 1.5);

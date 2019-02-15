@@ -16,14 +16,24 @@ public class DriveWithControllers extends Command {
   private Chassis _chassis = Chassis.getInstance();
   private Thumbstick _leftThumbstick;
   private Thumbstick _rightThumbstick;
+  private boolean isAuton;
+  private double _leftCmd, _rightCmd;
 
-  public DriveWithControllers(Thumbstick leftThumbstick, Thumbstick righThumbstick) {
+  public DriveWithControllers(Thumbstick leftThumbstick, Thumbstick righThumbstick) 
+  {
     requires(_chassis);
     setInterruptible(true);
 
     _leftThumbstick = leftThumbstick;
     _rightThumbstick = righThumbstick;
-}
+    isAuton=false;
+  }
+  public DriveWithControllers(double leftCmd, double rightCmd)
+  {
+    isAuton = true;
+    _leftCmd=leftCmd;
+    _rightCmd=rightCmd;
+  }
 
   // Called just before this Command runs the first time
   @Override
@@ -33,7 +43,14 @@ public class DriveWithControllers extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    _chassis.arcadeDrive(_leftThumbstick.getY(), _rightThumbstick.getX());
+    if(!isAuton)
+    {
+      _chassis.arcadeDrive(_leftThumbstick.getY(), _rightThumbstick.getX());
+    }
+    else
+    {
+      _chassis.arcadeDrive(_leftCmd, _rightCmd);
+    }
   }
 
   // Make this return true when this Command no longer needs to run execute()
@@ -44,7 +61,8 @@ public class DriveWithControllers extends Command {
 
   // Called once after isFinished returns true
   @Override
-  protected void end() {
+  protected void end() 
+  {
     _chassis.stop();
   }
 
