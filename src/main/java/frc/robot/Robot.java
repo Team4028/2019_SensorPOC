@@ -13,8 +13,10 @@ import java.util.Date;
 
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.commands.elevator.ZeroElevatorEncoder;
 import frc.robot.interfaces.IVisionSensor;
 import frc.robot.sensors.AirCompressor;
 import frc.robot.sensors.DistanceRev2mSensor;
@@ -98,6 +100,10 @@ public class Robot extends TimedRobot {
     _scanTimeSamples = new MovingAverage(20);
     _lastDashboardWriteTimeMSec = new Date().getTime(); // snapshot time to control spamming
     _dataLogger = GeneralUtilities.setupLogging("Auton"); // init data logging
+    if(!_elevator.get_hasElevatorBeenZeroed()){
+      Command zeroElevatorCommand = new ZeroElevatorEncoder();
+      zeroElevatorCommand.start();
+    }
   }
 
   /**
@@ -124,6 +130,10 @@ public class Robot extends TimedRobot {
     _scanTimeSamples = new MovingAverage(20);
     _dataLogger = GeneralUtilities.setupLogging("Teleop"); // init data logging
     _lastDashboardWriteTimeMSec = new Date().getTime(); // snapshot time to control spamming
+    if(!_elevator.get_hasElevatorBeenZeroed()){
+      Command zeroElevatorCommand = new ZeroElevatorEncoder();
+      zeroElevatorCommand.start();
+    }
   }
 
   /**
