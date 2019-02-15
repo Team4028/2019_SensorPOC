@@ -1,259 +1,259 @@
-package frc.robot.subsystems;
+// package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
-import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.StatusFrame;
-import com.ctre.phoenix.motorcontrol.VelocityMeasPeriod;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+// import com.ctre.phoenix.motorcontrol.ControlMode;
+// import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+// import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
+// import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
+// import com.ctre.phoenix.motorcontrol.NeutralMode;
+// import com.ctre.phoenix.motorcontrol.StatusFrame;
+// import com.ctre.phoenix.motorcontrol.VelocityMeasPeriod;
+// import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
-import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.RobotMap;
-import frc.robot.interfaces.IBeakSquadSubsystem;
-import frc.robot.util.LogDataBE;
+// import edu.wpi.first.wpilibj.command.Subsystem;
+// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+// import frc.robot.RobotMap;
+// import frc.robot.interfaces.IBeakSquadSubsystem;
+// import frc.robot.util.LogDataBE;
 
-public class Elevator extends Subsystem implements IBeakSquadSubsystem {
+// public class Elevator extends Subsystem implements IBeakSquadSubsystem {
 
-  // =================================================================================================================
-  // define class level working variables
-  private static TalonSRX _elevatorMasterMotor;
-  private static TalonSRX _elevatorSlaveMotor;
+//   // =================================================================================================================
+//   // define class level working variables
+//   private static TalonSRX _elevatorMasterMotor;
+//   private static TalonSRX _elevatorSlaveMotor;
 
-  private int _targetElevatorPositionNU;
-  private boolean _hasElevatorBeenZeroed = false;
+//   private int _targetElevatorPositionNU;
+//   private boolean _hasElevatorBeenZeroed = false;
 
-  // =================================================================================================================
-  // Define Enums for the Elevator Axis
-  public enum ELEVATOR_TARGET_POSITION {
-    HOME,
-    CARGO_LEVEL_1,
-    CARGO_LEVEL_2,
-    CARGO_LEVEL_3,
-    HATCH_LEVEL_1,
-    HATCH_LEVEL_2,
-    HATCH_LEVEL_3
-  }
+//   // =================================================================================================================
+//   // Define Enums for the Elevator Axis
+//   public enum ELEVATOR_TARGET_POSITION {
+//     HOME,
+//     CARGO_LEVEL_1,
+//     CARGO_LEVEL_2,
+//     CARGO_LEVEL_3,
+//     HATCH_LEVEL_1,
+//     HATCH_LEVEL_2,
+//     HATCH_LEVEL_3
+//   }
 
-  // =================================================================================================================
-  private static final int ELEVATOR_POS_ALLOWABLE_ERROR_NU = InchesToNativeUnits(0.5);
+//   // =================================================================================================================
+//   private static final int ELEVATOR_POS_ALLOWABLE_ERROR_NU = InchesToNativeUnits(0.5);
 
-  //Conversion Constant
-  private static final double NATIVE_UNITS_TO_INCHES_CONVERSION = 242.7928;
+//   //Conversion Constant
+//   private static final double NATIVE_UNITS_TO_INCHES_CONVERSION = 242.7928;
 
-	// hardcoded preset positions (in native units, 0 = home position)
-  private static final int HOME_POSITION_NU = InchesToNativeUnits(0);
-  private static final int CARGO_LEVEL_1_POSITION_NU = InchesToNativeUnits(0);
-  private static final int CARGO_LEVEL_2_POSITION_NU = InchesToNativeUnits(0);
-  private static final int CARGO_LEVEL_3_POSITION_NU = InchesToNativeUnits(0);
-  private static final int HATCH_LEVEL_1_POSITION_NU = InchesToNativeUnits(0);
-  private static final int HATCH_LEVEL_2_POSITION_NU = InchesToNativeUnits(30);
-  private static final int HATCH_LEVEL_3_POSITION_NU = InchesToNativeUnits(0);
+// 	// hardcoded preset positions (in native units, 0 = home position)
+//   private static final int HOME_POSITION_NU = InchesToNativeUnits(0);
+//   private static final int CARGO_LEVEL_1_POSITION_NU = InchesToNativeUnits(0);
+//   private static final int CARGO_LEVEL_2_POSITION_NU = InchesToNativeUnits(0);
+//   private static final int CARGO_LEVEL_3_POSITION_NU = InchesToNativeUnits(0);
+//   private static final int HATCH_LEVEL_1_POSITION_NU = InchesToNativeUnits(0);
+//   private static final int HATCH_LEVEL_2_POSITION_NU = InchesToNativeUnits(30);
+//   private static final int HATCH_LEVEL_3_POSITION_NU = InchesToNativeUnits(0);
 
-  // define PID Constants
-	private static final int MOVING_DOWN_PID_SLOT_INDEX = 0;
-	private static final int MOVING_UP_PID_SLOT_INDEX = 1;
-  private static final int HOLDING_PID_SLOT_INDEX = 2;
+//   // define PID Constants
+// 	private static final int MOVING_DOWN_PID_SLOT_INDEX = 0;
+// 	private static final int MOVING_UP_PID_SLOT_INDEX = 1;
+//   private static final int HOLDING_PID_SLOT_INDEX = 2;
   
-  private static final double FEED_FORWARD_GAIN_UP = 0.17427598;
-  private static final double PROPORTIONAL_GAIN_UP = 1.0;
-  private static final double INTEGRAL_GAIN_UP = 0;
-  private static final int INTEGRAL_ZONE_UP = 0;
-  private static final double DERIVATIVE_GAIN_UP = 0;
+//   private static final double FEED_FORWARD_GAIN_UP = 0.17427598;
+//   private static final double PROPORTIONAL_GAIN_UP = 1.0;
+//   private static final double INTEGRAL_GAIN_UP = 0;
+//   private static final int INTEGRAL_ZONE_UP = 0;
+//   private static final double DERIVATIVE_GAIN_UP = 0;
 
-  public static final double FEED_FORWARD_GAIN_HOLD = 0;
-	public static final double PROPORTIONAL_GAIN_HOLD = 0;
-	public static final double INTEGRAL_GAIN_HOLD = 0;
-	public static final int INTEGRAL_ZONE_HOLD = 0; 
-	public static final double DERIVATIVE_GAIN_HOLD = 0;
+//   public static final double FEED_FORWARD_GAIN_HOLD = 0;
+// 	public static final double PROPORTIONAL_GAIN_HOLD = 0;
+// 	public static final double INTEGRAL_GAIN_HOLD = 0;
+// 	public static final int INTEGRAL_ZONE_HOLD = 0; 
+// 	public static final double DERIVATIVE_GAIN_HOLD = 0;
 	
-	public static final double FEED_FORWARD_GAIN_DOWN = 0;
-	public static final double PROPORTIONAL_GAIN_DOWN = 0;
-	public static final double INTEGRAL_GAIN_DOWN = 0;
-	public static final int INTEGRAL_ZONE_DOWN = 0; 
-  public static final double DERIVATIVE_GAIN_DOWN = 0;
+// 	public static final double FEED_FORWARD_GAIN_DOWN = 0;
+// 	public static final double PROPORTIONAL_GAIN_DOWN = 0;
+// 	public static final double INTEGRAL_GAIN_DOWN = 0;
+// 	public static final int INTEGRAL_ZONE_DOWN = 0; 
+//   public static final double DERIVATIVE_GAIN_DOWN = 0;
   
-  private static final int CRUISE_VELOCITY = 1000;
-  private static final int CRUISE_ACCELERATION = 4500;
-  private static final int CAN_TIMEOUT_MILLISECONDS = 30;
+//   private static final int CRUISE_VELOCITY = 1000;
+//   private static final int CRUISE_ACCELERATION = 4500;
+//   private static final int CAN_TIMEOUT_MILLISECONDS = 30;
 
-  //=====================================================================================
-	// Define Singleton Pattern
-	//=====================================================================================
-  private static Elevator _instance = new Elevator();
+//   //=====================================================================================
+// 	// Define Singleton Pattern
+// 	//=====================================================================================
+//   private static Elevator _instance = new Elevator();
   
-  public static Elevator getInstance() {
-    return _instance;
-  }
+//   public static Elevator getInstance() {
+//     return _instance;
+//   }
 
-  private Elevator() {
-    // define master motor
-    _elevatorMasterMotor = new TalonSRX(RobotMap.ELEVATOR_MASTER_CAN_ADDR);
-    _elevatorMasterMotor.configFactoryDefault();
+//   private Elevator() {
+//     // define master motor
+//     _elevatorMasterMotor = new TalonSRX(RobotMap.ELEVATOR_MASTER_CAN_ADDR);
+//     _elevatorMasterMotor.configFactoryDefault();
 
-    // define slave motor
-    _elevatorSlaveMotor = new TalonSRX(RobotMap.ELEVATOR_SLAVE_CAN_ADDR);
-    _elevatorSlaveMotor.configFactoryDefault();
-    _elevatorSlaveMotor.follow(_elevatorMasterMotor);
+//     // define slave motor
+//     _elevatorSlaveMotor = new TalonSRX(RobotMap.ELEVATOR_SLAVE_CAN_ADDR);
+//     _elevatorSlaveMotor.configFactoryDefault();
+//     _elevatorSlaveMotor.follow(_elevatorMasterMotor);
 
-    // Set motor phasing
-    _elevatorMasterMotor.setInverted(false);
+//     // Set motor phasing
+//     _elevatorMasterMotor.setInverted(false);
 
-    // Configure Limit Switch
-    _elevatorMasterMotor.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector,
-        LimitSwitchNormal.NormallyOpen);
-    _elevatorMasterMotor.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector,
-        LimitSwitchNormal.NormallyOpen);
+//     // Configure Limit Switch
+//     _elevatorMasterMotor.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector,
+//         LimitSwitchNormal.NormallyOpen);
+//     _elevatorMasterMotor.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector,
+//         LimitSwitchNormal.NormallyOpen);
 
-    // Turn of all soft limits
-    _elevatorMasterMotor.configForwardSoftLimitEnable(false, 0);
-    _elevatorMasterMotor.configReverseSoftLimitEnable(false, 0);
+//     // Turn of all soft limits
+//     _elevatorMasterMotor.configForwardSoftLimitEnable(false, 0);
+//     _elevatorMasterMotor.configReverseSoftLimitEnable(false, 0);
 
-    // Configure brake mode
-    _elevatorMasterMotor.setNeutralMode(NeutralMode.Brake);
+//     // Configure brake mode
+//     _elevatorMasterMotor.setNeutralMode(NeutralMode.Brake);
 
-    // Configure Quad Encoder (Invert = false)
-    _elevatorMasterMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
-    _elevatorMasterMotor.setSensorPhase(false);
-    _elevatorMasterMotor.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 5, 0);
+//     // Configure Quad Encoder (Invert = false)
+//     _elevatorMasterMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
+//     _elevatorMasterMotor.setSensorPhase(false);
+//     _elevatorMasterMotor.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 5, 0);
 
-    // Peak/Nominal output voltages for both directions for talons configuration
-    _elevatorMasterMotor.configNominalOutputForward(0, 0);
-    _elevatorMasterMotor.configNominalOutputReverse(0, 0);
-    _elevatorMasterMotor.configPeakOutputForward(1, 0);
-    _elevatorMasterMotor.configPeakOutputReverse(-1, 0);
+//     // Peak/Nominal output voltages for both directions for talons configuration
+//     _elevatorMasterMotor.configNominalOutputForward(0, 0);
+//     _elevatorMasterMotor.configNominalOutputReverse(0, 0);
+//     _elevatorMasterMotor.configPeakOutputForward(1, 0);
+//     _elevatorMasterMotor.configPeakOutputReverse(-1, 0);
 
-    // Configur velocity measurement
-    _elevatorMasterMotor.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_5Ms, 0);
-    _elevatorMasterMotor.configVelocityMeasurementWindow(32, 0);
+//     // Configur velocity measurement
+//     _elevatorMasterMotor.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_5Ms, 0);
+//     _elevatorMasterMotor.configVelocityMeasurementWindow(32, 0);
 
-    // Set up MotionMagic mode
-    // SetPidSlotToUse("constr", MOVING_DOWN_PID_SLOT_INDEX)
-    _elevatorMasterMotor.selectProfileSlot(1, 0);
+//     // Set up MotionMagic mode
+//     // SetPidSlotToUse("constr", MOVING_DOWN_PID_SLOT_INDEX)
+//     _elevatorMasterMotor.selectProfileSlot(1, 0);
 
-    // Set closed loop gains
-    _elevatorMasterMotor.config_kF(MOVING_DOWN_PID_SLOT_INDEX, FEED_FORWARD_GAIN_DOWN, CAN_TIMEOUT_MILLISECONDS);
-		_elevatorMasterMotor.config_kP(MOVING_DOWN_PID_SLOT_INDEX, PROPORTIONAL_GAIN_DOWN, CAN_TIMEOUT_MILLISECONDS);
-		_elevatorMasterMotor.config_kI(MOVING_DOWN_PID_SLOT_INDEX, INTEGRAL_GAIN_DOWN, CAN_TIMEOUT_MILLISECONDS);
-		_elevatorMasterMotor.config_kD(MOVING_DOWN_PID_SLOT_INDEX, DERIVATIVE_GAIN_DOWN, CAN_TIMEOUT_MILLISECONDS);
-		_elevatorMasterMotor.config_IntegralZone(MOVING_DOWN_PID_SLOT_INDEX, INTEGRAL_ZONE_DOWN, CAN_TIMEOUT_MILLISECONDS);
+//     // Set closed loop gains
+//     _elevatorMasterMotor.config_kF(MOVING_DOWN_PID_SLOT_INDEX, FEED_FORWARD_GAIN_DOWN, CAN_TIMEOUT_MILLISECONDS);
+// 		_elevatorMasterMotor.config_kP(MOVING_DOWN_PID_SLOT_INDEX, PROPORTIONAL_GAIN_DOWN, CAN_TIMEOUT_MILLISECONDS);
+// 		_elevatorMasterMotor.config_kI(MOVING_DOWN_PID_SLOT_INDEX, INTEGRAL_GAIN_DOWN, CAN_TIMEOUT_MILLISECONDS);
+// 		_elevatorMasterMotor.config_kD(MOVING_DOWN_PID_SLOT_INDEX, DERIVATIVE_GAIN_DOWN, CAN_TIMEOUT_MILLISECONDS);
+// 		_elevatorMasterMotor.config_IntegralZone(MOVING_DOWN_PID_SLOT_INDEX, INTEGRAL_ZONE_DOWN, CAN_TIMEOUT_MILLISECONDS);
 		
-		_elevatorMasterMotor.config_kF(MOVING_UP_PID_SLOT_INDEX, FEED_FORWARD_GAIN_UP, CAN_TIMEOUT_MILLISECONDS);
-		_elevatorMasterMotor.config_kP(MOVING_UP_PID_SLOT_INDEX, PROPORTIONAL_GAIN_UP, CAN_TIMEOUT_MILLISECONDS);
-		_elevatorMasterMotor.config_kI(MOVING_UP_PID_SLOT_INDEX, INTEGRAL_GAIN_UP, CAN_TIMEOUT_MILLISECONDS);
-		_elevatorMasterMotor.config_kD(MOVING_UP_PID_SLOT_INDEX, DERIVATIVE_GAIN_UP, CAN_TIMEOUT_MILLISECONDS);
-		_elevatorMasterMotor.config_IntegralZone(MOVING_UP_PID_SLOT_INDEX, INTEGRAL_ZONE_UP, CAN_TIMEOUT_MILLISECONDS);
+// 		_elevatorMasterMotor.config_kF(MOVING_UP_PID_SLOT_INDEX, FEED_FORWARD_GAIN_UP, CAN_TIMEOUT_MILLISECONDS);
+// 		_elevatorMasterMotor.config_kP(MOVING_UP_PID_SLOT_INDEX, PROPORTIONAL_GAIN_UP, CAN_TIMEOUT_MILLISECONDS);
+// 		_elevatorMasterMotor.config_kI(MOVING_UP_PID_SLOT_INDEX, INTEGRAL_GAIN_UP, CAN_TIMEOUT_MILLISECONDS);
+// 		_elevatorMasterMotor.config_kD(MOVING_UP_PID_SLOT_INDEX, DERIVATIVE_GAIN_UP, CAN_TIMEOUT_MILLISECONDS);
+// 		_elevatorMasterMotor.config_IntegralZone(MOVING_UP_PID_SLOT_INDEX, INTEGRAL_ZONE_UP, CAN_TIMEOUT_MILLISECONDS);
 		
-		_elevatorMasterMotor.config_kF(HOLDING_PID_SLOT_INDEX, FEED_FORWARD_GAIN_HOLD, CAN_TIMEOUT_MILLISECONDS);
-		_elevatorMasterMotor.config_kP(HOLDING_PID_SLOT_INDEX, PROPORTIONAL_GAIN_HOLD, CAN_TIMEOUT_MILLISECONDS);
-		_elevatorMasterMotor.config_kI(HOLDING_PID_SLOT_INDEX, INTEGRAL_GAIN_HOLD, CAN_TIMEOUT_MILLISECONDS);
-		_elevatorMasterMotor.config_kD(HOLDING_PID_SLOT_INDEX, DERIVATIVE_GAIN_HOLD, CAN_TIMEOUT_MILLISECONDS);
-		_elevatorMasterMotor.config_IntegralZone(HOLDING_PID_SLOT_INDEX, INTEGRAL_ZONE_HOLD, CAN_TIMEOUT_MILLISECONDS);
+// 		_elevatorMasterMotor.config_kF(HOLDING_PID_SLOT_INDEX, FEED_FORWARD_GAIN_HOLD, CAN_TIMEOUT_MILLISECONDS);
+// 		_elevatorMasterMotor.config_kP(HOLDING_PID_SLOT_INDEX, PROPORTIONAL_GAIN_HOLD, CAN_TIMEOUT_MILLISECONDS);
+// 		_elevatorMasterMotor.config_kI(HOLDING_PID_SLOT_INDEX, INTEGRAL_GAIN_HOLD, CAN_TIMEOUT_MILLISECONDS);
+// 		_elevatorMasterMotor.config_kD(HOLDING_PID_SLOT_INDEX, DERIVATIVE_GAIN_HOLD, CAN_TIMEOUT_MILLISECONDS);
+// 		_elevatorMasterMotor.config_IntegralZone(HOLDING_PID_SLOT_INDEX, INTEGRAL_ZONE_HOLD, CAN_TIMEOUT_MILLISECONDS);
 
-    // Set accel and cruise velocities
-    _elevatorMasterMotor.configMotionCruiseVelocity(CRUISE_VELOCITY, 0);
-    _elevatorMasterMotor.configMotionAcceleration(CRUISE_ACCELERATION, 0);
+//     // Set accel and cruise velocities
+//     _elevatorMasterMotor.configMotionCruiseVelocity(CRUISE_VELOCITY, 0);
+//     _elevatorMasterMotor.configMotionAcceleration(CRUISE_ACCELERATION, 0);
   
-    // set allowable closed loop gain
-    _elevatorMasterMotor.configAllowableClosedloopError(0, ELEVATOR_POS_ALLOWABLE_ERROR_NU, 0);
-  }
+//     // set allowable closed loop gain
+//     _elevatorMasterMotor.configAllowableClosedloopError(0, ELEVATOR_POS_ALLOWABLE_ERROR_NU, 0);
+//   }
 
-  // =================================================================================================================
-	// Methods to move the elevator
-	// =================================================================================================================
+//   // =================================================================================================================
+// 	// Methods to move the elevator
+// 	// =================================================================================================================
 	
-  public void zeroElevatorMotorEncoder() {
-    if (_elevatorMasterMotor.getSensorCollection().isRevLimitSwitchClosed()) {
-      _elevatorMasterMotor.setSelectedSensorPosition(0);
-      _hasElevatorBeenZeroed = true;
-    }
-  }
+//   public void zeroElevatorMotorEncoder() {
+//     if (_elevatorMasterMotor.getSensorCollection().isRevLimitSwitchClosed()) {
+//       _elevatorMasterMotor.setSelectedSensorPosition(0);
+//       _hasElevatorBeenZeroed = true;
+//     }
+//   }
 
-  public void MoveToPresetPosition(ELEVATOR_TARGET_POSITION presetPosition){
-    if(get_hasElevatorBeenZeroed()){
-      switch(presetPosition){
-        case HOME:
-          _targetElevatorPositionNU = HOME_POSITION_NU;
-          break;
-        case CARGO_LEVEL_1:
-          _targetElevatorPositionNU = CARGO_LEVEL_1_POSITION_NU;
-          break;
-        case CARGO_LEVEL_2:
-          _targetElevatorPositionNU = CARGO_LEVEL_2_POSITION_NU;
-          break;
-        case CARGO_LEVEL_3:
-          _targetElevatorPositionNU = CARGO_LEVEL_3_POSITION_NU;
-          break;
-        case HATCH_LEVEL_1:
-          _targetElevatorPositionNU = HATCH_LEVEL_1_POSITION_NU;
-          break;
-        case HATCH_LEVEL_2:
-          _targetElevatorPositionNU = HATCH_LEVEL_2_POSITION_NU;
-          break;
-        case HATCH_LEVEL_3:
-          _targetElevatorPositionNU = HATCH_LEVEL_3_POSITION_NU;
-          break;
-      }
-    }
-    _elevatorMasterMotor.set(ControlMode.MotionMagic, _targetElevatorPositionNU);
-  }
+//   public void MoveToPresetPosition(ELEVATOR_TARGET_POSITION presetPosition){
+//     if(get_hasElevatorBeenZeroed()){
+//       switch(presetPosition){
+//         case HOME:
+//           _targetElevatorPositionNU = HOME_POSITION_NU;
+//           break;
+//         case CARGO_LEVEL_1:
+//           _targetElevatorPositionNU = CARGO_LEVEL_1_POSITION_NU;
+//           break;
+//         case CARGO_LEVEL_2:
+//           _targetElevatorPositionNU = CARGO_LEVEL_2_POSITION_NU;
+//           break;
+//         case CARGO_LEVEL_3:
+//           _targetElevatorPositionNU = CARGO_LEVEL_3_POSITION_NU;
+//           break;
+//         case HATCH_LEVEL_1:
+//           _targetElevatorPositionNU = HATCH_LEVEL_1_POSITION_NU;
+//           break;
+//         case HATCH_LEVEL_2:
+//           _targetElevatorPositionNU = HATCH_LEVEL_2_POSITION_NU;
+//           break;
+//         case HATCH_LEVEL_3:
+//           _targetElevatorPositionNU = HATCH_LEVEL_3_POSITION_NU;
+//           break;
+//       }
+//     }
+//     _elevatorMasterMotor.set(ControlMode.MotionMagic, _targetElevatorPositionNU);
+//   }
 
-  // ===============================================================================================================
-	// Expose Properties of Elevator
-	// ===============================================================================================================
-  private boolean get_isElevatorAtTargetPos(int targetPosition){
-    int currentError = Math.abs(_elevatorMasterMotor.getSelectedSensorPosition() - targetPosition);
-    if(currentError <= ELEVATOR_POS_ALLOWABLE_ERROR_NU) {
-      return true;
-    } else {
-      return false;
-    }
-  }
+//   // ===============================================================================================================
+// 	// Expose Properties of Elevator
+// 	// ===============================================================================================================
+//   private boolean get_isElevatorAtTargetPos(int targetPosition){
+//     int currentError = Math.abs(_elevatorMasterMotor.getSelectedSensorPosition() - targetPosition);
+//     if(currentError <= ELEVATOR_POS_ALLOWABLE_ERROR_NU) {
+//       return true;
+//     } else {
+//       return false;
+//     }
+//   }
 
-  public boolean get_hasElevatorBeenZeroed() {
-    return _hasElevatorBeenZeroed;
-  }
+//   public boolean get_hasElevatorBeenZeroed() {
+//     return _hasElevatorBeenZeroed;
+//   }
 
-  public boolean get_isElevatorAtTargetPos(){
-    return get_isElevatorAtTargetPos(_targetElevatorPositionNU);
-  }
+//   public boolean get_isElevatorAtTargetPos(){
+//     return get_isElevatorAtTargetPos(_targetElevatorPositionNU);
+//   }
 
-  public int get_ElevatorPos() {
-    return _elevatorMasterMotor.getSelectedSensorPosition(0);
-  }
+//   public int get_ElevatorPos() {
+//     return _elevatorMasterMotor.getSelectedSensorPosition(0);
+//   }
 
-  public double NativeUnitsToInches(double nativeUnitsMeasure) {
-    double inches = nativeUnitsMeasure / NATIVE_UNITS_TO_INCHES_CONVERSION;
-    return inches;
-  }
+//   public double NativeUnitsToInches(double nativeUnitsMeasure) {
+//     double inches = nativeUnitsMeasure / NATIVE_UNITS_TO_INCHES_CONVERSION;
+//     return inches;
+//   }
 
-  public static int InchesToNativeUnits(double inchesMeasure) {
-    int nativeUnits = (int)(inchesMeasure * NATIVE_UNITS_TO_INCHES_CONVERSION);
-    return nativeUnits;
-  }
+//   public static int InchesToNativeUnits(double inchesMeasure) {
+//     int nativeUnits = (int)(inchesMeasure * NATIVE_UNITS_TO_INCHES_CONVERSION);
+//     return nativeUnits;
+//   }
 
-  // ===============================================================================================================
-	// Default Command
-	// ===============================================================================================================
-  @Override
-  public void initDefaultCommand() {}
+//   // ===============================================================================================================
+// 	// Default Command
+// 	// ===============================================================================================================
+//   @Override
+//   public void initDefaultCommand() {}
 
-  // ===============================================================================================================
-	// General Purpose Utility Methods
-	// ===============================================================================================================
-	@Override
-  public void updateLogData(LogDataBE logData) {}
+//   // ===============================================================================================================
+// 	// General Purpose Utility Methods
+// 	// ===============================================================================================================
+// 	@Override
+//   public void updateLogData(LogDataBE logData) {}
 
-  @Override
-  public void updateDashboard() {
-    SmartDashboard.putNumber("elevator pos", get_ElevatorPos());
-    SmartDashboard.putNumber("elevator:inches", NativeUnitsToInches(get_ElevatorPos()));
-    SmartDashboard.putNumber("elevator:native units", get_ElevatorPos());
-    SmartDashboard.putNumber("Elevator:masterMotorOutputVolts", _elevatorMasterMotor.getMotorOutputVoltage());
-    SmartDashboard.putNumber("Elevator:masterMotorCurrentAmps", _elevatorMasterMotor.getOutputCurrent());
-    SmartDashboard.putNumber("Elevator:slaveMotorOutputVolts", _elevatorSlaveMotor.getMotorOutputVoltage());
-    SmartDashboard.putNumber("Elevator:slaveMotorCurrentAmps", _elevatorSlaveMotor.getOutputCurrent());
-  }
-}
+//   @Override
+//   public void updateDashboard() {
+//     SmartDashboard.putNumber("elevator pos", get_ElevatorPos());
+//     SmartDashboard.putNumber("elevator:inches", NativeUnitsToInches(get_ElevatorPos()));
+//     SmartDashboard.putNumber("elevator:native units", get_ElevatorPos());
+//     SmartDashboard.putNumber("Elevator:masterMotorOutputVolts", _elevatorMasterMotor.getMotorOutputVoltage());
+//     SmartDashboard.putNumber("Elevator:masterMotorCurrentAmps", _elevatorMasterMotor.getOutputCurrent());
+//     SmartDashboard.putNumber("Elevator:slaveMotorOutputVolts", _elevatorSlaveMotor.getMotorOutputVoltage());
+//     SmartDashboard.putNumber("Elevator:slaveMotorCurrentAmps", _elevatorSlaveMotor.getOutputCurrent());
+//   }
+// }

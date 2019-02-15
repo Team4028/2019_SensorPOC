@@ -21,10 +21,10 @@ public class DriveWithControllers extends Command {
     isAuton=false;
   }
 
-  public DriveWithControllers(double leftCmd, double rightCmd) {
+  public DriveWithControllers(double throttle, double turn) {
     isAuton = true;
-    _leftCmd=leftCmd;
-    _rightCmd=rightCmd;
+    _leftCmd=throttle;
+    _rightCmd=turn;
   }
 
   // Called just before this Command runs the first time
@@ -49,7 +49,8 @@ public class DriveWithControllers extends Command {
 
   // Called once after isFinished returns true
   @Override
-  protected void end() {
+  protected void end() 
+  {
     _chassis.stop();
   }
 

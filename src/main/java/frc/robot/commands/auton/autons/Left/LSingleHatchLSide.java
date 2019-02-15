@@ -1,4 +1,4 @@
-package frc.robot.commands.auton.autons;
+package frc.robot.commands.auton.autons.Left;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import frc.robot.auton.pathfollowing.Paths;

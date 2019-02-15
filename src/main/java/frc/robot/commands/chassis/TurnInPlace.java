@@ -31,20 +31,20 @@ public class TurnInPlace extends Command
         
         if(_isTurnRight) 
         {
-            _chassis.setLeftRightCommand(ControlMode.PercentOutput, 0.5,-0.5);
+            _chassis.setLeftRightCommand(ControlMode.PercentOutput, 0.55,-0.55);
         } 
         else 
         {
-            _chassis.setLeftRightCommand(ControlMode.PercentOutput, -0.5, 0.5);
+            _chassis.setLeftRightCommand(ControlMode.PercentOutput, -0.55, 0.55);
         }
     }
     
     @Override
     protected boolean isFinished() { 
         if(!(_targetAngle==0)) {
-            return Math.abs(_chassis.getPositiveHeading()-_targetAngle)<2.5;
+            return Math.abs(_chassis.getPositiveHeading()-_targetAngle)<6;
         } else {
-            return _chassis.getPositiveHeading()>357.5||_chassis.getPositiveHeading()<2.5;
+            return _chassis.getPositiveHeading()>354||_chassis.getPositiveHeading()<6;
         }                             // deadband
     }
 

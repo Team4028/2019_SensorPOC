@@ -13,16 +13,16 @@ import frc.robot.sensors.GyroNavX;
 
 import frc.robot.sensors.VisionLL;
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.commands.elevator.ZeroElevatorEncoder;
+//import frc.robot.commands.elevator.ZeroElevatorEncoder;
 import frc.robot.sensors.AirCompressor;
 import frc.robot.sensors.DistanceRev2mSensor;
 import frc.robot.sensors.StoredPressureSensor;
 import frc.robot.sensors.SwitchableCameraServer;
-import frc.robot.subsystems.Cargo;
+//import frc.robot.subsystems.Cargo;
 
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.Climber;
-import frc.robot.subsystems.Elevator;
+//import frc.robot.subsystems.Elevator;
 import frc.robot.util.DataLogger;
 import frc.robot.util.GeneralUtilities;
 import frc.robot.util.LogDataBE;
@@ -64,9 +64,9 @@ public class Robot extends TimedRobot {
 
   // subsystems
   private Chassis _chassis = Chassis.getInstance();
-  private Cargo _cargo = Cargo.getInstance();
+  //private Cargo _cargo = Cargo.getInstance();
   private Climber _climber = Climber.getInstance();
-  private Elevator _elevator = Elevator.getInstance();
+ // private Elevator _elevator = Elevator.getInstance();
 
   // class level working variables
 
@@ -105,10 +105,10 @@ public class Robot extends TimedRobot {
     _dataLogger = GeneralUtilities.setupLogging("Auton"); // init data logging	
     _autonChoosers.getSelectedAuton().start();
     Chassis._autoStartTime = Timer.getFPGATimestamp();
-    if(!_elevator.get_hasElevatorBeenZeroed()){
-      Command zeroElevatorCommand = new ZeroElevatorEncoder();
-      zeroElevatorCommand.start();
-    }
+    // if(!_elevator.get_hasElevatorBeenZeroed()){
+    //   Command zeroElevatorCommand = new ZeroElevatorEncoder();
+    //   zeroElevatorCommand.start();
+    // }
   }
 
   /**
@@ -140,10 +140,10 @@ public class Robot extends TimedRobot {
         _scanTimeSamples = new MovingAverage(20);
     _dataLogger = GeneralUtilities.setupLogging("Teleop"); // init data logging
     _lastDashboardWriteTimeMSec = new Date().getTime(); // snapshot time to control spamming
-    if(!_elevator.get_hasElevatorBeenZeroed()){
-      Command zeroElevatorCommand = new ZeroElevatorEncoder();
-      zeroElevatorCommand.start();
-    }
+    // if(!_elevator.get_hasElevatorBeenZeroed()){
+    //   Command zeroElevatorCommand = new ZeroElevatorEncoder();
+    //   zeroElevatorCommand.start();
+    // }
   }
 
    /* This function is called periodically during teleop mode.
@@ -228,9 +228,9 @@ public class Robot extends TimedRobot {
     		// to push its data out to the dashboard
         // ----------------------------------------------
         if(_chassis != null)              { _chassis.updateDashboard(); }
-        if(_cargo != null)                { _cargo.updateDashboard(); }
-        if(_climber != null)              { _climber.updateDashboard(); }
-        if(_elevator != null)             { _elevator.updateDashboard(); }
+        // if(_cargo != null)                { _cargo.updateDashboard(); }
+        // if(_climber != null)              { _climber.updateDashboard(); }
+        // if(_elevator != null)             { _elevator.updateDashboard(); }
 
         if(_autonChoosers != null)        { _autonChoosers.updateDashboard(); }
 	    	if(_distanceRev2mSensor != null)  { _distanceRev2mSensor.updateDashboard(); }
@@ -265,9 +265,9 @@ public class Robot extends TimedRobot {
         // ask each subsystem that exists to add its data
         // ----------------------------------------------
         if(_chassis != null)              { _chassis.updateLogData(logData); }
-        if(_cargo != null)                { _cargo.updateLogData(logData); }
-        if(_climber != null)              { _climber.updateLogData(logData); }
-        if(_elevator != null)             { _elevator.updateLogData(logData); }
+        // if(_cargo != null)                { _cargo.updateLogData(logData); }
+        // if(_climber != null)              { _climber.updateLogData(logData); }
+        // if(_elevator != null)             { _elevator.updateLogData(logData); }
 
         if(_autonChoosers != null)        { _autonChoosers.updateLogData(logData); }
 	    	if(_distanceRev2mSensor != null)  { _distanceRev2mSensor.updateLogData(logData); }

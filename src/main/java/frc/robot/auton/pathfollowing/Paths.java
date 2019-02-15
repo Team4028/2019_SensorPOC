@@ -22,38 +22,21 @@ public class Paths {
 		TO_FRONT_CARGO_SHIP_L,
 		TO_LEFT_CARGO_SHIP_FIRST,
 		FROM_FIRST_BAY_TO_FEEDER_STATION,
-		FROM_FRONT_CARGO_SHIP_L_TO_FEEDER_STATION;
+		FROM_FRONT_CARGO_SHIP_L_TO_FEEDER_STATION,
+		FROM_FEEDER_STATION_TO_FIRST_BAY,
+		FROM_FEEDER_STATION_TO_SECOND_BAY;
 	}
 	
 	private static Path _toFrontCargoShipLFromL;
 	private static Path _toLeftCargoShipFirstBay;
 	private static Path _toFeederStationFromFrontL;
 	private static Path _toFeederStationFromFirstBayL;
+	private static Path _toFirstBayFromFeederStation;
+	private static Path _toSecondBayFromFeederStation;
+	private static Path _toFrontCargoShipRFromR;
 	
 	public enum Right {
-		TO_BACK_CENTER,
-		TO_BACK_RIGHT,
-		
-		// First Cube
-		L_SCALE,
-		R_SCALE,
-		
-		R_SCALE_OUTSIDE,
-		
-		// Second Cube
-		L_SCALE_TO_L_SWITCH,
-		L_SWITCH_TO_L_SCALE,
-		
-		R_SCALE_TO_R_SWITCH,
-		R_SWITCH_TO_R_SCALE,
-		
-		R_SWITCH_SIDE,
-		
-		// Third Cube
-		R_SWITCH_TO_R_SCALE_SECOND_CUBE,
-		
-		R_SCALE_TO_R_SWITCH_THIRD_CUBE,
-		R_SWITCH_TO_R_SCALE_THIRD_CUBE
+		TO_FRONT_CARGO_SHIP_R;
 	}
 
 	public static void buildPaths() {
@@ -82,14 +65,15 @@ public class Paths {
 			new Waypoint(185,151,0,20)
 		));
 		centerPaths.put(Center.TO_FRONT_CARGO_SHIP_L, _toFrontCargoShipLFromC);
+
 	}
 	
 	private static void buildLeftPaths() {		
 		_toFrontCargoShipLFromL = buildPathFromWaypoints(Arrays.asList(
 		new Waypoint(66,120,0,0),
 		new Waypoint(115,120,20,20),
-		new Waypoint(145,155,20,20),
-		new Waypoint(185,155,0,20)));
+		new Waypoint(145,160,20,20),
+		new Waypoint(185,160,0,20)));
 		leftPaths.put(Left.TO_FRONT_CARGO_SHIP_L, _toFrontCargoShipLFromL);
 
 		_toLeftCargoShipFirstBay = buildPathFromWaypoints(Arrays.asList(
@@ -105,18 +89,41 @@ public class Paths {
 			new Waypoint(260,115,0,0),
 			new Waypoint(240,105,16,20),
 			new Waypoint(150,95,30,20),
-			new Waypoint(90,65,30,20),
-			new Waypoint(20,65,0,20)
+			new Waypoint(90,75,30,20),
+			new Waypoint(20,75,0,20)
 		));
 		leftPaths.put(Left.FROM_FIRST_BAY_TO_FEEDER_STATION, _toFeederStationFromFirstBayL);
 
 		_toFeederStationFromFrontL = buildPathFromWaypoints( Arrays.asList(
 			new Waypoint(180,155,0,0),
-			new Waypoint(130,35,35,20),
-			new Waypoint(60,35,0,20)
+			new Waypoint(130,30,35,20),
+			new Waypoint(60,30,0,20)
 		));
 		leftPaths.put(Left.FROM_FRONT_CARGO_SHIP_L_TO_FEEDER_STATION, _toFeederStationFromFrontL);
+
+		_toFirstBayFromFeederStation = buildPathFromWaypoints(Arrays.asList(
+			new Waypoint(60,30,0,0),
+			new Waypoint(150,60,20,20),
+			new Waypoint(368,70,20,20),
+			new Waypoint(368,100,0,20)
+		));
+		leftPaths.put(Left.FROM_FEEDER_STATION_TO_FIRST_BAY, _toFirstBayFromFeederStation);
+
+		_toSecondBayFromFeederStation = buildPathFromWaypoints(Arrays.asList(
+			new Waypoint(60,30,0,0),
+			new Waypoint(150,60,20,20),
+			new Waypoint(310,70,20,20),
+			new Waypoint(310,110,0,20)
+		));
+		leftPaths.put(Left.FROM_FEEDER_STATION_TO_SECOND_BAY, _toSecondBayFromFeederStation);
 	}
 	
-	private static void buildRightPaths() {}
+	private static void buildRightPaths() {
+		_toFrontCargoShipRFromR = buildPathFromWaypoints(Arrays.asList(
+			new Waypoint(66,204,0,0),
+			new Waypoint(115,204,20,20),
+			new Waypoint(145,160,20,20),
+			new Waypoint(190,160,0,20)));
+			rightPaths.put(Right.TO_FRONT_CARGO_SHIP_R, _toFrontCargoShipRFromR);
+	}
 }

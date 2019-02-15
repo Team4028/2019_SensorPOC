@@ -23,15 +23,15 @@ public class Auton_turnFromVision extends Command {
     @Override
     protected void execute() {
        if(_limelight.get_angle1InDegrees()>0) {
-        _chassis.setLeftRightCommand(ControlMode.PercentOutput, 0.4, -0.4);
+        _chassis.setLeftRightCommand(ControlMode.PercentOutput, 0.30, -0.30);
        } else {
-        _chassis.setLeftRightCommand(ControlMode.PercentOutput, -0.4, 0.4);
+        _chassis.setLeftRightCommand(ControlMode.PercentOutput, -0.30, 0.30);
        }
     }
     
     @Override
     protected boolean isFinished() {   
-        return Math.abs(_limelight.get_angle1InDegrees())<2.5;                               // deadband
+        return Math.abs(_limelight.get_angle1InDegrees())<1.5;                               // deadband
     
     }
 
