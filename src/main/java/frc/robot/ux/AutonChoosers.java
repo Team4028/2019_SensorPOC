@@ -16,6 +16,7 @@ import frc.robot.commands.auton.autons.Left.LDoubleHatchLSideLSide;
 import frc.robot.commands.auton.autons.Left.LSingleHatchLFront;
 import frc.robot.commands.auton.autons.Left.LSingleHatchLSide;
 import frc.robot.commands.auton.autons.Right.RSingleHatchRFront;
+import frc.robot.commands.auton.autons.Right.RSingleHatchRSide;
 import frc.robot.interfaces.IBeakSquadSubsystem;
 import frc.robot.util.LogDataBE;
 
@@ -108,11 +109,11 @@ public class AutonChoosers implements IBeakSquadSubsystem {
 				}
 				else if(startingSide==STARTING_SIDE.CENTER)
 				{
-					return new LineCross();
+					return new RSingleHatchRSide();
 				}
 				else if(startingSide==STARTING_SIDE.RIGHT)
 				{
-					return new LineCross();
+					return new RSingleHatchRSide();
 				}
 			case DOUBLE_HATCH_SIDE_SIDE:
 				return new LDoubleHatchLSideLSide();

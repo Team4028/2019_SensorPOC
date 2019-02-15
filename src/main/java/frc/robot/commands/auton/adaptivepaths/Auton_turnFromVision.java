@@ -31,7 +31,7 @@ public class Auton_turnFromVision extends Command {
     
     @Override
     protected boolean isFinished() {   
-        return Math.abs(_limelight.get_angle1InDegrees())<1.5;                               // deadband
+        return Math.abs(_limelight.get_angle1InDegrees())< 3;                               // deadband
     
     }
 
