@@ -44,7 +44,7 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
 
   public static double _autoStartTime;
 
-  public static double ENCODER_COUNTS_PER_WHEEL_REV = 30028.471298; // 13582.78; 
+  private static double ENCODER_COUNTS_PER_WHEEL_REV = 30028.471298; // 13582.78; 
   private double ENCODER_CODES_PER_DEGREE = 312; //value calculated theoretically from ECPWR //339.2468*100/169.8;
 
   // =================================================================================================================

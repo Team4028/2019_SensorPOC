@@ -5,6 +5,8 @@ import java.util.Hashtable;
 import frc.robot.auton.pathfollowing.PathBuilder.Waypoint;
 import frc.robot.auton.pathfollowing.control.Path;
 
+import static frc.robot.auton.pathfollowing.PathBuilder.buildPathFromWaypoints;
+
 public class Paths {
 	private static Hashtable<Center, Path> centerPaths = new Hashtable<Center, Path>();
 	private static Hashtable<Left, Path> leftPaths = new Hashtable<Left, Path>();

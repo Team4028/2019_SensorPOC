@@ -1,24 +1,13 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2018 FIRST. All Rights Reserved.                             */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 package frc.robot;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import frc.robot.subsystems.Chassis;
 
-/**
- * Add your docs here.
- */
 public class Constants {
-
 	// Solenoid Positions
 	public static final Value SHIFTER_LOW_GEAR_POS = DoubleSolenoid.Value.kReverse;
 	public static final Value SHIFTER_HIGH_GEAR_POS = DoubleSolenoid.Value.kForward;
+
 	// Path Following Constants
 	public static final double MIN_LOOKAHEAD = 10.0; // inches
 	public static final double MIN_LOOKAHEAD_SPEED = 9.0; // inches per second
@@ -47,8 +36,11 @@ public class Constants {
 	// Units: setpoint, error, and output are in inches per second. 
 	public static final double DRIVE_VELOCITY_NOMINAL_OUTPUT = 0.05;
 	public static final double DRIVE_VELOCITY_MAX_SETPOINT = 15 * 12.0; // 15 fps
+	
 	//Deadbands for Chassis
-	public static final double CHASSIS_DRIVE_SET_DISTANCE_DEADBAND = 1.0*Chassis.getInstance().ENCODER_COUNTS_PER_WHEEL_REV/(6*Math.PI);
+	public static double ENCODER_COUNTS_PER_WHEEL_REV = 30028.471298;
+	public static final double CHASSIS_DRIVE_SET_DISTANCE_DEADBAND = 1.0*ENCODER_COUNTS_PER_WHEEL_REV/(6*Math.PI);
+
 
 
 	public static final int BIG_NUMBER = (int)1e6;
@@ -59,10 +51,5 @@ public class Constants {
 	// Wheels
 	public static final double DRIVE_WHEEL_DIAMETER_IN = 6;
 	public static final double TRACK_WIDTH_INCHES = 24.25;
-    // Logging
-	// this is where the USB stick is mounted on the RoboRIO filesystem.  
-	// You can confirm by logging into the RoboRIO using WinSCP
-	public static final String PRIMARY_LOG_FILE_PATH = "/media/sda1/logging";
-    public static final String ALTERNATE_LOG_FILE_PATH = "/media/sdb1/logging";
-    
+
 }
