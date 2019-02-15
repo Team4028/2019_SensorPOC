@@ -29,8 +29,8 @@ import frc.robot.util.LogDataBE;
 
 public class Elevator extends Subsystem implements IBeakSquadSubsystem {
 
-   double _targetElevatorPositionNU;
-   boolean _hasElevatorBeenZeroed = false;
+   private int _targetElevatorPositionNU;
+   private boolean _hasElevatorBeenZeroed = false;
   public enum ELEVATOR_TARGET_POSITION {
     HOME,
     CARGO_LEVEL_1,
@@ -53,15 +53,16 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
   private static final int CRUISE_VELOCITY = 1000;
   private static final int CRUISE_ACCELERATION = 4500;
   private static final int CAN_TIMEOUT_MILLISECONDS = 30;
-  private double NATIVE_UNITS_TO_INCHES_CONVERSION = 242.7928;
+  private static final double NATIVE_UNITS_TO_INCHES_CONVERSION = 242.7928;
 
-  private double HOME_POSITION_NU = InchesToNativeUnits(0);
-  private double CARGO_LEVEL_1_POSITION_NU = InchesToNativeUnits(0);
-  private double CARGO_LEVEL_2_POSITION_NU = InchesToNativeUnits(0);
-  private double CARGO_LEVEL_3_POSITION_NU = InchesToNativeUnits(0);
-  private double HATCH_LEVEL_1_POSITION_NU = InchesToNativeUnits(0);
-  private double HATCH_LEVEL_2_POSITION_NU = InchesToNativeUnits(0);
-  private double HATCH_LEVEL_3_POSITION_NU = InchesToNativeUnits(0);
+  private static final int HOME_POSITION_NU = InchesToNativeUnits(0);
+  private static final int CARGO_LEVEL_1_POSITION_NU = InchesToNativeUnits(0);
+  private static final int CARGO_LEVEL_2_POSITION_NU = InchesToNativeUnits(0);
+  private static final int CARGO_LEVEL_3_POSITION_NU = InchesToNativeUnits(0);
+  private static final int HATCH_LEVEL_1_POSITION_NU = InchesToNativeUnits(0);
+  private static final int HATCH_LEVEL_2_POSITION_NU = InchesToNativeUnits(30);
+  private static final int HATCH_LEVEL_3_POSITION_NU = InchesToNativeUnits(0);
+  private static final double ELEVATOR_POS_ALLOWABLE_ERROR_NU = InchesToNativeUnits(0.5);
 
 
   public static Elevator getInstance() {
@@ -155,8 +156,20 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
     _elevatorMasterMotor.set(ControlMode.MotionMagic, _targetElevatorPositionNU);
   }
 
-  private boolean get_hasElevatorBeenZeroed() {
+  public boolean get_hasElevatorBeenZeroed() {
     return _hasElevatorBeenZeroed;
+  }
+  public boolean get_isElevatorAtTargetPos(){
+    return get_isElevatorAtTargetPos(_targetElevatorPositionNU);
+  }
+
+  private boolean get_isElevatorAtTargetPos(int targetPosition){
+    int currentError = Math.abs(_elevatorMasterMotor.getSelectedSensorPosition() - targetPosition);
+    if(currentError <= ELEVATOR_POS_ALLOWABLE_ERROR_NU) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   public void zeroElevatorMotorEncoder() {
@@ -174,14 +187,14 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
     return _elevatorMasterMotor.getSensorCollection().isRevLimitSwitchClosed();
   }
 
-  public double NativeUnitsToInches(double nativeUnitsMeasure) {
+  public double  NativeUnitsToInches(double nativeUnitsMeasure) {
     double inches = nativeUnitsMeasure / NATIVE_UNITS_TO_INCHES_CONVERSION;
     return inches;
   }
 
-  public double InchesToNativeUnits(double inchesMeasure) {
-    double nativeUnits = inchesMeasure * NATIVE_UNITS_TO_INCHES_CONVERSION;
-    return Math.round(nativeUnits);
+  public static int InchesToNativeUnits(double inchesMeasure) {
+    int nativeUnits = (int)(inchesMeasure * NATIVE_UNITS_TO_INCHES_CONVERSION);
+    return nativeUnits;
   }
 
   @Override
@@ -200,6 +213,10 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
     SmartDashboard.putNumber("elevator pos", get_ElevatorPos());
     SmartDashboard.putNumber("elevator:inches", NativeUnitsToInches(get_ElevatorPos()));
     SmartDashboard.putNumber("elevator:native units", get_ElevatorPos());
+    SmartDashboard.putNumber("Elevator:masterMotorOutputVolts", _elevatorMasterMotor.getMotorOutputVoltage());
+    SmartDashboard.putNumber("Elevator:masterMotorCurrentAmps", _elevatorMasterMotor.getOutputCurrent());
+    SmartDashboard.putNumber("Elevator:slaveMotorOutputVolts", _elevatorSlaveMotor.getMotorOutputVoltage());
+    SmartDashboard.putNumber("Elevator:slaveMotorCurrentAmps", _elevatorSlaveMotor.getOutputCurrent());
   }
 
   
