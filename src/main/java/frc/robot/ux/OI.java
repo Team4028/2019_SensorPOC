@@ -8,6 +8,7 @@
 package frc.robot.ux;
 
 import frc.robot.RobotMap;
+import frc.robot.commands.camera.SwitchCamera;
 import frc.robot.commands.chassis.DriveWithControllers;
 import frc.robot.commands.elevator.MoveToPresetPosition;
 import frc.robot.commands.infeed.AquireHatch;
@@ -62,5 +63,6 @@ public class OI {
 		_operatorController.y.whenPressed(new AquireHatch());
 		_operatorController.x.whenPressed(new ScoreHatch());
 		_operatorController.rb.whenPressed(new ToggleStartPos());;
+		_operatorController.start.whenPressed(new SwitchCamera());
 	}
 }

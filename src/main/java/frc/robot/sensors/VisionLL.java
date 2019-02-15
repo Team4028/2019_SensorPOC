@@ -57,6 +57,15 @@ public class VisionLL implements IVisionSensor {
             return false;
         }
     }
+
+    public void turnOffLimelightLEDs() {
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
+    }
+
+    public void turnOnLimelightLEDs() {
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(3);
+    }
+
     //=====================================================================================
 	// Helper Methods
 	//=====================================================================================  

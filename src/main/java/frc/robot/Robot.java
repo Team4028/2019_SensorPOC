@@ -22,6 +22,8 @@ import frc.robot.sensors.AirCompressor;
 import frc.robot.sensors.DistanceRev2mSensor;
 import frc.robot.sensors.GyroNavX;
 import frc.robot.sensors.StoredPressureSensor;
+import frc.robot.sensors.SwitchableCameraServer;
+import frc.robot.sensors.VisionIP;
 import frc.robot.sensors.VisionLL;
 import frc.robot.subsystems.Cargo;
 import frc.robot.subsystems.Chassis;
@@ -52,9 +54,10 @@ public class Robot extends TimedRobot {
   // sensors
   private DistanceRev2mSensor _distanceRev2mSensor = DistanceRev2mSensor.getInstance();
   private StoredPressureSensor _pressureSensor = StoredPressureSensor.getInstance();
+  private SwitchableCameraServer _cameraServer = SwitchableCameraServer.getInstance();
   private AirCompressor _compressor = AirCompressor.get_instance();
 
-  private IVisionSensor _vision = VisionLL.getInstance();      // Limelight
+  private VisionLL _vision = VisionLL.getInstance();      // Limelight
   //private IVisionSensor _vision = VisionIP.getInstance();   // IPhone
   private GyroNavX _navX = GyroNavX.getInstance();
 
@@ -113,7 +116,7 @@ public class Robot extends TimedRobot {
     _leds.set_targetangle(_vision.get_angle1InDegrees(), 
                           _vision.get_isTargetInFOV(), 
                           _distanceRev2mSensor.get_distanceToTargetInInches());
-
+    _vision.turnOnLimelightLEDs();
   }
 
   /********************************************************************************************
@@ -139,7 +142,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     Scheduler.getInstance().run();
-  
+    _vision.turnOnLimelightLEDs();
   }
 
   /********************************************************************************************
@@ -178,6 +181,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledPeriodic() {
     Scheduler.getInstance().run();
+    _vision.turnOffLimelightLEDs();
   }
   
   /********************************************************************************************
@@ -225,6 +229,8 @@ public class Robot extends TimedRobot {
 	    	if(_distanceRev2mSensor != null)  { _distanceRev2mSensor.updateDashboard(); }
         if(_vision != null)               { _vision.updateDashboard(); }
         if(_pressureSensor != null)       { _pressureSensor.updateDashboard(); }
+        if(_navX != null)                 {_navX.updateDashboard();}
+        if(_cameraServer != null)         {_cameraServer.updateDashboard();}
         if(_compressor != null)           { _compressor.updateDashboard(); }
 	    	
     		// write the overall robot dashboard info

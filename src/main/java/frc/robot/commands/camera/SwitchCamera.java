@@ -5,16 +5,16 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.elevator;
+package frc.robot.commands.camera;
 
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.subsystems.Elevator;
+import frc.robot.sensors.SwitchableCameraServer;
 
-public class ZeroElevatorEncoder extends Command {
-  Elevator _elevator = Elevator.getInstance();
+public class SwitchCamera extends Command {
 
-  public ZeroElevatorEncoder() {
-    requires(_elevator);
+  private SwitchableCameraServer _cameraServer = SwitchableCameraServer.getInstance();
+
+  public SwitchCamera() {
     setInterruptible(false);
   }
 
@@ -25,7 +25,7 @@ public class ZeroElevatorEncoder extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    _elevator.zeroElevatorMotorEncoder();
+    _cameraServer.switchCamera();
   }
 
   // Make this return true when this Command no longer needs to run execute()
