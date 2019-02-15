@@ -4,12 +4,16 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.subsystems.Chassis;
 
-public class TurnInPlace extends Command {
+public class TurnInPlace extends Command 
+{
     private Chassis _chassis = Chassis.getInstance();
     private double _targetAngle;
     private boolean _isTurnRight;
+    private boolean _hasOvershot;
+    private boolean _isErrorPositive;
     
-    public TurnInPlace(double targetAngle, boolean isTurnRight) {
+    public TurnInPlace(double targetAngle, boolean isTurnRight) 
+    {
         setInterruptible(true);
         requires(_chassis);
         _targetAngle = targetAngle;
@@ -17,13 +21,20 @@ public class TurnInPlace extends Command {
     }
 
     @Override
-    protected void initialize() {}
+    protected void initialize() 
+    {
+    }
 
     @Override
-    protected void execute() {
-        if(_isTurnRight) {
+    protected void execute() 
+    {
+        
+        if(_isTurnRight) 
+        {
             _chassis.setLeftRightCommand(ControlMode.PercentOutput, 0.5,-0.5);
-        } else {
+        } 
+        else 
+        {
             _chassis.setLeftRightCommand(ControlMode.PercentOutput, -0.5, 0.5);
         }
     }
