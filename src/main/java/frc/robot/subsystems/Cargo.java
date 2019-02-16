@@ -69,7 +69,7 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
 	// private constructor for singleton pattern
   private Cargo() {
     //Infeed Motor
-    _infeedMtr = new VictorSPX(RobotMap.CARGO_VICTOR_ADDR);
+    _infeedMtr = new VictorSPX(RobotMap.INFEED_DRIVE_CAN_ADDR);
     _infeedMtr.configFactoryDefault();
     _infeedMtr.configForwardLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.Disabled);
 
