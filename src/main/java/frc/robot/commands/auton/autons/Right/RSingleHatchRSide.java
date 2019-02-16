@@ -10,6 +10,7 @@ import frc.robot.commands.auton.adaptivePaths.CG_FollowVisionPath;
 public class RSingleHatchRSide extends CommandGroup {
     Path _sidePath = Paths.getPath(Right.TO_RIGHT_CARGO_BAY_FIRST);
     public RSingleHatchRSide() {
+        setInterruptible(false);
         addSequential(new RunMotionProfileCommand(_sidePath));
         addSequential(new CG_FollowVisionPath());
     }

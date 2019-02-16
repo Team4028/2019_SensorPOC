@@ -13,6 +13,7 @@ public class LDoubleHatchLSideLSide extends CommandGroup {
     Path _toFeederStation = Paths.getPath(Left.FROM_FIRST_BAY_TO_FEEDER_STATION);
     Path _toBay = Paths.getPath(Left.FROM_FEEDER_STATION_TO_SECOND_BAY);
     public LDoubleHatchLSideLSide() {
+        setInterruptible(false);
         addSequential(new LSingleHatchLSide());
         addSequential(new DriveSetDistance(-5));
         addSequential(new TurnInPlace(207, true));

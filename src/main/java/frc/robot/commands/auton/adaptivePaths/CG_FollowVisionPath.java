@@ -14,7 +14,8 @@ public class CG_FollowVisionPath extends CommandGroup {
     Chassis _chassis = Chassis.getInstance();
     double _startTime;
 
-    public CG_FollowVisionPath() {
+    public CG_FollowVisionPath() 
+    {
         setInterruptible(false);
         requires(_chassis);
         addParallel(new Auton_ParallelStarter());
@@ -27,7 +28,8 @@ public class CG_FollowVisionPath extends CommandGroup {
     }
 
     @Override
-    protected void initialize() {
+    protected void initialize() 
+    {
         _startTime = Timer.getFPGATimestamp();
     }
 

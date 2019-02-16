@@ -10,11 +10,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.auton.autons.DoNothing;
 import frc.robot.commands.auton.autons.LineCross;
 import frc.robot.commands.auton.autons.Center.CDoubleHatchLFrontLSide;
+import frc.robot.commands.auton.autons.Center.CDoubleHatchRFrontRSide;
 import frc.robot.commands.auton.autons.Center.CSingleHatchLFront;
+import frc.robot.commands.auton.autons.Center.CSingleHatchRFront;
 import frc.robot.commands.auton.autons.Left.LDoubleHatchLFrontLSide;
 import frc.robot.commands.auton.autons.Left.LDoubleHatchLSideLSide;
 import frc.robot.commands.auton.autons.Left.LSingleHatchLFront;
 import frc.robot.commands.auton.autons.Left.LSingleHatchLSide;
+import frc.robot.commands.auton.autons.Right.RDoubleHatchRFrontRSide;
+import frc.robot.commands.auton.autons.Right.RDoubleHatchRSideRSide;
 import frc.robot.commands.auton.autons.Right.RSingleHatchRFront;
 import frc.robot.commands.auton.autons.Right.RSingleHatchRSide;
 import frc.robot.interfaces.IBeakSquadSubsystem;
@@ -31,7 +35,8 @@ public class AutonChoosers implements IBeakSquadSubsystem {
 		LEFT_FRONT_HATCH,
 		RIGHT_FRONT_HATCH,
 		SIDE_HATCH,
-		DOUBLE_HATCH_FRONT_SIDE,
+		DOUBLE_HATCH_FRONT_SIDE_LEFT,
+		DOUBLE_HATCH_FRONT_SIDE_RIGHT,
 		DOUBLE_HATCH_SIDE_SIDE,
         DO_NOTHING, 
     }
@@ -64,7 +69,8 @@ public class AutonChoosers implements IBeakSquadSubsystem {
 		_autonAction.addOption("Right Front Hatch", AUTON_MODE.RIGHT_FRONT_HATCH);
 		_autonAction.addOption("Side Hatch", AUTON_MODE.SIDE_HATCH);
 		_autonAction.addOption("Line Cross", AUTON_MODE.LINE_CROSS);
-		_autonAction.addOption("Double Hatch Front Side", AUTON_MODE.DOUBLE_HATCH_FRONT_SIDE);
+		_autonAction.addOption("Double Hatch Front Side Left", AUTON_MODE.DOUBLE_HATCH_FRONT_SIDE_LEFT);
+		_autonAction.addOption("Double Hatch Front Side Right", AUTON_MODE.DOUBLE_HATCH_FRONT_SIDE_RIGHT);
 		_autonAction.addOption("Double Hatch Side Side", AUTON_MODE.DOUBLE_HATCH_SIDE_SIDE);
         
         // Auton Starting Side
@@ -101,7 +107,18 @@ public class AutonChoosers implements IBeakSquadSubsystem {
 					return null;
 				}
 			case RIGHT_FRONT_HATCH:
-				return new RSingleHatchRFront();
+				if(startingSide==STARTING_SIDE.CENTER)
+				{
+					return new CSingleHatchRFront();
+				}
+				else if(startingSide==STARTING_SIDE.RIGHT)
+				{
+					return new RSingleHatchRFront();
+				}
+				else
+				{
+					return new LineCross();
+				}
 			case SIDE_HATCH:
 				if(startingSide==STARTING_SIDE.LEFT)
 				{
@@ -116,8 +133,19 @@ public class AutonChoosers implements IBeakSquadSubsystem {
 					return new RSingleHatchRSide();
 				}
 			case DOUBLE_HATCH_SIDE_SIDE:
-				return new LDoubleHatchLSideLSide();
-			case DOUBLE_HATCH_FRONT_SIDE:
+				if(startingSide==STARTING_SIDE.LEFT)
+				{
+					return new LDoubleHatchLSideLSide();
+				}
+				else if(startingSide==STARTING_SIDE.RIGHT)
+				{
+					return new RDoubleHatchRSideRSide();
+				}
+				else
+				{
+					return new LineCross();
+				}
+			case DOUBLE_HATCH_FRONT_SIDE_LEFT:
 				if (startingSide==STARTING_SIDE.LEFT)
 				{
 					return new LDoubleHatchLFrontLSide();
@@ -128,7 +156,20 @@ public class AutonChoosers implements IBeakSquadSubsystem {
 				}
 				else
 				{
-					return null;
+					return new RDoubleHatchRFrontRSide();
+				}
+			case DOUBLE_HATCH_FRONT_SIDE_RIGHT:
+				if (startingSide==STARTING_SIDE.LEFT)
+				{
+					return new LDoubleHatchLFrontLSide();
+				}
+				else if(startingSide==STARTING_SIDE.CENTER)
+				{
+					return new CDoubleHatchRFrontRSide();
+				}
+				else
+				{
+					return new RDoubleHatchRFrontRSide();
 				}
 			default:
 				return new DoNothing(); 
