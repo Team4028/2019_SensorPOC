@@ -45,12 +45,12 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
 
 	// hardcoded preset positions (in native units, 0 = home position)
   private static final int HOME_POSITION_NU = InchesToNativeUnits(0);
-  private static final int CARGO_LEVEL_1_POSITION_NU = InchesToNativeUnits(0);
-  private static final int CARGO_LEVEL_2_POSITION_NU = InchesToNativeUnits(0);
-  private static final int CARGO_LEVEL_3_POSITION_NU = InchesToNativeUnits(0);
-  private static final int HATCH_LEVEL_1_POSITION_NU = InchesToNativeUnits(0);
-  private static final int HATCH_LEVEL_2_POSITION_NU = InchesToNativeUnits(65);
-  private static final int HATCH_LEVEL_3_POSITION_NU = InchesToNativeUnits(0);
+  private static final int CARGO_LEVEL_1_POSITION_NU = InchesToNativeUnits(15);
+  private static final int CARGO_LEVEL_2_POSITION_NU = InchesToNativeUnits(30);
+  private static final int CARGO_LEVEL_3_POSITION_NU = InchesToNativeUnits(45);
+  private static final int HATCH_LEVEL_1_POSITION_NU = InchesToNativeUnits(10);
+  private static final int HATCH_LEVEL_2_POSITION_NU = InchesToNativeUnits(20);
+  private static final int HATCH_LEVEL_3_POSITION_NU = InchesToNativeUnits(30);
 
   // define PID Constants
 	private static final int MOVING_DOWN_PID_SLOT_INDEX = 0;
