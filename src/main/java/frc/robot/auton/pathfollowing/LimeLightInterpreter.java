@@ -38,8 +38,8 @@ public class LimeLightInterpreter{
         double dy = rt.getTranslation().y();
         double l = Math.sqrt(dx * dx + dy * dy);
         double a1 = Math.atan2(dy, dx) * 180 / Math.PI - H;
-        // double a1 = _navX.getTargetAngle(target, side) - rt.getRotation().getDegrees() - H;
-        return new LimeLightInformation(a1, a2, l);
+        double A2 = _navX.getTargetAngle(target, side) - a1 - H;
+        return new LimeLightInformation(a1, A2, l);
     }
 
     private static RigidTransform computeVehicleToTargetFromLimeLightToTarget(RigidTransform limeLightToTarget){
