@@ -427,9 +427,6 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
 		return NU *Constants.DRIVE_WHEEL_DIAMETER_IN*Math.PI / ENCODER_COUNTS_PER_WHEEL_REV;
 	}
 
-  // public double getCurOffset(){
-  //   return _navX.getOffset();
-  // }
 	public static double inchesPerSecToNU(double inches_per_second) 
 	{
         return inches_per_second * ENCODER_COUNTS_PER_WHEEL_REV / (Constants.DRIVE_WHEEL_DIAMETER_IN * Math.PI * 10);

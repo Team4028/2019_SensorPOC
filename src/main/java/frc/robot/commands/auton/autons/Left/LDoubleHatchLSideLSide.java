@@ -8,6 +8,8 @@ import frc.robot.commands.auton.RunMotionProfileCommand;
 import frc.robot.commands.auton.adaptivePaths.CG_FollowVisionPath;
 import frc.robot.commands.chassis.DriveSetDistance;
 import frc.robot.commands.chassis.TurnInPlace;
+import frc.robot.sensors.GyroNavX.SCORING_TARGET;
+import frc.robot.sensors.GyroNavX.SIDE;
 
 public class LDoubleHatchLSideLSide extends CommandGroup {
     Path _toFeederStation = Paths.getPath(Left.FROM_FIRST_BAY_TO_FEEDER_STATION);
@@ -18,10 +20,10 @@ public class LDoubleHatchLSideLSide extends CommandGroup {
         addSequential(new DriveSetDistance(-5));
         addSequential(new TurnInPlace(207, true));
         addSequential(new RunMotionProfileCommand(_toFeederStation));
-        addSequential(new CG_FollowVisionPath());
+        addSequential(new CG_FollowVisionPath(SCORING_TARGET.FEEDER_STATION,SIDE.LEFT));
         addSequential(new DriveSetDistance(-5));
         addSequential(new TurnInPlace(20, false));
         addSequential(new RunMotionProfileCommand(_toBay));
-        addSequential(new CG_FollowVisionPath());
+        addSequential(new CG_FollowVisionPath(SCORING_TARGET.CARGOSHIP_SIDE_ROCKET,SIDE.LEFT));
     }
 }
