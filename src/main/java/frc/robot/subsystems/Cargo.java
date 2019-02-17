@@ -113,15 +113,15 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
 
   */
   //=======================================
-  public void setBeak(BEAK_POSITION beakPosition) {
+  public void setBeak(BEAK_POSITION desiredBeakPosition) {
     Value currentMechPos = _mechansimSolenoid.get();
     Value currentPunchPos = _punchSolenoid.get();
     
-      if (beakPosition == BEAK_POSITION.CLOSED) 
+      if (desiredBeakPosition == BEAK_POSITION.CLOSED) 
       {
            _beakSolenoid.set(BEAK_CLOSE);
       }
-      else if (beakPosition == BEAK_POSITION.OPEN) 
+      else if (desiredBeakPosition == BEAK_POSITION.OPEN) 
       {
         if(currentPunchPos == PUNCH_IN && currentMechPos == MECHANISM_EXTENDED)
         {
@@ -181,7 +181,7 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
       } 
       else if (releasePosition == RELEASE_POSITION.RETRACTED) 
       {
-             _mechansimSolenoid.set(MECHANISM_RETRACTED);
+        _releaseSolenoid.set(MECHANISM_RETRACTED);
       }
     
   }
@@ -230,6 +230,7 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
     {
       setRelease(RELEASE_POSITION.EXTENDED);
     }
+    DriverStation.reportWarning("Release is Running", false);
   }
   public void servoStartMatch(){
       _infeedServo.set(1);

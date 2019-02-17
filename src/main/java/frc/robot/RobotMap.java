@@ -26,7 +26,7 @@ public class RobotMap
 	
 	// PCM Can Bus Address
 	public static final int PCM_CAN_ADDR = 0;
-	public static final int CARGO_VICTOR_ADDR = 1;
+	public static final int CARGO_VICTOR_ADDR = 9;
 	
 	// Motor Controller Can Bus Address
 	//public static final int LEFT_DRIVE_MASTER_CAN_ADDR = 0;

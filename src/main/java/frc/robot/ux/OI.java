@@ -43,22 +43,23 @@ public class OI {
         //==========================================================
 
 		// Driver Controller -> Command Mapping
-		_driverController.leftStick.whileActive(new DriveWithControllers(_driverController.leftStick, _driverController.rightStick));
+/*		_driverController.leftStick.whileActive(new DriveWithControllers(_driverController.leftStick, _driverController.rightStick));
 		_driverController.rightStick.whileActive(new DriveWithControllers(_driverController.leftStick, _driverController.rightStick));
  
 		_driverController.leftStick.whenReleased(new DriveWithControllers(_driverController.leftStick, _driverController.rightStick));
 		_driverController.rightStick.whenReleased(new DriveWithControllers(_driverController.leftStick, _driverController.rightStick));
-
+*/
         // =========== Operator ======================================
 		_operatorController = new BeakXboxController(RobotMap.OPERATOR_GAMEPAD_USB_PORT);
 		//==========================================================
 		_operatorController.leftStick.whileActive(new RunInfeedMotor(_operatorController.leftStick));
 		_operatorController.leftStick.whenReleased(new RunInfeedMotor(_operatorController.leftStick));
 
-	
+		_operatorController.start.whenPressed(new TogglePunch());
 		_operatorController.y.whenPressed(new AquireHatch());
 		_operatorController.x.whenPressed(new ScoreHatch());
 		_operatorController.rb.whenPressed(new ToggleStartPos());;
 		_operatorController.lb.whenPressed(new ReleaseInfeed());
+		_operatorController.back.whenPressed(new ToggleBeakPosition());
 	}
 }
