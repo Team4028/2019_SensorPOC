@@ -37,7 +37,8 @@ public class LimeLightInterpreter{
         double dx = rt.getTranslation().x();
         double dy = rt.getTranslation().y();
         double l = Math.sqrt(dx * dx + dy * dy);
-        double a1 = _navX.getTargetAngle(target, side) - rt.getRotation().getDegrees() - H;
+        double a1 = Math.atan2(dy, dx) * 180 / Math.PI - H;
+        // double a1 = _navX.getTargetAngle(target, side) - rt.getRotation().getDegrees() - H;
         return new LimeLightInformation(a1, a2, l);
     }
 
