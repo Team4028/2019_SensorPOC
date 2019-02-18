@@ -70,10 +70,10 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
 	public static final double DERIVATIVE_GAIN_HOLD = 0;
 	
 	public static final double FEED_FORWARD_GAIN_DOWN = 0.17427598;
-	public static final double PROPORTIONAL_GAIN_DOWN = 2.0;
+	public static final double PROPORTIONAL_GAIN_DOWN = 0.2;
 	public static final double INTEGRAL_GAIN_DOWN = 0;
 	public static final int INTEGRAL_ZONE_DOWN = 0; 
-  public static final double DERIVATIVE_GAIN_DOWN = 30;
+  public static final double DERIVATIVE_GAIN_DOWN = 0;
   
   private static final int UP_CRUISE_VELOCITY = 2500;
   private static final int DOWN_CRUISE_VELOCITY = 2000;

@@ -85,7 +85,7 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
     //Hatch Solenoids
     _beakSolenoid = new DoubleSolenoid(RobotMap.PCM_FORWARD_BEAK_SOLENOID_PORT,RobotMap.PCM_REVERSE_BEAK_SOLENOID_PORT);
     _punchSolenoid = new DoubleSolenoid(RobotMap.PCM_FORWARD_PUNCH_SOLENOID_PORT, RobotMap.PCM_REVERSE_PUNCH_SOLENOID_PORT);
-    _mechansimSolenoid = new DoubleSolenoid(RobotMap.PCM_FORWARD_INOUT_SOLENOID_PORT, RobotMap.PCM_REVERSE_INOUT_SOLENOID_PORT);
+    _mechansimSolenoid = new DoubleSolenoid(RobotMap.PCM_REVERSE_INOUT_SOLENOID_PORT, RobotMap.PCM_FORWARD_INOUT_SOLENOID_PORT);
     _releaseSolenoid = new DoubleSolenoid(RobotMap.PCM_FORWARD_RELEASE_SOLENOID_PORT, RobotMap.PCM_REVERSE_RELEASE_SOLENOID_PORT);
     
 
@@ -239,7 +239,7 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
     }
   }
 
-  private String get_RelasePosition(){
+  private String get_ReleasePosition(){
     Value currentReleasePos = _releaseSolenoid.get();
     if (currentReleasePos == RELEASE_RETRACTED) {
       return "Release Retracted";
@@ -254,6 +254,16 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
       return "Mechanism Retracted";
     } else {
       return "Mechanism Extended";
+    }
+  }
+
+  public boolean get_IsBucketOut() {
+    
+    if(_releaseSolenoid.get() == RELEASE_EXTENDED){
+
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -274,6 +284,6 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
     SmartDashboard.putString("MechanismPos", get_MechPosition());
     SmartDashboard.putString("PunchPos", get_PunchPosition());
     SmartDashboard.putString("BeakPos", get_BeakPosition());
-    SmartDashboard.putString("ReleasePos", get_RelasePosition());
+    SmartDashboard.putString("ReleasePos", get_ReleasePosition());
   }
 }
