@@ -26,6 +26,7 @@ public class GyroNavX {
 		CARGOSHIP_SIDE_ROCKET,
 		ROCKET_FRONT,
 		ROCKET_BACK,
+		FEEDER_STATION
 	}
 
 	public enum SIDE {
@@ -35,8 +36,11 @@ public class GyroNavX {
 
 	private static final double CARGOSHIP_FRONT_ANGLE = 0;
     private static final double CARGOSHIP_SIDE_ROCKET_ANGLE = -90;
-	private static final double ROCKET_FRONT_ANGLE = 61.25;
+	private static final double ROCKET_FRONT_ANGLE = 28.75;
 	private static final double ROCKET_BACK_ANGLE = 151.25;
+	private static final double FEEDER_STATION_ANGLE = 180;
+
+	private double _currentAngle2;
 
 	private AHRS _navXSensor;
 	
@@ -73,6 +77,8 @@ public class GyroNavX {
 			case ROCKET_BACK:
 			scoringTargetAngle = ROCKET_BACK_ANGLE;
 				break;
+			case FEEDER_STATION:
+			scoringTargetAngle = 180;
 		}
 
 		switch(side) {
@@ -87,9 +93,41 @@ public class GyroNavX {
 		double angle2 = sideFactor * scoringTargetAngle - _visionLL.get_angle1InDegrees() - _navXSensor.getYaw();
 		return angle2;
 	}
+
+	public  double getTargetAngle(SCORING_TARGET target, SIDE side){
+		double scoringTargetAngle = 0;
+		double sideFactor = 0;
+		switch(target){
+			case CARGOSHIP_FRONT:
+				scoringTargetAngle = CARGOSHIP_FRONT_ANGLE;
+				break;
+			case CARGOSHIP_SIDE_ROCKET:
+				scoringTargetAngle = CARGOSHIP_SIDE_ROCKET_ANGLE;
+				break;
+			case ROCKET_FRONT:
+				scoringTargetAngle = ROCKET_FRONT_ANGLE;
+				break;
+			case ROCKET_BACK:
+				scoringTargetAngle = ROCKET_BACK_ANGLE;
+				break;
+			case FEEDER_STATION:
+				scoringTargetAngle = FEEDER_STATION_ANGLE;
+				break;
+		}
+
+		switch(side) {
+			case LEFT:
+				sideFactor = -1;
+				break;
+			case RIGHT:
+				sideFactor = 1;
+				break;
+		}
+		return scoringTargetAngle * sideFactor;
+	}
 	
     public double getYaw() { 
-	return _navXSensor.getYaw();
+		return _navXSensor.getYaw();
 	}
 	
 	public void zeroYaw() { 
@@ -97,13 +135,13 @@ public class GyroNavX {
 	}
 	
 	public double getPitch() { //Axis Perpendicular to the Front/Back of the robot
-	return _navXSensor.getPitch();
+		return _navXSensor.getPitch();
 	}
 
 	//=====================================================================================
 	// Helper Methods
 	//=====================================================================================  
 	public void updateDashboard() {
-		//SmartDashboard.putNumber("Angle2", get_angle2InDegreesFromLL());
+		SmartDashboard.putNumber("Angle2", _currentAngle2);
 	}
 }

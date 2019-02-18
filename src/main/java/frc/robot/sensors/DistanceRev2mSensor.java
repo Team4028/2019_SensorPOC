@@ -79,10 +79,10 @@ public class DistanceRev2mSensor implements IDistanceSensor{
 		return _distanceToTargetInInches;
 	}
 
-	public boolean get_didTimeoutOccur(){
+	public boolean get_didTimeoutOccur() {
 		return _didTimeoutOccur;
 	} 
-	public boolean get_isSensorPresent(){
+	public boolean get_isSensorPresent() {
 		return _isSensorPresent;
 	} 
 

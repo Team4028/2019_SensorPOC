@@ -14,7 +14,6 @@ import java.nio.charset.Charset;
 /**
  * Utility class for performing type conversions
  */
-@SuppressWarnings("unused")
 public class TypeConversion {
 
   private static final Charset UTF8_CHARSET = Charset.forName("UTF-8");

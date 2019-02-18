@@ -1,14 +1,9 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2018 FIRST. All Rights Reserved.                             */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 package frc.robot.ux;
 
 import frc.robot.RobotMap;
+import frc.robot.commands.camera.SwitchCamera;
 import frc.robot.commands.chassis.DriveWithControllers;
+import frc.robot.commands.elevator.MoveToPresetPosition;
 import frc.robot.commands.infeed.AquireHatch;
 import frc.robot.commands.infeed.ReleaseInfeed;
 import frc.robot.commands.infeed.RunInfeedMotor;
@@ -16,6 +11,7 @@ import frc.robot.commands.infeed.ScoreHatch;
 import frc.robot.commands.infeed.ToggleBeakPosition;
 import frc.robot.commands.infeed.TogglePunch;
 import frc.robot.commands.infeed.ToggleStartPos;
+import frc.robot.subsystems.Elevator.ELEVATOR_TARGET_POSITION;
 import frc.robot.util.BeakXboxController;
 
 /**
@@ -43,23 +39,24 @@ public class OI {
         //==========================================================
 
 		// Driver Controller -> Command Mapping
-/*		_driverController.leftStick.whileActive(new DriveWithControllers(_driverController.leftStick, _driverController.rightStick));
+        _driverController.leftStick.whileActive(new DriveWithControllers(_driverController.leftStick, _driverController.rightStick));
 		_driverController.rightStick.whileActive(new DriveWithControllers(_driverController.leftStick, _driverController.rightStick));
  
 		_driverController.leftStick.whenReleased(new DriveWithControllers(_driverController.leftStick, _driverController.rightStick));
 		_driverController.rightStick.whenReleased(new DriveWithControllers(_driverController.leftStick, _driverController.rightStick));
-*/
+		_driverController.a.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.HOME));
+		_driverController.b.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.HATCH_LEVEL_2));
         // =========== Operator ======================================
 		_operatorController = new BeakXboxController(RobotMap.OPERATOR_GAMEPAD_USB_PORT);
 		//==========================================================
 		_operatorController.leftStick.whileActive(new RunInfeedMotor(_operatorController.leftStick));
 		_operatorController.leftStick.whenReleased(new RunInfeedMotor(_operatorController.leftStick));
 
-		_operatorController.start.whenPressed(new TogglePunch());
+		_operatorController.lb.whenPressed(new ToggleBeakPosition());
+		_operatorController.b.whenPressed(new TogglePunch());
 		_operatorController.y.whenPressed(new AquireHatch());
 		_operatorController.x.whenPressed(new ScoreHatch());
 		_operatorController.rb.whenPressed(new ToggleStartPos());;
-		_operatorController.lb.whenPressed(new ReleaseInfeed());
-		_operatorController.back.whenPressed(new ToggleBeakPosition());
+		_operatorController.start.whenPressed(new SwitchCamera());
 	}
 }
