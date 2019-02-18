@@ -45,12 +45,12 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
 
 	// hardcoded preset positions (in native units, 0 = home position)
   private static final int HOME_POSITION_NU = InchesToNativeUnits(0);
-  private static final int CARGO_LEVEL_1_POSITION_NU = InchesToNativeUnits(0);
-  private static final int CARGO_LEVEL_2_POSITION_NU = InchesToNativeUnits(0);
-  private static final int CARGO_LEVEL_3_POSITION_NU = InchesToNativeUnits(0);
-  private static final int HATCH_LEVEL_1_POSITION_NU = InchesToNativeUnits(0);
-  private static final int HATCH_LEVEL_2_POSITION_NU = InchesToNativeUnits(30);
-  private static final int HATCH_LEVEL_3_POSITION_NU = InchesToNativeUnits(0);
+  private static final int CARGO_LEVEL_1_POSITION_NU = InchesToNativeUnits(15);
+  private static final int CARGO_LEVEL_2_POSITION_NU = InchesToNativeUnits(30);
+  private static final int CARGO_LEVEL_3_POSITION_NU = InchesToNativeUnits(45);
+  private static final int HATCH_LEVEL_1_POSITION_NU = InchesToNativeUnits(10);
+  private static final int HATCH_LEVEL_2_POSITION_NU = InchesToNativeUnits(20);
+  private static final int HATCH_LEVEL_3_POSITION_NU = InchesToNativeUnits(30);
 
   // define PID Constants
 	private static final int MOVING_DOWN_PID_SLOT_INDEX = 0;
@@ -58,25 +58,29 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
   private static final int HOLDING_PID_SLOT_INDEX = 2;
   
   private static final double FEED_FORWARD_GAIN_UP = 0.17427598;
-  private static final double PROPORTIONAL_GAIN_UP = 1.0;
+  private static final double PROPORTIONAL_GAIN_UP = 2.0;
   private static final double INTEGRAL_GAIN_UP = 0;
   private static final int INTEGRAL_ZONE_UP = 0;
-  private static final double DERIVATIVE_GAIN_UP = 0;
+  private static final double DERIVATIVE_GAIN_UP = 30;
 
-  public static final double FEED_FORWARD_GAIN_HOLD = 0;
-	public static final double PROPORTIONAL_GAIN_HOLD = 0;
-	public static final double INTEGRAL_GAIN_HOLD = 0;
-	public static final int INTEGRAL_ZONE_HOLD = 0; 
+  public static final double FEED_FORWARD_GAIN_HOLD = 0.17427598;
+	public static final double PROPORTIONAL_GAIN_HOLD = 2.0;
+	public static final double INTEGRAL_GAIN_HOLD = 0.04;
+	public static final int INTEGRAL_ZONE_HOLD = 200; 
 	public static final double DERIVATIVE_GAIN_HOLD = 0;
 	
-	public static final double FEED_FORWARD_GAIN_DOWN = 0;
-	public static final double PROPORTIONAL_GAIN_DOWN = 0;
+	public static final double FEED_FORWARD_GAIN_DOWN = 0.17427598;
+	public static final double PROPORTIONAL_GAIN_DOWN = 2.0;
 	public static final double INTEGRAL_GAIN_DOWN = 0;
 	public static final int INTEGRAL_ZONE_DOWN = 0; 
-  public static final double DERIVATIVE_GAIN_DOWN = 0;
+  public static final double DERIVATIVE_GAIN_DOWN = 30;
   
-  private static final int CRUISE_VELOCITY = 1000;
-  private static final int CRUISE_ACCELERATION = 4500;
+  private static final int UP_CRUISE_VELOCITY = 2500;
+  private static final int DOWN_CRUISE_VELOCITY = 2000;
+  private static final int TELEOP_UP_ACCELERATION = 4000;
+  private static final int TELEOP_UP_DECELERATION = 4000;
+  private static final int TELEOP_DOWN_ACCELERATION = 2000;
+
   private static final int CAN_TIMEOUT_MILLISECONDS = 30;
 
   //=====================================================================================
@@ -125,7 +129,7 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
     _elevatorMasterMotor.configPeakOutputForward(1, 0);
     _elevatorMasterMotor.configPeakOutputReverse(-1, 0);
 
-    // Configur velocity measurement
+    // Configure velocity measurement
     _elevatorMasterMotor.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_5Ms, 0);
     _elevatorMasterMotor.configVelocityMeasurementWindow(32, 0);
 
@@ -153,8 +157,8 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
 		_elevatorMasterMotor.config_IntegralZone(HOLDING_PID_SLOT_INDEX, INTEGRAL_ZONE_HOLD, CAN_TIMEOUT_MILLISECONDS);
 
     // Set accel and cruise velocities
-    _elevatorMasterMotor.configMotionCruiseVelocity(CRUISE_VELOCITY, 0);
-    _elevatorMasterMotor.configMotionAcceleration(CRUISE_ACCELERATION, 0);
+    _elevatorMasterMotor.configMotionCruiseVelocity(UP_CRUISE_VELOCITY, 0);
+    _elevatorMasterMotor.configMotionAcceleration(TELEOP_UP_ACCELERATION, 0);
   
     // set allowable closed loop gain
     _elevatorMasterMotor.configAllowableClosedloopError(0, ELEVATOR_POS_ALLOWABLE_ERROR_NU, 0);
@@ -196,14 +200,33 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
           _targetElevatorPositionNU = HATCH_LEVEL_3_POSITION_NU;
           break;
       }
+      // set appropriate gain slot to use (only flip if outside deadband)
+      int currentError = Math.abs(get_ElevatorPos() - _targetElevatorPositionNU);
+      if (currentError > ELEVATOR_POS_ALLOWABLE_ERROR_NU) {
+        if(_targetElevatorPositionNU > get_ElevatorPos()) {
+          _elevatorMasterMotor.selectProfileSlot(MOVING_UP_PID_SLOT_INDEX, 0);
+          _elevatorMasterMotor.configMotionCruiseVelocity(UP_CRUISE_VELOCITY, 0);
+          _elevatorMasterMotor.configMotionAcceleration(TELEOP_UP_ACCELERATION, 0);
+        } else {
+          _elevatorMasterMotor.selectProfileSlot(MOVING_DOWN_PID_SLOT_INDEX, 0);
+          _elevatorMasterMotor.configMotionCruiseVelocity(DOWN_CRUISE_VELOCITY, 0);
+          if(get_ElevatorVelocity() > 0){
+            _elevatorMasterMotor.configMotionAcceleration(TELEOP_UP_DECELERATION, 0);
+          } else {
+            _elevatorMasterMotor.configMotionAcceleration(TELEOP_DOWN_ACCELERATION, 0);
+          }
+        }
+      } else {
+       // _elevatorMasterMotor.selectProfileSlot(HOLDING_PID_SLOT_INDEX, 0);
+      }
+      _elevatorMasterMotor.set(ControlMode.MotionMagic, _targetElevatorPositionNU);
     }
-    _elevatorMasterMotor.set(ControlMode.MotionMagic, _targetElevatorPositionNU);
   }
 
   // ===============================================================================================================
 	// Expose Properties of Elevator
 	// ===============================================================================================================
-  private boolean get_isElevatorAtTargetPos(int targetPosition){
+  private boolean get_isElevatorAtTargetPos(int targetPosition) {
     int currentError = Math.abs(_elevatorMasterMotor.getSelectedSensorPosition() - targetPosition);
     if(currentError <= ELEVATOR_POS_ALLOWABLE_ERROR_NU) {
       return true;
@@ -222,6 +245,10 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
 
   public int get_ElevatorPos() {
     return _elevatorMasterMotor.getSelectedSensorPosition(0);
+  }
+
+  private int get_ElevatorVelocity() {
+    return _elevatorMasterMotor.getSelectedSensorVelocity();
   }
 
   public double NativeUnitsToInches(double nativeUnitsMeasure) {
@@ -248,12 +275,13 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
 
   @Override
   public void updateDashboard() {
-    SmartDashboard.putNumber("elevator pos", get_ElevatorPos());
-    SmartDashboard.putNumber("elevator:inches", NativeUnitsToInches(get_ElevatorPos()));
-    SmartDashboard.putNumber("elevator:native units", get_ElevatorPos());
-    SmartDashboard.putNumber("Elevator:masterMotorOutputVolts", _elevatorMasterMotor.getMotorOutputVoltage());
-    SmartDashboard.putNumber("Elevator:masterMotorCurrentAmps", _elevatorMasterMotor.getOutputCurrent());
-    SmartDashboard.putNumber("Elevator:slaveMotorOutputVolts", _elevatorSlaveMotor.getMotorOutputVoltage());
-    SmartDashboard.putNumber("Elevator:slaveMotorCurrentAmps", _elevatorSlaveMotor.getOutputCurrent());
+    //SmartDashboard.putNumber("elevator pos", get_ElevatorPos());
+    //SmartDashboard.putNumber("elevator:inches", NativeUnitsToInches(get_ElevatorPos()));
+    //SmartDashboard.putNumber("elevator:native units", get_ElevatorPos());
+    //SmartDashboard.putNumber("Elevator:masterMotorOutputVolts", _elevatorMasterMotor.getMotorOutputVoltage());
+    //SmartDashboard.putNumber("Elevator:masterMotorCurrentAmps", _elevatorMasterMotor.getOutputCurrent());
+    //SmartDashboard.putNumber("Elevator:slaveMotorOutputVolts", _elevatorSlaveMotor.getMotorOutputVoltage());
+    //SmartDashboard.putNumber("Elevator:slaveMotorCurrentAmps", _elevatorSlaveMotor.getOutputCurrent());
+    SmartDashboard.putNumber("Elevator: Target Position", NativeUnitsToInches(_targetElevatorPositionNU));
   }
 }
