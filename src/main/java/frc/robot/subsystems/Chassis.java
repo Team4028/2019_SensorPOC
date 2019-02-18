@@ -88,13 +88,13 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
     _leftSlave.follow(_leftMaster);
     _rightSlave.follow(_rightMaster);
 
-    _rightMaster.setInverted(false);
-    _rightSlave.setInverted(false);
+    _rightMaster.setInverted(true);
+    _rightSlave.setInverted(true);
     _leftMaster.setInverted(true);
     _leftSlave.setInverted(true);
 
     _rightMaster.setSensorPhase(false);
-    _leftMaster.setSensorPhase(false);
+    _leftMaster.setSensorPhase(true);
 
     _leftMaster.setNeutralMode(NeutralMode.Brake);
 		_leftSlave.setNeutralMode(NeutralMode.Brake);
