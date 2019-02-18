@@ -5,7 +5,6 @@ import frc.robot.commands.camera.SwitchCamera;
 import frc.robot.commands.chassis.DriveWithControllers;
 import frc.robot.commands.elevator.MoveToPresetPosition;
 import frc.robot.commands.infeed.AquireHatch;
-import frc.robot.commands.infeed.ReleaseInfeed;
 import frc.robot.commands.infeed.RunInfeedMotor;
 import frc.robot.commands.infeed.ScoreHatch;
 import frc.robot.commands.infeed.ToggleBeakPosition;
