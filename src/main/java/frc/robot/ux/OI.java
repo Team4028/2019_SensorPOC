@@ -5,6 +5,7 @@ import frc.robot.commands.camera.SwitchCamera;
 import frc.robot.commands.chassis.DriveWithControllers;
 import frc.robot.commands.elevator.MoveToPresetPosition;
 import frc.robot.commands.infeed.AquireHatch;
+import frc.robot.commands.infeed.ReleaseInfeed;
 import frc.robot.commands.infeed.RunInfeedMotor;
 import frc.robot.commands.infeed.ScoreHatch;
 import frc.robot.commands.infeed.ToggleBeakPosition;
@@ -39,7 +40,7 @@ public class OI {
         //==========================================================
 
 		// Driver Controller -> Command Mapping
-		_driverController.leftStick.whileActive(new DriveWithControllers(_driverController.leftStick, _driverController.rightStick));
+        _driverController.leftStick.whileActive(new DriveWithControllers(_driverController.leftStick, _driverController.rightStick));
 		_driverController.rightStick.whileActive(new DriveWithControllers(_driverController.leftStick, _driverController.rightStick));
  
 		_driverController.leftStick.whenReleased(new DriveWithControllers(_driverController.leftStick, _driverController.rightStick));
