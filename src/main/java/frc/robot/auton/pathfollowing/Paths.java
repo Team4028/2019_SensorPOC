@@ -90,17 +90,17 @@ public class Paths {
 	private static void buildLeftPaths() {		
 		_toFrontCargoShipLFromL = buildPathFromWaypoints(Arrays.asList(
 		new Waypoint(66,120,0,0),
-		new Waypoint(115,120,20,20),
-		new Waypoint(145,163,20,20),
-		new Waypoint(185,163,0,20)));
+		new Waypoint(120,120,20,20),
+		new Waypoint(145,154,20,40),
+		new Waypoint(175,154,0,40)));
 		leftPaths.put(Left.TO_FRONT_CARGO_SHIP_L, _toFrontCargoShipLFromL);
 
 		_toLeftCargoShipFirstBay = buildPathFromWaypoints(Arrays.asList(
 			new Waypoint(66,120,0,0),
-			new Waypoint(130,120,20,20),
-			new Waypoint(160,80,20,20),
-			new Waypoint(260,80,16,20),
-			new Waypoint(260,100,0,20)
+			new Waypoint(130,120,20,60),
+			new Waypoint(160,80,20,60),
+			new Waypoint(260,80,16,60),
+			new Waypoint(260,100,0,60)
 		));
 		leftPaths.put(Left.TO_LEFT_CARGO_SHIP_FIRST, _toLeftCargoShipFirstBay);
 

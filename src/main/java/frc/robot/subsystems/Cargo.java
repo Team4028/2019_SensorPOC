@@ -71,9 +71,9 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
 	//=====================================================================================
 	private static Cargo _instance = new Cargo();
 	
-// 	public static Cargo getInstance() {
-//     return _instance;
-// 	}
+	public static Cargo getInstance() {
+    return _instance;
+	}
 	
 	// private constructor for singleton pattern
   private Cargo() {
@@ -136,20 +136,20 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
     if (punchPosition == PUNCH_POSITION.IN) {
       _punchSolenoid.set(PUNCH_IN);
       
-//     } 
-//     else if (punchPosition == PUNCH_POSITION.OUT) {
-//       if(currentBeakPos== BEAK_CLOSE && currentMechPos == MECHANISM_EXTENDED) {
-//            _punchSolenoid.set(PUNCH_OUT);
-//         } else {
-//           DriverStation.reportWarning("PUNCH SAFETY INTERLOCK U SUC", false);
-//         }
-//     }
-//   }
+    } 
+    else if (punchPosition == PUNCH_POSITION.OUT) {
+      if(currentBeakPos== BEAK_CLOSE && currentMechPos == MECHANISM_EXTENDED) {
+           _punchSolenoid.set(PUNCH_OUT);
+        } else {
+          DriverStation.reportWarning("PUNCH SAFETY INTERLOCK U SUC", false);
+        }
+    }
+  }
 
-//   public void setMechanism(MECHANISM_POSITION mechanismPosition) {
-//     Value currentBeakPos = _beakSolenoid.get();
-//     if (mechanismPosition == MECHANISM_POSITION.EXTENDED) {
-//       _mechansimSolenoid.set(MECHANISM_EXTENDED);
+  public void setMechanism(MECHANISM_POSITION mechanismPosition) {
+    Value currentBeakPos = _beakSolenoid.get();
+    if (mechanismPosition == MECHANISM_POSITION.EXTENDED) {
+      _mechansimSolenoid.set(MECHANISM_EXTENDED);
     
     } 
     else if (mechanismPosition == MECHANISM_POSITION.RETRACTED) {

@@ -33,25 +33,25 @@ public class OI {
 	}
 	
 	// private constructor for singleton pattern
-	private OI() 
+	private OI() 	
 	{	
 		// =========== Driver ======================================
 		_driverController = new BeakXboxController(RobotMap.DRIVER_GAMEPAD_USB_PORT);
-        //==========================================================
+		//==========================================================
 
 		// Driver Controller -> Command Mapping
-        _driverController.leftStick.whileActive(new DriveWithControllers(_driverController.leftStick, _driverController.rightStick));
+		_driverController.leftStick.whileActive(new DriveWithControllers(_driverController.leftStick, _driverController.rightStick));
 		_driverController.rightStick.whileActive(new DriveWithControllers(_driverController.leftStick, _driverController.rightStick));
- 
+	
 		_driverController.leftStick.whenReleased(new DriveWithControllers(_driverController.leftStick, _driverController.rightStick));
 		_driverController.rightStick.whenReleased(new DriveWithControllers(_driverController.leftStick, _driverController.rightStick));
-		// _driverController.a.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.HOME));
-		// _driverController.b.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.HATCH_LEVEL_2));
-        // =========== Operator ======================================
+		_driverController.a.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.HOME));
+		_driverController.b.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.HATCH_LEVEL_2));
+		// =========== Operator ======================================
 		_operatorController = new BeakXboxController(RobotMap.OPERATOR_GAMEPAD_USB_PORT);
 		//==========================================================
-		// _operatorController.leftStick.whileActive(new RunInfeedMotor(_operatorController.leftStick));
-		// _operatorController.leftStick.whenReleased(new RunInfeedMotor(_operatorController.leftStick));
+		_operatorController.leftStick.whileActive(new RunInfeedMotor(_operatorController.leftStick));
+		_operatorController.leftStick.whenReleased(new RunInfeedMotor(_operatorController.leftStick));
 
 		_operatorController.lb.whenPressed(new ToggleBeakPosition());
 		_operatorController.b.whenPressed(new TogglePunch());
@@ -60,7 +60,7 @@ public class OI {
 		_operatorController.rb.whenPressed(new ToggleStartPos());;
 		_operatorController.a.whenPressed(new ReleaseInfeed());
 		
-		_operatorController.start.whenPressed(new SwitchCamera());
+		_operatorController.start.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.CARGO_LEVEL_3));
 
 		// =========== Engineer ======================================
 		_engineerController = new BeakXboxController(RobotMap.ENGINEERING_GAMEPAD_USB_PORT);
@@ -74,3 +74,4 @@ public class OI {
 		_engineerController.dPad.upLeft.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.CARGO_LEVEL_3));
 	}
 }
+
