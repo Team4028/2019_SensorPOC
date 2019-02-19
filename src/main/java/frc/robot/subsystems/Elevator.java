@@ -160,9 +160,9 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
     _elevatorMasterMotor.configMotionCruiseVelocity(UP_CRUISE_VELOCITY, 0);
     _elevatorMasterMotor.configMotionAcceleration(TELEOP_UP_ACCELERATION, 0);
   
-//     // set allowable closed loop gain
-//     _elevatorMasterMotor.configAllowableClosedloopError(0, ELEVATOR_POS_ALLOWABLE_ERROR_NU, 0);
-//   }
+    // set allowable closed loop gain
+    _elevatorMasterMotor.configAllowableClosedloopError(0, ELEVATOR_POS_ALLOWABLE_ERROR_NU, 0);
+  }
 
 //   // =================================================================================================================
 // 	// Methods to move the elevator

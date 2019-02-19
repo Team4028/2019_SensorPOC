@@ -36,8 +36,8 @@ public class DriveWithControllers extends Command {
   protected void initialize() 
   {
     previousCmd=0;
-    maxAccel=0.02;
-    maxDecel=0.02;
+    maxAccel=0.04;
+    maxDecel=0.04;
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -78,7 +78,5 @@ public class DriveWithControllers extends Command {
   // subsystems is scheduled to run
   @Override
   protected void interrupted() 
-  {
-    _chassis.stop();
-  }
+  {}
 }
