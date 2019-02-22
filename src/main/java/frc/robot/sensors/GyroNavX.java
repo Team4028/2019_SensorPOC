@@ -55,10 +55,10 @@ public class GyroNavX {
 	// private constructor for singleton pattern
 	private GyroNavX() {	
 		try {          
-			_navXSensor = new AHRS(RobotMap.NAVX_PORT); // Communication via RoboRIO MXP (SPI) 
-		  } catch (RuntimeException ex ) {
-			  DriverStation.reportError("Error instantiating navX MXP:  " + ex.getMessage(), true);
-		  }
+		_navXSensor = new AHRS(RobotMap.NAVX_PORT); // Communication via RoboRIO MXP (SPI) 
+		} catch (RuntimeException ex ) {
+			DriverStation.reportError("Error instantiating navX MXP:  " + ex.getMessage(), true);
+		}
 	}
 
 	public double get_angle2InDegreesFromLL(SCORING_TARGET scoringTarget, SIDE side) {
@@ -91,6 +91,7 @@ public class GyroNavX {
 		}
 
 		double angle2 = sideFactor * scoringTargetAngle - _visionLL.get_angle1InDegrees() - _navXSensor.getYaw();
+		_currentAngle2 = angle2;
 		return angle2;
 	}
 
@@ -125,6 +126,8 @@ public class GyroNavX {
 		}
 		return scoringTargetAngle * sideFactor;
 	}
+
+
 	
     public double getYaw() { 
 		return _navXSensor.getYaw();
