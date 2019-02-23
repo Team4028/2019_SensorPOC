@@ -93,6 +93,15 @@ public class Climber extends Subsystem implements IBeakSquadSubsystem {
 
   public double inchesToNativeUnits(){
     return _liftMtr.getSelectedSensorPosition() / INCHES_TO_NU_CONVERSION_NUMBER;
+  public double nativeUnitsToInches(double nativeUnits){
+    return nativeUnits * .0013729128051576489005976;
+  }
+
+	public double getPositionInches(){
+		return nativeUnitsToInches(getNativeUnits());
+	}
+  public double getNativeUnits(){
+    return ( _liftMtr).getSelectedSensorPosition();
   }
 
   @Override
