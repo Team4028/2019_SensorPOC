@@ -195,6 +195,7 @@ public class Robot extends TimedRobot {
 
   /** Method to Push Data to ShuffleBoard */
 	private void outputAllToDashboard() {
+     _climber.updateDashboard();
 		// limit spamming
     	long scanCycleDeltaInMSecs = new Date().getTime() - _lastScanEndTimeInMSec;
     	// add scan time sample to calc scan time rolling average

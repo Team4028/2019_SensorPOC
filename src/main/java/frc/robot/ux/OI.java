@@ -10,6 +10,7 @@ package frc.robot.ux;
 import frc.robot.RobotMap;
 import frc.robot.commands.Climber.LiftClimber;
 import frc.robot.commands.Climber.DriveClimber;
+import frc.robot.commands.Climber.PositionClimber;
 import frc.robot.commands.chassis.DriveWithControllers;
 import frc.robot.commands.infeed.AquireHatch;
 import frc.robot.commands.infeed.RunInfeedMotor;
@@ -58,7 +59,8 @@ public class OI {
 		_operatorController.rightStick.whileActive(new DriveClimber(_operatorController.rightStick));
 		_operatorController.rightStick.whenReleased(new DriveClimber(_operatorController.rightStick));
 
-		_operatorController.a.whenPressed(new ToggleBeakPosition());
+		//_operatorController.a.whenPressed(new ToggleBeakPosition());
+		_operatorController.a.whenPressed(new PositionClimber());
 		_operatorController.b.whenPressed(new TogglePunch());
 		_operatorController.y.whenPressed(new AquireHatch());
 		_operatorController.x.whenPressed(new ScoreHatch());

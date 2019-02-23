@@ -7,6 +7,8 @@
 
 package frc.robot.subsystems;
 
+import javax.lang.model.util.ElementScanner6;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
@@ -17,6 +19,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.interfaces.IBeakSquadSubsystem;
 import frc.robot.util.LogDataBE;
 import frc.robot.RobotMap;
@@ -32,6 +35,8 @@ public class Climber extends Subsystem implements IBeakSquadSubsystem {
 
   TalonSRX _liftMtr;
   VictorSPX _driveMtr;
+  private static final double INCHES_TO_NU_CONVERSION_NUMBER = .0013729128051576489005976;
+  private static final double THIRD_LEVEL_CLIMBER_MEASUREMENT_IN_NU = 13839.189152160516883663025091042;
 
   //=====================================================================================
 	// Define Singleton Pattern
@@ -42,13 +47,13 @@ public class Climber extends Subsystem implements IBeakSquadSubsystem {
 		return _instance;
 	}
 	
-	// private constructor for singleton pattern
+  // private constructor for singleton pattern
+  
 	private Climber() {
-    _liftMtr = new TalonSRX(RobotMap.CLIMBER_LIFT_CAN_ADDR);
-    _liftMtr.configFactoryDefault();
+    _liftMtr = new TalonSRX(1);
 
     //Configure Limit Switches
-    /*_liftMtr.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyClosed);
+    _liftMtr.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyClosed);
     _liftMtr.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyClosed);
 
     // Turn of all soft limits
@@ -57,16 +62,15 @@ public class Climber extends Subsystem implements IBeakSquadSubsystem {
 
     //Configure brake mode
    _liftMtr.setNeutralMode(NeutralMode.Brake);
-   _liftMtr.setNeutralMode(NeutralMode.Brake);
 
     // Configure Encoder
    _liftMtr.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
    _liftMtr.setSensorPhase(true);
-   _liftMtr.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 5, 0);*/
+   _liftMtr.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 5, 0);
 
 
     _driveMtr = new VictorSPX(RobotMap.CLIMBER_DRIVE_CAN_ADDR);
-    _driveMtr.configFactoryDefault();
+   // _driveMtr.configFactoryDefault();
   }
 
   public void liftClimber(double liftSpeed){
@@ -77,12 +81,18 @@ public class Climber extends Subsystem implements IBeakSquadSubsystem {
     _driveMtr.set(ControlMode.PercentOutput, .25 * driveSpeed);
   }
 
-  public double nativeUnitsToInches(){
-    return _liftMtr.getSelectedSensorPosition() * .0013729128051576489005976;
+  public void setClimberPosition(){
+    System.out.println("Pls work sir");
+   // if (_liftMtr.getSelectedSensorPosition() < THIRD_LEVEL_CLIMBER_MEASUREMENT_IN_NU) {
+      _liftMtr.set(ControlMode.PercentOutput, .5);
+/*} else {
+      System.out.println("Are you moving yet?");
+      _liftMtr.set(ControlMode.PercentOutput, 0);
+    }*/
   }
 
-  public double getNativeUnits(){
-    return ( _liftMtr).getSelectedSensorPosition();
+  public double inchesToNativeUnits(){
+    return _liftMtr.getSelectedSensorPosition() / INCHES_TO_NU_CONVERSION_NUMBER;
   }
 
   @Override
@@ -95,12 +105,13 @@ public class Climber extends Subsystem implements IBeakSquadSubsystem {
 	// Helper Methods
 	//=====================================================================================
   @Override
-  public void updateLogData(LogDataBE logData) {
-
+  public void updateLogData(LogDataBE logData){
   }
 
   @Override
   public void updateDashboard() {
-
+    SmartDashboard.putNumber("Encoder reading in NU", _liftMtr.getSelectedSensorPosition());
+    SmartDashboard.putNumber("Lift motor command", _liftMtr.getMotorOutputPercent());
+    SmartDashboard.putNumber("apparent encoder value", _liftMtr.getSelectedSensorPosition());
   }
 }
