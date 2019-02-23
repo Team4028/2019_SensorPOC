@@ -1,10 +1,3 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2018 FIRST. All Rights Reserved.                             */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 package frc.robot.ux;
 
 import edu.wpi.first.wpilibj.DriverStation;
@@ -12,6 +5,13 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.commands.auton.autons.DoNothing;
+import frc.robot.commands.auton.autons.LDoubleHatchLFrontLSide;
+import frc.robot.commands.auton.autons.LDoubleHatchLSideLSide;
+import frc.robot.commands.auton.autons.LSingleHatchLFront;
+import frc.robot.commands.auton.autons.CSingleHatchLFront;
+import frc.robot.commands.auton.autons.LSingleHatchLSide;
+import frc.robot.commands.auton.autons.LineCross;
 import frc.robot.interfaces.IBeakSquadSubsystem;
 import frc.robot.util.LogDataBE;
 
@@ -22,17 +22,25 @@ public class AutonChoosers implements IBeakSquadSubsystem {
 
     private enum AUTON_MODE {
 		UNDEFINED,
+		LINE_CROSS,
+		LEFT_FRONT_HATCH,
+		RIGHT_FRONT,HATCH,
+		SIDE_HATCH,
+		DOUBLE_HATCH_FRONT_SIDE,
+		DOUBLE_HATCH_SIDE_SIDE,
         DO_NOTHING
     }
 
-    private enum STARTING_SIDE {
+	private enum STARTING_SIDE 
+	{
 		LEFT,
+		CENTER,
 		RIGHT
     }
     
     private SendableChooser<AUTON_MODE> _autonAction = new SendableChooser<>();
     private SendableChooser<STARTING_SIDE> _autonStartingSideChooser = new SendableChooser<>();
-    private boolean _isStartingLeft = true;
+    //private boolean _isStartingLeft = true;
         
     //=====================================================================================
 	// Define Singleton Pattern
@@ -47,10 +55,16 @@ public class AutonChoosers implements IBeakSquadSubsystem {
 	private AutonChoosers() {
         // Auton Mode
 		_autonAction.setDefaultOption("Do Nothing", AUTON_MODE.DO_NOTHING);
+		_autonAction.addOption("Left Front Hatch", AUTON_MODE.LEFT_FRONT_HATCH);
+		_autonAction.addOption("Side Hatch", AUTON_MODE.SIDE_HATCH);
+		_autonAction.addOption("Double Hatch Front Side", AUTON_MODE.DOUBLE_HATCH_FRONT_SIDE);
+		_autonAction.addOption("Double Hatch Side Side", AUTON_MODE.DOUBLE_HATCH_SIDE_SIDE);
         
         // Auton Starting Side
 		_autonStartingSideChooser.setDefaultOption("LEFT", STARTING_SIDE.LEFT);
 		_autonStartingSideChooser.addOption("RIGHT", STARTING_SIDE.RIGHT);
+		_autonStartingSideChooser.addOption("CENTER", STARTING_SIDE.CENTER);
+
     }
     
     public boolean get_isBlueAlliance() {
@@ -59,14 +73,45 @@ public class AutonChoosers implements IBeakSquadSubsystem {
     
     /** Returns the autonBase object associated with the auton selected on the dashboard */
 	public CommandGroup getSelectedAuton() {
-		_isStartingLeft = (_autonStartingSideChooser.getSelected() == STARTING_SIDE.LEFT);
+		STARTING_SIDE startingSide = _autonStartingSideChooser.getSelected();
 		
 		switch(_autonAction.getSelected()) {
 			case DO_NOTHING:
-				return null;
-
+				return new DoNothing();
+			case LINE_CROSS:
+				return new LineCross();
+			case LEFT_FRONT_HATCH:
+				if(startingSide==STARTING_SIDE.LEFT)
+				{
+					return new LSingleHatchLFront();
+				}
+				else if(startingSide==STARTING_SIDE.CENTER)
+				{
+					return new CSingleHatchLFront();
+				}
+				else if(startingSide==STARTING_SIDE.RIGHT)
+				{
+					return null;
+				}
+			case SIDE_HATCH:
+				if(startingSide==STARTING_SIDE.LEFT)
+				{
+					return new LSingleHatchLSide();
+				}
+				else if(startingSide==STARTING_SIDE.CENTER)
+				{
+					return new LineCross();
+				}
+				else if(startingSide==STARTING_SIDE.RIGHT)
+				{
+					return null;
+				}
+			case DOUBLE_HATCH_SIDE_SIDE:
+				return new LDoubleHatchLSideLSide();
+			case DOUBLE_HATCH_FRONT_SIDE:
+				return new LDoubleHatchLFrontLSide();
 			default:
-				return null; 
+				return new DoNothing(); 
 		}
 	}
 	
@@ -77,6 +122,8 @@ public class AutonChoosers implements IBeakSquadSubsystem {
 
     @Override
     public void updateDashboard() {
+		SmartDashboard.putData("Auton",_autonAction);
+		SmartDashboard.putData("Side Start",_autonStartingSideChooser);
         SmartDashboard.putString("AutonChoosers:AutonAction", _autonAction.getSelected().toString());
         SmartDashboard.putString("AutonChoosers:StartingSide", _autonStartingSideChooser.getSelected().toString());
 

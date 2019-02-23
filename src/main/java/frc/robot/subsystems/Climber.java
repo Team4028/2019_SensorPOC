@@ -1,10 +1,3 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2018 FIRST. All Rights Reserved.                             */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 package frc.robot.subsystems;
 
 import javax.lang.model.util.ElementScanner6;
@@ -32,7 +25,8 @@ import frc.robot.RobotMap;
  * Student Lead: Peter Nicholas
  */
 public class Climber extends Subsystem implements IBeakSquadSubsystem {
-
+	// =================================================================================================================
+  // define class level working variables
   TalonSRX _liftMtr;
   VictorSPX _driveMtr;
   private static final double INCHES_TO_NU_CONVERSION_NUMBER = .0013729128051576489005976;
@@ -47,6 +41,7 @@ public class Climber extends Subsystem implements IBeakSquadSubsystem {
 		return _instance;
 	}
 	
+<<<<<<< HEAD
   // private constructor for singleton pattern
   
 	private Climber() {
@@ -109,11 +104,16 @@ public class Climber extends Subsystem implements IBeakSquadSubsystem {
     // Set the default command for a subsystem here.
     // setDefaultCommand(new MySpecialCommand());
   }
+=======
+	// private constructor for singleton pattern
+	private Climber() {}
+>>>>>>> fc6947edc0f4aabfcc2e03809b3143f747b65d3b
 
-	//=====================================================================================
-	// Helper Methods
-	//=====================================================================================
+	// ===============================================================================================================
+	// Default Command
+	// ===============================================================================================================
   @Override
+<<<<<<< HEAD
   public void updateLogData(LogDataBE logData){
   }
 
@@ -123,4 +123,16 @@ public class Climber extends Subsystem implements IBeakSquadSubsystem {
     SmartDashboard.putNumber("Lift motor command", _liftMtr.getMotorOutputPercent());
     SmartDashboard.putNumber("apparent encoder value", _liftMtr.getSelectedSensorPosition());
   }
+=======
+  public void initDefaultCommand() {}
+
+	// ===============================================================================================================
+	// General Purpose Utility Methods
+	// ===============================================================================================================
+	@Override
+  public void updateLogData(LogDataBE logData) {}
+
+  @Override
+  public void updateDashboard() {}
+>>>>>>> fc6947edc0f4aabfcc2e03809b3143f747b65d3b
 }

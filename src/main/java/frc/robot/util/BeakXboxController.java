@@ -1,10 +1,3 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2018 FIRST. All Rights Reserved.                             */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 package frc.robot.util;
 
 /* Imports */
@@ -62,7 +55,7 @@ public class BeakXboxController extends Joystick {
     private static final int    RB_BUTTON_ID                = 6;
     private static final int    BACK_BUTTON_ID              = 7;
     private static final int    START_BUTTON_ID             = 8;
-    private static final int    LEFT_THUMBSTIKC_BUTTON_ID   = 9;
+    private static final int    LEFT_THUMBSTICK_BUTTON_ID   = 9;
     private static final int    RIGHT_THUMBSTICK_BUTTON_ID  = 10;
     
     /* Axis Mappings */
@@ -215,7 +208,7 @@ public class BeakXboxController extends Joystick {
             if (hand == HAND.LEFT) {
                 this.xAxisID    = LEFT_THUMBSTICK_X_AXIS_ID;
                 this.yAxisID    = LEFT_THUMBSTICK_Y_AXIS_ID;
-                this.pressedID  = LEFT_THUMBSTIKC_BUTTON_ID;
+                this.pressedID  = LEFT_THUMBSTICK_BUTTON_ID;
             } else {                                            // If right hand
                 this.xAxisID    = RIGHT_THUMBSTICK_X_AXIS_ID;
                 this.yAxisID    = RIGHT_THUMBSTICK_Y_AXIS_ID;
@@ -388,6 +381,18 @@ public class BeakXboxController extends Joystick {
         public void setDeadZone(double number) {
             xDeadZone = number;
             yDeadZone = number;
+        }
+
+        public boolean getIsJoystickHeld() {
+            return  parent.getRawButton(pressedID);
+        }
+
+        public boolean getIsJoystickPressed() {
+            return  parent.getRawButtonPressed(pressedID);
+        }
+
+        public boolean getIsJoystickReleased() {
+            return  parent.getRawButtonReleased(pressedID);
         }
     }
 
@@ -616,8 +621,8 @@ public class BeakXboxController extends Joystick {
      * @param intensity How strong the rumble is
      */
     public void setRumble(HAND hand, double intensity) {
-        final float amount = new Float(intensity);
-    
+        final double amount = intensity;
+            
         if (hand == HAND.LEFT) {
             controller.setRumble(RumbleType.kLeftRumble, amount);
         } else {
@@ -630,7 +635,7 @@ public class BeakXboxController extends Joystick {
      * @param intensity How strong the rumble is
      */
     public void setRumble(double intensity) {
-        final float amount = new Float(intensity);
+        final double amount = intensity;
 
         controller.setRumble(RumbleType.kLeftRumble, amount);
         controller.setRumble(RumbleType.kRightRumble, amount);
