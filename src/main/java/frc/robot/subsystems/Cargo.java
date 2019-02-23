@@ -26,10 +26,10 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
   // =================================================================================================================
   // define class level working variables
   VictorSPX _infeedMtr;
-  private DoubleSolenoid _beakSolenoid;
+  private DoubleSolenoid _beakOpenCloseSolenoid;
   private DoubleSolenoid _punchSolenoid;
-  private DoubleSolenoid _mechansimSolenoid;
-  private DoubleSolenoid _releaseSolenoid;
+  private DoubleSolenoid _beakInOutSolenoid;
+  private DoubleSolenoid _bucketSolenoid;
   private Servo _infeedServo;
   private static final Value MECHANISM_EXTENDED = DoubleSolenoid.Value.kForward;
   private static final Value MECHANISM_RETRACTED = DoubleSolenoid.Value.kReverse;
@@ -83,10 +83,10 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
     _infeedMtr.configForwardLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.Disabled);
 
     //Hatch Solenoids
-    _beakSolenoid = new DoubleSolenoid(RobotMap.PCM_FORWARD_BEAK_SOLENOID_PORT,RobotMap.PCM_REVERSE_BEAK_SOLENOID_PORT);
+    _beakOpenCloseSolenoid = new DoubleSolenoid(RobotMap.PCM_FORWARD_BEAK_SOLENOID_PORT,RobotMap.PCM_REVERSE_BEAK_SOLENOID_PORT);
     _punchSolenoid = new DoubleSolenoid(RobotMap.PCM_FORWARD_PUNCH_SOLENOID_PORT, RobotMap.PCM_REVERSE_PUNCH_SOLENOID_PORT);
-    _mechansimSolenoid = new DoubleSolenoid(RobotMap.PCM_REVERSE_INOUT_SOLENOID_PORT, RobotMap.PCM_FORWARD_INOUT_SOLENOID_PORT);
-    _releaseSolenoid = new DoubleSolenoid(RobotMap.PCM_FORWARD_RELEASE_SOLENOID_PORT, RobotMap.PCM_REVERSE_RELEASE_SOLENOID_PORT);
+    _beakInOutSolenoid = new DoubleSolenoid(RobotMap.PCM_REVERSE_INOUT_SOLENOID_PORT, RobotMap.PCM_FORWARD_INOUT_SOLENOID_PORT);
+    _bucketSolenoid = new DoubleSolenoid(RobotMap.PCM_FORWARD_BUCKET_SOLENOID_PORT, RobotMap.PCM_REVERSE_BUCKET_SOLENOID_PORT);
     
 
     setCargoDefultPosition();
@@ -98,10 +98,10 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
   } 
 
   public void setCargoDefultPosition() {
-    _beakSolenoid.set(BEAK_CLOSE);
-    _mechansimSolenoid.set(MECHANISM_EXTENDED);
+    _beakOpenCloseSolenoid.set(BEAK_CLOSE);
+    _beakInOutSolenoid.set(MECHANISM_EXTENDED);
     _punchSolenoid.set(PUNCH_IN);
-    _releaseSolenoid.set(RELEASE_EXTENDED);
+    _bucketSolenoid.set(RELEASE_EXTENDED);
   }
 
   // ===================================== 
@@ -114,15 +114,15 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
   */
   //=======================================
   public void setBeak(BEAK_POSITION desiredBeakPosition) {
-    Value currentMechPos = _mechansimSolenoid.get();
+    Value currentMechPos = _beakInOutSolenoid.get();
     Value currentPunchPos = _punchSolenoid.get();
     
     if (desiredBeakPosition == BEAK_POSITION.CLOSED) {
-          _beakSolenoid.set(BEAK_CLOSE);
+          _beakOpenCloseSolenoid.set(BEAK_CLOSE);
     }
     else if (desiredBeakPosition == BEAK_POSITION.OPEN) {
       if(currentPunchPos == PUNCH_IN && currentMechPos == MECHANISM_EXTENDED) {
-          _beakSolenoid.set(BEAK_OPEN);
+          _beakOpenCloseSolenoid.set(BEAK_OPEN);
       } else {
         DriverStation.reportWarning("BEAK SAFETY INTERLOCK U SUC", false);
       }
@@ -130,8 +130,8 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
   }
 
   public void setPunch(PUNCH_POSITION punchPosition) { 
-    Value currentMechPos = _mechansimSolenoid.get();
-    Value currentBeakPos = _beakSolenoid.get();
+    Value currentMechPos = _beakInOutSolenoid.get();
+    Value currentBeakPos = _beakOpenCloseSolenoid.get();
 
     if (punchPosition == PUNCH_POSITION.IN) {
       _punchSolenoid.set(PUNCH_IN);
@@ -147,14 +147,14 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
   }
 
   public void setMechanism(MECHANISM_POSITION mechanismPosition) {
-    Value currentBeakPos = _beakSolenoid.get();
+    Value currentBeakPos = _beakOpenCloseSolenoid.get();
     if (mechanismPosition == MECHANISM_POSITION.EXTENDED) {
-      _mechansimSolenoid.set(MECHANISM_EXTENDED);
+      _beakInOutSolenoid.set(MECHANISM_EXTENDED);
     
     } 
     else if (mechanismPosition == MECHANISM_POSITION.RETRACTED) {
       if(currentBeakPos== BEAK_CLOSE) {
-           _mechansimSolenoid.set(MECHANISM_RETRACTED);
+           _beakInOutSolenoid.set(MECHANISM_RETRACTED);
         } else {
           DriverStation.reportWarning("MECHANISM SAFETY INTERLOCK U SUC", false);
         }
@@ -163,19 +163,19 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
     public void setRelease(RELEASE_POSITION releasePosition) {
   
       if (releasePosition == RELEASE_POSITION.EXTENDED) {
-        _releaseSolenoid.set(RELEASE_EXTENDED);
+        _bucketSolenoid.set(RELEASE_EXTENDED);
       
       } 
       else if (releasePosition == RELEASE_POSITION.RETRACTED) 
       {
-        _releaseSolenoid.set(MECHANISM_RETRACTED);
+        _bucketSolenoid.set(MECHANISM_RETRACTED);
       }
     
   }
 
   // =====================================
   public void toggleMechanism() {
-    Value currentMechPos = _mechansimSolenoid.get();
+    Value currentMechPos = _beakInOutSolenoid.get();
     if (currentMechPos == MECHANISM_RETRACTED) {
       setMechanism(MECHANISM_POSITION.EXTENDED);
     } else {
@@ -184,7 +184,7 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
   }
 
   public void toggleBeakPlacement() {
-    Value currentBeakPos = _beakSolenoid.get();
+    Value currentBeakPos = _beakOpenCloseSolenoid.get();
     if (currentBeakPos == BEAK_CLOSE) {
       setBeak(BEAK_POSITION.OPEN);
     } else {
@@ -203,7 +203,7 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
 
   public void toggleRelease()
   {
-    Value currentReleasePos = _releaseSolenoid.get();
+    Value currentReleasePos = _bucketSolenoid.get();
     if (currentReleasePos == RELEASE_EXTENDED)
     {
       setRelease(RELEASE_POSITION.RETRACTED);
@@ -222,7 +222,7 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
 	// Expose Properties of Elevator
 	// ===============================================================================================================
   private String get_BeakPosition(){
-    Value currentBeakPos = _beakSolenoid.get();
+    Value currentBeakPos = _beakOpenCloseSolenoid.get();
     if (currentBeakPos == BEAK_CLOSE) {
     return "Beak Closed";
     } else {
@@ -240,7 +240,7 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
   }
 
   private String get_ReleasePosition(){
-    Value currentReleasePos = _releaseSolenoid.get();
+    Value currentReleasePos = _bucketSolenoid.get();
     if (currentReleasePos == RELEASE_RETRACTED) {
       return "Release Retracted";
     } else {
@@ -249,7 +249,7 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
   }
 
   private String get_MechPosition(){
-    Value currentMechPos = _mechansimSolenoid.get();
+    Value currentMechPos = _beakInOutSolenoid.get();
     if (currentMechPos == MECHANISM_RETRACTED) {
       return "Mechanism Retracted";
     } else {
@@ -259,7 +259,7 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
 
   public boolean get_IsBucketOut() {
     
-    if(_releaseSolenoid.get() == RELEASE_EXTENDED){
+    if(_bucketSolenoid.get() == RELEASE_EXTENDED){
 
       return true;
     } else {

@@ -45,12 +45,13 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
 
 	// hardcoded preset positions (in native units, 0 = home position)
   private static final int HOME_POSITION_NU = InchesToNativeUnits(0);
-  private static final int CARGO_LEVEL_1_POSITION_NU = InchesToNativeUnits(15);
-  private static final int CARGO_LEVEL_2_POSITION_NU = InchesToNativeUnits(30);
-  private static final int CARGO_LEVEL_3_POSITION_NU = InchesToNativeUnits(45);
-  private static final int HATCH_LEVEL_1_POSITION_NU = InchesToNativeUnits(10);
-  private static final int HATCH_LEVEL_2_POSITION_NU = InchesToNativeUnits(20);
-  private static final int HATCH_LEVEL_3_POSITION_NU = InchesToNativeUnits(30);
+  private static final int CARGO_LEVEL_1_POSITION_NU = InchesToNativeUnits(24.25);
+  private static final int CARGO_LEVEL_2_POSITION_NU = InchesToNativeUnits(52.25);
+  private static final int CARGO_LEVEL_3_POSITION_NU = InchesToNativeUnits(74);//83.75
+  private static final int HATCH_LEVEL_1_POSITION_NU = InchesToNativeUnits(0);
+  private static final int HATCH_LEVEL_2_POSITION_NU = InchesToNativeUnits(31);
+  private static final int HATCH_LEVEL_3_POSITION_NU = InchesToNativeUnits(58);
+  private static final int CARGO_SHIP_CARGO_POSITION_NU = InchesToNativeUnits(32 + 4);
 
   // define PID Constants
 	private static final int MOVING_DOWN_PID_SLOT_INDEX = 0;
@@ -79,7 +80,8 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
   private static final int DOWN_CRUISE_VELOCITY = 2000;
   private static final int TELEOP_UP_ACCELERATION = 4000;
   private static final int TELEOP_UP_DECELERATION = 4000;
-  private static final int TELEOP_DOWN_ACCELERATION = 2000;
+  
+  private static final int TELEOP_DOWN_ACCELERATION = 1500;
 
   private static final int CAN_TIMEOUT_MILLISECONDS = 30;
 
@@ -144,11 +146,11 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
 		_elevatorMasterMotor.config_kD(MOVING_DOWN_PID_SLOT_INDEX, DERIVATIVE_GAIN_DOWN, CAN_TIMEOUT_MILLISECONDS);
 		_elevatorMasterMotor.config_IntegralZone(MOVING_DOWN_PID_SLOT_INDEX, INTEGRAL_ZONE_DOWN, CAN_TIMEOUT_MILLISECONDS);
 		
-// 		_elevatorMasterMotor.config_kF(MOVING_UP_PID_SLOT_INDEX, FEED_FORWARD_GAIN_UP, CAN_TIMEOUT_MILLISECONDS);
-// 		_elevatorMasterMotor.config_kP(MOVING_UP_PID_SLOT_INDEX, PROPORTIONAL_GAIN_UP, CAN_TIMEOUT_MILLISECONDS);
-// 		_elevatorMasterMotor.config_kI(MOVING_UP_PID_SLOT_INDEX, INTEGRAL_GAIN_UP, CAN_TIMEOUT_MILLISECONDS);
-// 		_elevatorMasterMotor.config_kD(MOVING_UP_PID_SLOT_INDEX, DERIVATIVE_GAIN_UP, CAN_TIMEOUT_MILLISECONDS);
-// 		_elevatorMasterMotor.config_IntegralZone(MOVING_UP_PID_SLOT_INDEX, INTEGRAL_ZONE_UP, CAN_TIMEOUT_MILLISECONDS);
+ 		_elevatorMasterMotor.config_kF(MOVING_UP_PID_SLOT_INDEX, FEED_FORWARD_GAIN_UP, CAN_TIMEOUT_MILLISECONDS);
+ 		_elevatorMasterMotor.config_kP(MOVING_UP_PID_SLOT_INDEX, PROPORTIONAL_GAIN_UP, CAN_TIMEOUT_MILLISECONDS);
+ 		_elevatorMasterMotor.config_kI(MOVING_UP_PID_SLOT_INDEX, INTEGRAL_GAIN_UP, CAN_TIMEOUT_MILLISECONDS);
+ 		_elevatorMasterMotor.config_kD(MOVING_UP_PID_SLOT_INDEX, DERIVATIVE_GAIN_UP, CAN_TIMEOUT_MILLISECONDS);
+ 		_elevatorMasterMotor.config_IntegralZone(MOVING_UP_PID_SLOT_INDEX, INTEGRAL_ZONE_UP, CAN_TIMEOUT_MILLISECONDS);
 		
 		_elevatorMasterMotor.config_kF(HOLDING_PID_SLOT_INDEX, FEED_FORWARD_GAIN_HOLD, CAN_TIMEOUT_MILLISECONDS);
 		_elevatorMasterMotor.config_kP(HOLDING_PID_SLOT_INDEX, PROPORTIONAL_GAIN_HOLD, CAN_TIMEOUT_MILLISECONDS);

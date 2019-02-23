@@ -43,14 +43,14 @@ public class RobotMap
 	public static final int PWM_LED_PORT = 0;
 	
 	// PCM Ports
-	public static final int PCM_FORWARD_BEAK_SOLENOID_PORT = 0;
-	public static final int PCM_REVERSE_BEAK_SOLENOID_PORT = 1;
+	public static final int PCM_FORWARD_BEAK_SOLENOID_PORT = 6;
+	public static final int PCM_REVERSE_BEAK_SOLENOID_PORT = 7;
 	public static final int PCM_FORWARD_PUNCH_SOLENOID_PORT = 2;
 	public static final int PCM_REVERSE_PUNCH_SOLENOID_PORT = 3;
 	public static final int PCM_FORWARD_INOUT_SOLENOID_PORT = 4;
 	public static final int PCM_REVERSE_INOUT_SOLENOID_PORT = 5;
-	public static final int PCM_REVERSE_RELEASE_SOLENOID_PORT = 6;
-	public static final int PCM_FORWARD_RELEASE_SOLENOID_PORT = 7;
+	public static final int PCM_REVERSE_BUCKET_SOLENOID_PORT = 0;
+	public static final int PCM_FORWARD_BUCKET_SOLENOID_PORT = 1;
 
 	//I2C Ports
 	public static final I2C.Port I2C_SENSOR_PORT = I2C.Port.kOnboard;
