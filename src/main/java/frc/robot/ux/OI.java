@@ -3,6 +3,8 @@ package frc.robot.ux;
 import frc.robot.RobotMap;
 import frc.robot.commands.camera.SwitchCamera;
 import frc.robot.commands.chassis.DriveWithControllers;
+import frc.robot.commands.climber.DriveClimber;
+import frc.robot.commands.climber.LiftClimber;
 import frc.robot.commands.elevator.MoveToPresetPosition;
 import frc.robot.commands.infeed.AquireHatch;
 import frc.robot.commands.infeed.ReleaseInfeed;
@@ -41,10 +43,12 @@ public class OI {
 
 		// Driver Controller -> Command Mapping
 		_driverController.leftStick.whileActive(new DriveWithControllers(_driverController.leftStick, _driverController.rightStick));
-		_driverController.rightStick.whileActive(new DriveWithControllers(_driverController.leftStick, _driverController.rightStick));
+		_driverController.rightStick.whileActive(new LiftClimber(_driverController.rightStick));
 	
 		_driverController.leftStick.whenReleased(new DriveWithControllers(_driverController.leftStick, _driverController.rightStick));
-		_driverController.rightStick.whenReleased(new DriveWithControllers(_driverController.leftStick, _driverController.rightStick));
+		_driverController.rightStick.whenReleased(new LiftClimber(_driverController.rightStick));
+		_driverController.lt.whileActive(new DriveClimber(_driverController.lt));
+		_driverController.lt.whenReleased(new DriveClimber((_driverController.lt)));
 		_driverController.a.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.HOME));
 		_driverController.b.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.HATCH_LEVEL_2));
 		// =========== Operator ======================================

@@ -5,15 +5,15 @@ import frc.robot.auton.pathfollowing.Paths;
 import frc.robot.auton.pathfollowing.Paths.Center;
 import frc.robot.auton.pathfollowing.control.Path;
 import frc.robot.commands.auton.RunMotionProfileCommand;
-import frc.robot.commands.auton.adaptivePaths.CG_FollowVisionPath;
-import frc.robot.sensors.GyroNavX.SCORING_TARGET;
-import frc.robot.sensors.GyroNavX.SIDE;
+import frc.robot.commands.auton.util.printTimeFromStart;
+
 
 public class CSingleHatchLFront extends CommandGroup {
     Path _toCargoShipFront = Paths.getPath(Center.TO_FRONT_CARGO_SHIP_L);
     public CSingleHatchLFront() {
         setInterruptible(false);
         addSequential(new RunMotionProfileCommand(_toCargoShipFront));
-        addSequential(new CG_FollowVisionPath(SCORING_TARGET.CARGOSHIP_FRONT,SIDE.LEFT));
+        addSequential(new printTimeFromStart());
+        //addSequential(new CG_FollowVisionPath(SCORING_TARGET.CARGOSHIP_FRONT,SIDE.LEFT));
     }
 }

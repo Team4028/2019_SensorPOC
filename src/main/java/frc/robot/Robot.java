@@ -4,6 +4,9 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.Date;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -100,8 +103,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    _chassis.initiateRobotState();
     _chassis.zeroSensors();
     _chassis.stop();
+    _chassis.setBrakeMode(NeutralMode.Brake);
     _scanTimeSamples = new MovingAverage(20);
     _lastDashboardWriteTimeMSec = new Date().getTime(); // snapshot time to control spamming
     _dataLogger = GeneralUtilities.setupLogging("Auton"); // init data logging	
@@ -111,6 +116,7 @@ public class Robot extends TimedRobot {
       Command zeroElevatorCommand = new ZeroElevatorEncoder();
       zeroElevatorCommand.start();
     }
+
   }
 
   /**
@@ -140,6 +146,8 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
     _chassis.stop();
     _chassis.zeroSensors();
+    _chassis.initiateRobotState();
+    _chassis.setBrakeMode(NeutralMode.Brake);
         _scanTimeSamples = new MovingAverage(20);
     _dataLogger = GeneralUtilities.setupLogging("Teleop"); // init data logging
     _lastDashboardWriteTimeMSec = new Date().getTime(); // snapshot time to control spamming
@@ -153,7 +161,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    _chassis.updateChassis(Timer.getFPGATimestamp());
+    //_chassis.updateChassis(Timer.getFPGATimestamp());
     Scheduler.getInstance().run();    
     _vision.turnOnLimelightLEDs();
   }
@@ -184,6 +192,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     _scanTimeSamples = new MovingAverage(20);
+    _chassis.setBrakeMode(NeutralMode.Coast);
   }
 
   /**

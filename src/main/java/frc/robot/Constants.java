@@ -19,8 +19,8 @@ public class Constants {
 	public static final double INERTIA_STEERING_GAIN = 0; // angular velocity command is multiplied by this gain *
 							
 	public static final double SEGMENT_COMPLETION_TOLERANCE = 0.1; // inches
-	public static final double PATH_DEFAULT_ACCEL = 90.0; // inches per second^2
-	public static final double PATH_DEFAULT_DECEL = 90.0;
+	public static final double PATH_DEFAULT_ACCEL = 80.0; // inches per second^2
+	public static final double PATH_DEFAULT_DECEL = 80.0;
 	public static final double PATH_FOLLOWING_MAX_VEL = 120.0; // inches per second
 	public static final double PATH_FOLLOWING_PROFILE_KP = 6.0; 
 	public static final double PATH_FOLLOWING_PROFILE_KI = 0.01;	//0.03;
@@ -38,7 +38,7 @@ public class Constants {
 	public static final double DRIVE_VELOCITY_MAX_SETPOINT = 15 * 12.0; // 15 fps
 	
 	//Deadbands for Chassis
-	public static double ENCODER_COUNTS_PER_WHEEL_REV = 30028.471298;
+	public static double ENCODER_COUNTS_PER_WHEEL_REV = 4008;
 	public static final double CHASSIS_DRIVE_SET_DISTANCE_DEADBAND = 1.0*ENCODER_COUNTS_PER_WHEEL_REV/(6*Math.PI);
 
 

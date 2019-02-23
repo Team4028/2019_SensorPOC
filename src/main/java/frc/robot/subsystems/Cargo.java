@@ -101,7 +101,7 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
     _beakSolenoid.set(BEAK_CLOSE);
     _mechansimSolenoid.set(MECHANISM_EXTENDED);
     _punchSolenoid.set(PUNCH_IN);
-    _releaseSolenoid.set(RELEASE_RETRACTED);
+    _releaseSolenoid.set(RELEASE_EXTENDED);
   }
 
   // ===================================== 

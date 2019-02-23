@@ -10,10 +10,8 @@ public class DriveWithControllers extends Command {
   private Thumbstick _leftThumbstick;
   private Thumbstick _rightThumbstick;
   private boolean isAuton;
-  private double _leftCmd, _rightCmd;
-  private double previousCmd;
-  private double previousRightCmd;
-  private double maxAccel, maxDecel;
+  private double _throttleCmd, _turnCmd;
+
 
   public DriveWithControllers(Thumbstick leftThumbstick, Thumbstick righThumbstick) {
     requires(_chassis);
@@ -27,18 +25,13 @@ public class DriveWithControllers extends Command {
     requires(_chassis);
     setInterruptible(true);
     isAuton = true;
-    _leftCmd=throttle;
-    _rightCmd=turn;
+    _throttleCmd=throttle;
+    _turnCmd=turn;
   }
 
   // Called just before this Command runs the first time
   @Override
-  protected void initialize() 
-  {
-    previousCmd=0;
-    maxAccel=0.04;
-    maxDecel=0.04;
-  }
+  protected void initialize() {}
 
   // Called repeatedly when this Command is scheduled to run
   @Override
@@ -46,18 +39,8 @@ public class DriveWithControllers extends Command {
   {
     if(!isAuton) {
       _chassis.arcadeDrive(_leftThumbstick.getY(), _rightThumbstick.getX());
-      // if(_leftThumbstick.getY()-previousCmd>0)
-      // {
-      //   _chassis.arcadeDrive(Math.min(_leftThumbstick.getY(), previousCmd+maxAccel), _rightThumbstick.getX());
-      //   previousCmd=Math.min(_leftThumbstick.getY(), previousCmd+maxAccel);
-      // }
-      // else
-      // {
-      //   _chassis.arcadeDrive(Math.max(_leftThumbstick.getY(), previousCmd-maxDecel), _rightThumbstick.getX());
-      //   previousCmd=Math.max(_leftThumbstick.getY(), previousCmd-maxDecel);
-      // }
     } else {
-      _chassis.arcadeDrive(_leftCmd, _rightCmd);
+      _chassis.arcadeDrive(_throttleCmd, _turnCmd);
     }
   }
 
