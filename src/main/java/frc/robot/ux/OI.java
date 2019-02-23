@@ -1,13 +1,10 @@
 package frc.robot.ux;
 
 import frc.robot.RobotMap;
-<<<<<<< HEAD
 import frc.robot.commands.Climber.LiftClimber;
 import frc.robot.commands.Climber.DriveClimber;
 import frc.robot.commands.Climber.PositionClimber;
-=======
 import frc.robot.commands.camera.SwitchCamera;
->>>>>>> fc6947edc0f4aabfcc2e03809b3143f747b65d3b
 import frc.robot.commands.chassis.DriveWithControllers;
 import frc.robot.commands.elevator.MoveToPresetPosition;
 import frc.robot.commands.infeed.AquireHatch;
@@ -61,12 +58,7 @@ public class OI {
 		_operatorController.rightStick.whileActive(new DriveClimber(_operatorController.rightStick));
 		_operatorController.rightStick.whenReleased(new DriveClimber(_operatorController.rightStick));
 
-<<<<<<< HEAD
-		//_operatorController.a.whenPressed(new ToggleBeakPosition());
-		_operatorController.a.whenPressed(new PositionClimber());
-=======
 		_operatorController.lb.whenPressed(new ToggleBeakPosition());
->>>>>>> fc6947edc0f4aabfcc2e03809b3143f747b65d3b
 		_operatorController.b.whenPressed(new TogglePunch());
 		_operatorController.y.whenPressed(new AquireHatch());
 		_operatorController.x.whenPressed(new ScoreHatch());
