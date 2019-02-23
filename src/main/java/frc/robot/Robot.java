@@ -103,6 +103,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    Paths.buildPaths();
     _chassis.initiateRobotState();
     _chassis.zeroSensors();
     _chassis.stop();

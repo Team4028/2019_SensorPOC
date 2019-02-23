@@ -56,7 +56,7 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
   
   ChassisState _chassisState = ChassisState.UNKNOWN;
   GyroNavX _navX = GyroNavX.getInstance();
-  PathFollower _pathFollower;
+  PathFollower _pathFollower=null;
   public TalonSRX _leftMaster, _leftSlave, _rightMaster, _rightSlave;
 
   public double _leftMtrDriveSetDistanceCmd, _rightMtrDriveSetDistanceCmd;
@@ -66,7 +66,7 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
   boolean _isTurnRight;
 
   double _leftTargetVelocity, _rightTargetVelocity, _centerTargetVelocity;
-  Path _currentPath;
+  Path _currentPath=null;
   RobotState _robotState = RobotState.getInstance();
   double _leftEncoderPrevDistance, _rightEncoderPrevDistance=0;
 
@@ -259,6 +259,8 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
 
   public void initiateRobotState()
   {
+    _pathFollower=null;
+    _currentPath=null;
     _leftEncoderPrevDistance = getLeftPosInches();
     _rightEncoderPrevDistance = getRightPosInches();
     _robotState.reset(Timer.getFPGATimestamp(), new RigidTransform());
