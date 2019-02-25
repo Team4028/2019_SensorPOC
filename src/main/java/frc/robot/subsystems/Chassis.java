@@ -16,6 +16,7 @@ import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.VelocityMeasPeriod;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
@@ -49,14 +50,13 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
 	{
 		UNKNOWN,
 		PERCENT_VBUS,
-		AUTO_TURN, 
 		FOLLOW_PATH,
 		DRIVE_SET_DISTANCE
   }
   
   ChassisState _chassisState = ChassisState.UNKNOWN;
   GyroNavX _navX = GyroNavX.getInstance();
-  PathFollower _pathFollower;
+  PathFollower _pathFollower=null;
   public TalonSRX _leftMaster, _leftSlave, _rightMaster, _rightSlave;
 
   public double _leftMtrDriveSetDistanceCmd, _rightMtrDriveSetDistanceCmd;
@@ -66,13 +66,13 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
   boolean _isTurnRight;
 
   double _leftTargetVelocity, _rightTargetVelocity, _centerTargetVelocity;
-  Path _currentPath;
+  Path _currentPath=null;
   RobotState _robotState = RobotState.getInstance();
-  double _leftEncoderPrevDistance, _rightEncoderPrevDistance;
+  double _leftEncoderPrevDistance, _rightEncoderPrevDistance=0;
 
   public static double _autoStartTime;
 
-  public static double ENCODER_COUNTS_PER_WHEEL_REV = 30028.471298; // 13582.78; 
+  public static double ENCODER_COUNTS_PER_WHEEL_REV = 4008;
 	public static Chassis getInstance() {
 		return _instance;
 	}
@@ -87,13 +87,12 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
 
     _leftSlave.follow(_leftMaster);
     _rightSlave.follow(_rightMaster);
-
     _rightMaster.setInverted(true);
     _rightSlave.setInverted(true);
-    _leftMaster.setInverted(true);
-    _leftSlave.setInverted(true);
+    _leftMaster.setInverted(false);
+    _leftSlave.setInverted(false);
 
-    _rightMaster.setSensorPhase(false);
+    _rightMaster.setSensorPhase(true);
     _leftMaster.setSensorPhase(true);
 
     _leftMaster.setNeutralMode(NeutralMode.Brake);
@@ -117,7 +116,7 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
         talon.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_10Ms, 0);
         talon.configVelocityMeasurementWindow(32, 0);
         
-        talon.configOpenloopRamp(0.4, 10);
+
 		talon.configClosedloopRamp(0.0, 0);
 	}
 	
@@ -128,6 +127,7 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
 		talon.configReverseLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.Disabled, 0);
         
         talon.enableCurrentLimit(false);
+        talon.configOpenloopRamp(1, 10);
         
         talon.configPeakOutputForward(1.0, 10);
         talon.configPeakOutputReverse(-1.0, 10);
@@ -143,53 +143,68 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
 
   public void updateChassis(double timestamp){
     estimateRobotState(timestamp);
+    if ( _chassisState != ChassisState.FOLLOW_PATH){
+      if(Math.abs(_navX.getPitch())>13 && Math.abs(_navX.getPitch())<20)
+      {
+        stop();
+      }
+      else if(_navX.getPitch()>20)
+      {
+        _chassisState=ChassisState.PERCENT_VBUS;
+        setLeftRightCommand(ControlMode.PercentOutput, 0.3, 0.3);
+      }
+      else if(_navX.getPitch()<-20)
+      {
+        _chassisState=ChassisState.PERCENT_VBUS;
+        setLeftRightCommand(ControlMode.PercentOutput, -0.3, -0.3);
+      }
+    } else {
+      if(Math.abs(_navX.getPitch())>20 && Math.abs(_navX.getPitch())<30)
+      {
+        stop();
+      }
+      else if(_navX.getPitch()>30)
+      {
+        _chassisState=ChassisState.PERCENT_VBUS;
+        setLeftRightCommand(ControlMode.PercentOutput, 0.3, 0.3);
+      }
+      else if(_navX.getPitch()<-30)
+      {
+        _chassisState=ChassisState.PERCENT_VBUS;
+        setLeftRightCommand(ControlMode.PercentOutput, -0.3, -0.3);
+      }
+    }
 		switch(_chassisState) {
 			case UNKNOWN:
 			return;
       case PERCENT_VBUS:
 				return;
-				
-      case AUTO_TURN:
-        _leftMaster.config_kF(0, 0.0581);
-        _leftMaster.config_kP(0, 0.2);
-        _leftMaster.config_kI(0, 0);
-        _leftMaster.config_kD(0, 2);
-        _rightMaster.config_kF(0, 0.0581);
-        _rightMaster.config_kP(0, 0.2);
-        _rightMaster.config_kI(0, 0);
-        _rightMaster.config_kD(0, 2);
-        _rightMaster.configMotionCruiseVelocity(4000);
-        _leftMaster.configMotionCruiseVelocity(4000);
-        _rightMaster.configMotionAcceleration(30000);
-        _leftMaster.configMotionAcceleration(30000);
-				//moveToTargetAngle();
-				return;
 			
       case DRIVE_SET_DISTANCE:
-        _leftMaster.config_kF(0, 0.0357942617214836);
-        _leftMaster.config_kP(0, .175);
+        _leftMaster.config_kF(0, 0.802);
+        _leftMaster.config_kP(0, 0.32);
         _leftMaster.config_kI(0, 0);
-        _leftMaster.config_kD(0, 1.75);
-        _rightMaster.config_kF(0, 0.0357942617214836);
-        _rightMaster.config_kP(0, 0.175);
-        _rightMaster.config_kI(0, 0.);
-        _rightMaster.config_kD(0, 1.75);
-        _rightMaster.configMotionCruiseVelocity(10000);
-        _leftMaster.configMotionCruiseVelocity(10000);
-        _rightMaster.configMotionAcceleration(10000);
-        _leftMaster.configMotionAcceleration(10000);
+        _leftMaster.config_kD(0, 3.2);
+        _rightMaster.config_kF(0, 0.802);
+        _rightMaster.config_kP(0, 0.32);
+        _rightMaster.config_kI(0, 0);
+        _rightMaster.config_kD(0, 3.2);
+        _rightMaster.configMotionCruiseVelocity(1275);
+        _leftMaster.configMotionCruiseVelocity(1275);
+        _rightMaster.configMotionAcceleration(1200);
+        _leftMaster.configMotionAcceleration(1200);
 				return;
 				
       case FOLLOW_PATH:
         estimateRobotState(timestamp);
-        _leftMaster.config_kF(0, 0.0357942617214836);
-        _leftMaster.config_kP(0, .05);
-        _leftMaster.config_kI(0, .00);
-        _leftMaster.config_kD(0, .85);
-        _rightMaster.config_kF(0, 0.0357942617214836);
-        _rightMaster.config_kP(0, 0.05);
-        _rightMaster.config_kI(0, 0.00);
-        _rightMaster.config_kD(0, .85);
+        _leftMaster.config_kF(0, 0.401);
+        _leftMaster.config_kP(0, .8);
+        _leftMaster.config_kI(0, 0.000); //.001
+        _leftMaster.config_kD(0, 8);
+        _rightMaster.config_kF(0, 0.401);
+        _rightMaster.config_kP(0, 0.8);
+        _rightMaster.config_kI(0, 0.000); //.001
+        _rightMaster.config_kD(0, 8);
 				if (_pathFollower != null) 
 					updatePathFollower(timestamp);
 				return;
@@ -199,51 +214,15 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
     // basic driving
     public void arcadeDrive(double throttleCmd, double turnCmd) 
     {
-      _leftMaster.set(ControlMode.PercentOutput, throttleCmd+0.7*turnCmd);
-      _rightMaster.set(ControlMode.PercentOutput, throttleCmd-0.7*turnCmd);
+      _chassisState = ChassisState.PERCENT_VBUS;
+      _leftMaster.set(ControlMode.PercentOutput, 0.7*throttleCmd+0.5*turnCmd);
+      _rightMaster.set(ControlMode.PercentOutput,0.7*throttleCmd-0.5*turnCmd);
     }
   
     public void stop()
     {
       _chassisState = ChassisState.PERCENT_VBUS;
       setLeftRightCommand(ControlMode.PercentOutput, 0,0);
-    }
-
-  public synchronized void setTargetAngleAndTurnDirection(double targetAngle, boolean isTurnRight) 
-	{
-    if(targetAngle>=0)
-    {
-      _targetAngle=targetAngle;
-    }
-    else
-    {
-      _targetAngle=360+targetAngle;
-    }
-		_isTurnRight = isTurnRight;
-		_chassisState = ChassisState.AUTO_TURN;
-  }
-  
-  public void moveToTargetAngle()
-    {
-        if((!_isTurnRight && getPositiveHeading() > _targetAngle) || (_isTurnRight && getPositiveHeading() < _targetAngle))
-        {
-            _angleError = _targetAngle - getPositiveHeading();
-        }           
-        else if(!_isTurnRight && getPositiveHeading() < _targetAngle)
-        {
-            _angleError = _targetAngle - getPositiveHeading() - 360;
-        }
-        else if(_isTurnRight && getPositiveHeading() > _targetAngle)
-        {
-            _angleError = 360 - getPositiveHeading() + _targetAngle;
-        }
-        // System.out.println("AngleError:"+_angleError);
-        double encoderError = ENCODER_CODES_PER_DEGREE * _angleError;       
-        double leftDriveTargetPos = getLeftPos() + encoderError;
-        double rightDriveTargetPos = getRightPos() - encoderError;
-        
-        setLeftRightCommand(ControlMode.MotionMagic, leftDriveTargetPos, rightDriveTargetPos);
-        
     }
 
 
@@ -278,25 +257,22 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
         }
     }
 
-  public synchronized void SetDynamicWantDrivePath(Path path, boolean reversed)
+  public void initiateRobotState()
   {
-    _leftEncoderPrevDistance = getLeftPos()/ENCODER_COUNTS_PER_WHEEL_REV * Constants.DRIVE_WHEEL_DIAMETER_IN * Math.PI;
-	        _rightEncoderPrevDistance = getLeftPos()/ENCODER_COUNTS_PER_WHEEL_REV * Constants.DRIVE_WHEEL_DIAMETER_IN * Math.PI;
-            RobotState.getInstance().resetDistanceDriven();
-            _pathFollower = new PathFollower(path, reversed, path.maxAccel, path.maxDecel, path.inertiaSteeringGain);
-            _chassisState = ChassisState.FOLLOW_PATH;
-            _currentPath = path; 
+    _pathFollower=null;
+    _currentPath=null;
+    _leftEncoderPrevDistance = getLeftPosInches();
+    _rightEncoderPrevDistance = getRightPosInches();
+    _robotState.reset(Timer.getFPGATimestamp(), new RigidTransform());
   }
-
   public void estimateRobotState( double timestamp)
   {
-    final double left_distance = NUtoInches(getLeftPos());
-    final double right_distance = NUtoInches(getRightPos());
+    final double left_distance = getLeftPosInches();
+    final double right_distance = getRightPosInches();
     final Rotation gyro_angle = Rotation.fromDegrees(_navX.getYaw());
     final Twist odometry_velocity = _robotState.generateOdometryFromSensors(
         left_distance - _leftEncoderPrevDistance, right_distance - _rightEncoderPrevDistance, gyro_angle);
-    final Twist predicted_velocity = Kinematics.forwardKinematics(getLeftVelocityInchesPerSec(),
-        getRightVelocityInchesPerSec());
+    final Twist predicted_velocity = Kinematics.forwardKinematics(getLeftVelocityInchesPerSec(), getRightVelocityInchesPerSec());
     _robotState.addObservations(timestamp, odometry_velocity, predicted_velocity);
     _leftEncoderPrevDistance = left_distance;
     _rightEncoderPrevDistance = right_distance;
@@ -371,7 +347,14 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
   {
 		_leftMaster.set(mode, leftCommand);
 		_rightMaster.set(mode, rightCommand);
-	}
+  }
+  public void setBrakeMode(NeutralMode mode)
+  {
+    _leftMaster.setNeutralMode(mode);
+		_leftSlave.setNeutralMode(mode);
+		_rightMaster.setNeutralMode(mode);
+    _rightSlave.setNeutralMode(mode);
+  }
   public double getHeading()
   {
     return _navX.getYaw();
@@ -398,16 +381,11 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
   }
   public void zeroSensors()
   {
-    _leftMaster.setSelectedSensorPosition(0);
-    _rightMaster.setSelectedSensorPosition(0);
+    _leftMaster.getSensorCollection().setQuadraturePosition(0, 10);
+    _rightMaster.getSensorCollection().setQuadraturePosition(0,10);
     _navX.zeroYaw();
   }
-  // public void setOffset(double os){
-  //   _navX.setOffset(os);
-  // }
-  // public void setGyroToZero(){
-  //   _navX.reAxizeNow();
-  // }
+
   private static double rpmToInchesPerSecond(double rpm) 
 	{
         return rotationsToInches(rpm) / 60;
@@ -453,7 +431,15 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
 	public double getRightVelocityInchesPerSec() 
 	{
         return rpmToInchesPerSecond(getRightSpeedRPM());
-	}
+  }
+  public double getLeftPosInches()
+  {
+    return getLeftPos()/ENCODER_COUNTS_PER_WHEEL_REV*6*Math.PI;
+  }
+  public double getRightPosInches()
+  {
+    return getRightPos()/ENCODER_COUNTS_PER_WHEEL_REV*6*Math.PI;
+  }
   
   @Override
   public void updateLogData(LogDataBE logData) 
@@ -469,7 +455,8 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
   @Override
   public void updateDashboard() 
   {
-
+    SmartDashboard.putNumber("Left Velo",getLeftVelocityInchesPerSec());
+    SmartDashboard.putNumber("Right Velo", getRightVelocityInchesPerSec());
   }
 
 

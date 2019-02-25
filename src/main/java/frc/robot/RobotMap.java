@@ -19,22 +19,17 @@ public class RobotMap
 	
 	// PCM CAN Bus Address
 	public static final int PCM_CAN_ADDR = 0;
-
-	// Motor Controller Can Bus Address
-	public static final int RIGHT_DRIVE_MASTER_CAN_ADDR = 1;
-	public static final int RIGHT_DRIVE_SLAVE_CAN_ADDR = 2;
-	public static final int LEFT_DRIVE_MASTER_CAN_ADDR = 3;
-	public static final int LEFT_DRIVE_SLAVE_CAN_ADDR = 4;
-
-
 	
-	public static final int ELEVATOR_MASTER_CAN_ADDR = 10;
-	public static final int ELEVATOR_SLAVE_CAN_ADDR = 11;
-
-	public static final int CARGO_VICTOR_ADDR = 20;
-
-	//public static final int CLIMBER_LIFT_CAN_ADDR = 30;
-	//public static final int CLIMBER_DRIVE_CAN_ADDR = 31;
+	// Motor Controller Can Bus Address
+	public static final int LEFT_DRIVE_MASTER_CAN_ADDR = 1;
+	public static final int LEFT_DRIVE_SLAVE_CAN_ADDR = 2;
+	public static final int RIGHT_DRIVE_MASTER_CAN_ADDR = 3;
+	public static final int RIGHT_DRIVE_SLAVE_CAN_ADDR = 4;
+	public static final int CLIMBER_LIFT_CAN_ADDR = 5;
+	public static final int CLIMBER_DRIVE_CAN_ADDR = 6;
+	public static final int ELEVATOR_SLAVE_CAN_ADDR = 7;
+	public static final int ELEVATOR_MASTER_CAN_ADDR = 8;
+	public static final int INFEED_DRIVE_CAN_ADDR = 9;
 
 	// DIO Ports
 	
@@ -48,12 +43,14 @@ public class RobotMap
 	public static final int PWM_LED_PORT = 0;
 	
 	// PCM Ports
-	public static final int PCM_FORWARD_BEAK_SOLENOID_PORT = 0;
-	public static final int PCM_REVERSE_BEAK_SOLENOID_PORT = 1;
+	public static final int PCM_FORWARD_BEAK_SOLENOID_PORT = 6;
+	public static final int PCM_REVERSE_BEAK_SOLENOID_PORT = 7;
 	public static final int PCM_FORWARD_PUNCH_SOLENOID_PORT = 2;
 	public static final int PCM_REVERSE_PUNCH_SOLENOID_PORT = 3;
 	public static final int PCM_FORWARD_INOUT_SOLENOID_PORT = 4;
 	public static final int PCM_REVERSE_INOUT_SOLENOID_PORT = 5;
+	public static final int PCM_REVERSE_BUCKET_SOLENOID_PORT = 0;
+	public static final int PCM_FORWARD_BUCKET_SOLENOID_PORT = 1;
 
 	//I2C Ports
 	public static final I2C.Port I2C_SENSOR_PORT = I2C.Port.kOnboard;

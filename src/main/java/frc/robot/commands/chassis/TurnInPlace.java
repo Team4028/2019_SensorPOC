@@ -9,8 +9,7 @@ public class TurnInPlace extends Command
     private Chassis _chassis = Chassis.getInstance();
     private double _targetAngle;
     private boolean _isTurnRight;
-    private boolean _hasOvershot;
-    private boolean _isErrorPositive;
+
     
     public TurnInPlace(double targetAngle, boolean isTurnRight) 
     {
@@ -21,9 +20,7 @@ public class TurnInPlace extends Command
     }
 
     @Override
-    protected void initialize() 
-    {
-    }
+    protected void initialize() {}
 
     @Override
     protected void execute() 
@@ -51,6 +48,5 @@ public class TurnInPlace extends Command
     @Override
     protected void end() {
         _chassis.stop();
-        System.out.println("chassis stopped");
     }
 }

@@ -4,11 +4,15 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.Date;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.auton.pathfollowing.Paths;
+import frc.robot.commands.elevator.ZeroElevatorEncoder;
 import frc.robot.sensors.GyroNavX;
 
 import frc.robot.sensors.VisionLL;
@@ -19,9 +23,10 @@ import frc.robot.sensors.DistanceRev2mSensor;
 import frc.robot.sensors.StoredPressureSensor;
 import frc.robot.sensors.SwitchableCameraServer;
 //import frc.robot.subsystems.Cargo;
-
+import frc.robot.subsystems.Cargo;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.Elevator;
 //import frc.robot.subsystems.Elevator;
 import frc.robot.util.DataLogger;
 import frc.robot.util.GeneralUtilities;
@@ -64,9 +69,9 @@ public class Robot extends TimedRobot {
 
   // subsystems
   private Chassis _chassis = Chassis.getInstance();
-  //private Cargo _cargo = Cargo.getInstance();
+  private Cargo _cargo = Cargo.getInstance();
   private Climber _climber = Climber.getInstance();
- // private Elevator _elevator = Elevator.getInstance();
+  private Elevator _elevator = Elevator.getInstance();
 
   // class level working variables
 
@@ -98,17 +103,21 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    Paths.buildPaths();
+    _chassis.initiateRobotState();
     _chassis.zeroSensors();
     _chassis.stop();
+    _chassis.setBrakeMode(NeutralMode.Brake);
     _scanTimeSamples = new MovingAverage(20);
     _lastDashboardWriteTimeMSec = new Date().getTime(); // snapshot time to control spamming
     _dataLogger = GeneralUtilities.setupLogging("Auton"); // init data logging	
     _autonChoosers.getSelectedAuton().start();
     Chassis._autoStartTime = Timer.getFPGATimestamp();
-    // if(!_elevator.get_hasElevatorBeenZeroed()){
-    //   Command zeroElevatorCommand = new ZeroElevatorEncoder();
-    //   zeroElevatorCommand.start();
-    // }
+    if(!_elevator.get_hasElevatorBeenZeroed()){
+      Command zeroElevatorCommand = new ZeroElevatorEncoder();
+      zeroElevatorCommand.start();
+    }
+
   }
 
   /**
@@ -137,20 +146,23 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     _chassis.stop();
+    _chassis.zeroSensors();
+    _chassis.initiateRobotState();
+    _chassis.setBrakeMode(NeutralMode.Brake);
         _scanTimeSamples = new MovingAverage(20);
     _dataLogger = GeneralUtilities.setupLogging("Teleop"); // init data logging
     _lastDashboardWriteTimeMSec = new Date().getTime(); // snapshot time to control spamming
-    // if(!_elevator.get_hasElevatorBeenZeroed()){
-    //   Command zeroElevatorCommand = new ZeroElevatorEncoder();
-    //   zeroElevatorCommand.start();
-    // }
+    if(!_elevator.get_hasElevatorBeenZeroed()){
+      Command zeroElevatorCommand = new ZeroElevatorEncoder();
+      zeroElevatorCommand.start();
+    }
   }
 
    /* This function is called periodically during teleop mode.
    */
   @Override
   public void teleopPeriodic() {
-    _chassis.updateChassis(Timer.getFPGATimestamp());
+    //_chassis.updateChassis(Timer.getFPGATimestamp());
     Scheduler.getInstance().run();    
     _vision.turnOnLimelightLEDs();
   }
@@ -181,6 +193,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     _scanTimeSamples = new MovingAverage(20);
+    _chassis.setBrakeMode(NeutralMode.Coast);
   }
 
   /**

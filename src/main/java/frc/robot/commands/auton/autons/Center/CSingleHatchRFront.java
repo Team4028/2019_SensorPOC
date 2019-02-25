@@ -14,6 +14,6 @@ public class CSingleHatchRFront extends CommandGroup {
     public CSingleHatchRFront() {
         setInterruptible(false);
         addSequential(new RunMotionProfileCommand(_toCargoShipFront));
-        addSequential(new CG_FollowVisionPath(SCORING_TARGET.CARGOSHIP_FRONT, SIDE.RIGHT));
+        //addSequential(new CG_FollowVisionPath(SCORING_TARGET.CARGOSHIP_FRONT, SIDE.RIGHT));
     }
 }

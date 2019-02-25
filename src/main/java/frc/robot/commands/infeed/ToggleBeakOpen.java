@@ -9,19 +9,13 @@ package frc.robot.commands.infeed;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.subsystems.Cargo;
-import frc.robot.util.BeakXboxController.Thumbstick;
-import frc.robot.util.BeakXboxController.Trigger;
 
-public class RunInfeedMotor extends Command {
+public class ToggleBeakOpen extends Command {
   private Cargo _cargo = Cargo.getInstance();
-  private Trigger _leftThumbstick;
-  boolean _isReversed;
 
-  public RunInfeedMotor(Trigger leftThumbstick, boolean isReversed)  {
+  public ToggleBeakOpen() {
     requires(_cargo);
-    setInterruptible(true);
-    _leftThumbstick = leftThumbstick;
-    _isReversed = isReversed;
+    setInterruptible(false);
   }
 
   // Called just before this Command runs the first time
@@ -31,20 +25,13 @@ public class RunInfeedMotor extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    if(_isReversed)
-    {
-      _cargo.setMotorSpeed(-1*_leftThumbstick.getY());
-    }
-    else
-    {
-      _cargo.setMotorSpeed(_leftThumbstick.getY());
-    }
+    _cargo.toggleBeakPlacement();
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return false;
+    return true;
   }
 
   // Called once after isFinished returns true
