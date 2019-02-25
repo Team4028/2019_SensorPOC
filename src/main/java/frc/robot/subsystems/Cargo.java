@@ -34,7 +34,7 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
   private DoubleSolenoid _beakSolenoid;
   private DoubleSolenoid _punchSolenoid;
   private DoubleSolenoid _mechansimSolenoid;
-  private DoubleSolenoid _releaseSolenoid;
+  private DoubleSolenoid _bucketSolenoid;
   private Servo _infeedServo;
   private static final Value MECHANISM_EXTENDED = DoubleSolenoid.Value.kForward;
   private static final Value MECHANISM_RETRACTED = DoubleSolenoid.Value.kReverse;
@@ -42,8 +42,8 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
   private static final Value BEAK_CLOSE = DoubleSolenoid.Value.kReverse;
   private static final Value PUNCH_IN = DoubleSolenoid.Value.kForward;
   private static final Value PUNCH_OUT = DoubleSolenoid.Value.kReverse;
-  private static final Value RELEASE_EXTENDED = DoubleSolenoid.Value.kForward;
-  private static final Value RELEASE_RETRACTED= DoubleSolenoid.Value.kReverse;
+  private static final Value BUCKET_EXTENDED = DoubleSolenoid.Value.kForward;
+  private static final Value BUCKET_RETRACTED= DoubleSolenoid.Value.kReverse;
 
 
   public enum BEAK_POSITION {
@@ -61,7 +61,7 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
     EXTENDED,
     RETRACTED
   }
-  public enum RELEASE_POSITION {
+  public enum BUCKET_POSITION {
     UNDEFINED,
     EXTENDED,
     RETRACTED
@@ -84,7 +84,7 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
     _beakSolenoid = new DoubleSolenoid(RobotMap.PCM_FORWARD_BEAK_SOLENOID_PORT,RobotMap.PCM_REVERSE_BEAK_SOLENOID_PORT);
     _punchSolenoid = new DoubleSolenoid(RobotMap.PCM_FORWARD_PUNCH_SOLENOID_PORT, RobotMap.PCM_REVERSE_PUNCH_SOLENOID_PORT);
     _mechansimSolenoid = new DoubleSolenoid(RobotMap.PCM_FORWARD_INOUT_SOLENOID_PORT, RobotMap.PCM_REVERSE_INOUT_SOLENOID_PORT);
-    _releaseSolenoid = new DoubleSolenoid(RobotMap.PCM_FORWARD_RELEASE_SOLENOID_PORT, RobotMap.PCM_REVERSE_RELEASE_SOLENOID_PORT);
+    _bucketSolenoid = new DoubleSolenoid(RobotMap.PCM_FORWARD_BUCKET_SOLENOID_PORT, RobotMap.PCM_REVERSE_BUCKET_SOLENOID_PORT);
     
   }
 
@@ -100,7 +100,7 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
     _beakSolenoid.set(BEAK_CLOSE);
     _mechansimSolenoid.set(MECHANISM_EXTENDED);
     _punchSolenoid.set(PUNCH_IN);
-    _releaseSolenoid.set(RELEASE_RETRACTED);
+    _bucketSolenoid.set(BUCKET_RETRACTED);
   }
 
   // ===================================== 
@@ -173,15 +173,15 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
         }
       }
     }
-    public void setRelease(RELEASE_POSITION releasePosition) {
+    public void setBucket(BUCKET_POSITION bucketPosition) {
   
-      if (releasePosition == RELEASE_POSITION.EXTENDED) {
-        _releaseSolenoid.set(RELEASE_EXTENDED);
+      if (bucketPosition == BUCKET_POSITION.EXTENDED) {
+        _bucketSolenoid.set(BUCKET_EXTENDED);
       
       } 
-      else if (releasePosition == RELEASE_POSITION.RETRACTED) 
+      else if (bucketPosition == BUCKET_POSITION.RETRACTED) 
       {
-        _releaseSolenoid.set(MECHANISM_RETRACTED);
+        _bucketSolenoid.set(MECHANISM_RETRACTED);
       }
     
   }
@@ -219,16 +219,16 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
       }
   }
 
-  public void toggleRelease()
+  public void toggleBucket()
   {
-    Value currentReleasePos = _releaseSolenoid.get();
-    if (currentReleasePos == RELEASE_EXTENDED)
+    Value currentBucketPos = _bucketSolenoid.get();
+    if (currentBucketPos == BUCKET_EXTENDED)
     {
-      setRelease(RELEASE_POSITION.RETRACTED);
+      setRelease(BUCKET_POSITION.RETRACTED);
     }
     else
     {
-      setRelease(RELEASE_POSITION.EXTENDED);
+      setRelease(BUCKET_POSITION.EXTENDED);
     }
     DriverStation.reportWarning("Release is Running", false);
   }
@@ -270,8 +270,8 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
       }
     }
     private String get_RelasePosition(){
-      Value currentReleasePos = _releaseSolenoid.get();
-      if (currentReleasePos == RELEASE_RETRACTED) {
+      Value currentReleasePos = _bucketSolenoid.get();
+      if (currentReleasePos == BUCKET_RETRACTED) {
         return "Release Retracted";
       } else {
         return "Release Extended";

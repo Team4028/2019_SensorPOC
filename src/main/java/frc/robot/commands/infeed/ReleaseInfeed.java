@@ -28,7 +28,7 @@ public class ReleaseInfeed extends Command
   @Override
   protected void execute() 
   {
-    _cargo.toggleRelease();
+    _cargo.toggleBucket();
 
   }
 
