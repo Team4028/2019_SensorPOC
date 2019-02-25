@@ -10,7 +10,7 @@ package frc.robot.commands.infeed;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Cargo;
-import frc.robot.subsystems.Cargo.BEAK_POSITION;
+import frc.robot.subsystems.Cargo.BEAK_OPENCLOSE_POSITION;
 import frc.robot.subsystems.Cargo.PUNCH_POSITION;
 
 public class ScoreHatch extends Command {
@@ -49,7 +49,7 @@ public class ScoreHatch extends Command {
   @Override
   protected void execute() {
     if(_currentStep == SCORE_STEP.BEAK_CLOSE_STEP) {
-      _cargo.setBeak(BEAK_POSITION.CLOSED);
+      _cargo.setBeakOpenClose(BEAK_OPENCLOSE_POSITION.CLOSED);
       _currentStep = SCORE_STEP.WAIT_STEP;
       _startTimeInMs = System.nanoTime() / 1000000;
     }
