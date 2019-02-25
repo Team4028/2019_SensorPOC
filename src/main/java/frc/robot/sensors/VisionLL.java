@@ -19,6 +19,10 @@ import frc.robot.util.LogDataBE;
  */
 public class VisionLL implements IVisionSensor {
 
+    private double HORIZONAL_CAMERA_OFFSET_IN = 6;
+    private double VERTICAL_CAMERA_OFFSET_IN = 15;
+
+    private GyroNavX _navX = GyroNavX.getInstance();
     // =====================================================================================
     // Define Singleton Pattern
     // =====================================================================================
@@ -57,6 +61,22 @@ public class VisionLL implements IVisionSensor {
             return false;
         }
     }
+
+    public double get_revisedDistance(){
+        double actualDistance = Math.sqrt(Math.pow(get_distanceToTargetInInches(), 2)
+        // - Math.pow(HORIZONAL_CAMERA_OFFSET_IN/Math.cos(Math.abs(_navX.)), 2)
+         - Math.pow(VERTICAL_CAMERA_OFFSET_IN, 2));
+        return actualDistance;
+    }
+
+    public void turnOffLimelightLEDs() {
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
+    }
+
+    public void turnOnLimelightLEDs() {
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(3);
+    }
+
     //=====================================================================================
 	// Helper Methods
 	//=====================================================================================  
@@ -70,5 +90,6 @@ public class VisionLL implements IVisionSensor {
         SmartDashboard.putBoolean("Vision:IsTargetInFOV", get_isTargetInFOV());
         SmartDashboard.putNumber("Vision:Angle1InDegrees", get_angle1InDegrees());
         SmartDashboard.putNumber("Vision:DistanceInInches", get_distanceToTargetInInches());
+        SmartDashboard.putNumber("Vision:ActualDistance", get_revisedDistance());
     }
 }

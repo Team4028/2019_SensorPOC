@@ -1,10 +1,3 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2018 FIRST. All Rights Reserved.                             */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 package frc.robot;
 
 import java.math.BigDecimal;
@@ -12,16 +5,21 @@ import java.text.DecimalFormat;
 import java.util.Date;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.auton.pathfollowing.Paths;
+import frc.robot.sensors.GyroNavX;
 
 import frc.robot.sensors.VisionLL;
-import frc.robot.interfaces.IVisionSensor;
+import edu.wpi.first.wpilibj.command.Command;
+import frc.robot.commands.elevator.ZeroElevatorEncoder;
+import frc.robot.sensors.AirCompressor;
 import frc.robot.sensors.DistanceRev2mSensor;
-import frc.robot.sensors.GyroNavX;
 import frc.robot.sensors.StoredPressureSensor;
-import frc.robot.sensors.VisionIP;
+import frc.robot.sensors.SwitchableCameraServer;
 import frc.robot.subsystems.Cargo;
+
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Elevator;
@@ -50,12 +48,16 @@ public class Robot extends TimedRobot {
   // sensors
   private DistanceRev2mSensor _distanceRev2mSensor = DistanceRev2mSensor.getInstance();
   private StoredPressureSensor _pressureSensor = StoredPressureSensor.getInstance();
+  private SwitchableCameraServer _cameraServer = SwitchableCameraServer.getInstance();
+  private AirCompressor _compressor = AirCompressor.get_instance();
 
-  private IVisionSensor _vision = VisionLL.getInstance();      // Limelight
+
+  private VisionLL _vision = VisionLL.getInstance();      // Limelight
   //private IVisionSensor _vision = VisionIP.getInstance();   // IPhone
   private GyroNavX _navX = GyroNavX.getInstance();
 
   // ux
+
   private LEDController _leds = LEDController.getInstance();
   private AutonChoosers _autonChoosers = AutonChoosers.getInstance();
   private OI _oi = OI.getInstance();
@@ -66,13 +68,16 @@ public class Robot extends TimedRobot {
   private Climber _climber = Climber.getInstance();
   private Elevator _elevator = Elevator.getInstance();
 
-	// class level working variables
+  // class level working variables
+
 	private DataLogger _dataLogger = null;
 	private String _buildMsg = "?";
  	long _lastScanEndTimeInMSec;
  	long _lastDashboardWriteTimeMSec;
 	MovingAverage _scanTimeSamples;
-	public double _startTime;
+  public double _startTime;
+
+
 
   /********************************************************************************************
    * This function is run when the robot is first started up and should be used
@@ -81,6 +86,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     _buildMsg = GeneralUtilities.WriteBuildInfoToDashboard(ROBOT_NAME);
+    Paths.buildPaths();
+    
   }
 
   /********************************************************************************************
@@ -91,22 +98,34 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    _chassis.zeroSensors();
+    _chassis.stop();
     _scanTimeSamples = new MovingAverage(20);
     _lastDashboardWriteTimeMSec = new Date().getTime(); // snapshot time to control spamming
-    _dataLogger = GeneralUtilities.setupLogging("Auton"); // init data logging
+    _dataLogger = GeneralUtilities.setupLogging("Auton"); // init data logging	
+    _autonChoosers.getSelectedAuton().start();
+    Chassis._autoStartTime = Timer.getFPGATimestamp();
+    if(!_elevator.get_hasElevatorBeenZeroed()){
+      Command zeroElevatorCommand = new ZeroElevatorEncoder();
+      zeroElevatorCommand.start();
+    }
   }
 
   /**
    * This function is called periodically during autonomous mode.
    */
   @Override
-  public void autonomousPeriodic() {
+
+  public void autonomousPeriodic() 
+  {
+
+    _chassis.updateChassis(Timer.getFPGATimestamp());
     Scheduler.getInstance().run();
 
     _leds.set_targetangle(_vision.get_angle1InDegrees(), 
                           _vision.get_isTargetInFOV(), 
                           _distanceRev2mSensor.get_distanceToTargetInInches());
-
+    _vision.turnOnLimelightLEDs();
   }
 
   /********************************************************************************************
@@ -117,18 +136,23 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopInit() {
-    _scanTimeSamples = new MovingAverage(20);
+    _chassis.stop();
+        _scanTimeSamples = new MovingAverage(20);
     _dataLogger = GeneralUtilities.setupLogging("Teleop"); // init data logging
-		_lastDashboardWriteTimeMSec = new Date().getTime(); // snapshot time to control spamming
+    _lastDashboardWriteTimeMSec = new Date().getTime(); // snapshot time to control spamming
+    if(!_elevator.get_hasElevatorBeenZeroed()){
+      Command zeroElevatorCommand = new ZeroElevatorEncoder();
+      zeroElevatorCommand.start();
+    }
   }
 
-  /**
-   * This function is called periodically during teleop mode.
+   /* This function is called periodically during teleop mode.
    */
   @Override
   public void teleopPeriodic() {
-    Scheduler.getInstance().run();
-  
+    _chassis.updateChassis(Timer.getFPGATimestamp());
+    Scheduler.getInstance().run();    
+    _vision.turnOnLimelightLEDs();
   }
 
   /********************************************************************************************
@@ -138,15 +162,13 @@ public class Robot extends TimedRobot {
    * This function is called 1x when the robot is 1st enabled test mode
    */
   @Override
-  public void testInit() {
-  }
+  public void testInit() {}
 
   /**
    * This function is called periodically during test mode.
    */
   @Override
-  public void testPeriodic() {
-  }
+  public void testPeriodic() {}
 
   /********************************************************************************************
    * Disabled Mode
@@ -167,6 +189,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledPeriodic() {
     Scheduler.getInstance().run();
+    _vision.turnOffLimelightLEDs();
   }
   
   /********************************************************************************************
@@ -185,8 +208,7 @@ public class Robot extends TimedRobot {
     // ============= Refresh Dashboard ============= 
     this.outputAllToDashboard();
     
-    if(!isDisabled())
-    {
+    if(!isDisabled()) {
       // ============= Optionally Log Data =============
 		  this.logAllData();
     }
@@ -199,8 +221,8 @@ public class Robot extends TimedRobot {
     	// add scan time sample to calc scan time rolling average
     	_scanTimeSamples.add(new BigDecimal(scanCycleDeltaInMSecs));
     	
-    	if((new Date().getTime() - _lastDashboardWriteTimeMSec) > 100) {
-
+    	//if((new Date().getTime() - _lastDashboardWriteTimeMSec) > 100) {
+        {
         // ----------------------------------------------
     		// each subsystem should add a call to a outputToSmartDashboard method
     		// to push its data out to the dashboard
@@ -214,6 +236,9 @@ public class Robot extends TimedRobot {
 	    	if(_distanceRev2mSensor != null)  { _distanceRev2mSensor.updateDashboard(); }
         if(_vision != null)               { _vision.updateDashboard(); }
         if(_pressureSensor != null)       { _pressureSensor.updateDashboard(); }
+        if(_navX != null)                 {_navX.updateDashboard();}
+        if(_cameraServer != null)         {_cameraServer.updateDashboard();}
+        if(_compressor != null)           { _compressor.updateDashboard(); }
 	    	
     		// write the overall robot dashboard info
 	    	SmartDashboard.putString("Robot Build", _buildMsg);
@@ -248,6 +273,7 @@ public class Robot extends TimedRobot {
 	    	if(_distanceRev2mSensor != null)  { _distanceRev2mSensor.updateLogData(logData); }
         if(_vision != null)               { _vision.updateLogData(logData); }
         if(_pressureSensor != null)       { _pressureSensor.updateLogData(logData); }
+        if(_compressor != null)           { _compressor.updateLogData(logData); }
     
 	    	_dataLogger.WriteDataLine(logData);
     	}
