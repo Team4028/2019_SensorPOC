@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
 import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Servo;
@@ -31,6 +32,7 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
   private DoubleSolenoid _mechansimSolenoid;
   private DoubleSolenoid _releaseSolenoid;
   private Servo _infeedServo;
+  private DigitalInput _hatchLimitSwitch;
   private static final Value MECHANISM_EXTENDED = DoubleSolenoid.Value.kForward;
   private static final Value MECHANISM_RETRACTED = DoubleSolenoid.Value.kReverse;
   private static final Value BEAK_OPEN = DoubleSolenoid.Value.kForward;
@@ -88,6 +90,8 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
     _mechansimSolenoid = new DoubleSolenoid(RobotMap.PCM_REVERSE_INOUT_SOLENOID_PORT, RobotMap.PCM_FORWARD_INOUT_SOLENOID_PORT);
     _releaseSolenoid = new DoubleSolenoid(RobotMap.PCM_FORWARD_RELEASE_SOLENOID_PORT, RobotMap.PCM_REVERSE_RELEASE_SOLENOID_PORT);
     
+    //Hatch Limit Switch
+    _hatchLimitSwitch = new DigitalInput(RobotMap.CARGO_LIMIT_SWITCH_DIO_PORT);
 
     setCargoDefultPosition();
   }
@@ -265,6 +269,10 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
     } else {
       return false;
     }
+  }
+
+  public boolean get_HasHatch() {
+    return _hatchLimitSwitch.get();
   }
 
   // ===============================================================================================================

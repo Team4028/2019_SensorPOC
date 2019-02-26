@@ -19,6 +19,12 @@ import frc.robot.util.LogDataBE;
  */
 public class VisionLL implements IVisionSensor {
 
+    public enum LIMELIGHT_PIPELINE {
+        RIGHT,
+        CENTER,
+        LEFT;
+    }
+
     private double HORIZONAL_CAMERA_OFFSET_IN = 6;
     private double VERTICAL_CAMERA_OFFSET_IN = 15;
 
@@ -34,6 +40,7 @@ public class VisionLL implements IVisionSensor {
 
     // private constructor for singleton pattern
     private VisionLL() {
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(1);
     }
 
     @Override
@@ -67,6 +74,20 @@ public class VisionLL implements IVisionSensor {
         // - Math.pow(HORIZONAL_CAMERA_OFFSET_IN/Math.cos(Math.abs(_navX.)), 2)
          - Math.pow(VERTICAL_CAMERA_OFFSET_IN, 2));
         return actualDistance;
+    }
+
+    public void changeLimelightPipeline(LIMELIGHT_PIPELINE pipeline) {
+        switch(pipeline){
+            case RIGHT:
+                NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(0);
+                break;
+            case CENTER:
+                NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(1);
+                break;
+            case LEFT:
+                NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(2);
+                break;
+        }
     }
 
     public void turnOffLimelightLEDs() {

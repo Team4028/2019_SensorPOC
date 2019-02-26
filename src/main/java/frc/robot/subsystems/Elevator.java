@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+//#region
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
@@ -14,6 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotMap;
 import frc.robot.interfaces.IBeakSquadSubsystem;
 import frc.robot.util.LogDataBE;
+//#endregion
 
 public class Elevator extends Subsystem implements IBeakSquadSubsystem {
 
@@ -38,6 +40,9 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
   }
 
   // =================================================================================================================
+  // Define Class Constants
+  // =================================================================================================================
+  //#region
   private static final int ELEVATOR_POS_ALLOWABLE_ERROR_NU = InchesToNativeUnits(0.5);
 
   //Conversion Constant
@@ -82,6 +87,7 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
   private static final int TELEOP_DOWN_ACCELERATION = 2000;
 
   private static final int CAN_TIMEOUT_MILLISECONDS = 30;
+  //#endregion
 
   //=====================================================================================
 	// Define Singleton Pattern

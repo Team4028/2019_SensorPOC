@@ -11,6 +11,7 @@ import frc.robot.commands.infeed.ScoreHatch;
 import frc.robot.commands.infeed.ToggleBeakPosition;
 import frc.robot.commands.infeed.TogglePunch;
 import frc.robot.commands.infeed.ToggleStartPos;
+import frc.robot.commands.vision.ChangeVisionPipeline;
 import frc.robot.subsystems.Elevator.ELEVATOR_TARGET_POSITION;
 import frc.robot.util.BeakXboxController;
 
@@ -58,7 +59,8 @@ public class OI {
 		_operatorController.y.whenPressed(new AquireHatch());
 		_operatorController.x.whenPressed(new ScoreHatch());
 		_operatorController.rb.whenPressed(new ToggleStartPos());;
-		_operatorController.a.whenPressed(new ReleaseInfeed());
+		//_operatorController.a.whenPressed(new ReleaseInfeed());
+		_operatorController.a.whenPressed(new ChangeVisionPipeline(_operatorController.dPad.up, _operatorController.dPad.upRight, _operatorController.dPad.upLeft, _operatorController.rt, _operatorController.a));
 		
 		_operatorController.start.whenPressed(new SwitchCamera());
 
