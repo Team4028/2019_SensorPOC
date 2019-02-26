@@ -136,8 +136,7 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
     _elevatorMasterMotor.configVelocityMeasurementWindow(32, 0);
 
     // Set up MotionMagic mode
-    // SetPidSlotToUse("constr", MOVING_DOWN_PID_SLOT_INDEX)
-    _elevatorMasterMotor.selectProfileSlot(1, 0);
+    _elevatorMasterMotor.selectProfileSlot(MOVING_UP_PID_SLOT_INDEX, 0);
 
     // Set closed loop gains
     _elevatorMasterMotor.config_kF(MOVING_DOWN_PID_SLOT_INDEX, FEED_FORWARD_GAIN_DOWN, CAN_TIMEOUT_MILLISECONDS);
@@ -166,9 +165,9 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
     _elevatorMasterMotor.configAllowableClosedloopError(0, ELEVATOR_POS_ALLOWABLE_ERROR_NU, 0);
   }
 
-//   // =================================================================================================================
-// 	// Methods to move the elevator
-// 	// =================================================================================================================
+  // =================================================================================================================
+	// Methods to Move the Elevator
+	// =================================================================================================================
 	
   public void zeroElevatorMotorEncoder() {
     if (_elevatorMasterMotor.getSensorCollection().isRevLimitSwitchClosed()) {
@@ -228,6 +227,10 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
   // ===============================================================================================================
 	// Expose Properties of Elevator
 	// ===============================================================================================================
+  public boolean get_isElevatorAtTargetPos(){
+    return get_isElevatorAtTargetPos(_targetElevatorPositionNU);
+  }
+
   private boolean get_isElevatorAtTargetPos(int targetPosition) {
     int currentError = Math.abs(_elevatorMasterMotor.getSelectedSensorPosition() - targetPosition);
     if(currentError <= ELEVATOR_POS_ALLOWABLE_ERROR_NU) {
@@ -241,10 +244,6 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
     return _hasElevatorBeenZeroed;
   }
 
-  public boolean get_isElevatorAtTargetPos(){
-    return get_isElevatorAtTargetPos(_targetElevatorPositionNU);
-  }
-
   public int get_ElevatorPos() {
     return _elevatorMasterMotor.getSelectedSensorPosition(0);
   }
@@ -253,12 +252,15 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
     return _elevatorMasterMotor.getSelectedSensorVelocity();
   }
 
-  public double NativeUnitsToInches(double nativeUnitsMeasure) {
+  // ===============================================================================================================
+	// Private Helper Methods
+	// ===============================================================================================================
+  private double NativeUnitsToInches(double nativeUnitsMeasure) {
     double inches = nativeUnitsMeasure / NATIVE_UNITS_TO_INCHES_CONVERSION;
     return inches;
   }
 
-  public static int InchesToNativeUnits(double inchesMeasure) {
+  private static int InchesToNativeUnits(double inchesMeasure) {
     int nativeUnits = (int)(inchesMeasure * NATIVE_UNITS_TO_INCHES_CONVERSION);
     return nativeUnits;
   }

@@ -99,10 +99,10 @@ public class GyroNavX {
 	// private constructor for singleton pattern
 	private GyroNavX() {	
 		try {          
-			_navXSensor = new AHRS(RobotMap.NAVX_PORT); // Communication via RoboRIO MXP (SPI) 
-		  } catch (RuntimeException ex ) {
-			  DriverStation.reportError("Error instantiating navX MXP:  " + ex.getMessage(), true);
-		  }
+		_navXSensor = new AHRS(RobotMap.NAVX_PORT); // Communication via RoboRIO MXP (SPI) 
+		} catch (RuntimeException ex ) {
+			DriverStation.reportError("Error instantiating navX MXP:  " + ex.getMessage(), true);
+		}
 	}
 
 	public double get_angle2InDegreesFromLL(SCORING_TARGET scoringTarget, SIDE side) {
@@ -135,6 +135,7 @@ public class GyroNavX {
 		}
 
 		double angle2 = sideFactor * scoringTargetAngle - _visionLL.get_angle1InDegrees() - _navXSensor.getYaw();
+		_currentAngle2 = angle2;
 		return angle2;
 	}
 
@@ -170,79 +171,6 @@ public class GyroNavX {
 		return scoringTargetAngle * sideFactor;
 	}
 
-	public ThreeDimensionalIsometry getRotationToTarget(SCORING_TARGET target, SIDE side){
-		double targetAlpha = 0;
-		double targetBeta = 0;
-		double targetGamma = 0;
-		switch(target){
-			case CARGOSHIP_FRONT:
-				switch(side){
-					case LEFT:
-						targetAlpha = CARGOSHIP_FRONT_LEFT_TARGET_ALPHA_DEGREES;
-						targetBeta = CARGOSHIP_FRONT_LEFT_TARGET_BETA_DEGREES;
-						targetGamma = CARGOSHIP_FRONT_LEFT_TARGET_GAMMA_DEGREES;
-					case RIGHT:
-						targetAlpha = CARGOSHIP_FRONT_RIGHT_TARGET_ALPHA_DEGREES;
-						targetBeta = CARGOSHIP_FRONT_RIGHT_TARGET_BETA_DEGREES;
-						targetGamma = CARGOSHIP_FRONT_RIGHT_TARGET_GAMMA_DEGREES;
-				}
-			case CARGOSHIP_SIDE_ROCKET:
-				switch(side){
-					case LEFT:
-						targetAlpha = CARGOSHIP_SIDE_ROCKET_LEFT_TARGET_ALPHA_DEGREES;
-						targetBeta = CARGOSHIP_SIDE_ROCKET_LEFT_TARGET_BETA_DEGREES;
-						targetGamma = CARGOSHIP_SIDE_ROCKET_LEFT_TARGET_GAMMA_DEGREES;
-					case RIGHT:
-						targetAlpha = CARGOSHIP_SIDE_ROCKET_RIGHT_TARGET_ALPHA_DEGREES;
-						targetBeta = CARGOSHIP_SIDE_ROCKET_RIGHT_TARGET_BETA_DEGREES;
-						targetGamma = CARGOSHIP_SIDE_ROCKET_RIGHT_TARGET_GAMMA_DEGREES;
-					}	
-			case ROCKET_FRONT:
-				switch(side){
-					case LEFT:
-						targetAlpha = ROCKET_FRONT_LEFT_TARGET_ALPHA_DEGREES;
-						targetBeta = ROCKET_FRONT_LEFT_TARGET_BETA_DEGREES;
-						targetGamma = ROCKET_FRONT_LEFT_TARGET_GAMMA_DEGREES;
-					case RIGHT:
-						targetAlpha = ROCKET_FRONT_RIGHT_TARGET_ALPHA_DEGREES;
-						targetBeta = ROCKET_FRONT_RIGHT_TARGET_BETA_DEGREES;
-						targetGamma = ROCKET_FRONT_RIGHT_TARGET_GAMMA_DEGREES;
-				}
-			case ROCKET_BACK:
-				switch(side){
-					case LEFT:
-						targetAlpha = ROCKET_BACK_LEFT_TARGET_ALPHA_DEGREES;
-						targetBeta = ROCKET_BACK_LEFT_TARGET_BETA_DEGREES;
-						targetGamma = ROCKET_BACK_LEFT_TARGET_GAMMA_DEGREES;
-					case RIGHT:
-						targetAlpha = ROCKET_BACK_RIGHT_TARGET_ALPHA_DEGREES;
-						targetBeta = ROCKET_BACK_RIGHT_TARGET_BETA_DEGREES;
-						targetGamma = ROCKET_BACK_RIGHT_TARGET_GAMMA_DEGREES;
-				}
-			case FEEDER_STATION:
-				switch(side){
-					case LEFT:
-						targetAlpha = FEEDER_STATION_LEFT_TARGET_ALPHA_DEGREES;
-						targetBeta = FEEDER_STATION_LEFT_TARGET_BETA_DEGREES;
-						targetGamma = FEEDER_STATION_LEFT_TARGET_GAMMA_DEGREES;						
-					case RIGHT:
-						targetAlpha = FEEDER_STATION_RIGHT_TARGET_ALPHA_DEGREES;
-						targetBeta = FEEDER_STATION_RIGHT_TARGET_BETA_DEGREES;
-						targetGamma = FEEDER_STATION_RIGHT_TARGET_GAMMA_DEGREES;							
-				}
-		}
-		double navXAlpha = _navXSensor.getYaw();
-		double navXBeta = _navXSensor.getPitch();
-		double navXGamma = _navXSensor.getRoll();
-		double navXToTargetAlpha = LimeLightInterpreter.deg2rad(targetAlpha - navXAlpha);
-		double navXToTargetBeta = LimeLightInterpreter.deg2rad(targetBeta - navXBeta);
-		double navXToTargetGamma = LimeLightInterpreter.deg2rad(targetGamma - navXGamma);
-		ThreeDimensionalIsometry translationlessNAVXToTargetIsometry = new ThreeDimensionalIsometry(0, 0, 0, navXToTargetAlpha, navXToTargetBeta, navXToTargetGamma);
-		ThreeDimensionalIsometry translationlessTargetToNAVXIsometry = translationlessNAVXToTargetIsometry.inverse();
-		ThreeDimensionalIsometry translationlessTargetToLimelight = translationlessTargetToNAVXIsometry.applyIsometricTransformation(NAVX_TO_LIMELIGHT_TRNASLATIONLESS_ISOMETRY);
-		ThreeDimensionalIsometry translationlessLimelightToTarget = translationlessTargetToLimelight.inverse();
-		return translationlessLimelightToTarget;
-	}
 	
     public double getYaw() { 
 		return _navXSensor.getYaw();
