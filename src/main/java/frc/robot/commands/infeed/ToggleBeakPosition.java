@@ -4,7 +4,13 @@
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
-
+/* 
+  Forward and reverse limit switch
+  1 encoder
+  homing sequence
+  at least one predefined height and speed
+  
+  */ 
 package frc.robot.commands.infeed;
 
 import edu.wpi.first.wpilibj.command.Command;
