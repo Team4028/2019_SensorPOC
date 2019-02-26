@@ -20,11 +20,11 @@ public class LDoubleHatchLFrontLSide extends CommandGroup {
         addSequential(new DriveSetDistance(-5));
         addSequential(new TurnInPlace(255, false));
         addSequential(new RunMotionProfileCommand(_toFeederStation));
-        addSequential(new CG_FollowVisionPath(SCORING_TARGET.FEEDER_STATION,SIDE.LEFT));
+        addSequential(new CG_FollowVisionPath());
         addSequential(new DriveSetDistance(-5));
         addSequential(new TurnInPlace(20, false));
         addSequential(new RunMotionProfileCommand(_toBay));
-        addSequential(new CG_FollowVisionPath(SCORING_TARGET.CARGOSHIP_SIDE_ROCKET, SIDE.LEFT));
+        addSequential(new CG_FollowVisionPath());
         
     }
 }

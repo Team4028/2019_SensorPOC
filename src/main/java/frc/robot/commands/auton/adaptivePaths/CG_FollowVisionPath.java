@@ -17,19 +17,19 @@ public class CG_FollowVisionPath extends CommandGroup {
     Chassis _chassis = Chassis.getInstance();
     double _startTime;
 
-    public CG_FollowVisionPath(SCORING_TARGET target, SIDE side) 
+    public CG_FollowVisionPath() 
     {
         setInterruptible(false);
         requires(_chassis);
-        addSequential(new Auton_turnFromVision(target, side));
+        addSequential(new Auton_turnFromVision());
         addSequential(new PrintCommand("SECOND VISION TURN TERMINATING"));
         addSequential(new printTimeFromStart());
-        addSequential(new DriveVisionDistance(target, side), 1.5);
+        addSequential(new DriveVisionDistance());
         addSequential(new PrintCommand("VISION DRIVE STRAIGHT TERMINATING"));
         addSequential(new printTimeFromStart());
     }
 
-    @Override
+	@Override
     protected void initialize() 
     {
         _startTime = Timer.getFPGATimestamp();

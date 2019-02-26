@@ -12,7 +12,7 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotMap;
-import frc.robot.sensors.visionLLInterpretation.LimeLightInterpreter;
+//import frc.robot.sensors.visionLLInterpretation.LimeLightInterpreter;
 import frc.robot.sensors.visionLLInterpretation.ThreeDimensionalIsometry;
 
 /**
@@ -81,7 +81,7 @@ public class GyroNavX {
 	private static final double NAVX_TO_LIMELIGHT_ALPHA_DEGREES = 0;
 	private static final double NAVX_TO_LIMELIGHT_BETA_DEGREES = 0;
 	private static final double NAVX_TO_LIMELIGHT_GAMMA_DEGREES = 0;
-	private static final ThreeDimensionalIsometry NAVX_TO_LIMELIGHT_TRNASLATIONLESS_ISOMETRY = new ThreeDimensionalIsometry(0, 0, 0, LimeLightInterpreter.deg2rad(NAVX_TO_LIMELIGHT_ALPHA_DEGREES),  LimeLightInterpreter.deg2rad(NAVX_TO_LIMELIGHT_BETA_DEGREES),  LimeLightInterpreter.deg2rad(NAVX_TO_LIMELIGHT_GAMMA_DEGREES));
+	//private static final ThreeDimensionalIsometry NAVX_TO_LIMELIGHT_TRNASLATIONLESS_ISOMETRY = new ThreeDimensionalIsometry(0, 0, 0, LimeLightInterpreter.deg2rad(NAVX_TO_LIMELIGHT_ALPHA_DEGREES),  LimeLightInterpreter.deg2rad(NAVX_TO_LIMELIGHT_BETA_DEGREES),  LimeLightInterpreter.deg2rad(NAVX_TO_LIMELIGHT_GAMMA_DEGREES));
 	
 
 	private double _currentAngle2;

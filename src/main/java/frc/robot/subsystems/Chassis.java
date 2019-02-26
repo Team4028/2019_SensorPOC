@@ -189,8 +189,8 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
         _rightMaster.config_kP(0, 0.32);
         _rightMaster.config_kI(0, 0);
         _rightMaster.config_kD(0, 3.2);
-        _rightMaster.configMotionCruiseVelocity(1275);
-        _leftMaster.configMotionCruiseVelocity(1275);
+        _rightMaster.configMotionCruiseVelocity(1000);
+        _leftMaster.configMotionCruiseVelocity(1000);
         _rightMaster.configMotionAcceleration(1200);
         _leftMaster.configMotionAcceleration(1200);
 				return;
@@ -215,8 +215,8 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
     public void arcadeDrive(double throttleCmd, double turnCmd) 
     {
       _chassisState = ChassisState.PERCENT_VBUS;
-      _leftMaster.set(ControlMode.PercentOutput, 0.7*throttleCmd+0.5*turnCmd);
-      _rightMaster.set(ControlMode.PercentOutput,0.7*throttleCmd-0.5*turnCmd);
+      _leftMaster.set(ControlMode.PercentOutput, 0.7*throttleCmd+0.3*turnCmd);
+      _rightMaster.set(ControlMode.PercentOutput,0.7*throttleCmd-0.3*turnCmd);
     }
   
     public void stop()
@@ -237,7 +237,10 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
   
   public void moveToTargetPosDriveSetDistance ()
 	{
-		setLeftRightCommand(ControlMode.MotionMagic, _leftMtrDriveSetDistanceCmd, _rightMtrDriveSetDistanceCmd);
+    _chassisState = ChassisState.DRIVE_SET_DISTANCE;
+    System.out.println("Left Command Inches" + Double.toString(NUtoInches(_leftMtrDriveSetDistanceCmd-getLeftPos())));
+    setLeftRightCommand(ControlMode.MotionMagic, _leftMtrDriveSetDistanceCmd, _rightMtrDriveSetDistanceCmd);
+    System.out.println(_chassisState);
   }
   
   public synchronized void setWantDrivePath(Path path, boolean reversed) 

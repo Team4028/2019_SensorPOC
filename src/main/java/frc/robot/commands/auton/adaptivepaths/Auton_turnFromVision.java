@@ -3,7 +3,6 @@ package frc.robot.commands.auton.adaptivePaths;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.auton.pathfollowing.LimeLightInterpreter;
 import frc.robot.sensors.GyroNavX;
 import frc.robot.sensors.VisionLL;
 import frc.robot.sensors.GyroNavX.SCORING_TARGET;
@@ -17,9 +16,7 @@ public class Auton_turnFromVision extends Command {
     SCORING_TARGET target;
     SIDE side;
     
-    public Auton_turnFromVision(SCORING_TARGET sTarget, SIDE sSide) {
-        target = sTarget;
-        side = sSide;
+    public Auton_turnFromVision() {
         setInterruptible(false);
         requires(_chassis);
     }
@@ -29,8 +26,7 @@ public class Auton_turnFromVision extends Command {
 
     @Override
     protected void execute() {
-        LimeLightInterpreter.update(target, side);
-        double angleOne = LimeLightInterpreter.getAngleOneDegrees();
+        double angleOne = _limelight.get_angle1InDegrees();
         if(angleOne > 0) {
             _chassis.setLeftRightCommand(ControlMode.PercentOutput, 0.30, -0.30);
         } else {

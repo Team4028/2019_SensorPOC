@@ -2,7 +2,6 @@ package frc.robot.commands.auton.adaptivePaths;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Constants;
-import frc.robot.auton.pathfollowing.LimeLightInterpreter;
 import frc.robot.sensors.DistanceRev2mSensor;
 import frc.robot.sensors.VisionLL;
 import frc.robot.sensors.GyroNavX.SCORING_TARGET;
@@ -14,29 +13,26 @@ public class DriveVisionDistance extends Command {
     Chassis _chassis = Chassis.getInstance();
     SCORING_TARGET target;
     SIDE side;
+    VisionLL _limelight = VisionLL.getInstance();
 
-    private static final double OFFSET = 28.5;
+    private static final double OFFSET = 21.5;
     
 
-    public DriveVisionDistance(SCORING_TARGET sTarget, SIDE sSide) {
-        target = sTarget;
-        side = sSide;
-        setInterruptible(true);
+    public DriveVisionDistance() {
+        setInterruptible(false);
         requires(_chassis);
     }
 
     @Override
     protected void initialize() {
-        setInterruptible(false);
         double dsDistance= DistanceRev2mSensor.getInstance().get_distanceToTargetInInches();
-        LimeLightInterpreter.update(target, side);
-        double llDistance = LimeLightInterpreter.getDistanceToTargetInches();
+        double llDistance = _limelight.get_revisedDistance();
         System.out.println("Distance Sensor Distance: " + dsDistance);
         System.out.println("LimeLight Distance: " + llDistance);
         if (dsDistance > 0) {
             _chassis.setMotionMagicCmdInches(Math.max((dsDistance-OFFSET),0));
         } else {
-            _chassis.setMotionMagicCmdInches(Math.max((llDistance-OFFSET),0));
+            _chassis.setMotionMagicCmdInches(Math.max((llDistance-OFFSET-9),0));
         }
         System.out.println("Motion Magic Command Set");
     }

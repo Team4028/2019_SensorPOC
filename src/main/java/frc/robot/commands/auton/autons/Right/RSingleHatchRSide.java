@@ -14,6 +14,6 @@ public class RSingleHatchRSide extends CommandGroup {
     public RSingleHatchRSide() {
         setInterruptible(false);
         addSequential(new RunMotionProfileCommand(_sidePath));
-        addSequential(new CG_FollowVisionPath(SCORING_TARGET.CARGOSHIP_SIDE_ROCKET, SIDE.RIGHT));
+        addSequential(new CG_FollowVisionPath());
     }
 }

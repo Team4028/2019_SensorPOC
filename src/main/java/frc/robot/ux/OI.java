@@ -1,6 +1,7 @@
 package frc.robot.ux;
 
 import frc.robot.RobotMap;
+import frc.robot.commands.auton.adaptivePaths.CG_FollowVisionPath;
 import frc.robot.commands.camera.SwitchCamera;
 import frc.robot.commands.chassis.DriveWithControllers;
 import frc.robot.commands.climber.DriveClimber;
@@ -56,6 +57,7 @@ public class OI {
 		_driverController.b.whenPressed(new ReleaseInfeed());
 		_driverController.x.whenPressed(new ToggleBeakOpen());
 		_driverController.y.whenPressed(new TogglePunch());
+		_driverController.start.whenPressed(new CG_FollowVisionPath());
 		// =========== Operator ======================================
 		_operatorController = new BeakXboxController(RobotMap.OPERATOR_GAMEPAD_USB_PORT);
 		//==========================================================
@@ -65,7 +67,9 @@ public class OI {
 		_operatorController.y.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.CARGO_LEVEL_2));
 		_operatorController.rb.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.HATCH_LEVEL_3));
 		_operatorController.lb.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.CARGO_LEVEL_3));
-		
+		_operatorController.leftStick.whileActive(new LiftClimber(_operatorController.leftStick));
+		_operatorController.leftStick.whenReleased(new LiftClimber(_operatorController.leftStick));
+		_operatorController.lt.whileActive(new DriveClimber(_operatorController.lt));
 
 		// =========== Engineer ======================================
 		// _engineerController = new BeakXboxController(RobotMap.ENGINEERING_GAMEPAD_USB_PORT);
