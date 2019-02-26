@@ -99,9 +99,9 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
 
   public void setCargoDefultPosition() {
     _beakOpenCloseSolenoid.set(BEAK_CLOSE);
-    _beakInOutSolenoid.set(MECHANISM_EXTENDED);
+    _beakInOutSolenoid.set(MECHANISM_RETRACTED);
     _punchSolenoid.set(PUNCH_IN);
-    _bucketSolenoid.set(RELEASE_EXTENDED);
+    _bucketSolenoid.set(RELEASE_RETRACTED);
   }
 
   // ===================================== 
@@ -248,7 +248,7 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
     }
   }
 
-  private String get_MechPosition(){
+  public String get_MechPosition(){
     Value currentMechPos = _beakInOutSolenoid.get();
     if (currentMechPos == MECHANISM_RETRACTED) {
       return "Mechanism Retracted";

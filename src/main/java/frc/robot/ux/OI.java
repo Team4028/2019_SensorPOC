@@ -42,11 +42,10 @@ public class OI {
 		//==========================================================
 
 		// Driver Controller -> Command Mapping
-		_driverController.leftStick.whileActive(new DriveWithControllers(_driverController.leftStick, _driverController.rightStick));
-		_driverController.rightStick.whileActive(new LiftClimber(_driverController.rightStick));
-	
+		_driverController.leftStick.whileActive(new DriveWithControllers(_driverController.leftStick, _driverController.rightStick));	
 		_driverController.leftStick.whenReleased(new DriveWithControllers(_driverController.leftStick, _driverController.rightStick));
-		_driverController.rightStick.whenReleased(new LiftClimber(_driverController.rightStick));
+		_driverController.rightStick.whileActive(new DriveWithControllers(_driverController.leftStick, _driverController.rightStick));	
+		_driverController.rightStick.whenReleased(new DriveWithControllers(_driverController.leftStick, _driverController.rightStick));
 		_driverController.lb.whenPressed(new AcquireHatch());
 		_driverController.lt.whileActive(new RunInfeedMotor(_driverController.lt, false));
 		_driverController.lt.whenReleased(new RunInfeedMotor(_driverController.lt, false));
@@ -69,15 +68,15 @@ public class OI {
 		
 
 		// =========== Engineer ======================================
-		_engineerController = new BeakXboxController(RobotMap.ENGINEERING_GAMEPAD_USB_PORT);
-		//============================================================
-		_engineerController.dPad.upRight.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.HATCH_LEVEL_3));
-		_engineerController.dPad.right.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.HATCH_LEVEL_2));
-		_engineerController.dPad.downLeft.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.HATCH_LEVEL_1));
-		_engineerController.dPad.down.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.HOME));
-		_engineerController.dPad.downLeft.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.CARGO_LEVEL_1));
-		_engineerController.dPad.left.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.CARGO_LEVEL_2));
-		_engineerController.dPad.upLeft.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.CARGO_LEVEL_3));
+		// _engineerController = new BeakXboxController(RobotMap.ENGINEERING_GAMEPAD_USB_PORT);
+		// //============================================================
+		// _engineerController.dPad.upRight.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.HATCH_LEVEL_3));
+		// _engineerController.dPad.right.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.HATCH_LEVEL_2));
+		// _engineerController.dPad.downLeft.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.HATCH_LEVEL_1));
+		// _engineerController.dPad.down.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.HOME));
+		// _engineerController.dPad.downLeft.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.CARGO_LEVEL_1));
+		// _engineerController.dPad.left.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.CARGO_LEVEL_2));
+		// _engineerController.dPad.upLeft.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.CARGO_LEVEL_3));
 	}
 }
 
