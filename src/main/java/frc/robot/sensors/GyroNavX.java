@@ -12,6 +12,8 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotMap;
+import frc.robot.sensors.visionLLInterpretation.LimeLightInterpreter;
+import frc.robot.sensors.visionLLInterpretation.ThreeDimensionalIsometry;
 
 /**
  * This class exposes the OnBoard Navigation Sensor Lead Student:
@@ -39,6 +41,48 @@ public class GyroNavX {
 	private static final double ROCKET_FRONT_ANGLE = 28.75;
 	private static final double ROCKET_BACK_ANGLE = 151.25;
 	private static final double FEEDER_STATION_ANGLE = 180;
+
+
+	private static final double CARGOSHIP_FRONT_LEFT_TARGET_ALPHA_DEGREES = 0;
+	private static final double CARGOSHIP_FRONT_LEFT_TARGET_BETA_DEGREES = 0;
+	private static final double CARGOSHIP_FRONT_LEFT_TARGET_GAMMA_DEGREES = 0;
+	private static final double CARGOSHIP_FRONT_RIGHT_TARGET_ALPHA_DEGREES = 0;
+	private static final double CARGOSHIP_FRONT_RIGHT_TARGET_BETA_DEGREES = 0;
+	private static final double CARGOSHIP_FRONT_RIGHT_TARGET_GAMMA_DEGREES = 0;
+	
+	private static final double CARGOSHIP_SIDE_ROCKET_LEFT_TARGET_ALPHA_DEGREES = 0;
+	private static final double CARGOSHIP_SIDE_ROCKET_LEFT_TARGET_BETA_DEGREES = 0;
+	private static final double CARGOSHIP_SIDE_ROCKET_LEFT_TARGET_GAMMA_DEGREES = 0;
+	private static final double CARGOSHIP_SIDE_ROCKET_RIGHT_TARGET_ALPHA_DEGREES = 0;
+	private static final double CARGOSHIP_SIDE_ROCKET_RIGHT_TARGET_BETA_DEGREES = 0;
+	private static final double CARGOSHIP_SIDE_ROCKET_RIGHT_TARGET_GAMMA_DEGREES = 0;
+
+	private static final double ROCKET_FRONT_LEFT_TARGET_ALPHA_DEGREES = 0;
+	private static final double ROCKET_FRONT_LEFT_TARGET_BETA_DEGREES = 0;
+	private static final double ROCKET_FRONT_LEFT_TARGET_GAMMA_DEGREES = 0;
+	private static final double ROCKET_FRONT_RIGHT_TARGET_ALPHA_DEGREES = 0;
+	private static final double ROCKET_FRONT_RIGHT_TARGET_BETA_DEGREES = 0;
+	private static final double ROCKET_FRONT_RIGHT_TARGET_GAMMA_DEGREES = 0;
+
+	private static final double ROCKET_BACK_LEFT_TARGET_ALPHA_DEGREES = 0;
+	private static final double ROCKET_BACK_LEFT_TARGET_BETA_DEGREES = 0;
+	private static final double ROCKET_BACK_LEFT_TARGET_GAMMA_DEGREES = 0;
+	private static final double ROCKET_BACK_RIGHT_TARGET_ALPHA_DEGREES = 0;
+	private static final double ROCKET_BACK_RIGHT_TARGET_BETA_DEGREES = 0;
+	private static final double ROCKET_BACK_RIGHT_TARGET_GAMMA_DEGREES = 0;
+
+	private static final double FEEDER_STATION_LEFT_TARGET_ALPHA_DEGREES = 0;
+	private static final double FEEDER_STATION_LEFT_TARGET_BETA_DEGREES = 0;
+	private static final double FEEDER_STATION_LEFT_TARGET_GAMMA_DEGREES = 0;
+	private static final double FEEDER_STATION_RIGHT_TARGET_ALPHA_DEGREES = 0;
+	private static final double FEEDER_STATION_RIGHT_TARGET_BETA_DEGREES = 0;
+	private static final double FEEDER_STATION_RIGHT_TARGET_GAMMA_DEGREES = 0;
+
+	private static final double NAVX_TO_LIMELIGHT_ALPHA_DEGREES = 0;
+	private static final double NAVX_TO_LIMELIGHT_BETA_DEGREES = 0;
+	private static final double NAVX_TO_LIMELIGHT_GAMMA_DEGREES = 0;
+	private static final ThreeDimensionalIsometry NAVX_TO_LIMELIGHT_TRNASLATIONLESS_ISOMETRY = new ThreeDimensionalIsometry(0, 0, 0, LimeLightInterpreter.deg2rad(NAVX_TO_LIMELIGHT_ALPHA_DEGREES),  LimeLightInterpreter.deg2rad(NAVX_TO_LIMELIGHT_BETA_DEGREES),  LimeLightInterpreter.deg2rad(NAVX_TO_LIMELIGHT_GAMMA_DEGREES));
+	
 
 	private double _currentAngle2;
 
@@ -124,6 +168,80 @@ public class GyroNavX {
 				break;
 		}
 		return scoringTargetAngle * sideFactor;
+	}
+
+	public ThreeDimensionalIsometry getRotationToTarget(SCORING_TARGET target, SIDE side){
+		double targetAlpha = 0;
+		double targetBeta = 0;
+		double targetGamma = 0;
+		switch(target){
+			case CARGOSHIP_FRONT:
+				switch(side){
+					case LEFT:
+						targetAlpha = CARGOSHIP_FRONT_LEFT_TARGET_ALPHA_DEGREES;
+						targetBeta = CARGOSHIP_FRONT_LEFT_TARGET_BETA_DEGREES;
+						targetGamma = CARGOSHIP_FRONT_LEFT_TARGET_GAMMA_DEGREES;
+					case RIGHT:
+						targetAlpha = CARGOSHIP_FRONT_RIGHT_TARGET_ALPHA_DEGREES;
+						targetBeta = CARGOSHIP_FRONT_RIGHT_TARGET_BETA_DEGREES;
+						targetGamma = CARGOSHIP_FRONT_RIGHT_TARGET_GAMMA_DEGREES;
+				}
+			case CARGOSHIP_SIDE_ROCKET:
+				switch(side){
+					case LEFT:
+						targetAlpha = CARGOSHIP_SIDE_ROCKET_LEFT_TARGET_ALPHA_DEGREES;
+						targetBeta = CARGOSHIP_SIDE_ROCKET_LEFT_TARGET_BETA_DEGREES;
+						targetGamma = CARGOSHIP_SIDE_ROCKET_LEFT_TARGET_GAMMA_DEGREES;
+					case RIGHT:
+						targetAlpha = CARGOSHIP_SIDE_ROCKET_RIGHT_TARGET_ALPHA_DEGREES;
+						targetBeta = CARGOSHIP_SIDE_ROCKET_RIGHT_TARGET_BETA_DEGREES;
+						targetGamma = CARGOSHIP_SIDE_ROCKET_RIGHT_TARGET_GAMMA_DEGREES;
+					}	
+			case ROCKET_FRONT:
+				switch(side){
+					case LEFT:
+						targetAlpha = ROCKET_FRONT_LEFT_TARGET_ALPHA_DEGREES;
+						targetBeta = ROCKET_FRONT_LEFT_TARGET_BETA_DEGREES;
+						targetGamma = ROCKET_FRONT_LEFT_TARGET_GAMMA_DEGREES;
+					case RIGHT:
+						targetAlpha = ROCKET_FRONT_RIGHT_TARGET_ALPHA_DEGREES;
+						targetBeta = ROCKET_FRONT_RIGHT_TARGET_BETA_DEGREES;
+						targetGamma = ROCKET_FRONT_RIGHT_TARGET_GAMMA_DEGREES;
+				}
+			case ROCKET_BACK:
+				switch(side){
+					case LEFT:
+						targetAlpha = ROCKET_BACK_LEFT_TARGET_ALPHA_DEGREES;
+						targetBeta = ROCKET_BACK_LEFT_TARGET_BETA_DEGREES;
+						targetGamma = ROCKET_BACK_LEFT_TARGET_GAMMA_DEGREES;
+					case RIGHT:
+						targetAlpha = ROCKET_BACK_RIGHT_TARGET_ALPHA_DEGREES;
+						targetBeta = ROCKET_BACK_RIGHT_TARGET_BETA_DEGREES;
+						targetGamma = ROCKET_BACK_RIGHT_TARGET_GAMMA_DEGREES;
+				}
+			case FEEDER_STATION:
+				switch(side){
+					case LEFT:
+						targetAlpha = FEEDER_STATION_LEFT_TARGET_ALPHA_DEGREES;
+						targetBeta = FEEDER_STATION_LEFT_TARGET_BETA_DEGREES;
+						targetGamma = FEEDER_STATION_LEFT_TARGET_GAMMA_DEGREES;						
+					case RIGHT:
+						targetAlpha = FEEDER_STATION_RIGHT_TARGET_ALPHA_DEGREES;
+						targetBeta = FEEDER_STATION_RIGHT_TARGET_BETA_DEGREES;
+						targetGamma = FEEDER_STATION_RIGHT_TARGET_GAMMA_DEGREES;							
+				}
+		}
+		double navXAlpha = _navXSensor.getYaw();
+		double navXBeta = _navXSensor.getPitch();
+		double navXGamma = _navXSensor.getRoll();
+		double navXToTargetAlpha = LimeLightInterpreter.deg2rad(targetAlpha - navXAlpha);
+		double navXToTargetBeta = LimeLightInterpreter.deg2rad(targetBeta - navXBeta);
+		double navXToTargetGamma = LimeLightInterpreter.deg2rad(targetGamma - navXGamma);
+		ThreeDimensionalIsometry translationlessNAVXToTargetIsometry = new ThreeDimensionalIsometry(0, 0, 0, navXToTargetAlpha, navXToTargetBeta, navXToTargetGamma);
+		ThreeDimensionalIsometry translationlessTargetToNAVXIsometry = translationlessNAVXToTargetIsometry.inverse();
+		ThreeDimensionalIsometry translationlessTargetToLimelight = translationlessTargetToNAVXIsometry.applyIsometricTransformation(NAVX_TO_LIMELIGHT_TRNASLATIONLESS_ISOMETRY);
+		ThreeDimensionalIsometry translationlessLimelightToTarget = translationlessTargetToLimelight.inverse();
+		return translationlessLimelightToTarget;
 	}
 	
     public double getYaw() { 
