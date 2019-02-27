@@ -9,8 +9,7 @@ import frc.robot.sensors.GyroNavX.SCORING_TARGET;
 import frc.robot.sensors.GyroNavX.SIDE;
 import frc.robot.subsystems.Chassis;
 
-public class FindTarget extends Command 
-{
+public class FindTarget extends Command {
     double conjecturedTarget;
     GyroNavX _navX = GyroNavX.getInstance();
     VisionLL _limeLight= VisionLL.getInstance();
