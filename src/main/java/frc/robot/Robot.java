@@ -162,7 +162,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    //_chassis.updateChassis(Timer.getFPGATimestamp());
+    _chassis.updateChassis(Timer.getFPGATimestamp());
     Scheduler.getInstance().run();    
     _vision.turnOnLimelightLEDs();
   }

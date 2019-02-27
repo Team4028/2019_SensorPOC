@@ -223,6 +223,7 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
     {
       _chassisState = ChassisState.PERCENT_VBUS;
       setLeftRightCommand(ControlMode.PercentOutput, 0,0);
+      System.out.println("Chassis Stop");
     }
 
 
@@ -238,9 +239,7 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
   public void moveToTargetPosDriveSetDistance ()
 	{
     _chassisState = ChassisState.DRIVE_SET_DISTANCE;
-    System.out.println("Left Command Inches" + Double.toString(NUtoInches(_leftMtrDriveSetDistanceCmd-getLeftPos())));
     setLeftRightCommand(ControlMode.MotionMagic, _leftMtrDriveSetDistanceCmd, _rightMtrDriveSetDistanceCmd);
-    System.out.println(_chassisState);
   }
   
   public synchronized void setWantDrivePath(Path path, boolean reversed) 

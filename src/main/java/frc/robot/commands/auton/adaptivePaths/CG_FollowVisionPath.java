@@ -5,6 +5,9 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.PrintCommand;
 import frc.robot.commands.auton.util.Auton_ParallelStarter;
 import frc.robot.commands.auton.util.printTimeFromStart;
+import frc.robot.commands.chassis.DriveSetDistance;
+import frc.robot.commands.infeed.ReleaseInfeed;
+import frc.robot.commands.infeed.ScoreHatch;
 import frc.robot.sensors.GyroNavX;
 import frc.robot.sensors.VisionLL;
 import frc.robot.sensors.GyroNavX.SCORING_TARGET;
@@ -24,9 +27,12 @@ public class CG_FollowVisionPath extends CommandGroup {
         addSequential(new Auton_turnFromVision());
         addSequential(new PrintCommand("SECOND VISION TURN TERMINATING"));
         addSequential(new printTimeFromStart());
-        addSequential(new DriveVisionDistance());
+        //addSequential(new DriveVisionDistance(),3);
         addSequential(new PrintCommand("VISION DRIVE STRAIGHT TERMINATING"));
         addSequential(new printTimeFromStart());
+        //addSequential(new ReleaseInfeed());
+        //addSequential(new ScoreHatch());
+        //addSequential(new DriveSetDistance(-10));
     }
 
 	@Override

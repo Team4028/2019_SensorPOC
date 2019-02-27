@@ -15,7 +15,8 @@ public class DriveVisionDistance extends Command {
     SIDE side;
     VisionLL _limelight = VisionLL.getInstance();
 
-    private static final double OFFSET = 21.5;
+    private static final double OFFSET = 17;
+    boolean _canSeeTarget;
     
 
     public DriveVisionDistance() {
@@ -25,16 +26,26 @@ public class DriveVisionDistance extends Command {
 
     @Override
     protected void initialize() {
-        double dsDistance= DistanceRev2mSensor.getInstance().get_distanceToTargetInInches();
-        double llDistance = _limelight.get_revisedDistance();
-        System.out.println("Distance Sensor Distance: " + dsDistance);
-        System.out.println("LimeLight Distance: " + llDistance);
-        if (dsDistance > 0) {
-            _chassis.setMotionMagicCmdInches(Math.max((dsDistance-OFFSET),0));
-        } else {
-            _chassis.setMotionMagicCmdInches(Math.max((llDistance-OFFSET-9),0));
+        if(_limelight.get_isTargetInFOV())
+        {
+                double dsDistance= DistanceRev2mSensor.getInstance().get_distanceToTargetInInches();
+            double llDistance = _limelight.get_revisedDistance();
+            System.out.println("Distance Sensor Distance: " + dsDistance);
+            System.out.println("LimeLight Distance: " + llDistance);
+            if (dsDistance > 0) {
+                _chassis.setMotionMagicCmdInches(Math.max((dsDistance-OFFSET),0));
+                System.out.println("Distance Sensor Distance Used");
+            } else {
+                _chassis.setMotionMagicCmdInches(Math.max((llDistance-OFFSET-7),0));
+                System.out.println("Limelight Distance Used");
+            }
+            System.out.println("Motion Magic Command Set");
+            _canSeeTarget=true;
         }
-        System.out.println("Motion Magic Command Set");
+        else
+        {
+            _canSeeTarget = false;
+        }
     }
     
     @Override
@@ -44,13 +55,26 @@ public class DriveVisionDistance extends Command {
 
     @Override
     protected boolean isFinished() {
-        if(Math.abs(_chassis.getLeftPos()-_chassis._leftMtrDriveSetDistanceCmd)<Constants.CHASSIS_DRIVE_SET_DISTANCE_DEADBAND
-		&& Math.abs(_chassis.getRightPos()-_chassis._rightMtrDriveSetDistanceCmd)<Constants.CHASSIS_DRIVE_SET_DISTANCE_DEADBAND) {
-			System.out.println("Chassis is Finished");
-			return true;
-		} else {
-			return false;
-		}
+
+        if(_canSeeTarget)
+        {
+            if(Math.abs(_chassis.getLeftPos()-_chassis._leftMtrDriveSetDistanceCmd)<Constants.CHASSIS_DRIVE_SET_DISTANCE_DEADBAND
+            && Math.abs(_chassis.getRightPos()-_chassis._rightMtrDriveSetDistanceCmd)<Constants.CHASSIS_DRIVE_SET_DISTANCE_DEADBAND) {
+                System.out.println("Chassis is Finished");
+                return true;
+            } else {
+                return false;
+            }
+        }
+        else
+        {
+            return true;
+        }
+
+    }
+    @Override
+    protected void end() {
+        _chassis.stop();
     }
 
 }
