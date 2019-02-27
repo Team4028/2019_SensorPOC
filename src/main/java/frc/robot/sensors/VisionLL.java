@@ -63,7 +63,8 @@ public class VisionLL implements IVisionSensor {
     }
 
     @Override
-    public boolean get_isTargetInFOV() {
+    public boolean get_isTargetInFOV() 
+    {
         if (NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0) == 1) {
             return true;
         } else {
@@ -71,14 +72,16 @@ public class VisionLL implements IVisionSensor {
         }
     }
 
-    public double get_revisedDistance(){
+    public double get_revisedDistance()
+    {
         double actualDistance = Math.sqrt(Math.pow(get_distanceToTargetInInches(), 2)
         // - Math.pow(HORIZONAL_CAMERA_OFFSET_IN/Math.cos(Math.abs(_navX.)), 2)
          - Math.pow(VERTICAL_CAMERA_OFFSET_IN, 2));
         return actualDistance;
     }
 
-    public void changeLimelightPipeline(LIMELIGHT_PIPELINE pipeline) {
+    public void changeLimelightPipeline(LIMELIGHT_PIPELINE pipeline) 
+    {
         switch(pipeline){
             case RIGHT:
                 NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(0);
