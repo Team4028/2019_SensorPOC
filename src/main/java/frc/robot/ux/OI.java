@@ -61,15 +61,24 @@ public class OI {
 		// =========== Operator ======================================
 		_operatorController = new BeakXboxController(RobotMap.OPERATOR_GAMEPAD_USB_PORT);
 		//==========================================================
-		_operatorController.a.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.HATCH_LEVEL_1));
-		_operatorController.b.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.CARGO_LEVEL_1));
-		_operatorController.x.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.HATCH_LEVEL_2));
-		_operatorController.y.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.CARGO_LEVEL_2));
-		_operatorController.rb.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.HATCH_LEVEL_3));
-		_operatorController.lb.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.CARGO_LEVEL_3));
-		_operatorController.leftStick.whileActive(new LiftClimber(_operatorController.leftStick));
-		_operatorController.leftStick.whenReleased(new LiftClimber(_operatorController.leftStick));
-		_operatorController.lt.whileActive(new DriveClimber(_operatorController.lt));
+		_operatorController.leftStick.whileActive(new RunInfeedMotor(_operatorController.leftStick));
+		
+        _operatorController.leftStick.whenReleased(new RunInfeedMotor(_operatorController.leftStick));
+        _operatorController.lb.whenPressed(new ToggleBeakPosition());
+        _operatorController.rb.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.HOME));
+        _operatorController.x.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.LEVEL_1));
+        _operatorController.b.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.LEVEL_2));
+        _operatorController.y.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.LEVEL_3));
+
+        //_operatorController.a.whenPressed();
+
+ 
+
+        //_operatorController.rt.whenActive(new TeleopVisionAssistedDriving(_operatorController.dPad.up, _operatorController.dPad.upRight, _operatorController.dPad.upLeft, _operatorController.rt, _operatorController.a));
+
+        
+
+        _operatorController.start.whenPressed(new SwitchCamera());
 
 		// =========== Engineer ======================================
 		// _engineerController = new BeakXboxController(RobotMap.ENGINEERING_GAMEPAD_USB_PORT);

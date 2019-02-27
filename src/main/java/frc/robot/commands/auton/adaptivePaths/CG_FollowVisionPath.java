@@ -27,12 +27,13 @@ public class CG_FollowVisionPath extends CommandGroup {
         addSequential(new Auton_turnFromVision());
         addSequential(new PrintCommand("SECOND VISION TURN TERMINATING"));
         addSequential(new printTimeFromStart());
-        //addSequential(new DriveVisionDistance(),3);
+        addSequential(new DriveVisionDistance(),3);
         addSequential(new PrintCommand("VISION DRIVE STRAIGHT TERMINATING"));
         addSequential(new printTimeFromStart());
         //addSequential(new ReleaseInfeed());
-        //addSequential(new ScoreHatch());
-        //addSequential(new DriveSetDistance(-10));
+        addParallel(new ScoreHatch());
+        addParallel(new printTimeFromStart());
+        addSequential(new DriveSetDistance(-5));
     }
 
 	@Override

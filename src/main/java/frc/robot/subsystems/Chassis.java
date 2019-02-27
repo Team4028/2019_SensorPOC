@@ -189,8 +189,8 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
         _rightMaster.config_kP(0, 0.32);
         _rightMaster.config_kI(0, 0);
         _rightMaster.config_kD(0, 3.2);
-        _rightMaster.configMotionCruiseVelocity(1000);
-        _leftMaster.configMotionCruiseVelocity(1000);
+        _rightMaster.configMotionCruiseVelocity(1275);
+        _leftMaster.configMotionCruiseVelocity(1275);
         _rightMaster.configMotionAcceleration(1200);
         _leftMaster.configMotionAcceleration(1200);
 				return;

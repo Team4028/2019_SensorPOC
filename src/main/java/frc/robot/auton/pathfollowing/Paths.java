@@ -72,9 +72,9 @@ public class Paths {
 	private static void buildCenterPaths() {
 		_toFrontCargoShipLFromC = buildPathFromWaypoints(Arrays.asList(
 			new Waypoint(66,160,0,0),
-			new Waypoint(115,160,20,20),
-			new Waypoint(160,151,20,60),
-			new Waypoint(185,151,0,60)
+			new Waypoint(115,160,15,40),
+			new Waypoint(145,151,15,80),
+			new Waypoint(181,151,0,40)
 		));
 		centerPaths.put(Center.TO_FRONT_CARGO_SHIP_L, _toFrontCargoShipLFromC);
 		_toCargoShipRFromC = buildPathFromWaypoints(Arrays.asList(

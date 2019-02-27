@@ -201,7 +201,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledPeriodic() {
-    Scheduler.getInstance().run();
+    //Scheduler.getInstance().run();
     _vision.turnOffLimelightLEDs();
   }
   

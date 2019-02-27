@@ -19,27 +19,20 @@ public class Auton_turnFromVision extends Command {
     double isFinishedError;
     double w, A ,B;
     double prevD;
+    boolean isFirstCycle;
 
     
     public Auton_turnFromVision() {
         setInterruptible(false);
         requires(_chassis);
-        kP=0.045;
-        kI=0.03;
-        kD=0.05;
-        prevTime=Timer.getFPGATimestamp();
-        w= 6.283;
-        A=(0.01*w-2)/(0.01*w+2);
-        B=2/(0.01*w+2);
-
-
-        
+        kP=0.035;
+        kI=0.02;
+        kD=0.001;
+        prevTime=Timer.getFPGATimestamp();     
     }
 
     @Override
     protected void initialize() {
-        System.out.print("a: "+A);
-        System.out.println(" b: "+ B);
         _canSeeTarget = _limelight.get_isTargetInFOV();
         prevTime=Timer.getFPGATimestamp();
         P=0;
@@ -47,6 +40,7 @@ public class Auton_turnFromVision extends Command {
         D=0;   
         error=0;
         prevD=0;
+        isFirstCycle=true;
     }
 
     @Override
@@ -55,7 +49,15 @@ public class Auton_turnFromVision extends Command {
         error = _limelight.getTheta();
         P = kP * error;
         I += kI * error * cycleTime;
-        D = (kD*(error-prevError)/cycleTime)*B-A*prevD;
+        if(isFirstCycle)
+        {
+            D=0;
+            isFirstCycle=false;
+        }
+        else
+        {
+            D = (kD*(error-prevError)/cycleTime)*0.3+0.7*prevD;           
+        }
         double output = P+I+D;
         prevD=D;
         System.out.print(" E: " + GeneralUtilities.roundDouble(error, 3));
@@ -70,7 +72,7 @@ public class Auton_turnFromVision extends Command {
     
     @Override
     protected boolean isFinished() {   
-        return (Math.abs(error)<2 &&Math.abs(D*cycleTime/kD)< 0.05)|| !_canSeeTarget;                               // deadband
+        return (Math.abs(error)<2 &&Math.abs(D*cycleTime/kD)< 0.1)|| !_canSeeTarget;                               // deadband
     
     }
 

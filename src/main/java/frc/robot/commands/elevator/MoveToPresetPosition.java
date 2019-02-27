@@ -21,8 +21,7 @@ public class MoveToPresetPosition extends Command {
 
   // Called just before this Command runs the first time
   @Override
-  protected void initialize() {
-  }
+  protected void initialize() {}
 
   // Called repeatedly when this Command is scheduled to run
   @Override
@@ -31,7 +30,7 @@ public class MoveToPresetPosition extends Command {
       long currentTimeInMs = System.nanoTime() / 1000000;
       long elapsedTimeInMs = currentTimeInMs - _startTimeInMs;
       if(elapsedTimeInMs > 500){
-        _elevator.MoveToPresetPosition(_presetPosition);
+        _elevator.MoveToPresetPosition(_presetPosition, _cargo.get_HasHatch());
       }
     } else {
       _cargo.toggleRelease();
@@ -47,8 +46,7 @@ public class MoveToPresetPosition extends Command {
 
   // Called once after isFinished returns true
   @Override
-  protected void end() {
-  }
+  protected void end() {}
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run

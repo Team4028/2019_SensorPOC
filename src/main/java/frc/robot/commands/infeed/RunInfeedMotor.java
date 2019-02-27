@@ -14,16 +14,25 @@ import frc.robot.util.BeakXboxController.Trigger;
 
 public class RunInfeedMotor extends Command {
   private Cargo _cargo = Cargo.getInstance();
-  private Trigger _leftThumbstick;
+  private Trigger _leftTrigger;
+  private Thumbstick _leftThumbstick;
   boolean _isReversed;
+  boolean isTrigger;
 
-  public RunInfeedMotor(Trigger leftThumbstick, boolean isReversed)  {
+  public RunInfeedMotor(Trigger leftTrigger, boolean isReversed)  {
+    requires(_cargo);
+    setInterruptible(true);
+    _leftTrigger = leftTrigger;
+    _isReversed = isReversed;
+    isTrigger=true;
+  }
+  public RunInfeedMotor(Thumbstick leftThumbstick)
+  {
     requires(_cargo);
     setInterruptible(true);
     _leftThumbstick = leftThumbstick;
-    _isReversed = isReversed;
+    isTrigger=false;
   }
-
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {}
@@ -31,9 +40,16 @@ public class RunInfeedMotor extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    if(_isReversed)
+    if(isTrigger)
     {
-      _cargo.setMotorSpeed(-1*_leftThumbstick.getY());
+      if(_isReversed)
+      {
+        _cargo.setMotorSpeed(-1*_leftTrigger.getY());
+      }
+      else
+      {
+        _cargo.setMotorSpeed(_leftTrigger.getY());
+      }
     }
     else
     {

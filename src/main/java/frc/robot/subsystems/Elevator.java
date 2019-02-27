@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+//#region
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
@@ -14,6 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotMap;
 import frc.robot.interfaces.IBeakSquadSubsystem;
 import frc.robot.util.LogDataBE;
+//#endregion
 
 public class Elevator extends Subsystem implements IBeakSquadSubsystem {
 
@@ -29,15 +31,15 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
   // Define Enums for the Elevator Axis
   public enum ELEVATOR_TARGET_POSITION {
     HOME,
-    CARGO_LEVEL_1,
-    CARGO_LEVEL_2,
-    CARGO_LEVEL_3,
-    HATCH_LEVEL_1,
-    HATCH_LEVEL_2,
-    HATCH_LEVEL_3
+    LEVEL_1,
+    LEVEL_2,
+    LEVEL_3
   }
 
   // =================================================================================================================
+  // Define Class Constants
+  // =================================================================================================================
+  //#region
   private static final int ELEVATOR_POS_ALLOWABLE_ERROR_NU = InchesToNativeUnits(0.5);
 
   //Conversion Constant
@@ -47,11 +49,10 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
   private static final int HOME_POSITION_NU = InchesToNativeUnits(0);
   private static final int CARGO_LEVEL_1_POSITION_NU = InchesToNativeUnits(24.25);
   private static final int CARGO_LEVEL_2_POSITION_NU = InchesToNativeUnits(52.25);
-  private static final int CARGO_LEVEL_3_POSITION_NU = InchesToNativeUnits(74);//83.75
+  private static final int CARGO_LEVEL_3_POSITION_NU = InchesToNativeUnits(52.25);
   private static final int HATCH_LEVEL_1_POSITION_NU = InchesToNativeUnits(0);
   private static final int HATCH_LEVEL_2_POSITION_NU = InchesToNativeUnits(31);
   private static final int HATCH_LEVEL_3_POSITION_NU = InchesToNativeUnits(58);
-  private static final int CARGO_SHIP_CARGO_POSITION_NU = InchesToNativeUnits(32 + 4);
 
   // define PID Constants
 	private static final int MOVING_DOWN_PID_SLOT_INDEX = 0;
@@ -80,10 +81,10 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
   private static final int DOWN_CRUISE_VELOCITY = 2000;
   private static final int TELEOP_UP_ACCELERATION = 4000;
   private static final int TELEOP_UP_DECELERATION = 4000;
-  
-  private static final int TELEOP_DOWN_ACCELERATION = 1500;
+  private static final int TELEOP_DOWN_ACCELERATION = 2000;
 
   private static final int CAN_TIMEOUT_MILLISECONDS = 30;
+  //#endregion
 
   //=====================================================================================
 	// Define Singleton Pattern
@@ -145,11 +146,11 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
 		_elevatorMasterMotor.config_kD(MOVING_DOWN_PID_SLOT_INDEX, DERIVATIVE_GAIN_DOWN, CAN_TIMEOUT_MILLISECONDS);
 		_elevatorMasterMotor.config_IntegralZone(MOVING_DOWN_PID_SLOT_INDEX, INTEGRAL_ZONE_DOWN, CAN_TIMEOUT_MILLISECONDS);
 		
- 		_elevatorMasterMotor.config_kF(MOVING_UP_PID_SLOT_INDEX, FEED_FORWARD_GAIN_UP, CAN_TIMEOUT_MILLISECONDS);
- 		_elevatorMasterMotor.config_kP(MOVING_UP_PID_SLOT_INDEX, PROPORTIONAL_GAIN_UP, CAN_TIMEOUT_MILLISECONDS);
- 		_elevatorMasterMotor.config_kI(MOVING_UP_PID_SLOT_INDEX, INTEGRAL_GAIN_UP, CAN_TIMEOUT_MILLISECONDS);
- 		_elevatorMasterMotor.config_kD(MOVING_UP_PID_SLOT_INDEX, DERIVATIVE_GAIN_UP, CAN_TIMEOUT_MILLISECONDS);
- 		_elevatorMasterMotor.config_IntegralZone(MOVING_UP_PID_SLOT_INDEX, INTEGRAL_ZONE_UP, CAN_TIMEOUT_MILLISECONDS);
+		_elevatorMasterMotor.config_kF(MOVING_UP_PID_SLOT_INDEX, FEED_FORWARD_GAIN_UP, CAN_TIMEOUT_MILLISECONDS);
+		_elevatorMasterMotor.config_kP(MOVING_UP_PID_SLOT_INDEX, PROPORTIONAL_GAIN_UP, CAN_TIMEOUT_MILLISECONDS);
+		_elevatorMasterMotor.config_kI(MOVING_UP_PID_SLOT_INDEX, INTEGRAL_GAIN_UP, CAN_TIMEOUT_MILLISECONDS);
+		_elevatorMasterMotor.config_kD(MOVING_UP_PID_SLOT_INDEX, DERIVATIVE_GAIN_UP, CAN_TIMEOUT_MILLISECONDS);
+		_elevatorMasterMotor.config_IntegralZone(MOVING_UP_PID_SLOT_INDEX, INTEGRAL_ZONE_UP, CAN_TIMEOUT_MILLISECONDS);
 		
 		_elevatorMasterMotor.config_kF(HOLDING_PID_SLOT_INDEX, FEED_FORWARD_GAIN_HOLD, CAN_TIMEOUT_MILLISECONDS);
 		_elevatorMasterMotor.config_kP(HOLDING_PID_SLOT_INDEX, PROPORTIONAL_GAIN_HOLD, CAN_TIMEOUT_MILLISECONDS);
@@ -176,31 +177,35 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
     }
   }
 
-  public void MoveToPresetPosition(ELEVATOR_TARGET_POSITION presetPosition){
+  public void MoveToPresetPosition(ELEVATOR_TARGET_POSITION presetPosition, boolean hasHatch){
     if(get_hasElevatorBeenZeroed()){
       switch(presetPosition){
         case HOME:
           _targetElevatorPositionNU = HOME_POSITION_NU;
           break;
-        case CARGO_LEVEL_1:
-          _targetElevatorPositionNU = CARGO_LEVEL_1_POSITION_NU;
+        case LEVEL_1:
+          if(hasHatch){
+            _targetElevatorPositionNU = HATCH_LEVEL_1_POSITION_NU;
+          } else {
+            _targetElevatorPositionNU = CARGO_LEVEL_1_POSITION_NU;
+          }
           break;
-        case CARGO_LEVEL_2:
-          _targetElevatorPositionNU = CARGO_LEVEL_2_POSITION_NU;
+        case LEVEL_2:
+          if(hasHatch){
+            _targetElevatorPositionNU = HATCH_LEVEL_2_POSITION_NU;
+          } else {
+            _targetElevatorPositionNU = CARGO_LEVEL_2_POSITION_NU;
+          }         
           break;
-        case CARGO_LEVEL_3:
-          _targetElevatorPositionNU = CARGO_LEVEL_3_POSITION_NU;
-          break;
-        case HATCH_LEVEL_1:
-          _targetElevatorPositionNU = HATCH_LEVEL_1_POSITION_NU;
-          break;
-        case HATCH_LEVEL_2:
-          _targetElevatorPositionNU = HATCH_LEVEL_2_POSITION_NU;
-          break;
-        case HATCH_LEVEL_3:
-          _targetElevatorPositionNU = HATCH_LEVEL_3_POSITION_NU;
-          break;
+        case LEVEL_3:
+          if(hasHatch){
+            _targetElevatorPositionNU = HATCH_LEVEL_3_POSITION_NU;
+          } else {
+            _targetElevatorPositionNU = CARGO_LEVEL_3_POSITION_NU;
+          }
+          break;       
       }
+
       // set appropriate gain slot to use (only flip if outside deadband)
       int currentError = Math.abs(get_ElevatorPos() - _targetElevatorPositionNU);
       if (currentError > ELEVATOR_POS_ALLOWABLE_ERROR_NU) {
