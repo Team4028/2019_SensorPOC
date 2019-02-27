@@ -14,12 +14,14 @@ import frc.robot.sensors.SwitchableCameraServer;
 import frc.robot.sensors.VisionLL;
 import frc.robot.sensors.VisionLL.LIMELIGHT_PIPELINE;
 import frc.robot.subsystems.Cargo;
+import frc.robot.subsystems.Elevator;
 import frc.robot.util.BeakXboxController.Trigger;
 
 public class ChangeVisionPipeline extends Command {
   VisionLL _vision = VisionLL.getInstance();
   GyroNavX _navX = GyroNavX.getInstance();
   Cargo _cargo = Cargo.getInstance();
+  Elevator _elevator = Elevator.getInstance();
   SwitchableCameraServer _camera = SwitchableCameraServer.getInstance();
 
   Button _dPadUp;      //Limelight Center Target
@@ -29,14 +31,13 @@ public class ChangeVisionPipeline extends Command {
   Button _startPipelineBtn;//Starts/Ends tuning
 
   public ChangeVisionPipeline(Button dPadUp, Button dPadUpRight, 
-    Button dPadUpLeft, Trigger rightTrigger, Button startPipelineBtn) {
+    Button dPadUpLeft, Trigger rightTrigger) {
     requires(_cargo);
     setInterruptible(true);
     _dPadUp = dPadUp;
     _dPadUpRight = dPadUpRight;
     _dPadUpLeft = dPadUpLeft;
     _rightTrigger = rightTrigger;
-    _startPipelineBtn = startPipelineBtn;
   }
 
   // Called just before this Command runs the first time
@@ -62,7 +63,7 @@ public class ChangeVisionPipeline extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return _rightTrigger.get() || !_startPipelineBtn.get();
+    return !_rightTrigger.get();// || ;
   }
 
   // Called once after isFinished returns true
