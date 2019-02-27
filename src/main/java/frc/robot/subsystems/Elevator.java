@@ -31,12 +31,9 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
   // Define Enums for the Elevator Axis
   public enum ELEVATOR_TARGET_POSITION {
     HOME,
-    CARGO_LEVEL_1,
-    CARGO_LEVEL_2,
-    CARGO_LEVEL_3,
-    HATCH_LEVEL_1,
-    HATCH_LEVEL_2,
-    HATCH_LEVEL_3
+    LEVEL_1,
+    LEVEL_2,
+    LEVEL_3
   }
 
   // =================================================================================================================
@@ -180,31 +177,35 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
     }
   }
 
-  public void MoveToPresetPosition(ELEVATOR_TARGET_POSITION presetPosition){
+  public void MoveToPresetPosition(ELEVATOR_TARGET_POSITION presetPosition, boolean hasHatch){
     if(get_hasElevatorBeenZeroed()){
       switch(presetPosition){
         case HOME:
           _targetElevatorPositionNU = HOME_POSITION_NU;
           break;
-        case CARGO_LEVEL_1:
-          _targetElevatorPositionNU = CARGO_LEVEL_1_POSITION_NU;
+        case LEVEL_1:
+          if(hasHatch){
+            _targetElevatorPositionNU = HATCH_LEVEL_1_POSITION_NU;
+          } else {
+            _targetElevatorPositionNU = CARGO_LEVEL_1_POSITION_NU;
+          }
           break;
-        case CARGO_LEVEL_2:
-          _targetElevatorPositionNU = CARGO_LEVEL_2_POSITION_NU;
+        case LEVEL_2:
+          if(hasHatch){
+            _targetElevatorPositionNU = HATCH_LEVEL_2_POSITION_NU;
+          } else {
+            _targetElevatorPositionNU = CARGO_LEVEL_2_POSITION_NU;
+          }         
           break;
-        case CARGO_LEVEL_3:
-          _targetElevatorPositionNU = CARGO_LEVEL_3_POSITION_NU;
-          break;
-        case HATCH_LEVEL_1:
-          _targetElevatorPositionNU = HATCH_LEVEL_1_POSITION_NU;
-          break;
-        case HATCH_LEVEL_2:
-          _targetElevatorPositionNU = HATCH_LEVEL_2_POSITION_NU;
-          break;
-        case HATCH_LEVEL_3:
-          _targetElevatorPositionNU = HATCH_LEVEL_3_POSITION_NU;
-          break;
+        case LEVEL_3:
+          if(hasHatch){
+            _targetElevatorPositionNU = HATCH_LEVEL_3_POSITION_NU;
+          } else {
+            _targetElevatorPositionNU = CARGO_LEVEL_3_POSITION_NU;
+          }
+          break;       
       }
+
       // set appropriate gain slot to use (only flip if outside deadband)
       int currentError = Math.abs(get_ElevatorPos() - _targetElevatorPositionNU);
       if (currentError > ELEVATOR_POS_ALLOWABLE_ERROR_NU) {
