@@ -31,7 +31,7 @@ public class RobotMap {
 	public static final int INFEED_DRIVE_CAN_ADDR = 9;
 
 	// DIO Ports
-	
+	public static final int CARGO_LIMIT_SWITCH = 0;
 	// Analog Ports
 	public static final int AIN_STORED_PRESSURE_SENSOR_PORT = 0;
 	

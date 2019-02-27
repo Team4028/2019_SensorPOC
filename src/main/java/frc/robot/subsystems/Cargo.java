@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
 import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Servo;
@@ -31,6 +32,7 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
   private DoubleSolenoid _beakOpenCloseSolenoid;
   private DoubleSolenoid _bucketSolenoid;
   private Servo _infeedServo;
+  private DigitalInput _hatchAcquiredLimitSwitch;
   private static final Value BEAK_OUT = DoubleSolenoid.Value.kForward;
   private static final Value BEAK_IN = DoubleSolenoid.Value.kReverse;
   private static final Value BEAK_OPEN = DoubleSolenoid.Value.kForward;
@@ -87,14 +89,18 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
     _punchSolenoid = new DoubleSolenoid(RobotMap.PCM_FORWARD_PUNCH_SOLENOID_PORT, RobotMap.PCM_REVERSE_PUNCH_SOLENOID_PORT);
     _beakInOutSolenoid = new DoubleSolenoid(RobotMap.PCM_REVERSE_INOUT_SOLENOID_PORT, RobotMap.PCM_FORWARD_INOUT_SOLENOID_PORT);
     _bucketSolenoid = new DoubleSolenoid(RobotMap.PCM_FORWARD_BUCKET_SOLENOID_PORT,RobotMap.PCM_REVERSE_BUCKET_SOLENOID_PORT);
+    _hatchAcquiredLimitSwitch = new DigitalInput(RobotMap.CARGO_LIMIT_SWITCH);
     
 
     setCargoDefultPosition();
   }
   
   public void setMotorSpeed (double driveSpeed) {
-    double Speed = (.7 * driveSpeed);
-    _infeedMtr.set(ControlMode.PercentOutput, Speed);
+    if (get_isHatchAquired() == true)
+    {
+      double Speed = (.7 * driveSpeed);
+    _infeedMtr.set(ControlMode.PercentOutput, Speed);;
+    }
   } 
 
   public void setCargoDefultPosition() {
@@ -266,6 +272,11 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
     } else {
       return false;
     }
+  }
+  
+  public boolean get_isHatchAquired()
+  {
+    return _hatchAcquiredLimitSwitch.get();
   }
 
   // ===============================================================================================================
