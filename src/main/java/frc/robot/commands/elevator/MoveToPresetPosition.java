@@ -30,7 +30,7 @@ public class MoveToPresetPosition extends Command {
       long currentTimeInMs = System.nanoTime() / 1000000;
       long elapsedTimeInMs = currentTimeInMs - _startTimeInMs;
       if(elapsedTimeInMs > 500){
-        _elevator.MoveToPresetPosition(_presetPosition, _cargo.get_HasHatch());
+        _elevator.MoveToPresetPosition(_presetPosition);
       }
     } else {
       _cargo.toggleRelease();
