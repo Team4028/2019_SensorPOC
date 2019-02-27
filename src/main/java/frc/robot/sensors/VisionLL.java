@@ -114,8 +114,7 @@ public class VisionLL implements IVisionSensor {
 
     }
 
-    public void updateDashboard() 
-    {
+    public void updateDashboard() {
         SmartDashboard.putString("Vision:CameraType", "Limelight");
         SmartDashboard.putBoolean("Vision:IsTargetInFOV", get_isTargetInFOV());
         SmartDashboard.putNumber("Vision:Angle1InDegrees", get_angle1InDegrees());
