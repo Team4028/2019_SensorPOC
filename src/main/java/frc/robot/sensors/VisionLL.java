@@ -34,8 +34,7 @@ public class VisionLL implements IVisionSensor {
     // =====================================================================================
     private static VisionLL _instance = new VisionLL();
 
-    public static VisionLL getInstance()
-     {
+    public static VisionLL getInstance() {
         return _instance;
     }
 
@@ -45,8 +44,7 @@ public class VisionLL implements IVisionSensor {
     }
 
     @Override
-    public double get_angle1InDegrees() 
-    {
+    public double get_angle1InDegrees() {
         return Math.round(NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0));
     }
 
