@@ -194,6 +194,7 @@ public class Robot extends TimedRobot {
   public void disabledInit() {
     _scanTimeSamples = new MovingAverage(20);
     _chassis.setBrakeMode(NeutralMode.Coast);
+    _chassis.stop();
   }
 
   /**

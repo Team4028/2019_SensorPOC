@@ -3,6 +3,7 @@ package frc.robot.commands.auton.adaptivePaths;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.PrintCommand;
+import edu.wpi.first.wpilibj.command.WaitCommand;
 import frc.robot.commands.auton.util.Auton_ParallelStarter;
 import frc.robot.commands.auton.util.printTimeFromStart;
 import frc.robot.commands.chassis.DriveSetDistance;
@@ -14,13 +15,13 @@ import frc.robot.sensors.GyroNavX.SCORING_TARGET;
 import frc.robot.sensors.GyroNavX.SIDE;
 import frc.robot.subsystems.Chassis;
 
-public class CG_FollowVisionPath extends CommandGroup {
+public class AutoPlaceHatch extends CommandGroup {
     VisionLL _limeLight = VisionLL.getInstance();
     GyroNavX _navX = GyroNavX.getInstance();
     Chassis _chassis = Chassis.getInstance();
     double _startTime;
 
-    public CG_FollowVisionPath() 
+    public AutoPlaceHatch() 
     {
         setInterruptible(false);
         requires(_chassis);
@@ -31,7 +32,7 @@ public class CG_FollowVisionPath extends CommandGroup {
         addSequential(new PrintCommand("VISION DRIVE STRAIGHT TERMINATING"));
         addSequential(new printTimeFromStart());
         //addSequential(new ReleaseInfeed());
-        addParallel(new ScoreHatch());
+        addSequential(new ScoreHatch());
         addParallel(new printTimeFromStart());
         addSequential(new DriveSetDistance(-5));
     }

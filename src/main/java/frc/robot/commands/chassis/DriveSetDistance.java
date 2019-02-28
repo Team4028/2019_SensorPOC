@@ -16,6 +16,7 @@ public class DriveSetDistance extends Command {
 
     @Override
     protected void initialize() {
+        System.out.println("Motion Magic Straight Initialized");
         _chassis.setMotionMagicCmdInches(_inches);
     }
 

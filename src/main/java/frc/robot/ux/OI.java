@@ -1,7 +1,7 @@
 package frc.robot.ux;
 
 import frc.robot.RobotMap;
-import frc.robot.commands.auton.adaptivePaths.CG_FollowVisionPath;
+import frc.robot.commands.auton.adaptivePaths.AutoPlaceHatch;
 import frc.robot.commands.camera.SwitchCamera;
 import frc.robot.commands.chassis.DriveWithControllers;
 import frc.robot.commands.climber.DriveClimber;
@@ -57,7 +57,7 @@ public class OI {
 		_driverController.b.whenPressed(new ReleaseInfeed());
 		_driverController.x.whenPressed(new ToggleBeakOpen());
 		_driverController.y.whenPressed(new TogglePunch());
-		_driverController.start.whenPressed(new CG_FollowVisionPath());
+		_driverController.start.whenPressed(new AutoPlaceHatch());
 		// =========== Operator ======================================
 		_operatorController = new BeakXboxController(RobotMap.OPERATOR_GAMEPAD_USB_PORT);
 		//==========================================================

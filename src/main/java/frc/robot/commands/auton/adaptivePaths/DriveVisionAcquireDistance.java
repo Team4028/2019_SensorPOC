@@ -8,18 +8,18 @@ import frc.robot.sensors.GyroNavX.SCORING_TARGET;
 import frc.robot.sensors.GyroNavX.SIDE;
 import frc.robot.subsystems.Chassis;
 
-public class DriveVisionDistance extends Command {
+public class DriveVisionAcquireDistance extends Command {
     double _inches;
     Chassis _chassis = Chassis.getInstance();
     SCORING_TARGET target;
     SIDE side;
     VisionLL _limelight = VisionLL.getInstance();
 
-    private static final double OFFSET = 12;
+    private static final double OFFSET = 9;
     boolean _canSeeTarget;
     
 
-    public DriveVisionDistance() {
+    public DriveVisionAcquireDistance() {
         setInterruptible(false);
         requires(_chassis);
     }

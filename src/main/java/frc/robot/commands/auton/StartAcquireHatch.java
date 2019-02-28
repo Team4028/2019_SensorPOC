@@ -19,7 +19,7 @@ public class StartAcquireHatch extends CommandGroup
         {
             addParallel(new ToggleBeakPosition());
         }
-        addSequential(new WaitCommand(0.1));
+        addSequential(new WaitCommand(0.04));
         addSequential(new AcquireHatch());
     }
 }

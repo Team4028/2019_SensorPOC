@@ -6,7 +6,7 @@ import frc.robot.auton.pathfollowing.Paths.Left;
 import frc.robot.auton.pathfollowing.control.Path;
 import frc.robot.commands.auton.RunMotionProfileCommand;
 import frc.robot.commands.auton.StartAcquireHatch;
-import frc.robot.commands.auton.adaptivePaths.CG_FollowVisionPath;
+import frc.robot.commands.auton.adaptivePaths.AutoPlaceHatch;
 import frc.robot.commands.infeed.ScoreHatch;
 import frc.robot.sensors.GyroNavX.SCORING_TARGET;
 import frc.robot.sensors.GyroNavX.SIDE;
@@ -18,7 +18,7 @@ public class LSingleHatchLFront extends CommandGroup {
         setInterruptible(false);
         addParallel(new StartAcquireHatch());
         addSequential(new RunMotionProfileCommand(_frontPath));
-        addSequential(new CG_FollowVisionPath());
+        addSequential(new AutoPlaceHatch());
         addSequential(new ScoreHatch());
     }
 }

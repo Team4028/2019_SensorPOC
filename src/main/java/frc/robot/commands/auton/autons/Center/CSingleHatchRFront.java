@@ -5,7 +5,7 @@ import frc.robot.auton.pathfollowing.Paths;
 import frc.robot.auton.pathfollowing.Paths.Center;
 import frc.robot.auton.pathfollowing.control.Path;
 import frc.robot.commands.auton.RunMotionProfileCommand;
-import frc.robot.commands.auton.adaptivePaths.CG_FollowVisionPath;
+import frc.robot.commands.auton.adaptivePaths.AutoPlaceHatch;
 import frc.robot.sensors.GyroNavX.SCORING_TARGET;
 import frc.robot.sensors.GyroNavX.SIDE;
 
