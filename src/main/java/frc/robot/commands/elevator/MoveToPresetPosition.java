@@ -26,14 +26,14 @@ public class MoveToPresetPosition extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    if(_cargo.get_IsBucketOut()){
+    if(_cargo.get_isBucketExtended()) {
       long currentTimeInMs = System.nanoTime() / 1000000;
       long elapsedTimeInMs = currentTimeInMs - _startTimeInMs;
       if(elapsedTimeInMs > 500){
         _elevator.MoveToPresetPosition(_presetPosition);
       }
     } else {
-      _cargo.toggleRelease();
+      _cargo.toggleBucket();
       _startTimeInMs = System.nanoTime() / 1000000;
     }
   }
