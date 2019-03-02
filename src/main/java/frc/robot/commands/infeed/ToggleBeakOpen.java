@@ -25,7 +25,7 @@ public class ToggleBeakOpen extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    _cargo.toggleBeakPlacement();
+    _cargo.toggleBeakOpenClose();
   }
 
   // Make this return true when this Command no longer needs to run execute()
