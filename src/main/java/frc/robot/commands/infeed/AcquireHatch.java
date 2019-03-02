@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Cargo;
-import frc.robot.subsystems.Cargo.BEAK_POSITION;
+import frc.robot.subsystems.Cargo.BEAK_OPENCLOSE_POSITION;
 import frc.robot.subsystems.Cargo.PUNCH_POSITION;
 
 public class AcquireHatch extends Command 
@@ -52,7 +52,7 @@ DriverStation.reportWarning("The Comand Should Be Schdeuled", false);
   @Override
   protected void execute()  {
     if(_currentStep == AQUIRE_HATCH_STEP.BEAK_CLOSE_STEP) {
-      _cargo.setBeak(BEAK_POSITION.CLOSED);
+      _cargo.setBeakOpenClose(BEAK_OPENCLOSE_POSITION.CLOSED);
       _currentStep = AQUIRE_HATCH_STEP.WAIT_TO_PUNCH;
       _startTimeInMs = System.nanoTime() / 1000000;
     }
@@ -82,7 +82,7 @@ DriverStation.reportWarning("The Comand Should Be Schdeuled", false);
     }
     else if(_currentStep == AQUIRE_HATCH_STEP.BEAK_OPEN_STEP);
     {
-      _cargo.setBeak(BEAK_POSITION.OPEN);
+      _cargo.setBeakOpenClose(BEAK_OPENCLOSE_POSITION.OPEN);
       _currentStep = AQUIRE_HATCH_STEP.FINISHED;
     }
     SmartDashboard.putString("CargoAquire:State", _currentStep.toString());

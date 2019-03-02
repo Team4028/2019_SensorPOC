@@ -11,30 +11,29 @@ import frc.robot.commands.infeed.AcquireHatch;
 import frc.robot.commands.infeed.ReleaseInfeed;
 import frc.robot.commands.infeed.RunInfeedMotor;
 import frc.robot.commands.infeed.ScoreHatch;
-import frc.robot.commands.infeed.ToggleBeakOpen;
-import frc.robot.commands.infeed.ToggleBeakPosition;
+import frc.robot.commands.infeed.ToggleBeakInOut;
+import frc.robot.commands.infeed.ToggleBeakOpenClose;
 import frc.robot.commands.infeed.TogglePunch;
 import frc.robot.subsystems.Elevator.ELEVATOR_TARGET_POSITION;
 import frc.robot.util.BeakXboxController;
 
 /**
- * This class interfaces with the Driver/Operator Station 
- * 	Lead Student:
+ * This class interfaces with the Driver/Operator Station Lead Student:
  */
 public class OI {
-    private BeakXboxController _driverController;
+	private BeakXboxController _driverController;
 	private BeakXboxController _operatorController;
 	private BeakXboxController _engineerController;
-    
-    //=====================================================================================
+
+	// =====================================================================================
 	// Define Singleton Pattern
-	//=====================================================================================
+	// =====================================================================================
 	private static OI _instance = new OI();
-	
+
 	public static OI getInstance() {
 		return _instance;
 	}
-	
+
 	// private constructor for singleton pattern
 	private OI() 	
 	{	
@@ -60,7 +59,7 @@ public class OI {
 		_driverController.start.whenPressed(new AutoPlaceHatch());
 		// =========== Operator ======================================
 		_operatorController = new BeakXboxController(RobotMap.OPERATOR_GAMEPAD_USB_PORT);
-		//==========================================================
+		// ==========================================================
 		_operatorController.leftStick.whileActive(new RunInfeedMotor(_operatorController.leftStick));
 		
         _operatorController.leftStick.whenReleased(new RunInfeedMotor(_operatorController.leftStick));
