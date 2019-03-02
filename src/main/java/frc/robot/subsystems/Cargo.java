@@ -55,6 +55,7 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
     UNDEFINED,
     OUT,
     IN
+
   }
 
   public enum BEAK_INOUT_POSITION {
@@ -106,7 +107,7 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
 
   public void setCargoDefultPosition() {
     _beakOpenCloseSolenoid.set(BEAK_CLOSE);
-    _beakInOutSolenoid.set(BEAK_OUT);
+    _beakInOutSolenoid.set(MECHANISM_RETRACTED);
     _punchSolenoid.set(PUNCH_IN);
     _bucketSolenoid.set(BUCKET_RETRACTED);
   }
@@ -125,10 +126,10 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
     Value currentPunchPos = _punchSolenoid.get();
     
     if (desiredBeakPosition == BEAK_OPENCLOSE_POSITION.CLOSED) {
-          _beakInOutSolenoid.set(BEAK_CLOSE);
+          _beakOpenCloseSolenoid.set(BEAK_CLOSE);
     }
     else if (desiredBeakPosition == BEAK_OPENCLOSE_POSITION.OPEN) {
-      if(currentPunchPos == PUNCH_IN && currentBeakInOutPos == BEAK_OUT) {
+      if(currentPunchPos == PUNCH_IN && currentBeakInOutPos == BEAK_OPEN) {
           _beakOpenCloseSolenoid.set(BEAK_OPEN);
       } else {
         DriverStation.reportWarning("BEAK SAFETY INTERLOCK U SUC", false);
@@ -145,7 +146,7 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
       
     } 
     else if (punchPosition == PUNCH_POSITION.OUT) {
-      if(currentBeakOpenClosePos == BEAK_CLOSE && currentBeakInOutPos == BEAK_OUT) {
+      if(currentBeakOpenClosePos == BEAK_CLOSE && currentBeakInOutPos == BEAK_OPEN) {
         _punchSolenoid.set(PUNCH_OUT);
       } else {
         DriverStation.reportWarning("PUNCH SAFETY INTERLOCK U SUC", false);
@@ -156,13 +157,13 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
   public void setBeakInOut(BEAK_INOUT_POSITION beakInOutPosition) {
     Value currentBeakPos = _beakOpenCloseSolenoid.get();
     if (beakInOutPosition == BEAK_INOUT_POSITION.EXTENDED) {
-      _beakInOutSolenoid.set(BEAK_OUT);
+      _beakInOutSolenoid.set(MECHANISM_EXTENDED);
     
     } 
     else if (beakInOutPosition == BEAK_INOUT_POSITION.RETRACTED) {
       if(currentBeakPos== BEAK_CLOSE) 
       {
-           _beakInOutSolenoid.set(BEAK_IN);
+           _beakInOutSolenoid.set(MECHANISM_RETRACTED);
         } else {
           DriverStation.reportWarning("MECHANISM SAFETY INTERLOCK U SUC", false);
         }
@@ -184,7 +185,7 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
   // =====================================
   public void toggleBeakInOut() {
     Value currentBeakInOutPos = _beakInOutSolenoid.get();
-    if (currentBeakInOutPos == BEAK_OUT) {
+    if (currentBeakInOutPos == MECHANISM_RETRACTED) {
       setBeakInOut(BEAK_INOUT_POSITION.EXTENDED);
     } else {
       setBeakInOut(BEAK_INOUT_POSITION.RETRACTED);
@@ -258,7 +259,7 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
 
   public boolean get_isBeakOut() {
     
-    if(_beakInOutSolenoid.get() == BEAK_OUT){
+    if(_beakInOutSolenoid.get() == BEAK_OPEN){
       return true;
     } else {
       return false;
@@ -277,7 +278,7 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
   
   public boolean get_isHatchAquired()
   {
-    return !_hatchAcquiredLimitSwitch.get();
+    return !_hatchLimitSwitch.get();
   }
 
   // ===============================================================================================================

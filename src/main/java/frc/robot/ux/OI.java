@@ -1,3 +1,4 @@
+
 package frc.robot.ux;
 
 import frc.robot.RobotMap;
@@ -12,6 +13,7 @@ import frc.robot.commands.infeed.ReleaseInfeed;
 import frc.robot.commands.infeed.RunInfeedMotor;
 import frc.robot.commands.infeed.ScoreHatch;
 import frc.robot.commands.infeed.ToggleBeakInOut;
+import frc.robot.commands.infeed.ToggleBeakOpen;
 import frc.robot.commands.infeed.ToggleBeakOpenClose;
 import frc.robot.commands.infeed.TogglePunch;
 import frc.robot.subsystems.Elevator.ELEVATOR_TARGET_POSITION;
@@ -52,7 +54,7 @@ public class OI {
 		_driverController.rb.whenPressed(new ScoreHatch());
 		_driverController.rt.whileActive(new RunInfeedMotor(_driverController.rt, true));
 		_driverController.rt.whenReleased(new RunInfeedMotor(_driverController.rt, true));
-		_driverController.a.whenPressed(new ToggleBeakPosition());
+		_driverController.a.whenPressed(new ToggleBeakInOut());
 		_driverController.b.whenPressed(new ReleaseInfeed());
 		_driverController.x.whenPressed(new ToggleBeakOpen());
 		_driverController.y.whenPressed(new TogglePunch());
@@ -63,7 +65,7 @@ public class OI {
 		_operatorController.leftStick.whileActive(new RunInfeedMotor(_operatorController.leftStick));
 		
         _operatorController.leftStick.whenReleased(new RunInfeedMotor(_operatorController.leftStick));
-        _operatorController.lb.whenPressed(new ToggleBeakPosition());
+        _operatorController.lb.whenPressed(new ToggleBeakInOut());
         _operatorController.rb.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.HOME));
         _operatorController.x.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.LEVEL_1));
         _operatorController.b.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.LEVEL_2));
