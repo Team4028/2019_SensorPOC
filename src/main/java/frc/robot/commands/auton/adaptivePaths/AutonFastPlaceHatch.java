@@ -10,7 +10,7 @@ public class AutonFastPlaceHatch extends CommandGroup
     public AutonFastPlaceHatch()
     {
         addParallel(new ToggleBeakOpen());
-        addSequential(new WaitCommand(0.12));
+        addSequential(new WaitCommand(0.16));
         addSequential(new TogglePunch());
         
     }

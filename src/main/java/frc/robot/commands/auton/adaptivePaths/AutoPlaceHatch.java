@@ -29,7 +29,6 @@ public class AutoPlaceHatch extends CommandGroup {
         addSequential(new PrintCommand("VISION DRIVE STRAIGHT TERMINATING"));
         addSequential(new printTimeFromStart());
         addSequential(new AutonFastPlaceHatch());
-        addSequential(new WaitCommand(0.1));
         addParallel(new printTimeFromStart());
         addSequential(new DriveSetDistance(-5));
         addSequential(new TogglePunch());

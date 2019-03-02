@@ -128,7 +128,6 @@ public class Robot extends TimedRobot {
 
   public void autonomousPeriodic() 
   {
-    System.out.println(_chassis.getHeading());
     _chassis.updateChassis(Timer.getFPGATimestamp());
     Scheduler.getInstance().run();
 

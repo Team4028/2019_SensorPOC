@@ -17,13 +17,12 @@ public class LDoubleHatchLSideLSide extends CommandGroup {
     public LDoubleHatchLSideLSide() {
         setInterruptible(false);
         addSequential(new LSingleHatchLSide());
-        addSequential(new DriveSetDistance(-5));
-        addSequential(new TurnInPlace(207, true));
+        //addSequential(new DriveSetDistance(-5));
+        addSequential(new TurnInPlace(-153, true));
         addSequential(new RunMotionProfileCommand(_toFeederStation));
-        addSequential(new AutoPlaceHatch());
-        addSequential(new DriveSetDistance(-5));
-        addSequential(new TurnInPlace(20, false));
-        addSequential(new RunMotionProfileCommand(_toBay));
-        addSequential(new AutoPlaceHatch());
+        //addSequential(new AutoPlaceHatch());
+        //addSequential(new DriveSetDistance(-5));
+        //addSequential(new TurnInPlace(20, false));
+        //quential(new AutoPlaceHatch());
     }
 }

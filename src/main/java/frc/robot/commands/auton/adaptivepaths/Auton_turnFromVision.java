@@ -20,12 +20,13 @@ public class Auton_turnFromVision extends Command {
     double w, A ,B;
     double prevD;
     boolean isFirstCycle;
+    double count;
 
     
     public Auton_turnFromVision() {
         setInterruptible(false);
         requires(_chassis);
-        kP=0.019;
+        kP=0.025;
         kI=0.03;
         kD=0.001;
         prevTime=Timer.getFPGATimestamp();     
@@ -41,6 +42,7 @@ public class Auton_turnFromVision extends Command {
         error=0;
         prevD=0;
         isFirstCycle=true;
+        count=0;
     }
 
     @Override
@@ -71,12 +73,13 @@ public class Auton_turnFromVision extends Command {
         System.out.println("Output: " + GeneralUtilities.roundDouble(output, 3));
         prevTime=Timer.getFPGATimestamp();
         prevError=error;
+        count++;
         _chassis.setLeftRightCommand(ControlMode.PercentOutput, output, -output);
     }
     
     @Override
     protected boolean isFinished() {   
-        return (Math.abs(error)<0.75 &&Math.abs(D)< 0.005)|| !_canSeeTarget;                               // deadband
+        return count>5 && ((Math.abs(error)<0.75 &&Math.abs(D)< 0.005)|| !_canSeeTarget);                               // deadband
     
     }
 

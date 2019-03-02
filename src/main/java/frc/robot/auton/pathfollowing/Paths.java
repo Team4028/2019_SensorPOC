@@ -88,26 +88,24 @@ public class Paths {
 	}
 	
 	private static void buildLeftPaths() {		
-		_toFrontCargoShipLFromL = buildPathFromWaypoints(Arrays.asList(
+		_toFrontCargoShipLFromL = buildPathFromWaypoints(-0.001,Arrays.asList(
 		new Waypoint(66,120,0,0),
 		new Waypoint(120,120,20,40),
-		new Waypoint(145,155,20,70),
-		new Waypoint(180,155,0,30)));
+		new Waypoint(145,157,20,70),
+		new Waypoint(185,157,0,30)));
 		leftPaths.put(Left.TO_FRONT_CARGO_SHIP_L, _toFrontCargoShipLFromL);
 
 		_toLeftCargoShipFirstBay = buildPathFromWaypoints(Arrays.asList(
 			new Waypoint(66,120,0,0),
 			new Waypoint(115,120,40,40),
-			new Waypoint(265,95,0,80)
+			new Waypoint(265,100,0,80)
 		));
 		leftPaths.put(Left.TO_LEFT_CARGO_SHIP_FIRST, _toLeftCargoShipFirstBay);
 
-		_toFeederStationFromFirstBayL = buildPathFromWaypoints(Arrays.asList(
+		_toFeederStationFromFirstBayL = buildPathFromWaypoints(-0.003,Arrays.asList(
 			new Waypoint(260,115,0,0),
-			new Waypoint(240,105,16,20),
-			new Waypoint(150,95,30,20),
-			new Waypoint(90,80,30,20),
-			new Waypoint(20,80,0,20)
+			new Waypoint(130,80,50,60),
+			new Waypoint(20,80,0,80)
 		));
 		leftPaths.put(Left.FROM_FIRST_BAY_TO_FEEDER_STATION, _toFeederStationFromFirstBayL);
 

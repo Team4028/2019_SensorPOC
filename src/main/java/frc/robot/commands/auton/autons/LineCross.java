@@ -11,7 +11,7 @@ import frc.robot.commands.chassis.TurnInPlace;
 
 public class LineCross extends CommandGroup {
     public LineCross() {
-        //addSequential(new DriveWithControllers(0.5, 0.2),1.5);
-        addSequential(new TurnInPlace(-110,true));
+        addSequential(new DriveWithControllers(0.5, 0.0),1.5);
+        //addSequential(new TurnInPlace(-110,true));
     }
 }
