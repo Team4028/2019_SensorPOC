@@ -10,9 +10,10 @@ package frc.robot.commands.infeed;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.subsystems.Cargo;
 
-public class ToggleBeakPosition extends Command {
+public class ToggleBeakOpen extends Command {
   private Cargo _cargo = Cargo.getInstance();
-  public ToggleBeakPosition() {
+
+  public ToggleBeakOpen() {
     requires(_cargo);
     setInterruptible(false);
   }
@@ -24,7 +25,7 @@ public class ToggleBeakPosition extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    _cargo.toggleBeakPlacement();
+    _cargo.toggleBeakOpenClose();
   }
 
   // Make this return true when this Command no longer needs to run execute()

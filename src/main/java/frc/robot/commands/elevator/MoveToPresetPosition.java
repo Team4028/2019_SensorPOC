@@ -37,14 +37,14 @@ public class MoveToPresetPosition extends Command {
   protected void execute() {
     long _startTimeInMs = System.nanoTime() / 1000000;
     if(!_vision.isInVisionMode()){
-      if(_cargo.get_IsBucketOut()){
+      if(_cargo.get_isBucketExtended()){
         long currentTimeInMs = System.nanoTime() / 1000000;
         long elapsedTimeInMs = currentTimeInMs - _startTimeInMs;
         if(elapsedTimeInMs > 500){
           _elevator.moveToPresetPosition();
         }
       } else {
-        _cargo.toggleRelease();
+        _cargo.toggleBucket();
         _startTimeInMs = System.nanoTime() / 1000000;
       }
     }

@@ -4,25 +4,31 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.Date;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.auton.pathfollowing.Paths;
+import frc.robot.commands.elevator.ZeroElevatorEncoder;
 import frc.robot.sensors.GyroNavX;
 
 import frc.robot.sensors.VisionLL;
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.commands.elevator.ZeroElevatorEncoder;
+//import frc.robot.commands.elevator.ZeroElevatorEncoder;
 import frc.robot.sensors.AirCompressor;
 import frc.robot.sensors.DistanceRev2mSensor;
 import frc.robot.sensors.StoredPressureSensor;
 import frc.robot.sensors.SwitchableCameraServer;
+//import frc.robot.subsystems.Cargo;
 import frc.robot.subsystems.Cargo;
-
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Chassis.ChassisState;
+//import frc.robot.subsystems.Elevator;
 import frc.robot.util.DataLogger;
 import frc.robot.util.GeneralUtilities;
 import frc.robot.util.LogDataBE;
@@ -98,8 +104,11 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    Paths.buildPaths();
+    _chassis.initiateRobotState();
     _chassis.zeroSensors();
     _chassis.stop();
+    _chassis.setBrakeMode(NeutralMode.Brake);
     _scanTimeSamples = new MovingAverage(20);
     _lastDashboardWriteTimeMSec = new Date().getTime(); // snapshot time to control spamming
     _dataLogger = GeneralUtilities.setupLogging("Auton"); // init data logging	
@@ -109,6 +118,7 @@ public class Robot extends TimedRobot {
       Command zeroElevatorCommand = new ZeroElevatorEncoder();
       zeroElevatorCommand.start();
     }
+
   }
 
   /**
@@ -118,7 +128,6 @@ public class Robot extends TimedRobot {
 
   public void autonomousPeriodic() 
   {
-
     _chassis.updateChassis(Timer.getFPGATimestamp());
     Scheduler.getInstance().run();
 
@@ -137,6 +146,9 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     _chassis.stop();
+    _chassis.zeroSensors();
+    _chassis.initiateRobotState();
+    _chassis.setBrakeMode(NeutralMode.Brake);
         _scanTimeSamples = new MovingAverage(20);
     _dataLogger = GeneralUtilities.setupLogging("Teleop"); // init data logging
     _lastDashboardWriteTimeMSec = new Date().getTime(); // snapshot time to control spamming
@@ -144,6 +156,7 @@ public class Robot extends TimedRobot {
       Command zeroElevatorCommand = new ZeroElevatorEncoder();
       zeroElevatorCommand.start();
     }
+    _chassis.setChassisState(ChassisState.PERCENT_VBUS);
   }
 
    /* This function is called periodically during teleop mode.
@@ -151,7 +164,8 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     _chassis.updateChassis(Timer.getFPGATimestamp());
-    Scheduler.getInstance().run();    
+    Scheduler.getInstance().run();  
+    _leds.set_targetangle(_vision.get_angle1InDegrees(), _vision.get_isTargetInFOV(), _distanceRev2mSensor.get_distanceToTargetInInches());  
     _vision.turnOnLimelightLEDs();
   }
 
@@ -181,6 +195,9 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     _scanTimeSamples = new MovingAverage(20);
+    _chassis.setBrakeMode(NeutralMode.Coast);
+    _chassis.stop();
+    Scheduler.getInstance().removeAll();
   }
 
   /**
@@ -188,7 +205,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledPeriodic() {
-    Scheduler.getInstance().run();
+    //Scheduler.getInstance().run();
     _vision.turnOffLimelightLEDs();
   }
   
@@ -228,9 +245,9 @@ public class Robot extends TimedRobot {
     		// to push its data out to the dashboard
         // ----------------------------------------------
         if(_chassis != null)              { _chassis.updateDashboard(); }
-        if(_cargo != null)                { _cargo.updateDashboard(); }
-        if(_climber != null)              { _climber.updateDashboard(); }
-        if(_elevator != null)             { _elevator.updateDashboard(); }
+        // if(_cargo != null)                { _cargo.updateDashboard(); }
+        // if(_climber != null)              { _climber.updateDashboard(); }
+        // if(_elevator != null)             { _elevator.updateDashboard(); }
 
         if(_autonChoosers != null)        { _autonChoosers.updateDashboard(); }
 	    	if(_distanceRev2mSensor != null)  { _distanceRev2mSensor.updateDashboard(); }
@@ -265,9 +282,9 @@ public class Robot extends TimedRobot {
         // ask each subsystem that exists to add its data
         // ----------------------------------------------
         if(_chassis != null)              { _chassis.updateLogData(logData); }
-        if(_cargo != null)                { _cargo.updateLogData(logData); }
-        if(_climber != null)              { _climber.updateLogData(logData); }
-        if(_elevator != null)             { _elevator.updateLogData(logData); }
+        // if(_cargo != null)                { _cargo.updateLogData(logData); }
+        // if(_climber != null)              { _climber.updateLogData(logData); }
+        // if(_elevator != null)             { _elevator.updateLogData(logData); }
 
         if(_autonChoosers != null)        { _autonChoosers.updateLogData(logData); }
 	    	if(_distanceRev2mSensor != null)  { _distanceRev2mSensor.updateLogData(logData); }

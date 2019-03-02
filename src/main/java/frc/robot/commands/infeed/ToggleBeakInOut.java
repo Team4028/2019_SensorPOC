@@ -9,30 +9,15 @@ package frc.robot.commands.infeed;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.subsystems.Cargo;
-import frc.robot.util.BeakXboxController.Thumbstick;
-import frc.robot.util.BeakXboxController.Trigger;
 
-public class RunInfeedMotor extends Command {
+public class ToggleBeakInOut extends Command {
   private Cargo _cargo = Cargo.getInstance();
-  private Trigger _leftTrigger;
-  private Thumbstick _leftThumbstick;
-  boolean _isReversed;
-  boolean isTrigger;
 
-  public RunInfeedMotor(Trigger leftTrigger, boolean isReversed)  {
+  public ToggleBeakInOut() {
     requires(_cargo);
-    setInterruptible(true);
-    _leftTrigger = leftTrigger;
-    _isReversed = isReversed;
-    isTrigger=true;
+    setInterruptible(false);
   }
-  public RunInfeedMotor(Thumbstick leftThumbstick)
-  {
-    requires(_cargo);
-    setInterruptible(true);
-    _leftThumbstick = leftThumbstick;
-    isTrigger=false;
-  }
+
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {}
@@ -40,27 +25,13 @@ public class RunInfeedMotor extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    if(isTrigger)
-    {
-      if(_isReversed)
-      {
-        _cargo.setMotorSpeed(-1*_leftTrigger.getY());
-      }
-      else
-      {
-        _cargo.setMotorSpeed(_leftTrigger.getY());
-      }
-    }
-    else
-    {
-      _cargo.setMotorSpeed(_leftThumbstick.getY());
-    }
+    _cargo.toggleBeakInOut();
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return false;
+    return true;
   }
 
   // Called once after isFinished returns true
