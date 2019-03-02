@@ -4,15 +4,12 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.PrintCommand;
 import edu.wpi.first.wpilibj.command.WaitCommand;
-import frc.robot.commands.auton.util.Auton_ParallelStarter;
 import frc.robot.commands.auton.util.printTimeFromStart;
 import frc.robot.commands.chassis.DriveSetDistance;
-import frc.robot.commands.infeed.ReleaseInfeed;
 import frc.robot.commands.infeed.ScoreHatch;
+import frc.robot.commands.infeed.TogglePunch;
 import frc.robot.sensors.GyroNavX;
 import frc.robot.sensors.VisionLL;
-import frc.robot.sensors.GyroNavX.SCORING_TARGET;
-import frc.robot.sensors.GyroNavX.SIDE;
 import frc.robot.subsystems.Chassis;
 
 public class AutoPlaceHatch extends CommandGroup {
@@ -31,10 +28,11 @@ public class AutoPlaceHatch extends CommandGroup {
         addSequential(new DriveVisionDistance(),3);
         addSequential(new PrintCommand("VISION DRIVE STRAIGHT TERMINATING"));
         addSequential(new printTimeFromStart());
-        //addSequential(new ReleaseInfeed());
-        addSequential(new ScoreHatch());
+        addSequential(new AutonFastPlaceHatch());
+        addSequential(new WaitCommand(0.1));
         addParallel(new printTimeFromStart());
         addSequential(new DriveSetDistance(-5));
+        addSequential(new TogglePunch());
     }
 
 	@Override

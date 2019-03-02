@@ -27,6 +27,7 @@ import frc.robot.subsystems.Cargo;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Chassis.ChassisState;
 //import frc.robot.subsystems.Elevator;
 import frc.robot.util.DataLogger;
 import frc.robot.util.GeneralUtilities;
@@ -127,7 +128,7 @@ public class Robot extends TimedRobot {
 
   public void autonomousPeriodic() 
   {
-
+    System.out.println(_chassis.getHeading());
     _chassis.updateChassis(Timer.getFPGATimestamp());
     Scheduler.getInstance().run();
 
@@ -156,6 +157,7 @@ public class Robot extends TimedRobot {
       Command zeroElevatorCommand = new ZeroElevatorEncoder();
       zeroElevatorCommand.start();
     }
+    _chassis.setChassisState(ChassisState.PERCENT_VBUS);
   }
 
    /* This function is called periodically during teleop mode.
@@ -195,6 +197,7 @@ public class Robot extends TimedRobot {
     _scanTimeSamples = new MovingAverage(20);
     _chassis.setBrakeMode(NeutralMode.Coast);
     _chassis.stop();
+    Scheduler.getInstance().removeAll();
   }
 
   /**

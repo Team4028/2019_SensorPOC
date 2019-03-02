@@ -16,7 +16,6 @@ public class CSingleHatchLFront extends CommandGroup {
         setInterruptible(false);
         addParallel(new StartAcquireHatch());
         addSequential(new RunMotionProfileCommand(_toCargoShipFront));
-        //addSequential(new printTimeFromStart());
         addSequential(new AutoPlaceHatch());
     }
 }

@@ -28,6 +28,7 @@ import frc.robot.auton.pathfollowing.motion.RigidTransform;
 import frc.robot.auton.pathfollowing.motion.Rotation;
 import frc.robot.auton.pathfollowing.motion.Twist;
 import frc.robot.auton.pathfollowing.util.Kinematics;
+import frc.robot.commands.auton.adaptivePaths.Auton_turnFromVision;
 import frc.robot.interfaces.IBeakSquadSubsystem;
 import frc.robot.sensors.GyroNavX;
 import frc.robot.util.LogDataBE;
@@ -44,12 +45,13 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
 	//=====================================================================================
   private static Chassis _instance = new Chassis();
   
-  double ENCODER_CODES_PER_DEGREE = 312; //value calculated theoretically from ECPWR //339.2468*100/169.8;
+  double ENCODER_CODES_PER_DEGREE = 46.21; //value calculated theoretically from ECPWR //339.2468*100/169.8;
 
   public enum ChassisState
 	{
 		UNKNOWN,
-		PERCENT_VBUS,
+    PERCENT_VBUS,
+    AUTO_TURN,
 		FOLLOW_PATH,
 		DRIVE_SET_DISTANCE
   }
@@ -158,28 +160,26 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
         _chassisState=ChassisState.PERCENT_VBUS;
         setLeftRightCommand(ControlMode.PercentOutput, -0.3, -0.3);
       }
-    } else {
-      if(Math.abs(_navX.getPitch())>20 && Math.abs(_navX.getPitch())<30)
-      {
-        stop();
-      }
-      else if(_navX.getPitch()>30)
-      {
-        _chassisState=ChassisState.PERCENT_VBUS;
-        setLeftRightCommand(ControlMode.PercentOutput, 0.3, 0.3);
-      }
-      else if(_navX.getPitch()<-30)
-      {
-        _chassisState=ChassisState.PERCENT_VBUS;
-        setLeftRightCommand(ControlMode.PercentOutput, -0.3, -0.3);
-      }
     }
 		switch(_chassisState) {
 			case UNKNOWN:
 			return;
       case PERCENT_VBUS:
 				return;
-			
+      case AUTO_TURN:
+        _leftMaster.config_kF(0, 0.377);
+        _leftMaster.config_kP(0, 0.3);
+        _leftMaster.config_kI(0, 0);
+        _leftMaster.config_kD(0,3);
+        _rightMaster.config_kF(0, 0.377);
+        _rightMaster.config_kP(0, 0.3);
+        _rightMaster.config_kI(0, 0);
+        _rightMaster.config_kD(0, 3);
+        _rightMaster.configMotionCruiseVelocity(1200);
+        _leftMaster.configMotionCruiseVelocity(1200);
+        _rightMaster.configMotionAcceleration(800);
+        _leftMaster.configMotionAcceleration(800);
+        return;
       case DRIVE_SET_DISTANCE:
         _leftMaster.config_kF(0, 0.802);
         _leftMaster.config_kP(0, 0.32);
@@ -341,7 +341,75 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
 			return _pathFollower.remainingPathLength();
 		} 
 		return 0;
-	}
+  }
+
+  public synchronized void setTargetAngleAndTurnDirection(double targetAngle, boolean isTurnRight) {
+		_targetAngle = targetAngle;
+		_isTurnRight = isTurnRight;
+		_chassisState = ChassisState.AUTO_TURN;
+	} 
+  
+  public void moveToTargetAngle() {
+		if((_navX.getYaw() >= 0 && _targetAngle >= 0 && _isTurnRight && _navX.getYaw() > _targetAngle) ||
+			(_navX.getYaw() >= 0 && _targetAngle < 0 && _isTurnRight) ||
+			(_navX.getYaw() < 0 && _targetAngle < 0 && _isTurnRight && Math.abs(_navX.getYaw()) < Math.abs(_targetAngle))) {
+			_angleError = 360 - _navX.getYaw() + _targetAngle;
+		}
+		else if((_navX.getYaw() >= 0 && _targetAngle >= 0 && _isTurnRight && _navX.getYaw() < _targetAngle)||
+				(_navX.getYaw() >= 0 && _targetAngle >= 0 && !_isTurnRight && _navX.getYaw() > _targetAngle)||
+				(_navX.getYaw() >= 0 && _targetAngle < 0 && !_isTurnRight) ||
+				(_navX.getYaw() < 0 && _targetAngle >= 0 && _isTurnRight) ||
+				(_navX.getYaw() < 0 && _targetAngle < 0 && _isTurnRight && Math.abs(_navX.getYaw()) > Math.abs(_targetAngle)) ||
+				(_navX.getYaw() < 0 && _targetAngle < 0 && !_isTurnRight && Math.abs(_navX.getYaw()) < Math.abs(_targetAngle))) {
+			_angleError = _targetAngle - _navX.getYaw();
+		}		
+		else if((_navX.getYaw() >= 0 && _targetAngle >= 0 && !_isTurnRight && _navX.getYaw() < _targetAngle)||
+				(_navX.getYaw() < 0 && _targetAngle < 0 && !_isTurnRight && Math.abs(_navX.getYaw()) > Math.abs(_targetAngle))||
+				(_navX.getYaw() < 0 && _targetAngle >= 0 && !_isTurnRight)) {
+			_angleError = _targetAngle - _navX.getYaw() - 360;
+		}			
+    if(_angleError>300)
+    {
+      _angleError-=360;
+    }
+    else if(_angleError<-300)
+    {
+      _angleError+=360;
+    }
+		double encoderError = ENCODER_CODES_PER_DEGREE * _angleError;		
+		double leftDriveTargetPos = (getLeftPos() + encoderError);
+		double rightDriveTargetPos = (getRightPos() - encoderError);
+		setLeftRightCommand(ControlMode.MotionMagic, leftDriveTargetPos, rightDriveTargetPos);
+  }
+  public void updateAngleError()
+  {
+    if((_navX.getYaw() >= 0 && _targetAngle >= 0 && _isTurnRight && _navX.getYaw() > _targetAngle) ||
+    (_navX.getYaw() >= 0 && _targetAngle < 0 && _isTurnRight) ||
+    (_navX.getYaw() < 0 && _targetAngle < 0 && _isTurnRight && Math.abs(_navX.getYaw()) < Math.abs(_targetAngle))) {
+    _angleError = 360 - _navX.getYaw() + _targetAngle;
+  }
+  else if((_navX.getYaw() >= 0 && _targetAngle >= 0 && _isTurnRight && _navX.getYaw() < _targetAngle)||
+      (_navX.getYaw() >= 0 && _targetAngle >= 0 && !_isTurnRight && _navX.getYaw() > _targetAngle)||
+      (_navX.getYaw() >= 0 && _targetAngle < 0 && !_isTurnRight) ||
+      (_navX.getYaw() < 0 && _targetAngle >= 0 && _isTurnRight) ||
+      (_navX.getYaw() < 0 && _targetAngle < 0 && _isTurnRight && Math.abs(_navX.getYaw()) > Math.abs(_targetAngle)) ||
+      (_navX.getYaw() < 0 && _targetAngle < 0 && !_isTurnRight && Math.abs(_navX.getYaw()) < Math.abs(_targetAngle))) {
+    _angleError = _targetAngle - _navX.getYaw();
+  }		
+  else if((_navX.getYaw() >= 0 && _targetAngle >= 0 && !_isTurnRight && _navX.getYaw() < _targetAngle)||
+      (_navX.getYaw() < 0 && _targetAngle < 0 && !_isTurnRight && Math.abs(_navX.getYaw()) > Math.abs(_targetAngle))||
+      (_navX.getYaw() < 0 && _targetAngle >= 0 && !_isTurnRight)) {
+    _angleError = _targetAngle - _navX.getYaw() - 360;
+  }			
+  if(_angleError>300)
+  {
+    _angleError-=360;
+  }
+  else if(_angleError<-300)
+  {
+    _angleError+=360;
+  }
+  }
 	//=====================================================================================
 	// Helper Methods
   //=====================================================================================
@@ -350,12 +418,20 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
 		_leftMaster.set(mode, leftCommand);
 		_rightMaster.set(mode, rightCommand);
   }
+  public double getAngleError()
+  {
+    return _angleError;
+  }
   public void setBrakeMode(NeutralMode mode)
   {
     _leftMaster.setNeutralMode(mode);
 		_leftSlave.setNeutralMode(mode);
 		_rightMaster.setNeutralMode(mode);
     _rightSlave.setNeutralMode(mode);
+  }
+  public void setChassisState(ChassisState state)
+  {
+    _chassisState = state;
   }
   public double getHeading()
   {

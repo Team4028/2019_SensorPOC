@@ -271,7 +271,7 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
     }
   }
   public boolean get_HasHatch() {
-    return _hatchLimitSwitch.get();
+    return !_hatchLimitSwitch.get();
   }
 
   // ===============================================================================================================

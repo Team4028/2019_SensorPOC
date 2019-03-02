@@ -5,6 +5,7 @@ import frc.robot.auton.pathfollowing.Paths;
 import frc.robot.auton.pathfollowing.Paths.Left;
 import frc.robot.auton.pathfollowing.control.Path;
 import frc.robot.commands.auton.RunMotionProfileCommand;
+import frc.robot.commands.auton.adaptivePaths.AutoAcquireHatch;
 import frc.robot.commands.auton.adaptivePaths.AutoPlaceHatch;
 import frc.robot.commands.chassis.DriveSetDistance;
 import frc.robot.commands.chassis.TurnInPlace;
@@ -17,14 +18,13 @@ public class LDoubleHatchLFrontLSide extends CommandGroup {
     public LDoubleHatchLFrontLSide() {
         setInterruptible(false);
         addSequential(new LSingleHatchLFront());
-        addSequential(new DriveSetDistance(-5));
-        addSequential(new TurnInPlace(255, false));
+        addSequential(new TurnInPlace(235, false));
         addSequential(new RunMotionProfileCommand(_toFeederStation));
-        addSequential(new AutoPlaceHatch());
-        addSequential(new DriveSetDistance(-5));
-        addSequential(new TurnInPlace(20, false));
-        addSequential(new RunMotionProfileCommand(_toBay));
-        addSequential(new AutoPlaceHatch());
+        addSequential(new AutoAcquireHatch());
+        // addSequential(new DriveSetDistance(-5));
+        // addSequential(new TurnInPlace(20, false));
+        // addSequential(new RunMotionProfileCommand(_toBay));
+        // addSequential(new AutoPlaceHatch());
         
     }
 }

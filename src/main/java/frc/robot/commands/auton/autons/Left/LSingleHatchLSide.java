@@ -7,6 +7,7 @@ import frc.robot.auton.pathfollowing.control.Path;
 import frc.robot.commands.auton.RunMotionProfileCommand;
 import frc.robot.commands.auton.StartAcquireHatch;
 import frc.robot.commands.auton.util.printTimeFromStart;
+import frc.robot.commands.chassis.TurnInPlace;
 ;
 
 public class LSingleHatchLSide extends CommandGroup {
@@ -15,6 +16,7 @@ public class LSingleHatchLSide extends CommandGroup {
         setInterruptible(false);
         addParallel(new StartAcquireHatch());
         addSequential(new RunMotionProfileCommand(_sidePath));
+        addSequential(new TurnInPlace(90, true));
         addSequential(new printTimeFromStart());
         //addSequential(new CG_FollowVisionPath(SCORING_TARGET.CARGOSHIP_SIDE_ROCKET,SIDE.LEFT));
     }

@@ -21,7 +21,7 @@ public class CDoubleHatchLFrontLSide extends CommandGroup
     {
         setInterruptible(false);
         addSequential(new CSingleHatchLFront());
-        addSequential(new TurnInPlace(255, false));
+        addSequential(new TurnInPlace(270, false));
         addSequential(new RunMotionProfileCommand(_toFeederStation));
         addSequential(new printTimeFromStart());
         addSequential(new AutoAcquireHatch());
