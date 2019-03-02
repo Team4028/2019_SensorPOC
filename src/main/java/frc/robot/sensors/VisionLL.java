@@ -27,6 +27,7 @@ public class VisionLL implements IVisionSensor {
 
     private double HORIZONAL_CAMERA_OFFSET_IN = 6;
     private double VERTICAL_CAMERA_OFFSET_IN = 15;
+    private boolean _isInVisionMode = false;
 
     private GyroNavX _navX = GyroNavX.getInstance();
     // =====================================================================================
@@ -96,6 +97,14 @@ public class VisionLL implements IVisionSensor {
 
     public void turnOnLimelightLEDs() {
         NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(3);
+    }
+
+    public boolean isInVisionMode() {
+        return _isInVisionMode;
+    }
+
+    public void setIsInVisionMode(boolean isInVisionMode){
+        _isInVisionMode = isInVisionMode;
     }
 
     //=====================================================================================

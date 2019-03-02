@@ -48,6 +48,7 @@ public class ChangeVisionPipeline extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
+    _vision.setIsInVisionMode(true);
     _camera.displayLimelight();
     if(_dPadUp.get()) {
       _vision.changeLimelightPipeline(LIMELIGHT_PIPELINE.CENTER);
@@ -58,6 +59,7 @@ public class ChangeVisionPipeline extends Command {
     else if(_dPadUpLeft.get()){
       _vision.changeLimelightPipeline(LIMELIGHT_PIPELINE.LEFT);
     }
+    System.out.println("Running Vision Pipeline");
   }
 
   // Make this return true when this Command no longer needs to run execute()
@@ -68,7 +70,10 @@ public class ChangeVisionPipeline extends Command {
 
   // Called once after isFinished returns true
   @Override
-  protected void end() {}
+  protected void end() {
+    _vision.setIsInVisionMode(false);
+    _camera.switchCamera();
+  }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run

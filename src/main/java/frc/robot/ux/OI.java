@@ -60,8 +60,10 @@ public class OI {
 		_operatorController.y.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.LEVEL_3));
 		//_operatorController.a.whenPressed();
 
-		_operatorController.rt.whenActive(new TeleopVisionAssistedDriving(_operatorController.dPad.up, _operatorController.dPad.upRight, _operatorController.dPad.upLeft, _operatorController.rt, _operatorController.a));
-		
+		//_operatorController.rt.whenActive(new TeleopVisionAssistedDriving(_operatorController.dPad.up, _operatorController.dPad.upRight, _operatorController.dPad.upLeft, _operatorController.rt));
+		_operatorController.rt.whenActive(new ChangeVisionPipeline(_operatorController.dPad.up, _operatorController.dPad.upRight, _operatorController.dPad.upLeft, _operatorController.rt));
+
+
 		_operatorController.start.whenPressed(new SwitchCamera());
 		//_operatorController.back.whenPressed(command);
 
