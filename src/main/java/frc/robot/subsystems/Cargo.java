@@ -27,14 +27,14 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
   // =================================================================================================================
   // define class level working variables
   VictorSPX _infeedMtr;
-  private DoubleSolenoid _beakInOutSolenoid;
-  private DoubleSolenoid _punchSolenoid;
   private DoubleSolenoid _beakOpenCloseSolenoid;
+  private DoubleSolenoid _punchSolenoid;
+  private DoubleSolenoid _beakInOutSolenoid;
   private DoubleSolenoid _bucketSolenoid;
   private Servo _infeedServo;
-  private DigitalInput _hatchAcquiredLimitSwitch;
-  private static final Value BEAK_OUT = DoubleSolenoid.Value.kForward;
-  private static final Value BEAK_IN = DoubleSolenoid.Value.kReverse;
+  private DigitalInput _hatchLimitSwitch;
+  private static final Value MECHANISM_EXTENDED = DoubleSolenoid.Value.kForward;
+  private static final Value MECHANISM_RETRACTED = DoubleSolenoid.Value.kReverse;
   private static final Value BEAK_OPEN = DoubleSolenoid.Value.kForward;
   private static final Value BEAK_CLOSE = DoubleSolenoid.Value.kReverse;
   private static final Value PUNCH_IN = DoubleSolenoid.Value.kForward;
@@ -85,11 +85,12 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
     _infeedMtr.configForwardLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.Disabled);
 
     //Hatch Solenoids
-    _beakOpenCloseSolenoid = new DoubleSolenoid(RobotMap.PCM_FORWARD_BEAK_OPENCLOSE_SOLENOID_PORT, RobotMap.PCM_REVERSE_BEAK_OPENCLOSE_SOLENOID_PORT);
+    _beakOpenCloseSolenoid = new DoubleSolenoid(RobotMap.PCM_FORWARD_BEAK_SOLENOID_PORT,RobotMap.PCM_REVERSE_BEAK_SOLENOID_PORT);
     _punchSolenoid = new DoubleSolenoid(RobotMap.PCM_FORWARD_PUNCH_SOLENOID_PORT, RobotMap.PCM_REVERSE_PUNCH_SOLENOID_PORT);
     _beakInOutSolenoid = new DoubleSolenoid(RobotMap.PCM_REVERSE_INOUT_SOLENOID_PORT, RobotMap.PCM_FORWARD_INOUT_SOLENOID_PORT);
-    _bucketSolenoid = new DoubleSolenoid(RobotMap.PCM_FORWARD_BUCKET_SOLENOID_PORT,RobotMap.PCM_REVERSE_BUCKET_SOLENOID_PORT);
-    _hatchAcquiredLimitSwitch = new DigitalInput(RobotMap.CARGO_LIMIT_SWITCH);
+    _bucketSolenoid = new DoubleSolenoid(RobotMap.PCM_FORWARD_BUCKET_SOLENOID_PORT, RobotMap.PCM_REVERSE_BUCKET_SOLENOID_PORT);
+
+    _hatchLimitSwitch = new DigitalInput(RobotMap.CARGO_LIMIT_SWITCH_DIO_PORT);
     
 
     setCargoDefultPosition();
@@ -276,7 +277,7 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
   
   public boolean get_isHatchAquired()
   {
-    return _hatchAcquiredLimitSwitch.get();
+    return !_hatchAcquiredLimitSwitch.get();
   }
 
   // ===============================================================================================================

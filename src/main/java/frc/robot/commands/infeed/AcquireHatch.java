@@ -1,4 +1,3 @@
-/*----------------------------------------------------------------------------*/
 /* Copyright (c) 2018 FIRST. All Rights Reserved.                             */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
@@ -14,7 +13,7 @@ import frc.robot.subsystems.Cargo;
 import frc.robot.subsystems.Cargo.BEAK_OPENCLOSE_POSITION;
 import frc.robot.subsystems.Cargo.PUNCH_POSITION;
 
-public class AquireHatch extends Command 
+public class AcquireHatch extends Command 
 {
   //Local Variables
   private final int BEAK_CLOSE_TO_PUNCH_WAIT_TIME = 1000;
@@ -35,7 +34,7 @@ public class AquireHatch extends Command
   private AQUIRE_HATCH_STEP _currentStep = AQUIRE_HATCH_STEP.UNDEFINED;
 
   private Cargo _cargo = Cargo.getInstance();
-  public AquireHatch()  {
+  public AcquireHatch()  {
     setInterruptible(false);
     requires(_cargo);
     //_currentStep = AQUIRE_HATCH_STEP.BEAK_CLOSE_STEP;

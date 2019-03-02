@@ -16,6 +16,7 @@ public class DriveSetDistance extends Command {
 
     @Override
     protected void initialize() {
+        System.out.println("Motion Magic Straight Initialized");
         _chassis.setMotionMagicCmdInches(_inches);
     }
 
@@ -28,8 +29,7 @@ public class DriveSetDistance extends Command {
     protected boolean isFinished() {
         if(Math.abs(_chassis.getLeftPos()-_chassis._leftMtrDriveSetDistanceCmd)<Constants.CHASSIS_DRIVE_SET_DISTANCE_DEADBAND
 		&& Math.abs(_chassis.getRightPos()-_chassis._rightMtrDriveSetDistanceCmd)<Constants.CHASSIS_DRIVE_SET_DISTANCE_DEADBAND) {
-			System.out.println("Chassis is Finished");
-			return true;
+            return true;
 		} else {
             return false;
 		}

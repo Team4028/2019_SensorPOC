@@ -41,6 +41,15 @@ public class VisionLL implements IVisionSensor {
         return Math.round(NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0));
     }
 
+
+    public double getTheta(){
+        return NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
+    }
+
+    public double getPhi(){
+        return NetworkTableInstance.getDefault().getTable("limelight").getEntry("tz").getDouble(0);
+    }
+
     @Override
     public double get_distanceToTargetInInches() {
         double heightofBoundedBox = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tvert")
