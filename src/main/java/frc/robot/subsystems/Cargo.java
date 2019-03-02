@@ -269,7 +269,6 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
   }
 
   public boolean get_isBucketExtended() {
-    
     if(_bucketSolenoid.get() == BUCKET_EXTENDED){
 
       return true;
