@@ -15,7 +15,7 @@ public class StartAcquireHatch extends CommandGroup
     public StartAcquireHatch()
     {
         setInterruptible(false);
-        if(_cargo.get_isBeakOut())
+        if(!_cargo.get_isBeakOut())
         {
             addParallel(new ToggleBeakInOut());
         }

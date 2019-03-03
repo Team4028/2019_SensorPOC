@@ -15,6 +15,7 @@ import frc.robot.commands.auton.autons.Center.CSingleHatchLFront;
 import frc.robot.commands.auton.autons.Center.CSingleHatchRFront;
 import frc.robot.commands.auton.autons.Left.LDoubleHatchLFrontLSide;
 import frc.robot.commands.auton.autons.Left.LDoubleHatchLSideLSide;
+import frc.robot.commands.auton.autons.Left.LSingleHatchBackRocketL;
 import frc.robot.commands.auton.autons.Left.LSingleHatchLFront;
 import frc.robot.commands.auton.autons.Left.LSingleHatchLSide;
 import frc.robot.commands.auton.autons.Right.RDoubleHatchRFrontRSide;
@@ -38,6 +39,7 @@ public class AutonChoosers implements IBeakSquadSubsystem {
 		DOUBLE_HATCH_FRONT_SIDE_LEFT,
 		DOUBLE_HATCH_FRONT_SIDE_RIGHT,
 		DOUBLE_HATCH_SIDE_SIDE,
+		ROCKET,
         DO_NOTHING, 
     }
 
@@ -71,6 +73,7 @@ public class AutonChoosers implements IBeakSquadSubsystem {
 		_autonAction.addOption("Line Cross", AUTON_MODE.LINE_CROSS);
 		_autonAction.addOption("Double Hatch Front Side Left", AUTON_MODE.DOUBLE_HATCH_FRONT_SIDE_LEFT);
 		_autonAction.addOption("Double Hatch Front Side Right", AUTON_MODE.DOUBLE_HATCH_FRONT_SIDE_RIGHT);
+		_autonAction.addOption("Rocket", AUTON_MODE.ROCKET);
 		_autonAction.addOption("Double Hatch Side Side", AUTON_MODE.DOUBLE_HATCH_SIDE_SIDE);
         
         // Auton Starting Side
@@ -171,6 +174,8 @@ public class AutonChoosers implements IBeakSquadSubsystem {
 				{
 					return new RDoubleHatchRFrontRSide();
 				}
+			case ROCKET:
+				return new LSingleHatchBackRocketL();
 			default:
 				return new DoNothing(); 
 		}
