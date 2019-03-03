@@ -168,17 +168,17 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
 				return;
       case AUTO_TURN:
         _leftMaster.config_kF(0, 0.377);
-        _leftMaster.config_kP(0, 0.3);
+        _leftMaster.config_kP(0, 0.2);
         _leftMaster.config_kI(0, 0);
-        _leftMaster.config_kD(0,3);
+        _leftMaster.config_kD(0,8);
         _rightMaster.config_kF(0, 0.377);
-        _rightMaster.config_kP(0, 0.3);
+        _rightMaster.config_kP(0, 0.2);
         _rightMaster.config_kI(0, 0);
-        _rightMaster.config_kD(0, 3);
+        _rightMaster.config_kD(0, 8);
         _rightMaster.configMotionCruiseVelocity(1200);
         _leftMaster.configMotionCruiseVelocity(1200);
-        _rightMaster.configMotionAcceleration(800);
-        _leftMaster.configMotionAcceleration(800);
+        _rightMaster.configMotionAcceleration(1200);
+        _leftMaster.configMotionAcceleration(1200);
         return;
       case DRIVE_SET_DISTANCE:
         _leftMaster.config_kF(0, 0.802);

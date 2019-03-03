@@ -30,7 +30,7 @@ public class Climber extends Subsystem implements IBeakSquadSubsystem {
   TalonSRX _liftMtr;
   VictorSPX _driveMtr;
   private static final double INCHES_TO_NU_CONVERSION_NUMBER = .0013729128051576489005976;
-  private static final double THIRD_LEVEL_CLIMBER_MEASUREMENT_IN_NU = 13839.189152160516883663025091042;
+  private static final double THIRD_LEVEL_CLIMBER_MEASUREMENT_IN_NU = -20299;
 
   //=====================================================================================
 	// Define Singleton Pattern
@@ -48,7 +48,7 @@ public class Climber extends Subsystem implements IBeakSquadSubsystem {
 
     //Configure Limit Switches
     _liftMtr.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyClosed);
-    _liftMtr.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyClosed);
+    _liftMtr.configReverseLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.Disabled);
 
     // Turn of all soft limits
    _liftMtr.configForwardSoftLimitEnable(false, 0);
@@ -68,11 +68,11 @@ public class Climber extends Subsystem implements IBeakSquadSubsystem {
   }
 
   public void liftClimber(double liftSpeed){
-    _liftMtr.set(ControlMode.PercentOutput, .25 * liftSpeed);
+    _liftMtr.set(ControlMode.PercentOutput, liftSpeed);
   }
 
   public void driveClimber(double driveSpeed){
-    _driveMtr.set(ControlMode.PercentOutput, .25 * driveSpeed);
+    _driveMtr.set(ControlMode.PercentOutput, driveSpeed);
   }
 
   public void setClimberPosition(){
@@ -83,13 +83,30 @@ public class Climber extends Subsystem implements IBeakSquadSubsystem {
       _liftMtr.set(ControlMode.PercentOutput, 0);
     }*/
   }
+  public boolean isClimberatTop()
+  {
+    return !_liftMtr.getSensorCollection().isFwdLimitSwitchClosed();
+  }
+  public void zeroClimber()
+  {
+    _liftMtr.setSelectedSensorPosition(0);
+  }
+  public void HoldClimber()
+  {
+    _liftMtr.config_kF(0, 0.5);
+    _liftMtr.config_kP(0,0.5);
+    _liftMtr.config_kI(0,0);
+    _liftMtr.config_kD(0,0);
+    _liftMtr.set(ControlMode.MotionMagic, getNativeUnits());
+  }
 
-  public double inchesToNativeUnits(){
-    return _liftMtr.getSelectedSensorPosition() / INCHES_TO_NU_CONVERSION_NUMBER;
+  public double inchesToNativeUnits(double inches){
+    return inches/ INCHES_TO_NU_CONVERSION_NUMBER;
   }
   public double nativeUnitsToInches(double nativeUnits){
     return nativeUnits * .0013729128051576489005976;
   }
+
 
 	public double getPositionInches(){
 		return nativeUnitsToInches(getNativeUnits());
@@ -97,6 +114,7 @@ public class Climber extends Subsystem implements IBeakSquadSubsystem {
   public double getNativeUnits(){
     return  _liftMtr.getSelectedSensorPosition();
   }
+
 
   @Override
   public void initDefaultCommand() {

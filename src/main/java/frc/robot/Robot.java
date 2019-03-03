@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.auton.pathfollowing.Paths;
+import frc.robot.commands.climber.ZeroClimber;
 import frc.robot.commands.elevator.ZeroElevatorEncoder;
 import frc.robot.sensors.GyroNavX;
 
@@ -157,6 +158,8 @@ public class Robot extends TimedRobot {
       zeroElevatorCommand.start();
     }
     _chassis.setChassisState(ChassisState.PERCENT_VBUS);
+    Command zeroClimber = new ZeroClimber();
+    zeroClimber.start();
   }
 
    /* This function is called periodically during teleop mode.

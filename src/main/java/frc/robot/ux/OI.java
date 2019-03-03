@@ -5,7 +5,9 @@ import frc.robot.RobotMap;
 import frc.robot.commands.auton.adaptivePaths.AutoPlaceHatch;
 import frc.robot.commands.camera.SwitchCamera;
 import frc.robot.commands.chassis.DriveWithControllers;
+import frc.robot.commands.climber.ClimbSequence;
 import frc.robot.commands.climber.DriveClimber;
+import frc.robot.commands.climber.HoldClimber;
 import frc.robot.commands.climber.LiftClimber;
 import frc.robot.commands.elevator.MoveToPresetPosition;
 import frc.robot.commands.infeed.AcquireHatch;
@@ -69,7 +71,12 @@ public class OI {
         _operatorController.rb.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.HOME));
         _operatorController.x.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.LEVEL_1));
         _operatorController.b.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.LEVEL_2));
-        _operatorController.y.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.LEVEL_3));
+		_operatorController.y.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.LEVEL_3));
+		_operatorController.rightStick.whileActive(new LiftClimber(_operatorController.rightStick));
+		_operatorController.rightStick.whenReleased(new HoldClimber());
+		_operatorController.rt.whileActive(new DriveClimber(0.2));
+		_operatorController.rt.whenReleased(new DriveClimber(_operatorController.rt));
+		_operatorController.back.whenPressed(new ClimbSequence());
 
         //_operatorController.a.whenPressed();
 

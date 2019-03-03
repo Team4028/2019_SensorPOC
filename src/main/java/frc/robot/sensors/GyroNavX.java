@@ -91,9 +91,15 @@ public class GyroNavX {
 	private VisionLL _visionLL = VisionLL.getInstance();
 	
 	private static GyroNavX _instance = new GyroNavX();
+
+	private boolean _isReversed = false;
 	
 	public static GyroNavX getInstance() {
 		return _instance;
+	}
+
+	public void setReversed(boolean isReversed){
+		_isReversed = isReversed;
 	}
 	
 	// private constructor for singleton pattern
@@ -173,7 +179,17 @@ public class GyroNavX {
 
 	
     public double getYaw() { 
-		return _navXSensor.getYaw();
+		if (_isReversed){
+			if(_navXSensor.getYaw()>=0){
+				return _navXSensor.getYaw()-180;
+			}
+			else
+			{
+				return _navXSensor.getYaw()+180;
+			}
+		} else {
+			return _navXSensor.getYaw();
+		} 
 	}
 	
 	public void zeroYaw() { 

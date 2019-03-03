@@ -26,8 +26,8 @@ public class Auton_turnFromVision extends Command {
     public Auton_turnFromVision() {
         setInterruptible(false);
         requires(_chassis);
-        kP=0.025;
-        kI=0.03;
+        kP=0.02;
+        kI=0.035;
         kD=0.001;
         prevTime=Timer.getFPGATimestamp();     
     }
@@ -52,9 +52,15 @@ public class Auton_turnFromVision extends Command {
         if(Math.abs(error)>5)
         {
             error=Math.copySign(5, error);
+            I=0;
+        }
+        else
+        {
+            I += kI * error * cycleTime;
         }
         P = kP * error;
-        I += kI * error * cycleTime;
+
+        
         if(isFirstCycle)
         {
             D=0;
@@ -79,7 +85,7 @@ public class Auton_turnFromVision extends Command {
     
     @Override
     protected boolean isFinished() {   
-        return count>5 && ((Math.abs(error)<0.75 &&Math.abs(D)< 0.005)|| !_canSeeTarget);                               // deadband
+        return count>5 && ((Math.abs(error)<0.9 &&Math.abs(D)< 0.005)|| !_canSeeTarget);                               // deadband
     
     }
 
