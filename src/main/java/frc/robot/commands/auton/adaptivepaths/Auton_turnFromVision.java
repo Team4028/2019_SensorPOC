@@ -87,11 +87,14 @@ public class Auton_turnFromVision extends Command {
     @Override
     protected boolean isFinished() {   
         return count>5 && ((Math.abs(error)<1.1 &&Math.abs(D)< 0.003)|| !_canSeeTarget);                               // deadband
+
     
     }
 
     @Override
     protected void end() {
+        _chassis.getDistanceToTargetInches();
+        _chassis.setCanSeeTarget(_canSeeTarget);
         _chassis.stop();
         System.out.println("Turn Completed");
         System.out.println("Can See Target:" + _canSeeTarget);

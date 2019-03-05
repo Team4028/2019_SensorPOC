@@ -31,6 +31,7 @@ import frc.robot.auton.pathfollowing.util.Kinematics;
 import frc.robot.commands.auton.adaptivePaths.Auton_turnFromVision;
 import frc.robot.interfaces.IBeakSquadSubsystem;
 import frc.robot.sensors.GyroNavX;
+import frc.robot.sensors.VisionLL;
 import frc.robot.util.LogDataBE;
 
 /**
@@ -64,8 +65,9 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
   public double _leftMtrDriveSetDistanceCmd, _rightMtrDriveSetDistanceCmd;
 
   public double _targetAngle,_angleError;
-
+  VisionLL _limeLight = VisionLL.getInstance();
   boolean _isTurnRight;
+  boolean _isVisionTargetVisible;
 
   double _leftTargetVelocity, _rightTargetVelocity, _centerTargetVelocity;
   Path _currentPath=null;
@@ -421,6 +423,18 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
   public double getAngleError()
   {
     return _angleError;
+  }
+  public void setCanSeeTarget(boolean canSeeTarget)
+  {
+    _isVisionTargetVisible = canSeeTarget;
+  }
+  public boolean getIsVisionTargetVisible()
+  {
+    return _isVisionTargetVisible;
+  }
+  public double getDistanceToTargetInches()
+  {
+    return _limeLight.get_revisedDistance();
   }
   public void setBrakeMode(NeutralMode mode)
   {

@@ -18,7 +18,7 @@ import frc.robot.commands.infeed.ToggleBeakInOut;
 import frc.robot.commands.infeed.ToggleBeakOpen;
 import frc.robot.commands.infeed.ToggleBeakOpenClose;
 import frc.robot.commands.infeed.TogglePunch;
-import frc.robot.commands.teleop.TeleopVisionAssistedDriving;
+import frc.robot.commands.teleop.TeleopVisionAssistedPlacing;
 import frc.robot.commands.vision.ChangeVisionPipeline;
 import frc.robot.subsystems.Elevator.ELEVATOR_TARGET_POSITION;
 import frc.robot.util.BeakXboxController;
