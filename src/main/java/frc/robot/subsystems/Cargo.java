@@ -91,8 +91,8 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
     _beakInOutSolenoid = new DoubleSolenoid(RobotMap.PCM_REVERSE_INOUT_SOLENOID_PORT, RobotMap.PCM_FORWARD_INOUT_SOLENOID_PORT);
     _bucketSolenoid = new DoubleSolenoid(RobotMap.PCM_FORWARD_BUCKET_SOLENOID_PORT, RobotMap.PCM_REVERSE_BUCKET_SOLENOID_PORT);
 
+    //Hatch Limit Switch
     _hatchLimitSwitch = new DigitalInput(RobotMap.CARGO_LIMIT_SWITCH_DIO_PORT);
-    
 
     setCargoDefultPosition();
   }
@@ -265,7 +265,6 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
   }
 
   public boolean get_isBucketExtended() {
-    
     if(_bucketSolenoid.get() == BUCKET_EXTENDED){
 
       return true;
@@ -276,6 +275,10 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
   
   public boolean get_isHatchAquired()
   {
+    return !_hatchLimitSwitch.get();
+  }
+
+  public boolean get_HasHatch() {
     return !_hatchLimitSwitch.get();
   }
 
@@ -297,6 +300,6 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
     SmartDashboard.putBoolean("Cargo:IsBeakOut", get_isBeakOut());
     SmartDashboard.putBoolean("Cargo:IsBeakOpen", get_isBeakOpen());
     SmartDashboard.putBoolean("Cargo:IsPunchOut", get_isPunchOut());
-    
+    SmartDashboard.putBoolean("Cargo:HasHatch", get_HasHatch());
   }
 }

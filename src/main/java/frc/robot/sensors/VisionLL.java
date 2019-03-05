@@ -19,8 +19,15 @@ import frc.robot.util.LogDataBE;
  */
 public class VisionLL implements IVisionSensor {
 
+    public enum LIMELIGHT_PIPELINE {
+        RIGHT,
+        CENTER,
+        LEFT;
+    }
+
     private double HORIZONAL_CAMERA_OFFSET_IN = 6;
     private double VERTICAL_CAMERA_OFFSET_IN = 15;
+    private boolean _isInVisionMode = false;
 
     private GyroNavX _navX = GyroNavX.getInstance();
     // =====================================================================================
@@ -34,6 +41,7 @@ public class VisionLL implements IVisionSensor {
 
     // private constructor for singleton pattern
     private VisionLL() {
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(1);
     }
 
     @Override
@@ -78,12 +86,34 @@ public class VisionLL implements IVisionSensor {
         return actualDistance;
     }
 
+    public void changeLimelightPipeline(LIMELIGHT_PIPELINE pipeline) {
+        switch(pipeline){
+            case RIGHT:
+                NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(0);
+                break;
+            case CENTER:
+                NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(1);
+                break;
+            case LEFT:
+                NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(2);
+                break;
+        }
+    }
+
     public void turnOffLimelightLEDs() {
         NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
     }
 
     public void turnOnLimelightLEDs() {
         NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(3);
+    }
+
+    public boolean isInVisionMode() {
+        return _isInVisionMode;
+    }
+
+    public void setIsInVisionMode(boolean isInVisionMode){
+        _isInVisionMode = isInVisionMode;
     }
 
     //=====================================================================================
