@@ -10,42 +10,39 @@ public class MoveToPresetPosition extends Command {
   Elevator _elevator = Elevator.getInstance();
   Cargo _cargo = Cargo.getInstance();
   VisionLL _vision = VisionLL.getInstance();
-  ELEVATOR_TARGET_POSITION _presetPosition;
-  
-  private long _startTimeInMs = 0;
 
+  private ELEVATOR_TARGET_POSITION _presetPosition;
+  
   public MoveToPresetPosition(ELEVATOR_TARGET_POSITION presetPosition) {
+    System.out.println("Setting target" + presetPosition);
     requires(_elevator);
     requires(_cargo);
     setInterruptible(true);
     _presetPosition = presetPosition;
-    _elevator.setTargetPosition(presetPosition, _cargo.get_HasHatch());
-  }
-
-  public MoveToPresetPosition() {
-    requires(_elevator);
-    requires(_cargo);
-    setInterruptible(true);
   }
 
   // Called just before this Command runs the first time
   @Override
-  protected void initialize() {}
+  protected void initialize() {
+    _elevator.setTargetPosition(_presetPosition, _cargo.get_HasHatch());
+  }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    long _startTimeInMs = System.nanoTime() / 1000000;
+    long startTimeInMs = 0;
+    System.out.println("running command");
     if(!_vision.isInVisionMode()){
       if(_cargo.get_isBucketExtended()){
         long currentTimeInMs = System.nanoTime() / 1000000;
-        long elapsedTimeInMs = currentTimeInMs - _startTimeInMs;
+        long elapsedTimeInMs = currentTimeInMs - startTimeInMs;
         if(elapsedTimeInMs > 500){
           _elevator.moveToPresetPosition();
+          System.out.println("Elevator Move");
         }
       } else {
         _cargo.toggleBucket();
-        _startTimeInMs = System.nanoTime() / 1000000;
+        startTimeInMs = System.nanoTime() / 1000000;
       }
     }
   }
@@ -53,7 +50,8 @@ public class MoveToPresetPosition extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return _elevator.get_isElevatorAtTargetPos() || _vision.isInVisionMode();
+    System.out.println(_elevator.get_isElevatorAtTargetPos());
+    return _elevator.get_isElevatorAtTargetPos();// || _vision.isInVisionMode();
   }
 
   // Called once after isFinished returns true

@@ -245,9 +245,9 @@ public class Robot extends TimedRobot {
     		// to push its data out to the dashboard
         // ----------------------------------------------
         if(_chassis != null)              { _chassis.updateDashboard(); }
-        // if(_cargo != null)                { _cargo.updateDashboard(); }
-        // if(_climber != null)              { _climber.updateDashboard(); }
-        // if(_elevator != null)             { _elevator.updateDashboard(); }
+        if(_cargo != null)                { _cargo.updateDashboard(); }
+        if(_climber != null)              { _climber.updateDashboard(); }
+        if(_elevator != null)             { _elevator.updateDashboard(); }
 
         if(_autonChoosers != null)        { _autonChoosers.updateDashboard(); }
 	    	if(_distanceRev2mSensor != null)  { _distanceRev2mSensor.updateDashboard(); }
@@ -282,9 +282,9 @@ public class Robot extends TimedRobot {
         // ask each subsystem that exists to add its data
         // ----------------------------------------------
         if(_chassis != null)              { _chassis.updateLogData(logData); }
-        // if(_cargo != null)                { _cargo.updateLogData(logData); }
-        // if(_climber != null)              { _climber.updateLogData(logData); }
-        // if(_elevator != null)             { _elevator.updateLogData(logData); }
+        if(_cargo != null)                { _cargo.updateLogData(logData); }
+        if(_climber != null)              { _climber.updateLogData(logData); }
+        if(_elevator != null)             { _elevator.updateLogData(logData); }
 
         if(_autonChoosers != null)        { _autonChoosers.updateLogData(logData); }
 	    	if(_distanceRev2mSensor != null)  { _distanceRev2mSensor.updateLogData(logData); }

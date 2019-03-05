@@ -21,6 +21,6 @@ public class TeleopVisionAssistedDriving extends CommandGroup {
   Button dPadUpLeft, Trigger rightTrigger) {
     addParallel(new ChangeVisionPipeline(dPadUp, dPadUpRight, dPadUpLeft, rightTrigger));
     //Auton Adds Mumbo Jumbo here
-    addSequential(new MoveToPresetPosition());
+    //addSequential(new MoveToPresetPosition());
   }
 }

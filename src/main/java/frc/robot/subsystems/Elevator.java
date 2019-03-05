@@ -27,13 +27,16 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
   private int _targetElevatorPositionNU;
   private boolean _hasElevatorBeenZeroed = false;
 
+  private String _presetPositionName = "Unknown";
+
   // =================================================================================================================
   // Define Enums for the Elevator Axis
   public enum ELEVATOR_TARGET_POSITION {
     HOME,
     LEVEL_1,
     LEVEL_2,
-    LEVEL_3
+    LEVEL_3,
+    NULL
   }
 
   // =================================================================================================================
@@ -178,31 +181,30 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
   }
 
   public void setTargetPosition(ELEVATOR_TARGET_POSITION presetPosition, boolean hasHatch) {
-    if(get_hasElevatorBeenZeroed()){
-      switch(presetPosition){
-        case HOME:
-          _targetElevatorPositionNU = HOME_POSITION_NU;
-          break;
-        case LEVEL_1:
-          if(hasHatch){
-            _targetElevatorPositionNU = HATCH_LEVEL_1_POSITION_NU;
-          } else {
-            _targetElevatorPositionNU = CARGO_LEVEL_1_POSITION_NU;
-          } break;
-        case LEVEL_2:
-          if(hasHatch){
-            _targetElevatorPositionNU = HATCH_LEVEL_2_POSITION_NU;
-          } else {
-            _targetElevatorPositionNU = CARGO_LEVEL_2_POSITION_NU;
-          } break;
-        case LEVEL_3:
-          if(hasHatch){
-            _targetElevatorPositionNU = HATCH_LEVEL_3_POSITION_NU;
-          } else {
-            _targetElevatorPositionNU = CARGO_LEVEL_3_POSITION_NU;
-          } break;   
-      } 
+    switch(presetPosition){
+      case HOME:
+        _targetElevatorPositionNU = HOME_POSITION_NU;
+        break;
+      case LEVEL_1:
+        if(hasHatch){
+          _targetElevatorPositionNU = HATCH_LEVEL_1_POSITION_NU;
+        } else {
+          _targetElevatorPositionNU = CARGO_LEVEL_1_POSITION_NU;
+        } break;
+      case LEVEL_2:
+        if(hasHatch){
+          _targetElevatorPositionNU = HATCH_LEVEL_2_POSITION_NU;
+        } else {
+          _targetElevatorPositionNU = CARGO_LEVEL_2_POSITION_NU;
+        } break;
+      case LEVEL_3:
+        if(hasHatch){
+          _targetElevatorPositionNU = HATCH_LEVEL_3_POSITION_NU;
+        } else {
+          _targetElevatorPositionNU = CARGO_LEVEL_3_POSITION_NU;
+        } break;   
     }
+    _presetPositionName = presetPosition.toString();
   }
 
   public void moveToPresetPosition(){
@@ -291,5 +293,6 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
     //SmartDashboard.putNumber("Elevator:slaveMotorOutputVolts", _elevatorSlaveMotor.getMotorOutputVoltage());
     //SmartDashboard.putNumber("Elevator:slaveMotorCurrentAmps", _elevatorSlaveMotor.getOutputCurrent());
     SmartDashboard.putNumber("Elevator: Target Position", NativeUnitsToInches(_targetElevatorPositionNU));
+    SmartDashboard.putString("Elevator: Position", _presetPositionName);
   }
 }
