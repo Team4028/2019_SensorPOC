@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.command.PrintCommand;
 import edu.wpi.first.wpilibj.command.WaitCommand;
 import frc.robot.commands.auton.util.printTimeFromStart;
 import frc.robot.commands.chassis.DriveSetDistance;
+import frc.robot.commands.chassis.StopChassis;
 import frc.robot.commands.infeed.ScoreHatch;
 import frc.robot.commands.infeed.TogglePunch;
 import frc.robot.sensors.GyroNavX;

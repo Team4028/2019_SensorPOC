@@ -15,6 +15,7 @@ import frc.robot.commands.auton.autons.Center.CSingleHatchLFront;
 import frc.robot.commands.auton.autons.Center.CSingleHatchRFront;
 import frc.robot.commands.auton.autons.Left.LDoubleHatchLFrontLSide;
 import frc.robot.commands.auton.autons.Left.LDoubleHatchLSideLSide;
+import frc.robot.commands.auton.autons.Left.LDoubleHatchRocketL;
 import frc.robot.commands.auton.autons.Left.LSingleHatchBackRocketL;
 import frc.robot.commands.auton.autons.Left.LSingleHatchLFront;
 import frc.robot.commands.auton.autons.Left.LSingleHatchLSide;
@@ -175,7 +176,7 @@ public class AutonChoosers implements IBeakSquadSubsystem {
 					return new RDoubleHatchRFrontRSide();
 				}
 			case ROCKET:
-				return new LSingleHatchBackRocketL();
+				return new LDoubleHatchRocketL();
 			default:
 				return new DoNothing(); 
 		}

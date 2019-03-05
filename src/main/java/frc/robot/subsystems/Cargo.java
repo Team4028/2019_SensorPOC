@@ -98,11 +98,9 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
   }
   
   public void setMotorSpeed (double driveSpeed) {
-    if (get_isHatchAquired() == true)
-    {
       double Speed = (.7 * driveSpeed);
-    _infeedMtr.set(ControlMode.PercentOutput, Speed);;
-    }
+    _infeedMtr.set(ControlMode.PercentOutput, Speed);
+    
   } 
 
   public void setCargoDefultPosition() {

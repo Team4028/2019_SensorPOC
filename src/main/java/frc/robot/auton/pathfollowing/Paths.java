@@ -27,7 +27,8 @@ public class Paths {
 		FROM_FEEDER_STATION_TO_FIRST_BAY,
 		FROM_FEEDER_STATION_TO_SECOND_BAY,
 		AWAY_FROM_FEEDER,
-		BACK_ROCKET
+		BACK_ROCKET,
+		AWAY_FROM_BACK_ROCKET
 	}
 	
 	private static Path _toFrontCargoShipLFromL;
@@ -75,7 +76,7 @@ public class Paths {
 	}
 	
 	private static void buildCenterPaths() {
-		_toFrontCargoShipLFromC = buildPathFromWaypoints(Arrays.asList(
+		_toFrontCargoShipLFromC = buildPathFromWaypoints(-0.007,Arrays.asList(
 			new Waypoint(66,160,0,0),
 			new Waypoint(115,160,15,40),
 			new Waypoint(145,151,17,80),
@@ -152,12 +153,18 @@ public class Paths {
 			new Waypoint(115,120,0,50),
 			new Waypoint(180,120, 40, 80),
 			new Waypoint(210,93,0,90),
-			new Waypoint(268,38,20,70),
-			new Waypoint(293,45,0,40)
+			new Waypoint(268,42,13,70),
+			new Waypoint(282,47,0,40)
 		));
 		_toBackRocketL.setIsReversed(true);
 		leftPaths.put(Left.BACK_ROCKET, _toBackRocketL);
-		
+
+		_awayFromBackRocketL = buildPathFromWaypoints(Arrays.asList(
+			new Waypoint(250,35,0,0),
+			new Waypoint(270,45,15,20),
+			new Waypoint(290,45,0,20)));
+		_awayFromBackRocketL.setIsReversed(true);
+		leftPaths.put(Left.AWAY_FROM_BACK_ROCKET, _awayFromBackRocketL);
 
 	}
 	

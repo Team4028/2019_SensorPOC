@@ -36,7 +36,7 @@ public class DriveVisionDistance extends Command {
                 _chassis.setMotionMagicCmdInches(Math.max((dsDistance-OFFSET),0));
                 System.out.println("Distance Sensor Distance Used");
             } else {
-                _chassis.setMotionMagicCmdInches(Math.max((llDistance-OFFSET-7),0));
+                _chassis.setMotionMagicCmdInches(Math.max((llDistance-OFFSET-4),0));
                 System.out.println("Limelight Distance Used");
             }
             System.out.println("Motion Magic Command Set");

@@ -159,7 +159,7 @@ public class Robot extends TimedRobot {
     }
     _chassis.setChassisState(ChassisState.PERCENT_VBUS);
     Command zeroClimber = new ZeroClimber();
-    zeroClimber.start();
+    //zeroClimber.start();
   }
 
    /* This function is called periodically during teleop mode.
