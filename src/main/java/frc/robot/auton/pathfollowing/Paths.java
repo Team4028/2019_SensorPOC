@@ -28,7 +28,8 @@ public class Paths {
 		FROM_FEEDER_STATION_TO_SECOND_BAY,
 		AWAY_FROM_FEEDER,
 		BACK_ROCKET,
-		AWAY_FROM_BACK_ROCKET
+		AWAY_FROM_BACK_ROCKET,
+		TO_FEEDER_STATION_FROM_ROCKET
 	}
 	
 	private static Path _toFrontCargoShipLFromL;
@@ -47,6 +48,7 @@ public class Paths {
 	private static Path _awayFromFeederStationL;
 	private static Path _toBackRocketL;
 	private static Path _awayFromBackRocketL;
+	private static Path _toFeederStationFromRocketL;
 	
 	public enum Right {
 		TO_FRONT_CARGO_SHIP_R,
@@ -103,8 +105,8 @@ public class Paths {
 
 		_toLeftCargoShipFirstBay = buildPathFromWaypoints(Arrays.asList(
 			new Waypoint(66,120,0,0),
-			new Waypoint(115,120,40,50),
-			new Waypoint(265,100,0,120)
+			new Waypoint(115,120,0,50),
+			new Waypoint(265,120,0,60)
 		));
 		leftPaths.put(Left.TO_LEFT_CARGO_SHIP_FIRST, _toLeftCargoShipFirstBay);
 
@@ -161,10 +163,18 @@ public class Paths {
 
 		_awayFromBackRocketL = buildPathFromWaypoints(Arrays.asList(
 			new Waypoint(250,35,0,0),
-			new Waypoint(270,45,15,20),
-			new Waypoint(290,45,0,20)));
+			new Waypoint(270,72,15,60),
+			new Waypoint(277,72,0,40)));
 		_awayFromBackRocketL.setIsReversed(true);
 		leftPaths.put(Left.AWAY_FROM_BACK_ROCKET, _awayFromBackRocketL);
+
+		_toFeederStationFromRocketL = buildPathFromWaypoints(-0.007,Arrays.asList(
+			new Waypoint(277,75,0,0),
+			new Waypoint(150,75,40,120),
+			new Waypoint(100,66,40,120),
+			new Waypoint(45,66,0,120)
+		));
+		leftPaths.put(Left.TO_FEEDER_STATION_FROM_ROCKET, _toFeederStationFromRocketL);
 
 	}
 	
