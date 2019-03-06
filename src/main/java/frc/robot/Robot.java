@@ -159,7 +159,7 @@ public class Robot extends TimedRobot {
     }
     _chassis.setChassisState(ChassisState.PERCENT_VBUS);
     Command zeroClimber = new ZeroClimber();
-    //zeroClimber.start();
+    zeroClimber.start();
   }
 
    /* This function is called periodically during teleop mode.
@@ -170,6 +170,7 @@ public class Robot extends TimedRobot {
     Scheduler.getInstance().run();  
     _leds.set_targetangle(_vision.get_angle1InDegrees(), _vision.get_isTargetInFOV(), _distanceRev2mSensor.get_distanceToTargetInInches());  
     _vision.turnOnLimelightLEDs();
+    // System.out.println(_elevator.getStoredTargetPosition());
   }
 
   /********************************************************************************************

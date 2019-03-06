@@ -36,6 +36,7 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
     LEVEL_1,
     LEVEL_2,
     LEVEL_3,
+    CARGO_ACQUIRE,
     NULL
   }
 
@@ -56,6 +57,9 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
   private static final int HATCH_LEVEL_1_POSITION_NU = InchesToNativeUnits(0);
   private static final int HATCH_LEVEL_2_POSITION_NU = InchesToNativeUnits(31);
   private static final int HATCH_LEVEL_3_POSITION_NU = InchesToNativeUnits(58);
+  private static final int CARGO_ACQUIRE_HEIGHT = InchesToNativeUnits(38);
+
+  ELEVATOR_TARGET_POSITION _storedPresetPosition;
 
   // define PID Constants
 	private static final int MOVING_DOWN_PID_SLOT_INDEX = 0;
@@ -84,7 +88,7 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
   private static final int DOWN_CRUISE_VELOCITY = 2000;
   private static final int TELEOP_UP_ACCELERATION = 4000;
   private static final int TELEOP_UP_DECELERATION = 4000;
-  private static final int TELEOP_DOWN_ACCELERATION = 2000;
+  private static final int TELEOP_DOWN_ACCELERATION = 1000;
 
   private static final int CAN_TIMEOUT_MILLISECONDS = 30;
   //#endregion
@@ -184,25 +188,32 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
     switch(presetPosition){
       case HOME:
         _targetElevatorPositionNU = HOME_POSITION_NU;
+        _storedPresetPosition= ELEVATOR_TARGET_POSITION.HOME;
         break;
       case LEVEL_1:
+      _storedPresetPosition = ELEVATOR_TARGET_POSITION.LEVEL_1;
         if(hasHatch){
           _targetElevatorPositionNU = HATCH_LEVEL_1_POSITION_NU;
         } else {
           _targetElevatorPositionNU = CARGO_LEVEL_1_POSITION_NU;
         } break;
       case LEVEL_2:
+        _storedPresetPosition = ELEVATOR_TARGET_POSITION.LEVEL_2;
         if(hasHatch){
           _targetElevatorPositionNU = HATCH_LEVEL_2_POSITION_NU;
         } else {
           _targetElevatorPositionNU = CARGO_LEVEL_2_POSITION_NU;
         } break;
       case LEVEL_3:
+      _storedPresetPosition = ELEVATOR_TARGET_POSITION.LEVEL_3;
         if(hasHatch){
           _targetElevatorPositionNU = HATCH_LEVEL_3_POSITION_NU;
         } else {
           _targetElevatorPositionNU = CARGO_LEVEL_3_POSITION_NU;
         } break;   
+      case CARGO_ACQUIRE:
+        _targetElevatorPositionNU = CARGO_ACQUIRE_HEIGHT;
+        break;
     }
     _presetPositionName = presetPosition.toString();
   }
@@ -244,6 +255,11 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
     } else {
       return false;
     }
+  }
+
+  public ELEVATOR_TARGET_POSITION getStoredTargetPosition()
+  {
+    return _storedPresetPosition;
   }
 
   public boolean get_hasElevatorBeenZeroed() {

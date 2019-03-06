@@ -15,7 +15,7 @@ public class DriveVisionAcquireDistance extends Command {
     SIDE side;
     VisionLL _limelight = VisionLL.getInstance();
 
-    private static final double OFFSET = 10;
+    private static final double OFFSET = 13;
     boolean _canSeeTarget;
     
 

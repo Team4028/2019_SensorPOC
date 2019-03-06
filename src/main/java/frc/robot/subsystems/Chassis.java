@@ -217,8 +217,30 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
     public void arcadeDrive(double throttleCmd, double turnCmd) 
     {
       _chassisState = ChassisState.PERCENT_VBUS;
-      _leftMaster.set(ControlMode.PercentOutput, 0.7*throttleCmd+0.3*turnCmd);
-      _rightMaster.set(ControlMode.PercentOutput,0.7*throttleCmd-0.3*turnCmd);
+      if(turnCmd>0.3)
+      {
+        _rightMaster.configOpenloopRamp(0.3);
+        _rightSlave.configOpenloopRamp(0.3);
+        _leftMaster.configOpenloopRamp(0.3);
+        _leftSlave.configOpenloopRamp(0.3);
+      }
+      else
+      {
+        _rightMaster.configOpenloopRamp(0.7);
+        _rightSlave.configOpenloopRamp(0.7);
+        _leftMaster.configOpenloopRamp(0.7);
+        _leftSlave.configOpenloopRamp(0.7);
+      }
+      if(throttleCmd>0.5)
+      {
+        _leftMaster.set(ControlMode.PercentOutput, 0.7*throttleCmd+0.3*turnCmd);
+        _rightMaster.set(ControlMode.PercentOutput,0.7*throttleCmd-0.3*turnCmd);
+      }
+      else
+      {
+        _leftMaster.set(ControlMode.PercentOutput, 0.7*throttleCmd+0.3*turnCmd);
+        _rightMaster.set(ControlMode.PercentOutput,0.78*throttleCmd-0.3*turnCmd);
+      }
     }
   
     public void stop()

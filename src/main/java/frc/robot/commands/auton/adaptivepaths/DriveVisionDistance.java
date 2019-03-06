@@ -30,10 +30,8 @@ public class DriveVisionDistance extends Command {
         {
             double dsDistance= DistanceRev2mSensor.getInstance().get_distanceToTargetInInches();
             double llDistance = _chassis.getDistanceToTargetInches();
-            if(!_limelight.get_isTargetInFOV()){
-                llDistance-=2;
-                dsDistance-=2;
-            }
+            llDistance-=7;
+            dsDistance-=7;
             System.out.println("Distance Sensor Distance: " + dsDistance);
             System.out.println("LimeLight Distance: " + llDistance);
             if (dsDistance > 0) {

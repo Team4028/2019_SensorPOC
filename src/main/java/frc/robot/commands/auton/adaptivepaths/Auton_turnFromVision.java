@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.sensors.GyroNavX;
 import frc.robot.sensors.VisionLL;
 import frc.robot.subsystems.Chassis;
+import frc.robot.subsystems.Chassis.ChassisState;
 import frc.robot.util.GeneralUtilities;
 
 public class Auton_turnFromVision extends Command { 
@@ -34,6 +35,7 @@ public class Auton_turnFromVision extends Command {
 
     @Override
     protected void initialize() {
+        _chassis.setChassisState(ChassisState.PERCENT_VBUS);
         _canSeeTarget = _limelight.get_isTargetInFOV();
         prevTime=Timer.getFPGATimestamp();
         P=0;
@@ -86,14 +88,13 @@ public class Auton_turnFromVision extends Command {
     
     @Override
     protected boolean isFinished() {   
-        return count>5 && ((Math.abs(error)<1.1 &&Math.abs(D)< 0.003)|| !_canSeeTarget);                               // deadband
+        return count>5 && ((Math.abs(error)<0.8 &&Math.abs(D)< 0.003)|| !_canSeeTarget);                               // deadband
 
     
     }
 
     @Override
     protected void end() {
-        _chassis.getDistanceToTargetInches();
         _chassis.setCanSeeTarget(_canSeeTarget);
         _chassis.stop();
         System.out.println("Turn Completed");
