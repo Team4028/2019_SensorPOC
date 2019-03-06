@@ -12,6 +12,8 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotMap;
+//import frc.robot.sensors.visionLLInterpretation.LimeLightInterpreter;
+import frc.robot.sensors.visionLLInterpretation.ThreeDimensionalIsometry;
 
 /**
  * This class exposes the OnBoard Navigation Sensor Lead Student:
@@ -40,6 +42,48 @@ public class GyroNavX {
 	private static final double ROCKET_BACK_ANGLE = 151.25;
 	private static final double FEEDER_STATION_ANGLE = 180;
 
+
+	private static final double CARGOSHIP_FRONT_LEFT_TARGET_ALPHA_DEGREES = 0;
+	private static final double CARGOSHIP_FRONT_LEFT_TARGET_BETA_DEGREES = 0;
+	private static final double CARGOSHIP_FRONT_LEFT_TARGET_GAMMA_DEGREES = 0;
+	private static final double CARGOSHIP_FRONT_RIGHT_TARGET_ALPHA_DEGREES = 0;
+	private static final double CARGOSHIP_FRONT_RIGHT_TARGET_BETA_DEGREES = 0;
+	private static final double CARGOSHIP_FRONT_RIGHT_TARGET_GAMMA_DEGREES = 0;
+	
+	private static final double CARGOSHIP_SIDE_ROCKET_LEFT_TARGET_ALPHA_DEGREES = 0;
+	private static final double CARGOSHIP_SIDE_ROCKET_LEFT_TARGET_BETA_DEGREES = 0;
+	private static final double CARGOSHIP_SIDE_ROCKET_LEFT_TARGET_GAMMA_DEGREES = 0;
+	private static final double CARGOSHIP_SIDE_ROCKET_RIGHT_TARGET_ALPHA_DEGREES = 0;
+	private static final double CARGOSHIP_SIDE_ROCKET_RIGHT_TARGET_BETA_DEGREES = 0;
+	private static final double CARGOSHIP_SIDE_ROCKET_RIGHT_TARGET_GAMMA_DEGREES = 0;
+
+	private static final double ROCKET_FRONT_LEFT_TARGET_ALPHA_DEGREES = 0;
+	private static final double ROCKET_FRONT_LEFT_TARGET_BETA_DEGREES = 0;
+	private static final double ROCKET_FRONT_LEFT_TARGET_GAMMA_DEGREES = 0;
+	private static final double ROCKET_FRONT_RIGHT_TARGET_ALPHA_DEGREES = 0;
+	private static final double ROCKET_FRONT_RIGHT_TARGET_BETA_DEGREES = 0;
+	private static final double ROCKET_FRONT_RIGHT_TARGET_GAMMA_DEGREES = 0;
+
+	private static final double ROCKET_BACK_LEFT_TARGET_ALPHA_DEGREES = 0;
+	private static final double ROCKET_BACK_LEFT_TARGET_BETA_DEGREES = 0;
+	private static final double ROCKET_BACK_LEFT_TARGET_GAMMA_DEGREES = 0;
+	private static final double ROCKET_BACK_RIGHT_TARGET_ALPHA_DEGREES = 0;
+	private static final double ROCKET_BACK_RIGHT_TARGET_BETA_DEGREES = 0;
+	private static final double ROCKET_BACK_RIGHT_TARGET_GAMMA_DEGREES = 0;
+
+	private static final double FEEDER_STATION_LEFT_TARGET_ALPHA_DEGREES = 0;
+	private static final double FEEDER_STATION_LEFT_TARGET_BETA_DEGREES = 0;
+	private static final double FEEDER_STATION_LEFT_TARGET_GAMMA_DEGREES = 0;
+	private static final double FEEDER_STATION_RIGHT_TARGET_ALPHA_DEGREES = 0;
+	private static final double FEEDER_STATION_RIGHT_TARGET_BETA_DEGREES = 0;
+	private static final double FEEDER_STATION_RIGHT_TARGET_GAMMA_DEGREES = 0;
+
+	private static final double NAVX_TO_LIMELIGHT_ALPHA_DEGREES = 0;
+	private static final double NAVX_TO_LIMELIGHT_BETA_DEGREES = 0;
+	private static final double NAVX_TO_LIMELIGHT_GAMMA_DEGREES = 0;
+	//private static final ThreeDimensionalIsometry NAVX_TO_LIMELIGHT_TRNASLATIONLESS_ISOMETRY = new ThreeDimensionalIsometry(0, 0, 0, LimeLightInterpreter.deg2rad(NAVX_TO_LIMELIGHT_ALPHA_DEGREES),  LimeLightInterpreter.deg2rad(NAVX_TO_LIMELIGHT_BETA_DEGREES),  LimeLightInterpreter.deg2rad(NAVX_TO_LIMELIGHT_GAMMA_DEGREES));
+	
+
 	private double _currentAngle2;
 
 	private AHRS _navXSensor;
@@ -47,9 +91,15 @@ public class GyroNavX {
 	private VisionLL _visionLL = VisionLL.getInstance();
 	
 	private static GyroNavX _instance = new GyroNavX();
+
+	private boolean _isReversed = false;
 	
 	public static GyroNavX getInstance() {
 		return _instance;
+	}
+
+	public void setReversed(boolean isReversed){
+		_isReversed = isReversed;
 	}
 	
 	// private constructor for singleton pattern
@@ -127,10 +177,19 @@ public class GyroNavX {
 		return scoringTargetAngle * sideFactor;
 	}
 
-
 	
     public double getYaw() { 
-		return _navXSensor.getYaw();
+		if (_isReversed){
+			if(_navXSensor.getYaw()>=0){
+				return _navXSensor.getYaw()-180;
+			}
+			else
+			{
+				return _navXSensor.getYaw()+180;
+			}
+		} else {
+			return _navXSensor.getYaw();
+		} 
 	}
 	
 	public void zeroYaw() { 

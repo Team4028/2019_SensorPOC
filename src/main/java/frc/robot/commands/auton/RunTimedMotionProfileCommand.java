@@ -12,10 +12,11 @@ public class RunTimedMotionProfileCommand extends Command {
     private Path _path;
     private double _startTime;
     double _maxTime;
-    RobotState _inst = RobotState.getInstance();
+    RobotState _robotState = RobotState.getInstance();
 
     public RunTimedMotionProfileCommand(Path p, double maxTime) {
         requires(_chassis);
+        setInterruptible(false);
         _maxTime = maxTime;
         _path = p;
     }
@@ -23,7 +24,7 @@ public class RunTimedMotionProfileCommand extends Command {
     @Override
     protected void initialize() {
         System.out.println(_path);
-        _inst.reset(Timer.getFPGATimestamp(), _path.getStartPose());
+        _robotState.reset(Timer.getFPGATimestamp(), _path.getStartPose());
 		_chassis.setWantDrivePath(_path, _path.isReversed());
 		//_chassis.setHighGear(true);
 		_startTime = Timer.getFPGATimestamp();

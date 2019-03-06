@@ -10,21 +10,23 @@ public class DriveWithControllers extends Command {
   private Thumbstick _leftThumbstick;
   private Thumbstick _rightThumbstick;
   private boolean isAuton;
-  private double _leftCmd, _rightCmd;
+  private double _throttleCmd, _turnCmd;
+
 
   public DriveWithControllers(Thumbstick leftThumbstick, Thumbstick righThumbstick) {
     requires(_chassis);
     setInterruptible(true);
-
     _leftThumbstick = leftThumbstick;
     _rightThumbstick = righThumbstick;
     isAuton=false;
   }
 
-  public DriveWithControllers(double leftCmd, double rightCmd) {
+  public DriveWithControllers(double throttle, double turn) {
+    requires(_chassis);
+    setInterruptible(true);
     isAuton = true;
-    _leftCmd=leftCmd;
-    _rightCmd=rightCmd;
+    _throttleCmd=throttle;
+    _turnCmd=turn;
   }
 
   // Called just before this Command runs the first time
@@ -33,11 +35,12 @@ public class DriveWithControllers extends Command {
 
   // Called repeatedly when this Command is scheduled to run
   @Override
-  protected void execute() {
+  protected void execute() 
+  {
     if(!isAuton) {
       _chassis.arcadeDrive(_leftThumbstick.getY(), _rightThumbstick.getX());
     } else {
-      _chassis.arcadeDrive(_leftCmd, _rightCmd);
+      _chassis.arcadeDrive(_throttleCmd, _turnCmd);
     }
   }
 
@@ -49,12 +52,14 @@ public class DriveWithControllers extends Command {
 
   // Called once after isFinished returns true
   @Override
-  protected void end() {
+  protected void end() 
+  {
     _chassis.stop();
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
-  protected void interrupted() {}
+  protected void interrupted() 
+  {}
 }
