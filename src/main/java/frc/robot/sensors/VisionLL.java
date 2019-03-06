@@ -28,6 +28,7 @@ public class VisionLL implements IVisionSensor {
     private double HORIZONAL_CAMERA_OFFSET_IN = 6;
     private double VERTICAL_CAMERA_OFFSET_IN = 15;
     private boolean _isInVisionMode = false;
+    private static final int LIMELIGHT_DISTANCE_MIN = 36;
 
     private GyroNavX _navX = GyroNavX.getInstance();
     // =====================================================================================
@@ -128,6 +129,9 @@ public class VisionLL implements IVisionSensor {
         SmartDashboard.putString("Vision:CameraType", "Limelight");
         SmartDashboard.putBoolean("Vision:IsTargetInFOV", get_isTargetInFOV());
         SmartDashboard.putNumber("Vision:Angle1InDegrees", get_angle1InDegrees());
+        if(get_revisedDistance()>= LIMELIGHT_DISTANCE_MIN){
+            SmartDashboard.putNumber("DistanceInInches", get_revisedDistance());
+        }
         SmartDashboard.putNumber("Vision:DistanceInInches", get_distanceToTargetInInches());
         SmartDashboard.putNumber("Vision:ActualDistance", get_revisedDistance());
     }

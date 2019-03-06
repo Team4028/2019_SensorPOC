@@ -21,6 +21,10 @@ import frc.robot.util.GeneralUtilities;
  */
 public class DistanceRev2mSensor implements IDistanceSensor{
 
+	/**
+	 *
+	 */
+
 	private VL53L0X _distanceSensor;
 	private double _distanceToTargetInInches;
 	private boolean _didTimeoutOccur;
@@ -96,6 +100,8 @@ public class DistanceRev2mSensor implements IDistanceSensor{
 	public void updateDashboard(){
 		SmartDashboard.putNumber("VL53LOX:DistanceInInches", get_distanceToTargetInInches());
 		SmartDashboard.putBoolean("VL53LOX:didTimeoutOccur", get_didTimeoutOccur());
-		
+		if(get_distanceToTargetInInches() < MAX_RANGE){
+			SmartDashboard.putNumber("DistanceInInches", get_distanceToTargetInInches());
+		}
 	}
 }
