@@ -17,7 +17,7 @@ public class LSingleHatchLSide extends CommandGroup {
         setInterruptible(false);
         addParallel(new StartAcquireHatch());
         addSequential(new RunMotionProfileCommand(_sidePath));
-        addSequential(new TurnInPlace(90, true));
+        addSequential(new TurnInPlace(80, true));
         addParallel(new printTimeFromStart());
         addSequential(new AutoPlaceHatch());
     }

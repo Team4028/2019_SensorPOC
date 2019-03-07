@@ -84,6 +84,7 @@ public class OI {
 
 		_operatorController.rt.whileActive(new StorePresetElevatorPosition(_operatorController.b, _operatorController.x, _operatorController.y,_operatorController.rb));
 		_operatorController.back.whenPressed(new ClimbSequence());
+		_operatorController.start.whenPressed(new SwitchCamera());
 		//_operatorController.back.whenPressed(command);
 
 		// =========== Engineer ======================================

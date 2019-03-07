@@ -16,7 +16,7 @@ import frc.robot.commands.infeed.ReleaseInfeed;
 public class ClimbSequence extends CommandGroup
 {
     double climbHeight =-20500;
-    double clearedHeight=-600;
+    double clearedHeight=-700;
 
     public ClimbSequence()
     {
@@ -31,8 +31,8 @@ public class ClimbSequence extends CommandGroup
             new MoveClimberToPos(clearedHeight),
         })));
         addSequential(new DriveWithControllers(0.3, 0),0.85);
-        addSequential(new StopChassis(),0.25);
-        addSequential(new DriveClimber(0),0.25);
+        addParallel(new StopChassis(),0.25);
+        addSequential(new DriveClimber(0.0),0.25);
 
     }
 }

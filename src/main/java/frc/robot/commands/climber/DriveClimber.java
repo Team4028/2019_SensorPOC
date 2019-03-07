@@ -13,6 +13,7 @@ public class DriveClimber extends Command {
   boolean isAuton;
 
   public DriveClimber(Trigger rightstick) {
+    requires(_climber);
     setInterruptible(true);
     _thumbstick = rightstick;
     isAuton = false;
@@ -20,6 +21,7 @@ public class DriveClimber extends Command {
   public DriveClimber(double throttle)
   {
     setInterruptible(true);
+    requires(_climber);
     _throttle=throttle;
     isAuton = true;
   }
@@ -52,13 +54,11 @@ public class DriveClimber extends Command {
 
   // Called once after isFinished returns true
   @Override
-  protected void end() {
+  protected void interrupted() {
     _climber.driveClimber(0);
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
-  @Override
-  protected void interrupted() {
-  }
+
 }

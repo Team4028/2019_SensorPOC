@@ -16,10 +16,7 @@ public class AutonFastPlaceHatch extends CommandGroup
         addParallel(new ToggleBeakOpen());
         addSequential(new WaitCommand(0.16));
         addSequential(new TogglePunch());
-        
-    }
-    @Override
-    protected boolean isFinished() {
-        return _cargo.get_isBeakOpen() && _cargo.get_isPunchOut();
+        addSequential(new WaitCommand(0.3));
+
     }
 }

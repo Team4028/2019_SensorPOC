@@ -169,16 +169,16 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
       case PERCENT_VBUS:
 				return;
       case AUTO_TURN:
-        _leftMaster.config_kF(0, 0.377);
+        _leftMaster.config_kF(0, 0.4);
         _leftMaster.config_kP(0, 0.2);
         _leftMaster.config_kI(0, 0);
         _leftMaster.config_kD(0,8);
-        _rightMaster.config_kF(0, 0.377);
+        _rightMaster.config_kF(0, 0.4);
         _rightMaster.config_kP(0, 0.2);
         _rightMaster.config_kI(0, 0);
         _rightMaster.config_kD(0, 8);
-        _rightMaster.configMotionCruiseVelocity(1200);
-        _leftMaster.configMotionCruiseVelocity(1200);
+        _rightMaster.configMotionCruiseVelocity(1400);
+        _leftMaster.configMotionCruiseVelocity(1400);
         _rightMaster.configMotionAcceleration(1200);
         _leftMaster.configMotionAcceleration(1200);
         return;
@@ -193,8 +193,8 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
         _rightMaster.config_kD(0, 3.2);
         _rightMaster.configMotionCruiseVelocity(1275);
         _leftMaster.configMotionCruiseVelocity(1275);
-        _rightMaster.configMotionAcceleration(1200);
-        _leftMaster.configMotionAcceleration(1200);
+        _rightMaster.configMotionAcceleration(900);
+        _leftMaster.configMotionAcceleration(900);
 				return;
 				
       case FOLLOW_PATH:

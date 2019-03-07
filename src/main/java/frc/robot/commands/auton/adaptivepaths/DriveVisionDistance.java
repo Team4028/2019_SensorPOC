@@ -6,6 +6,7 @@ import frc.robot.sensors.DistanceRev2mSensor;
 import frc.robot.sensors.VisionLL;
 import frc.robot.sensors.GyroNavX.SCORING_TARGET;
 import frc.robot.sensors.GyroNavX.SIDE;
+import frc.robot.subsystems.Cargo;
 import frc.robot.subsystems.Chassis;
 
 public class DriveVisionDistance extends Command {
@@ -14,7 +15,7 @@ public class DriveVisionDistance extends Command {
     SCORING_TARGET target;
     SIDE side;
     VisionLL _limelight = VisionLL.getInstance();
-
+    Cargo _cargo = Cargo.getInstance();
     private static final double OFFSET = 12;
     boolean _canSeeTarget;
     
@@ -26,6 +27,10 @@ public class DriveVisionDistance extends Command {
 
     @Override
     protected void initialize() {
+        if(!_cargo.get_isBucketExtended())
+        {
+            _cargo.toggleBucket();
+        }
         if(_chassis.getIsVisionTargetVisible())
         {
             double dsDistance= DistanceRev2mSensor.getInstance().get_distanceToTargetInInches();

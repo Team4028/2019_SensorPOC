@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.auton.pathfollowing.Paths;
+import frc.robot.commands.chassis.StopChassis;
 import frc.robot.commands.climber.ZeroClimber;
 import frc.robot.commands.elevator.ZeroElevatorEncoder;
 import frc.robot.sensors.GyroNavX;
@@ -119,6 +120,8 @@ public class Robot extends TimedRobot {
       Command zeroElevatorCommand = new ZeroElevatorEncoder();
       zeroElevatorCommand.start();
     }
+    Command zeroCLimber = new ZeroClimber();
+    zeroCLimber.start();
 
   }
 
@@ -146,7 +149,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopInit() {
-    _chassis.stop();
+    Scheduler.getInstance().removeAll();
+    Command stopChassis = new StopChassis();
+    stopChassis.start();
     _chassis.zeroSensors();
     _chassis.initiateRobotState();
     _chassis.setBrakeMode(NeutralMode.Brake);
@@ -242,8 +247,8 @@ public class Robot extends TimedRobot {
     	// add scan time sample to calc scan time rolling average
     	_scanTimeSamples.add(new BigDecimal(scanCycleDeltaInMSecs));
     	
-    	//if((new Date().getTime() - _lastDashboardWriteTimeMSec) > 100) {
-        {
+    	if((new Date().getTime() - _lastDashboardWriteTimeMSec) > 100) {
+      {
         // ----------------------------------------------
     		// each subsystem should add a call to a outputToSmartDashboard method
     		// to push its data out to the dashboard
@@ -257,8 +262,8 @@ public class Robot extends TimedRobot {
 	    	if(_distanceRev2mSensor != null)  { _distanceRev2mSensor.updateDashboard(); }
         if(_vision != null)               { _vision.updateDashboard(); }
         if(_pressureSensor != null)       { _pressureSensor.updateDashboard(); }
-        if(_navX != null)                 {_navX.updateDashboard();}
-        if(_cameraServer != null)         {_cameraServer.updateDashboard();}
+        if(_navX != null)                 { _navX.updateDashboard(); }
+        if(_cameraServer != null)         { _cameraServer.updateDashboard(); }
         if(_compressor != null)           { _compressor.updateDashboard(); }
 	    	
     		// write the overall robot dashboard info
@@ -272,7 +277,8 @@ public class Robot extends TimedRobot {
     	}
     	
     	// snapshot when this scan ended
-    	_lastScanEndTimeInMSec = new Date().getTime();
+      _lastScanEndTimeInMSec = new Date().getTime();
+    }
 	}
 
 	/** Method for Logging Data to the USB Stick plugged into the RoboRio */

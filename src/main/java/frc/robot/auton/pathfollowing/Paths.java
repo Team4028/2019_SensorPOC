@@ -81,8 +81,8 @@ public class Paths {
 		_toFrontCargoShipLFromC = buildPathFromWaypoints(-0.007,Arrays.asList(
 			new Waypoint(66,160,0,0),
 			new Waypoint(115,160,15,40),
-			new Waypoint(145,151,17,80),
-			new Waypoint(185,151,0,40)
+			new Waypoint(145,148,17,40),
+			new Waypoint(175,148,0,40)
 		));
 		centerPaths.put(Center.TO_FRONT_CARGO_SHIP_L, _toFrontCargoShipLFromC);
 		_toCargoShipRFromC = buildPathFromWaypoints(-0.001,Arrays.asList(
@@ -100,28 +100,29 @@ public class Paths {
 		new Waypoint(66,120,0,0),
 		new Waypoint(120,120,20,40),
 		new Waypoint(145,157,20,70),
-		new Waypoint(185,157,0,30)));
+		new Waypoint(175,157,0,30)));
 		leftPaths.put(Left.TO_FRONT_CARGO_SHIP_L, _toFrontCargoShipLFromL);
 
 		_toLeftCargoShipFirstBay = buildPathFromWaypoints(Arrays.asList(
 			new Waypoint(66,120,0,0),
-			new Waypoint(115,120,0,50),
-			new Waypoint(265,120,0,60)
+			new Waypoint(105,120,40,50),
+			new Waypoint(263,90,0,120)
 		));
 		leftPaths.put(Left.TO_LEFT_CARGO_SHIP_FIRST, _toLeftCargoShipFirstBay);
 
-		_toFeederStationFromFirstBayL = buildPathFromWaypoints(-0.005,Arrays.asList(
+		_toFeederStationFromFirstBayL = buildPathFromWaypoints(-0.007,Arrays.asList(
 			new Waypoint(260,110,0,0),
-			new Waypoint(130,85,60,100),
-			new Waypoint(30,85,0,120)
+			new Waypoint(130,85,50,80),
+			new Waypoint(70,85,0,80),
+			new Waypoint(35,85,0,120)
 		));
 		leftPaths.put(Left.FROM_FIRST_BAY_TO_FEEDER_STATION, _toFeederStationFromFirstBayL);
 
-		_toFeederStationFromFrontL = buildPathFromWaypoints(-0.001, Arrays.asList(
+		_toFeederStationFromFrontL = buildPathFromWaypoints(-0.005, Arrays.asList(
 			new Waypoint(180,155,0,0),
-			new Waypoint(120,69,0,120),
-			new Waypoint(90,28,30,60),
-			new Waypoint(45,28,0,100)
+			new Waypoint(120,69,0,100),
+			new Waypoint(90,38,40,60),
+			new Waypoint(45,38,0,60)
 		
 		));
 		leftPaths.put(Left.FROM_FRONT_CARGO_SHIP_L_TO_FEEDER_STATION, _toFeederStationFromFrontL);
@@ -142,10 +143,10 @@ public class Paths {
 		));
 		leftPaths.put(Left.FROM_FEEDER_STATION_TO_SECOND_BAY, _toSecondBayFromFeederStationL);
 
-		_awayFromFeederStationL = buildPathFromWaypoints(Arrays.asList(
+		_awayFromFeederStationL = buildPathFromWaypoints(-0.003, Arrays.asList(
 			new Waypoint(30,85,0,0),
-			new Waypoint(100,85,50,80),
-			new Waypoint(150,110,0,120)
+			new Waypoint(140,80,50,40),
+			new Waypoint(190,110,0,120)
 		));
 		_awayFromFeederStationL.setIsReversed(true);
 		leftPaths.put(Left.AWAY_FROM_FEEDER, _awayFromFeederStationL);

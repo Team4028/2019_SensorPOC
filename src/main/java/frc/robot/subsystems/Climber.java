@@ -74,6 +74,7 @@ public class Climber extends Subsystem implements IBeakSquadSubsystem {
   public void driveClimber(double driveSpeed){
     _driveMtr.set(ControlMode.PercentOutput, driveSpeed);
   }
+  
 
   public void setClimberPosition(){
    // if (_liftMtr.getSelectedSensorPosition() < THIRD_LEVEL_CLIMBER_MEASUREMENT_IN_NU) {

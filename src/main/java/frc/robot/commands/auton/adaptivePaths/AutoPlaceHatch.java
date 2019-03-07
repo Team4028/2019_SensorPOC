@@ -34,6 +34,7 @@ public class AutoPlaceHatch extends CommandGroup {
     {
         _isAuton=true;
         setInterruptible(false);
+        addParallel(new SendBucketOut());
         addSequential(new Auton_turnFromVision());
         addSequential(new PrintCommand("SECOND VISION TURN TERMINATING"));
         addSequential(new printTimeFromStart());
@@ -57,14 +58,14 @@ public class AutoPlaceHatch extends CommandGroup {
         addSequential(new PrintCommand("SECOND VISION TURN TERMINATING"));
         addSequential(new printTimeFromStart());
         addSequential(new DriveVisionDistance(),3);
-        addSequential(new PrintCommand("VISION DRIVE STRAIGHT TERMINATING"));
+        addParallel(new PrintCommand("VISION DRIVE STRAIGHT TERMINATING"));
         addSequential(new printTimeFromStart());
-        addSequential(new AutonFastPlaceHatch());
+        /*addSequential(new AutonFastPlaceHatch());
         addParallel(new printTimeFromStart());
         addSequential(new DriveSetDistance(-15));
         addSequential(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.HOME));
         addParallel(new ReleaseInfeed());
-        addSequential(new TogglePunch());
+        addSequential(new TogglePunch());*/
     }
 
 	@Override
@@ -74,11 +75,23 @@ public class AutoPlaceHatch extends CommandGroup {
     }
 
     @Override
-    protected boolean isFinished() {        
+    protected boolean isFinished() {   
+        if(!_isAuton)  
+        {
+            if(!_rt.get())
+            {
+                return true;
+            }
+        }   
         return super.isFinished() || Timer.getFPGATimestamp()-_startTime>=10;
     }
     @Override
     protected void end() {
         _chassis.stop();
     }
+    @Override
+    protected void interrupted() {
+        _chassis.stop();
+    }
+    
 }
