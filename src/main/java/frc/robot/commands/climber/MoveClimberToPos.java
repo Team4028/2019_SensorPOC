@@ -22,11 +22,11 @@ public class MoveClimberToPos extends Command
     protected void execute() {
         if(_climber.getNativeUnits()>_targetPos)
         {
-            _climber.liftClimber(-1);
+            _climber.liftClimber(-0.7);
         }
         else
         {
-            _climber.liftClimber(0.7);
+            _climber.liftClimber(0.4);
         }
 
     }
@@ -36,6 +36,7 @@ public class MoveClimberToPos extends Command
     }
     @Override
     protected void end() {
+        System.out.println("Ending Move to Preset Pos");
         _climber.liftClimber(0);
     }
 }

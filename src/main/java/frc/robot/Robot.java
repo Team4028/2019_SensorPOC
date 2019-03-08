@@ -207,6 +207,7 @@ public class Robot extends TimedRobot {
     _chassis.setBrakeMode(NeutralMode.Coast);
     _chassis.stop();
     Scheduler.getInstance().removeAll();
+    _vision.turnOffLimelightLEDs();
   }
 
   /**
