@@ -27,13 +27,17 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
   private int _targetElevatorPositionNU;
   private boolean _hasElevatorBeenZeroed = false;
 
+  private String _presetPositionName = "Unknown";
+
   // =================================================================================================================
   // Define Enums for the Elevator Axis
   public enum ELEVATOR_TARGET_POSITION {
     HOME,
     LEVEL_1,
     LEVEL_2,
-    LEVEL_3
+    LEVEL_3,
+    CARGO_ACQUIRE,
+    NULL
   }
 
   // =================================================================================================================
@@ -46,13 +50,16 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
   private static final double NATIVE_UNITS_TO_INCHES_CONVERSION = 242.7928;
 
 	// hardcoded preset positions (in native units, 0 = home position)
-  private static final int HOME_POSITION_NU = InchesToNativeUnits(1);
+  private static final int HOME_POSITION_NU = InchesToNativeUnits(0);
   private static final int CARGO_LEVEL_1_POSITION_NU = InchesToNativeUnits(24.25);
   private static final int CARGO_LEVEL_2_POSITION_NU = InchesToNativeUnits(52.25);
-  private static final int CARGO_LEVEL_3_POSITION_NU = InchesToNativeUnits(52.25);
+  private static final int CARGO_LEVEL_3_POSITION_NU = InchesToNativeUnits(79.25);
   private static final int HATCH_LEVEL_1_POSITION_NU = InchesToNativeUnits(0);
   private static final int HATCH_LEVEL_2_POSITION_NU = InchesToNativeUnits(31);
   private static final int HATCH_LEVEL_3_POSITION_NU = InchesToNativeUnits(58);
+  private static final int CARGO_ACQUIRE_HEIGHT = InchesToNativeUnits(38);
+
+  ELEVATOR_TARGET_POSITION _storedPresetPosition;
 
   // define PID Constants
 	private static final int MOVING_DOWN_PID_SLOT_INDEX = 0;
@@ -81,7 +88,7 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
   private static final int DOWN_CRUISE_VELOCITY = 2000;
   private static final int TELEOP_UP_ACCELERATION = 4000;
   private static final int TELEOP_UP_DECELERATION = 4000;
-  private static final int TELEOP_DOWN_ACCELERATION = 2000;
+  private static final int TELEOP_DOWN_ACCELERATION = 1000;
 
   private static final int CAN_TIMEOUT_MILLISECONDS = 30;
   //#endregion
@@ -177,56 +184,61 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
     }
   }
 
-  public void MoveToPresetPosition(ELEVATOR_TARGET_POSITION presetPosition, boolean hasHatch){
-    if(get_hasElevatorBeenZeroed()){
-      switch(presetPosition){
-        case HOME:
-          _targetElevatorPositionNU = HOME_POSITION_NU;
-          break;
-        case LEVEL_1:
-          if(hasHatch){
-            _targetElevatorPositionNU = HATCH_LEVEL_1_POSITION_NU;
-          } else {
-            _targetElevatorPositionNU = CARGO_LEVEL_1_POSITION_NU;
-          }
-          break;
-        case LEVEL_2:
-          if(hasHatch){
-            _targetElevatorPositionNU = HATCH_LEVEL_2_POSITION_NU;
-          } else {
-            _targetElevatorPositionNU = CARGO_LEVEL_2_POSITION_NU;
-          }         
-          break;
-        case LEVEL_3:
-          if(hasHatch){
-            _targetElevatorPositionNU = HATCH_LEVEL_3_POSITION_NU;
-          } else {
-            _targetElevatorPositionNU = CARGO_LEVEL_3_POSITION_NU;
-          }
-          break;       
-      }
-
-      // set appropriate gain slot to use (only flip if outside deadband)
-      int currentError = Math.abs(get_ElevatorPos() - _targetElevatorPositionNU);
-      if (currentError > ELEVATOR_POS_ALLOWABLE_ERROR_NU) {
-        if(_targetElevatorPositionNU > get_ElevatorPos()) {
-          _elevatorMasterMotor.selectProfileSlot(MOVING_UP_PID_SLOT_INDEX, 0);
-          _elevatorMasterMotor.configMotionCruiseVelocity(UP_CRUISE_VELOCITY, 0);
-          _elevatorMasterMotor.configMotionAcceleration(TELEOP_UP_ACCELERATION, 0);
+  public void setTargetPosition(ELEVATOR_TARGET_POSITION presetPosition, boolean hasHatch) {
+    switch(presetPosition){
+      case HOME:
+        _targetElevatorPositionNU = HOME_POSITION_NU;
+        _storedPresetPosition= ELEVATOR_TARGET_POSITION.HOME;
+        break;
+      case LEVEL_1:
+      _storedPresetPosition = ELEVATOR_TARGET_POSITION.LEVEL_1;
+        if(hasHatch){
+          _targetElevatorPositionNU = HATCH_LEVEL_1_POSITION_NU;
         } else {
-          _elevatorMasterMotor.selectProfileSlot(MOVING_DOWN_PID_SLOT_INDEX, 0);
-          _elevatorMasterMotor.configMotionCruiseVelocity(DOWN_CRUISE_VELOCITY, 0);
-          if(get_ElevatorVelocity() > 0){
-            _elevatorMasterMotor.configMotionAcceleration(TELEOP_UP_DECELERATION, 0);
-          } else {
-            _elevatorMasterMotor.configMotionAcceleration(TELEOP_DOWN_ACCELERATION, 0);
-          }
-        }
-      } else {
-       // _elevatorMasterMotor.selectProfileSlot(HOLDING_PID_SLOT_INDEX, 0);
-      }
-      _elevatorMasterMotor.set(ControlMode.MotionMagic, _targetElevatorPositionNU);
+          _targetElevatorPositionNU = CARGO_LEVEL_1_POSITION_NU;
+        } break;
+      case LEVEL_2:
+        _storedPresetPosition = ELEVATOR_TARGET_POSITION.LEVEL_2;
+        if(hasHatch){
+          _targetElevatorPositionNU = HATCH_LEVEL_2_POSITION_NU;
+        } else {
+          _targetElevatorPositionNU = CARGO_LEVEL_2_POSITION_NU;
+        } break;
+      case LEVEL_3:
+      _storedPresetPosition = ELEVATOR_TARGET_POSITION.LEVEL_3;
+        if(hasHatch){
+          _targetElevatorPositionNU = HATCH_LEVEL_3_POSITION_NU;
+        } else {
+          _targetElevatorPositionNU = CARGO_LEVEL_3_POSITION_NU;
+        } break;   
+      case CARGO_ACQUIRE:
+        _targetElevatorPositionNU = CARGO_ACQUIRE_HEIGHT;
+        break;
     }
+    _presetPositionName = presetPosition.toString();
+  }
+
+  public void moveToPresetPosition(){
+    // set appropriate gain slot to use (only flip if outside deadband)
+    int currentError = Math.abs(get_ElevatorPos() - _targetElevatorPositionNU);
+    if (currentError > ELEVATOR_POS_ALLOWABLE_ERROR_NU) {
+      if(_targetElevatorPositionNU > get_ElevatorPos()) {
+        _elevatorMasterMotor.selectProfileSlot(MOVING_UP_PID_SLOT_INDEX, 0);
+        _elevatorMasterMotor.configMotionCruiseVelocity(UP_CRUISE_VELOCITY, 0);
+        _elevatorMasterMotor.configMotionAcceleration(TELEOP_UP_ACCELERATION, 0);
+      } else {
+        _elevatorMasterMotor.selectProfileSlot(MOVING_DOWN_PID_SLOT_INDEX, 0);
+        _elevatorMasterMotor.configMotionCruiseVelocity(DOWN_CRUISE_VELOCITY, 0);
+        if(get_ElevatorVelocity() > 0){
+          _elevatorMasterMotor.configMotionAcceleration(TELEOP_UP_DECELERATION, 0);
+        } else {
+          _elevatorMasterMotor.configMotionAcceleration(TELEOP_DOWN_ACCELERATION, 0);
+        }
+      }
+    } else {
+      // _elevatorMasterMotor.selectProfileSlot(HOLDING_PID_SLOT_INDEX, 0);
+    }
+    _elevatorMasterMotor.set(ControlMode.MotionMagic, _targetElevatorPositionNU);
   }
 
   // ===============================================================================================================
@@ -243,6 +255,11 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
     } else {
       return false;
     }
+  }
+
+  public ELEVATOR_TARGET_POSITION getStoredTargetPosition()
+  {
+    return _storedPresetPosition;
   }
 
   public boolean get_hasElevatorBeenZeroed() {
@@ -292,5 +309,6 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
     //SmartDashboard.putNumber("Elevator:slaveMotorOutputVolts", _elevatorSlaveMotor.getMotorOutputVoltage());
     //SmartDashboard.putNumber("Elevator:slaveMotorCurrentAmps", _elevatorSlaveMotor.getOutputCurrent());
     SmartDashboard.putNumber("Elevator: Target Position", NativeUnitsToInches(_targetElevatorPositionNU));
+    SmartDashboard.putString("Elevator: Position", _presetPositionName);
   }
 }

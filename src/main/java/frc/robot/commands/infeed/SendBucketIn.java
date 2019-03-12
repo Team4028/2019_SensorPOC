@@ -9,69 +9,43 @@ package frc.robot.commands.infeed;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.subsystems.Cargo;
-import frc.robot.util.BeakXboxController.Thumbstick;
-import frc.robot.util.BeakXboxController.Trigger;
 
-public class RunInfeedMotor extends Command {
-  private Cargo _cargo = Cargo.getInstance();
-  private Trigger _leftTrigger;
-  private Thumbstick _leftThumbstick;
-  boolean _isReversed;
-  boolean isTrigger;
+public class SendBucketIn extends Command {
+  Cargo _cargo = Cargo.getInstance();
+  public SendBucketIn() {
+    // Use requires() here to declare subsystem dependencies
+    // eg. requires(chassis);
+    setInterruptible(false);
+  }
 
-  public RunInfeedMotor(Trigger leftTrigger, boolean isReversed)  {
-    requires(_cargo);
-    setInterruptible(true);
-    _leftTrigger = leftTrigger;
-    _isReversed = isReversed;
-    isTrigger=true;
-  }
-  public RunInfeedMotor(Thumbstick leftThumbstick)
-  {
-    requires(_cargo);
-    setInterruptible(true);
-    _leftThumbstick = leftThumbstick;
-    isTrigger=false;
-  }
   // Called just before this Command runs the first time
   @Override
-  protected void initialize() {}
+  protected void initialize() {
+    if(_cargo.get_isBucketExtended())
+    {
+      _cargo.toggleBucket();
+    }
+  }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    if(isTrigger)
-    {
-      if(_isReversed)
-      {
-        _cargo.setMotorSpeed(-1*_leftTrigger.getY());
-      }
-      else
-      {
-        _cargo.setMotorSpeed(_leftTrigger.getY());
-      }
-    }
-    else
-    {
-      _cargo.setMotorSpeed(_leftThumbstick.getY());
-    }
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return false;
+    return true;
   }
 
   // Called once after isFinished returns true
   @Override
-  protected void end() {}
+  protected void end() {
+  }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
-
-
   }
 }

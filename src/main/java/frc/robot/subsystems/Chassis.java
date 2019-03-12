@@ -31,6 +31,7 @@ import frc.robot.auton.pathfollowing.util.Kinematics;
 import frc.robot.commands.auton.adaptivePaths.Auton_turnFromVision;
 import frc.robot.interfaces.IBeakSquadSubsystem;
 import frc.robot.sensors.GyroNavX;
+import frc.robot.sensors.VisionLL;
 import frc.robot.util.LogDataBE;
 
 /**
@@ -64,8 +65,9 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
   public double _leftMtrDriveSetDistanceCmd, _rightMtrDriveSetDistanceCmd;
 
   public double _targetAngle,_angleError;
-
+  VisionLL _limeLight = VisionLL.getInstance();
   boolean _isTurnRight;
+  boolean _isVisionTargetVisible;
 
   double _leftTargetVelocity, _rightTargetVelocity, _centerTargetVelocity;
   Path _currentPath=null;
@@ -110,8 +112,7 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
     configDriveMotors(_leftSlave);
 		configDriveMotors(_rightSlave);
   }
-  private void configMasterMotors(TalonSRX talon) 
-	{
+  private void configMasterMotors(TalonSRX talon) {
 		talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 10);
 		talon.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 5, 10);
 	
@@ -124,7 +125,7 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
 	
 	private void configDriveMotors(TalonSRX talon) 
 	{
-    talon.configFactoryDefault();
+    //talon.configFactoryDefault();
 		talon.configForwardLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.Disabled, 0);
 		talon.configReverseLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.Disabled, 0);
         
@@ -167,16 +168,16 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
       case PERCENT_VBUS:
 				return;
       case AUTO_TURN:
-        _leftMaster.config_kF(0, 0.377);
+        _leftMaster.config_kF(0, 0.4);
         _leftMaster.config_kP(0, 0.2);
         _leftMaster.config_kI(0, 0);
         _leftMaster.config_kD(0,8);
-        _rightMaster.config_kF(0, 0.377);
+        _rightMaster.config_kF(0, 0.4);
         _rightMaster.config_kP(0, 0.2);
         _rightMaster.config_kI(0, 0);
         _rightMaster.config_kD(0, 8);
-        _rightMaster.configMotionCruiseVelocity(1200);
-        _leftMaster.configMotionCruiseVelocity(1200);
+        _rightMaster.configMotionCruiseVelocity(1400);
+        _leftMaster.configMotionCruiseVelocity(1400);
         _rightMaster.configMotionAcceleration(1200);
         _leftMaster.configMotionAcceleration(1200);
         return;
@@ -191,8 +192,8 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
         _rightMaster.config_kD(0, 3.2);
         _rightMaster.configMotionCruiseVelocity(1275);
         _leftMaster.configMotionCruiseVelocity(1275);
-        _rightMaster.configMotionAcceleration(1200);
-        _leftMaster.configMotionAcceleration(1200);
+        _rightMaster.configMotionAcceleration(900);
+        _leftMaster.configMotionAcceleration(900);
 				return;
 				
       case FOLLOW_PATH:
@@ -215,8 +216,30 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
     public void arcadeDrive(double throttleCmd, double turnCmd) 
     {
       _chassisState = ChassisState.PERCENT_VBUS;
-      _leftMaster.set(ControlMode.PercentOutput, 0.7*throttleCmd+0.3*turnCmd);
-      _rightMaster.set(ControlMode.PercentOutput,0.7*throttleCmd-0.3*turnCmd);
+      if(turnCmd>0.3)
+      {
+        _rightMaster.configOpenloopRamp(0.3);
+        _rightSlave.configOpenloopRamp(0.3);
+        _leftMaster.configOpenloopRamp(0.3);
+        _leftSlave.configOpenloopRamp(0.3);
+      }
+      else
+      {
+        _rightMaster.configOpenloopRamp(0.7);
+        _rightSlave.configOpenloopRamp(0.7);
+        _leftMaster.configOpenloopRamp(0.7);
+        _leftSlave.configOpenloopRamp(0.7);
+      }
+      if(throttleCmd>0.5)
+      {
+        _leftMaster.set(ControlMode.PercentOutput, 0.7*throttleCmd+0.3*turnCmd);
+        _rightMaster.set(ControlMode.PercentOutput,0.7*throttleCmd-0.3*turnCmd);
+      }
+      else
+      {
+        _leftMaster.set(ControlMode.PercentOutput, 0.7*throttleCmd+0.3*turnCmd);
+        _rightMaster.set(ControlMode.PercentOutput,0.78*throttleCmd-0.3*turnCmd);
+      }
     }
   
     public void stop()
@@ -421,6 +444,18 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
   public double getAngleError()
   {
     return _angleError;
+  }
+  public void setCanSeeTarget(boolean canSeeTarget)
+  {
+    _isVisionTargetVisible = canSeeTarget;
+  }
+  public boolean getIsVisionTargetVisible()
+  {
+    return _isVisionTargetVisible;
+  }
+  public double getDistanceToTargetInches()
+  {
+    return _limeLight.get_revisedDistance();
   }
   public void setBrakeMode(NeutralMode mode)
   {

@@ -53,7 +53,10 @@ public class LEDController {
             redBlinkLights();
         }
     }
-
+    public void mvrCompPrettyColors()
+    {
+        LEDstrip.set(-0.97);
+    }
     //Different methods that set the LEDs to a certain color, the names are self-explainitory
 	private void partyMode() {
 		LEDstrip.set(-0.99);

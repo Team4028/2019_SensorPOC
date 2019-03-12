@@ -6,6 +6,7 @@ import frc.robot.sensors.DistanceRev2mSensor;
 import frc.robot.sensors.VisionLL;
 import frc.robot.sensors.GyroNavX.SCORING_TARGET;
 import frc.robot.sensors.GyroNavX.SIDE;
+import frc.robot.subsystems.Cargo;
 import frc.robot.subsystems.Chassis;
 
 public class DriveVisionDistance extends Command {
@@ -14,7 +15,7 @@ public class DriveVisionDistance extends Command {
     SCORING_TARGET target;
     SIDE side;
     VisionLL _limelight = VisionLL.getInstance();
-
+    Cargo _cargo = Cargo.getInstance();
     private static final double OFFSET = 12;
     boolean _canSeeTarget;
     
@@ -26,17 +27,23 @@ public class DriveVisionDistance extends Command {
 
     @Override
     protected void initialize() {
-        if(_limelight.get_isTargetInFOV())
+        if(!_cargo.get_isBucketExtended())
         {
-                double dsDistance= DistanceRev2mSensor.getInstance().get_distanceToTargetInInches();
-            double llDistance = _limelight.get_revisedDistance();
+            _cargo.toggleBucket();
+        }
+        if(_chassis.getIsVisionTargetVisible())
+        {
+            double dsDistance= DistanceRev2mSensor.getInstance().get_distanceToTargetInInches();
+            double llDistance = _chassis.getDistanceToTargetInches();
+            llDistance-=7;
+            dsDistance-=7;
             System.out.println("Distance Sensor Distance: " + dsDistance);
             System.out.println("LimeLight Distance: " + llDistance);
             if (dsDistance > 0) {
                 _chassis.setMotionMagicCmdInches(Math.max((dsDistance-OFFSET),0));
                 System.out.println("Distance Sensor Distance Used");
             } else {
-                _chassis.setMotionMagicCmdInches(Math.max((llDistance-OFFSET-7),0));
+                _chassis.setMotionMagicCmdInches(Math.max((llDistance-OFFSET-4),0));
                 System.out.println("Limelight Distance Used");
             }
             System.out.println("Motion Magic Command Set");

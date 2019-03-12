@@ -15,12 +15,15 @@ import frc.robot.sensors.GyroNavX.SIDE;
 public class LDoubleHatchLFrontLSide extends CommandGroup {
     Path _toFeederStation = Paths.getPath(Left.FROM_FRONT_CARGO_SHIP_L_TO_FEEDER_STATION);
     Path _toBay = (Paths.getPath(Left.FROM_FEEDER_STATION_TO_FIRST_BAY));
+    Path _awayFromFeederStation = Paths.getPath(Left.AWAY_FROM_FEEDER);
     public LDoubleHatchLFrontLSide() {
         setInterruptible(false);
         addSequential(new LSingleHatchLFront());
-        addSequential(new TurnInPlace(235, false));
+        addSequential(new TurnInPlace(-125, false));
         addSequential(new RunMotionProfileCommand(_toFeederStation));
         addSequential(new AutoAcquireHatch());
+        addSequential(new RunMotionProfileCommand(_awayFromFeederStation));
+
         // addSequential(new DriveSetDistance(-5));
         // addSequential(new TurnInPlace(20, false));
         // addSequential(new RunMotionProfileCommand(_toBay));

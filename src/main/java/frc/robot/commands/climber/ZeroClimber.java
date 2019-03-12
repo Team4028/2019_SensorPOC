@@ -13,7 +13,7 @@ public class ZeroClimber extends Command
     }
     @Override
     protected void execute() {
-        _climber.liftClimber(0.1);
+        _climber.liftClimber(0.2);
     }
     @Override
     protected boolean isFinished() {
@@ -22,5 +22,7 @@ public class ZeroClimber extends Command
     @Override
     protected void end() {
         _climber.zeroClimber();
+        _climber.HoldClimber();
+
     }
 }

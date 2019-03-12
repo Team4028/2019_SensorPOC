@@ -7,6 +7,8 @@
 
 package frc.robot.sensors;
 
+import javax.lang.model.util.ElementScanner6;
+
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.interfaces.IVisionSensor;
@@ -19,8 +21,15 @@ import frc.robot.util.LogDataBE;
  */
 public class VisionLL implements IVisionSensor {
 
+    public enum LIMELIGHT_PIPELINE {
+        RIGHT,
+        CENTER,
+        LEFT;
+    }
+
     private double HORIZONAL_CAMERA_OFFSET_IN = 6;
     private double VERTICAL_CAMERA_OFFSET_IN = 15;
+    private boolean _isInVisionMode = false;
 
     private GyroNavX _navX = GyroNavX.getInstance();
     // =====================================================================================
@@ -34,6 +43,7 @@ public class VisionLL implements IVisionSensor {
 
     // private constructor for singleton pattern
     private VisionLL() {
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(1);
     }
 
     @Override
@@ -78,12 +88,54 @@ public class VisionLL implements IVisionSensor {
         return actualDistance;
     }
 
+    public void changeLimelightPipeline(LIMELIGHT_PIPELINE pipeline) {
+        switch(pipeline){
+            case RIGHT:
+                NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(0);
+                break;
+            case CENTER:
+                NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(1);
+                break;
+            case LEFT:
+                NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(2);
+                break;
+        }
+    }
+
     public void turnOffLimelightLEDs() {
         NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
     }
 
     public void turnOnLimelightLEDs() {
         NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(3);
+    }
+
+    public boolean isInVisionMode() {
+        return _isInVisionMode;
+    }
+
+    public void setIsInVisionMode(boolean isInVisionMode){
+        _isInVisionMode = isInVisionMode;
+        if(isInVisionMode){
+            turnOnLimelightLEDs();
+        } else {
+            turnOffLimelightLEDs();
+        }
+    }
+    public double getTrueDistance()
+    {
+        if(DistanceRev2mSensor.getInstance().get_distanceToTargetInInches()>0)
+        {
+            return DistanceRev2mSensor.getInstance().get_distanceToTargetInInches();
+        }
+        else if(this.get_isTargetInFOV())
+        {
+            return get_revisedDistance();
+        }
+        else 
+        {
+            return Double.NaN;
+        }
     }
 
     //=====================================================================================
@@ -95,6 +147,7 @@ public class VisionLL implements IVisionSensor {
     }
 
     public void updateDashboard() {
+        SmartDashboard.putNumber("Distance to Target Inches", getTrueDistance());
         SmartDashboard.putString("Vision:CameraType", "Limelight");
         SmartDashboard.putBoolean("Vision:IsTargetInFOV", get_isTargetInFOV());
         SmartDashboard.putNumber("Vision:Angle1InDegrees", get_angle1InDegrees());
