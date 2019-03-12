@@ -17,6 +17,7 @@ public class AutonFastPlaceHatch extends CommandGroup
         addSequential(new WaitCommand(0.16));
         addSequential(new TogglePunch());
         addSequential(new WaitCommand(0.3));
+        addSequential(new TogglePunch());
 
     }
 }

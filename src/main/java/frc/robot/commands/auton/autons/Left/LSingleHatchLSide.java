@@ -15,7 +15,7 @@ public class LSingleHatchLSide extends CommandGroup {
     Path _sidePath = Paths.getPath(Left.TO_LEFT_CARGO_SHIP_FIRST);
     public LSingleHatchLSide() {
         setInterruptible(false);
-        addParallel(new StartAcquireHatch());
+        addSequential(new StartAcquireHatch());
         addSequential(new RunMotionProfileCommand(_sidePath));
         addSequential(new TurnInPlace(80, true));
         addParallel(new printTimeFromStart());

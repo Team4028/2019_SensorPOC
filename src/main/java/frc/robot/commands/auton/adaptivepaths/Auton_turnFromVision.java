@@ -51,7 +51,7 @@ public class Auton_turnFromVision extends Command {
     protected void execute() {
         cycleTime= Timer.getFPGATimestamp()-prevTime;
         error = _limelight.getTheta();
-        // error-=2.5;
+        error+=1;
         if(Math.abs(error)>5)
         {
             error=Math.copySign(5, error);
