@@ -26,7 +26,7 @@ public class BetterVisionPath extends Command
     @Override
     protected void initialize() 
     {
-        dx=...;
+        dx=_limelight.get_xOffset();
         Pa1=0.007-0.005*dx;
         Pa2=0.001;
         turnCmd=0;
@@ -40,9 +40,10 @@ public class BetterVisionPath extends Command
         if(_limelight.get_isTargetInFOV())
         {
             double a1, a2;
-            dx = ...;
+            dx = _limelight.get_xOffset();
+            Pa1=0.007-0.005*dx;
             a1 = _limelight.get_angle1InDegrees()*Pa1;
-            a2 = ...;
+            a2 = _limelight.g;
             turnCmd = 0.7*prevTurnCmd + 0.3*(Pa2*a2+Pa1*a1);
             System.out.print("A1: "+GeneralUtilities.roundDouble(a1, 4));
             System.out.print(" A2: " + GeneralUtilities.roundDouble(a2, 4));

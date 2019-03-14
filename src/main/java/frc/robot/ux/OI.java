@@ -71,7 +71,7 @@ public class OI {
 		_driverController.y.whenPressed(new TogglePunch());
 		
 		// =========== Operator ======================================
-		_operatorController = new BeakXboxController(RobotMap.OPERATOR_GAMEPAD_USB_PORT);
+		/*_operatorController = new BeakXboxController(RobotMap.OPERATOR_GAMEPAD_USB_PORT);
 		// ==========================================================
 		_operatorController.leftStick.whileActive(new RunInfeedMotor(_operatorController.leftStick));
 		_operatorController.rb.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.HOME, _operatorController.rt));
@@ -86,7 +86,7 @@ public class OI {
 
 		_operatorController.rt.whileActive(new StorePresetElevatorPosition(_operatorController.b, _operatorController.x, _operatorController.y,_operatorController.rb));
 		_operatorController.back.whenPressed(new ClimbSequence());
-		_operatorController.start.whenPressed(new SwitchCamera());
+		_operatorController.start.whenPressed(new SwitchCamera());*/
 
 		// =========== Engineer ======================================
 		_engineerController = new BeakXboxController(RobotMap.ENGINEERING_GAMEPAD_USB_PORT);
