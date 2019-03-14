@@ -15,6 +15,9 @@ public class BetterVisionPath extends Command
     Chassis _chassis = Chassis.getInstance();
     VisionLL _limelight = VisionLL.getInstance();
     DistanceRev2mSensor _distanceSensor = DistanceRev2mSensor.getInstance();
+    boolean isFirstCycle;
+    boolean isForcedFinish;
+    public static final double straightVBus = 0.15;
     public BetterVisionPath()
     {
         setInterruptible(true);
@@ -23,31 +26,57 @@ public class BetterVisionPath extends Command
     @Override
     protected void initialize() 
     {
-        //dx=...;
+        dx=...;
         Pa1=0.007-0.005*dx;
         Pa2=0.001;
         turnCmd=0;
         prevTurnCmd = 0;
+        isFirstCycle=true;
+        isForcedFinish = false;
     }
 
     @Override
     protected void execute() {
-        double a1, a2;
-       // dx = ...;
-        a1 = _limelight.get_angle1InDegrees()*Pa1;
-        //a2 = ...;
-        //turnCmd = 0.7*prevTurnCmd + 0.3*(Pa2*a2+Pa1*a1);
-        System.out.print("A1: "+GeneralUtilities.roundDouble(a1, 4));
-        //System.out.print(" A2: " + GeneralUtilities.roundDouble(a2, 4));
-        System.out.print(" dx: " + GeneralUtilities.roundDouble(dx, 4));
-       // System.out.println(" Turn: "+ GeneralUtilities.roundDouble(turnCmd, 4));
-        //_chassis.setLeftRightCommand(ControlMode.PercentOutput, 0.15+turnCmd, 0.15-turnCmd);
-        prevTurnCmd = turnCmd;
+        if(_limelight.get_isTargetInFOV())
+        {
+            double a1, a2;
+            dx = ...;
+            a1 = _limelight.get_angle1InDegrees()*Pa1;
+            a2 = ...;
+            turnCmd = 0.7*prevTurnCmd + 0.3*(Pa2*a2+Pa1*a1);
+            System.out.print("A1: "+GeneralUtilities.roundDouble(a1, 4));
+            System.out.print(" A2: " + GeneralUtilities.roundDouble(a2, 4));
+            System.out.print(" dx: " + GeneralUtilities.roundDouble(dx, 4));
+            System.out.println(" Turn: "+ GeneralUtilities.roundDouble(turnCmd, 4));
+            _chassis.setLeftRightCommand(ControlMode.PercentOutput, straightVBus+turnCmd, straightVBus-turnCmd);
+            prevTurnCmd = turnCmd;
+        }
+        else
+        {
+            if(turnCmd<0.1 && !isFirstCycle)
+            {
+                _chassis.setLeftRightCommand(ControlMode.PercentOutput, straightVBus, straightVBus);
+            }
+            else if(isFirstCycle)
+            {
+                System.out.println("Cannot See Target");
+                isForcedFinish = true;
+            }
+            else if(!isFirstCycle && turnCmd>=0.1)
+            {
+                System.out.println("Angle of Approach is Too Aggressive. Also, Ciarn Says You Are Bad and I am Right - Nick :P <3");
+                isForcedFinish = true;
+            }
+        }
+        if(isFirstCycle)
+        {
+            isFirstCycle = false;
+        }
 
     }
     @Override
     protected boolean isFinished() {
-        return _distanceSensor.get_distanceToTargetInInches()>0 && _distanceSensor.get_distanceToTargetInInches()<10;
+        return (_distanceSensor.get_distanceToTargetInInches()>0 && _distanceSensor.get_distanceToTargetInInches()<10)|| isForcedFinish;
     }
 
     @Override

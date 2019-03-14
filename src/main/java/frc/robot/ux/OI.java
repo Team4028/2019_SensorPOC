@@ -81,14 +81,12 @@ public class OI {
 		_operatorController.lb.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.CARGO_ACQUIRE, _operatorController.rt));
 		_operatorController.a.whenPressed(new AutoPlaceHatch(_operatorController.rt));
 
-		//_operatorController.rt.whenActive(new TeleopVisionAssistedDriving(_operatorController.dPad.up, _operatorController.dPad.upRight, _operatorController.dPad.upLeft, _operatorController.rt));
 		_operatorController.rt.whileActive(new ChangeVisionPipeline(_operatorController.dPad.up, _operatorController.dPad.upRight, _operatorController.dPad.upLeft, _operatorController.rt));
 		_operatorController.rt.whenReleased(new ChangeVisionPipeline(_operatorController.dPad.up, _operatorController.dPad.upRight, _operatorController.dPad.upLeft, _operatorController.rt));
 
 		_operatorController.rt.whileActive(new StorePresetElevatorPosition(_operatorController.b, _operatorController.x, _operatorController.y,_operatorController.rb));
 		_operatorController.back.whenPressed(new ClimbSequence());
 		_operatorController.start.whenPressed(new SwitchCamera());
-		//_operatorController.back.whenPressed(command);
 
 		// =========== Engineer ======================================
 		_engineerController = new BeakXboxController(RobotMap.ENGINEERING_GAMEPAD_USB_PORT);
