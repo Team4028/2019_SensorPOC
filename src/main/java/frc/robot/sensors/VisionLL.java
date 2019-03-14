@@ -7,10 +7,7 @@
 
 package frc.robot.sensors;
 
-import javax.lang.model.util.ElementScanner6;
-
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.interfaces.IVisionSensor;
 import frc.robot.util.LogDataBE;
@@ -90,7 +87,7 @@ public class VisionLL implements IVisionSensor {
     public double get_xOffset() {
         double[] defaultValue = new double[6];
         double[] camtran = NetworkTableInstance.getDefault().getTable("limelight").getEntry("camtran").getDoubleArray(defaultValue);
-        double xOffset = camtran[1];
+        double xOffset = camtran[0];
         return xOffset;
     }
 
@@ -157,11 +154,11 @@ public class VisionLL implements IVisionSensor {
     //=====================================================================================
 	// Helper Methods
 	//=====================================================================================  
-	
-    public void updateLogData(LogDataBE logData) {
+    
+    @Override
+    public void updateLogData(LogDataBE logData) {}
 
-    }
-
+    @Override
     public void updateDashboard() {
         SmartDashboard.putNumber("Distance to Target Inches", getTrueDistance());
         SmartDashboard.putString("Vision:CameraType", "Limelight");
