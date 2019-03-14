@@ -58,8 +58,8 @@ public class VisionLL implements IVisionSensor {
         return NetworkTableInstance.getDefault().getTable("limelight").getEntry("tz").getDouble(0);
     }
 
-    //@Override
-   /* public double get_distanceToTargetInInches() {
+    @Override
+    public double get_distanceToTargetInInches() {
         double heightofBoundedBox = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tvert")
                 .getDouble(0);
         double widthOfBoundedBox = NetworkTableInstance.getDefault().getTable("limelight").getEntry("thor")
@@ -68,11 +68,6 @@ public class VisionLL implements IVisionSensor {
         double distanceInIn = (1606.9 * Math.pow(areaofBoundedBox, -0.443));
 
         return distanceInIn;
-    } */
-
-    @Override
-    public double get_distanceToTargetInInches() {
-        return 0;
     }
 
     @Override
@@ -89,6 +84,13 @@ public class VisionLL implements IVisionSensor {
         double[] camtran = NetworkTableInstance.getDefault().getTable("limelight").getEntry("camtran").getDoubleArray(defaultValue);
         double xOffset = camtran[0];
         return xOffset;
+    }
+
+    public double get_yOffset() {
+        double[] defaultValue = new double[6];
+        double[] camtran = NetworkTableInstance.getDefault().getTable("limelight").getEntry("camtran").getDoubleArray(defaultValue);
+        double yOffset = camtran[2];
+        return yOffset;
     }
 
     public double get_revisedDistance(){
