@@ -4,6 +4,7 @@ import frc.robot.RobotMap;
 import frc.robot.commands.auton.adaptivePaths.AutoAcquireHatch;
 import frc.robot.commands.auton.adaptivePaths.AutoPlaceHatch;
 import frc.robot.commands.auton.adaptivePaths.AutonFastPlaceHatch;
+import frc.robot.commands.auton.adaptivePaths.BetterVisionPath;
 import frc.robot.commands.camera.SwitchCamera;
 import frc.robot.commands.chassis.DriveWithControllers;
 import frc.robot.commands.chassis.StopChassis;
