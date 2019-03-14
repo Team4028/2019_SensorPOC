@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.auton.pathfollowing.Paths;
+import frc.robot.commands.auton.StartAcquireHatch;
 import frc.robot.commands.chassis.StopChassis;
 import frc.robot.commands.climber.ZeroClimber;
 import frc.robot.commands.elevator.ZeroElevatorEncoder;
@@ -122,6 +123,8 @@ public class Robot extends TimedRobot {
     }
     Command zeroCLimber = new ZeroClimber();
     zeroCLimber.start();
+    Command getHatch = new StartAcquireHatch();
+    getHatch.start();
 
   }
 

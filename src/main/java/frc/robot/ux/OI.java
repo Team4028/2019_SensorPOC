@@ -3,8 +3,10 @@ package frc.robot.ux;
 import frc.robot.RobotMap;
 import frc.robot.commands.auton.adaptivePaths.AutoAcquireHatch;
 import frc.robot.commands.auton.adaptivePaths.AutoPlaceHatch;
+import frc.robot.commands.auton.adaptivePaths.BetterVisionPath;
 import frc.robot.commands.camera.SwitchCamera;
 import frc.robot.commands.chassis.DriveWithControllers;
+import frc.robot.commands.chassis.StopChassis;
 import frc.robot.commands.climber.ClimbSequence;
 import frc.robot.commands.climber.DriveClimber;
 import frc.robot.commands.climber.HoldClimber;
@@ -90,6 +92,8 @@ public class OI {
 		// =========== Engineer ======================================
 		_engineerController = new BeakXboxController(RobotMap.ENGINEERING_GAMEPAD_USB_PORT);
 		//============================================================
+		_engineerController.a.whileHeld(new BetterVisionPath());
+		_engineerController.a.whenReleased(new StopChassis());
 	}
 }
 

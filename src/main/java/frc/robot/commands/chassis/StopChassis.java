@@ -9,7 +9,7 @@ public class StopChassis extends Command
     public StopChassis()
     {
         requires(_chassis);
-        setInterruptible(true);
+        setInterruptible(false);
     }
     @Override
     protected void initialize() {
