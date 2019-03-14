@@ -7,6 +7,8 @@
 
 package frc.robot.sensors;
 
+import javax.lang.model.util.ElementScanner6;
+
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.interfaces.IVisionSensor;
@@ -114,6 +116,26 @@ public class VisionLL implements IVisionSensor {
 
     public void setIsInVisionMode(boolean isInVisionMode){
         _isInVisionMode = isInVisionMode;
+        if(isInVisionMode){
+            turnOnLimelightLEDs();
+        } else {
+            turnOffLimelightLEDs();
+        }
+    }
+    public double getTrueDistance()
+    {
+        if(DistanceRev2mSensor.getInstance().get_distanceToTargetInInches()>0)
+        {
+            return DistanceRev2mSensor.getInstance().get_distanceToTargetInInches();
+        }
+        else if(this.get_isTargetInFOV())
+        {
+            return get_revisedDistance();
+        }
+        else 
+        {
+            return Double.NaN;
+        }
     }
 
     //=====================================================================================
@@ -125,6 +147,7 @@ public class VisionLL implements IVisionSensor {
     }
 
     public void updateDashboard() {
+        SmartDashboard.putNumber("Distance to Target Inches", getTrueDistance());
         SmartDashboard.putString("Vision:CameraType", "Limelight");
         SmartDashboard.putBoolean("Vision:IsTargetInFOV", get_isTargetInFOV());
         SmartDashboard.putNumber("Vision:Angle1InDegrees", get_angle1InDegrees());

@@ -46,23 +46,12 @@ public class MoveToPresetPosition extends Command {
     {
       if(!_rt.get())
       {
-        long startTimeInMs = 0;
-      //System.out.println("running command");
-      if(!_vision.isInVisionMode()){
-        if(_cargo.get_isBucketExtended()){
-          long currentTimeInMs = System.nanoTime() / 1000000;
-          long elapsedTimeInMs = currentTimeInMs - startTimeInMs;
-          if(elapsedTimeInMs > 500){
-            _elevator.moveToPresetPosition();
-            System.out.println("Elevator Move");
-          }
-        } else {
-          _cargo.toggleBucket();
-          startTimeInMs = System.nanoTime() / 1000000;
-        }
+          _elevator.moveToPresetPosition();
       }
-      }
+      
     }
+      
+    
     if(!isTeleop)
     {
       System.out.println("running command");

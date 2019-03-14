@@ -43,10 +43,15 @@ public class AutoAcquireHatch extends CommandGroup {
     protected void initialize() 
     {
         _startTime = Timer.getFPGATimestamp();
+        _limeLight.setIsInVisionMode(true);
     }
 
     @Override
     protected boolean isFinished() {
         return super.isFinished() || Timer.getFPGATimestamp()-_startTime>=10;
+    }
+    @Override
+    protected void end() {
+        _limeLight.setIsInVisionMode(false);
     }
 }

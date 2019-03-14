@@ -14,7 +14,7 @@ public class CSingleHatchLFront extends CommandGroup {
     Path _toCargoShipFront = Paths.getPath(Center.TO_FRONT_CARGO_SHIP_L);
     public CSingleHatchLFront() {
         setInterruptible(false);
-        addParallel(new StartAcquireHatch());
+        addSequential(new StartAcquireHatch());
         addSequential(new RunMotionProfileCommand(_toCargoShipFront));
         addSequential(new AutoPlaceHatch());
     }

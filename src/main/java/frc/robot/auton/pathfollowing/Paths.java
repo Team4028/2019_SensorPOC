@@ -106,23 +106,23 @@ public class Paths {
 		_toLeftCargoShipFirstBay = buildPathFromWaypoints(Arrays.asList(
 			new Waypoint(66,120,0,0),
 			new Waypoint(105,120,40,50),
-			new Waypoint(263,90,0,120)
+			new Waypoint(266,90,0,120)
 		));
 		leftPaths.put(Left.TO_LEFT_CARGO_SHIP_FIRST, _toLeftCargoShipFirstBay);
 
 		_toFeederStationFromFirstBayL = buildPathFromWaypoints(-0.007,Arrays.asList(
 			new Waypoint(260,110,0,0),
-			new Waypoint(130,85,50,80),
-			new Waypoint(70,85,0,80),
-			new Waypoint(35,85,0,120)
+			new Waypoint(130,77,50,80),
+			new Waypoint(70,77,0,80),
+			new Waypoint(35,77,0,120)
 		));
 		leftPaths.put(Left.FROM_FIRST_BAY_TO_FEEDER_STATION, _toFeederStationFromFirstBayL);
 
 		_toFeederStationFromFrontL = buildPathFromWaypoints(-0.005, Arrays.asList(
 			new Waypoint(180,155,0,0),
 			new Waypoint(120,69,0,100),
-			new Waypoint(90,38,40,60),
-			new Waypoint(45,38,0,60)
+			new Waypoint(90,30,40,60),
+			new Waypoint(45,30,0,60)
 		
 		));
 		leftPaths.put(Left.FROM_FRONT_CARGO_SHIP_L_TO_FEEDER_STATION, _toFeederStationFromFrontL);
@@ -156,8 +156,8 @@ public class Paths {
 			new Waypoint(115,120,0,50),
 			new Waypoint(180,120, 40, 80),
 			new Waypoint(210,93,0,90),
-			new Waypoint(268,42,13,70),
-			new Waypoint(282,47,0,40)
+			new Waypoint(272,36,13,70),
+			new Waypoint(285,41,0,40)
 		));
 		_toBackRocketL.setIsReversed(true);
 		leftPaths.put(Left.BACK_ROCKET, _toBackRocketL);
@@ -171,9 +171,9 @@ public class Paths {
 
 		_toFeederStationFromRocketL = buildPathFromWaypoints(-0.007,Arrays.asList(
 			new Waypoint(277,75,0,0),
-			new Waypoint(150,75,40,120),
-			new Waypoint(100,66,40,120),
-			new Waypoint(45,66,0,120)
+			new Waypoint(150,75,40,100),
+			new Waypoint(100,58,40,80),
+			new Waypoint(45,58,0,100)
 		));
 		leftPaths.put(Left.TO_FEEDER_STATION_FROM_ROCKET, _toFeederStationFromRocketL);
 

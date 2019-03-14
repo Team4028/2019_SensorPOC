@@ -3,7 +3,7 @@ package frc.robot.ux;
 import frc.robot.RobotMap;
 import frc.robot.commands.auton.adaptivePaths.AutoAcquireHatch;
 import frc.robot.commands.auton.adaptivePaths.AutoPlaceHatch;
-import frc.robot.commands.auton.adaptivePaths.BetterVisionPath;
+import frc.robot.commands.auton.adaptivePaths.AutonFastPlaceHatch;
 import frc.robot.commands.camera.SwitchCamera;
 import frc.robot.commands.chassis.DriveWithControllers;
 import frc.robot.commands.chassis.StopChassis;
@@ -62,7 +62,7 @@ public class OI {
 		_driverController.rt.whenReleased(new RunInfeedMotor(_driverController.rt, true));
 		
 		_driverController.lb.whileHeld(new AutoAcquireHatch());
-		_driverController.rb.whenPressed(new ScoreHatch());
+		_driverController.rb.whenPressed(new AutonFastPlaceHatch());
 
 		_driverController.a.whenPressed(new ToggleBeakInOut());
 		_driverController.b.whenPressed(new ReleaseInfeed());

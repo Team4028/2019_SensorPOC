@@ -112,8 +112,7 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
     configDriveMotors(_leftSlave);
 		configDriveMotors(_rightSlave);
   }
-  private void configMasterMotors(TalonSRX talon) 
-	{
+  private void configMasterMotors(TalonSRX talon) {
 		talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 10);
 		talon.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 5, 10);
 	
@@ -126,7 +125,7 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
 	
 	private void configDriveMotors(TalonSRX talon) 
 	{
-    talon.configFactoryDefault();
+    //talon.configFactoryDefault();
 		talon.configForwardLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.Disabled, 0);
 		talon.configReverseLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.Disabled, 0);
         
