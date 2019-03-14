@@ -9,6 +9,7 @@ package frc.robot.commands.vision;
 
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.command.Command;
+import frc.robot.interfaces.IVisionSensor;
 import frc.robot.sensors.GyroNavX;
 import frc.robot.sensors.SwitchableCameraServer;
 import frc.robot.sensors.VisionLL;
@@ -48,7 +49,7 @@ public class ChangeVisionPipeline extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    _vision.setIsInVisionMode(true);
+    _vision.set_isInVisionMode(true);
     _camera.displayLimelight();
     if(_dPadUp.get()) {
       _vision.changeLimelightPipeline(LIMELIGHT_PIPELINE.CENTER);
@@ -73,7 +74,7 @@ public class ChangeVisionPipeline extends Command {
   @Override
   protected void end() {
     System.out.println(_vision.isInVisionMode());
-    _vision.setIsInVisionMode(false);
+    _vision.set_isInVisionMode(false);
     _camera.switchCamera();
   }
 

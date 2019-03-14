@@ -181,6 +181,21 @@ public class VisionIP implements IVisionSensor {
         return _isVisionThreadRunning;
     }
 
+    @Override
+    public void set_isInVisionMode(boolean isInVisionMode) {
+
+    }
+    
+    @Override
+    public void turnOnLEDs() {
+
+    }
+
+    @Override
+    public void turnOffLEDs() {
+
+    }
+
     // ====================================================================
     // Logging Methods
     // ====================================================================

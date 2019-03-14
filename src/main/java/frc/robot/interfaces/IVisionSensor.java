@@ -17,4 +17,10 @@ public interface IVisionSensor extends IDistanceSensor, IBeakSquadSubsystem{
 
     // returns true if a target is in the Field Of View (FOV)
     public boolean get_isTargetInFOV();
+
+    public void turnOnLEDs();
+
+    public void turnOffLEDs();
+
+    public void set_isInVisionMode(boolean isInVisionMode);
 }
