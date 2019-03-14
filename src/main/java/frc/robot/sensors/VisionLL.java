@@ -7,8 +7,6 @@
 
 package frc.robot.sensors;
 
-import javax.lang.model.util.ElementScanner6;
-
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.interfaces.IVisionSensor;
@@ -24,7 +22,8 @@ public class VisionLL implements IVisionSensor {
     public enum LIMELIGHT_PIPELINE {
         RIGHT,
         CENTER,
-        LEFT;
+        LEFT,
+        CENTER_PNP;
     }
 
     private double HORIZONAL_CAMERA_OFFSET_IN = 6;
@@ -51,7 +50,6 @@ public class VisionLL implements IVisionSensor {
         return Math.round(NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0));
     }
 
-
     public double getTheta(){
         return NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
     }
@@ -60,8 +58,8 @@ public class VisionLL implements IVisionSensor {
         return NetworkTableInstance.getDefault().getTable("limelight").getEntry("tz").getDouble(0);
     }
 
-    @Override
-    public double get_distanceToTargetInInches() {
+    //@Override
+   /* public double get_distanceToTargetInInches() {
         double heightofBoundedBox = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tvert")
                 .getDouble(0);
         double widthOfBoundedBox = NetworkTableInstance.getDefault().getTable("limelight").getEntry("thor")
@@ -70,6 +68,11 @@ public class VisionLL implements IVisionSensor {
         double distanceInIn = (1606.9 * Math.pow(areaofBoundedBox, -0.443));
 
         return distanceInIn;
+    } */
+
+    @Override
+    public double get_distanceToTargetInInches() {
+        return 0;
     }
 
     @Override
@@ -79,6 +82,13 @@ public class VisionLL implements IVisionSensor {
         } else {
             return false;
         }
+    }
+
+    public double get_xOffset() {
+        double[] defaultValue = new double[6];
+        double[] camtran = NetworkTableInstance.getDefault().getTable("limelight").getEntry("camtran").getDoubleArray(defaultValue);
+        double xOffset = camtran[0];
+        return xOffset;
     }
 
     public double get_revisedDistance(){
@@ -98,6 +108,9 @@ public class VisionLL implements IVisionSensor {
                 break;
             case LEFT:
                 NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(2);
+                break;
+            case CENTER_PNP:
+                NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(3);
                 break;
         }
     }
@@ -141,11 +154,11 @@ public class VisionLL implements IVisionSensor {
     //=====================================================================================
 	// Helper Methods
 	//=====================================================================================  
-	
-    public void updateLogData(LogDataBE logData) {
+    
+    @Override
+    public void updateLogData(LogDataBE logData) {}
 
-    }
-
+    @Override
     public void updateDashboard() {
         SmartDashboard.putNumber("Distance to Target Inches", getTrueDistance());
         SmartDashboard.putString("Vision:CameraType", "Limelight");
@@ -153,5 +166,6 @@ public class VisionLL implements IVisionSensor {
         SmartDashboard.putNumber("Vision:Angle1InDegrees", get_angle1InDegrees());
         SmartDashboard.putNumber("Vision:DistanceInInches", get_distanceToTargetInInches());
         SmartDashboard.putNumber("Vision:ActualDistance", get_revisedDistance());
+        SmartDashboard.putNumber("Vision:XOffset", get_xOffset());
     }
 }
