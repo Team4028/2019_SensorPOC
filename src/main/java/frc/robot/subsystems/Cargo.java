@@ -98,11 +98,9 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
   }
   
   public void setMotorSpeed (double driveSpeed) {
-    if (get_isHatchAquired() == true)
-    {
       double Speed = (.7 * driveSpeed);
-    _infeedMtr.set(ControlMode.PercentOutput, Speed);;
-    }
+    _infeedMtr.set(ControlMode.PercentOutput, Speed);
+    
   } 
 
   public void setCargoDefultPosition() {
@@ -129,11 +127,7 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
           _beakOpenCloseSolenoid.set(BEAK_CLOSE);
     }
     else if (desiredBeakPosition == BEAK_OPENCLOSE_POSITION.OPEN) {
-      if(currentPunchPos == PUNCH_IN && currentBeakInOutPos == BEAK_OPEN) {
-          _beakOpenCloseSolenoid.set(BEAK_OPEN);
-      } else {
-        DriverStation.reportWarning("BEAK SAFETY INTERLOCK U SUC", false);
-      }
+      _beakOpenCloseSolenoid.set(BEAK_OPEN);
     }
   }
 

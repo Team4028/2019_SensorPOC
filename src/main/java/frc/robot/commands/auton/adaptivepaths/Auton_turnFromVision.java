@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.sensors.GyroNavX;
 import frc.robot.sensors.VisionLL;
 import frc.robot.subsystems.Chassis;
+import frc.robot.subsystems.Chassis.ChassisState;
 import frc.robot.util.GeneralUtilities;
 
 public class Auton_turnFromVision extends Command { 
@@ -27,13 +28,14 @@ public class Auton_turnFromVision extends Command {
         setInterruptible(false);
         requires(_chassis);
         kP=0.025;
-        kI=0.03;
+        kI=0.035;
         kD=0.001;
         prevTime=Timer.getFPGATimestamp();     
     }
 
     @Override
     protected void initialize() {
+        _chassis.setChassisState(ChassisState.PERCENT_VBUS);
         _canSeeTarget = _limelight.get_isTargetInFOV();
         prevTime=Timer.getFPGATimestamp();
         P=0;
@@ -49,12 +51,19 @@ public class Auton_turnFromVision extends Command {
     protected void execute() {
         cycleTime= Timer.getFPGATimestamp()-prevTime;
         error = _limelight.getTheta();
+        error+=1;
         if(Math.abs(error)>5)
         {
             error=Math.copySign(5, error);
+            I=0;
+        }
+        else
+        {
+            I += kI * error * cycleTime;
         }
         P = kP * error;
-        I += kI * error * cycleTime;
+
+        
         if(isFirstCycle)
         {
             D=0;
@@ -79,12 +88,14 @@ public class Auton_turnFromVision extends Command {
     
     @Override
     protected boolean isFinished() {   
-        return count>5 && ((Math.abs(error)<0.75 &&Math.abs(D)< 0.005)|| !_canSeeTarget);                               // deadband
+        return count>5 && ((Math.abs(error)<1 &&Math.abs(D)< 0.005)|| !_canSeeTarget);                               // deadband
+
     
     }
 
     @Override
     protected void end() {
+        _chassis.setCanSeeTarget(_canSeeTarget);
         _chassis.stop();
         System.out.println("Turn Completed");
         System.out.println("Can See Target:" + _canSeeTarget);

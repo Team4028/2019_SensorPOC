@@ -9,11 +9,22 @@ public class DriveClimber extends Command {
 
   private Climber _climber = Climber.getInstance();
   Trigger _thumbstick;
+  double _throttle;
+  boolean isAuton;
 
   public DriveClimber(Trigger rightstick) {
+    requires(_climber);
     setInterruptible(true);
     _thumbstick = rightstick;
+    isAuton = false;
 }
+  public DriveClimber(double throttle)
+  {
+    setInterruptible(true);
+    requires(_climber);
+    _throttle=throttle;
+    isAuton = true;
+  }
 
   // Called just before this Command runs the first time
   @Override
@@ -23,7 +34,15 @@ public class DriveClimber extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-      double drive = _thumbstick.getY();
+    double drive;
+    if(isAuton)
+    {
+      drive=-_throttle;
+    }
+    else{
+      drive= -_thumbstick.getY();
+    }
+       
     _climber.driveClimber(drive);
   }
 
@@ -35,12 +54,11 @@ public class DriveClimber extends Command {
 
   // Called once after isFinished returns true
   @Override
-  protected void end() {
+  protected void interrupted() {
+    _climber.driveClimber(0);
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
-  @Override
-  protected void interrupted() {
-  }
+
 }

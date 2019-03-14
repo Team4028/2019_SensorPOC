@@ -2,7 +2,6 @@ package frc.robot.commands.climber;
 
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
-import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import frc.robot.subsystems.Climber;
 
 public class MoveClimberToPos extends Command
@@ -11,6 +10,7 @@ public class MoveClimberToPos extends Command
     Climber _climber = Climber.getInstance();
     public MoveClimberToPos(double targetPos)
     {
+        setInterruptible(true);
         _targetPos=targetPos;
     }
 
@@ -20,10 +20,23 @@ public class MoveClimberToPos extends Command
     }
     @Override
     protected void execute() {
-        //_climber.
+        if(_climber.getNativeUnits()>_targetPos)
+        {
+            _climber.liftClimber(-0.7);
+        }
+        else
+        {
+            _climber.liftClimber(0.4);
+        }
+
     }
     @Override
     protected boolean isFinished() {
-        return false;
+        return Math.abs(_climber.getNativeUnits()-_targetPos)<200;
+    }
+    @Override
+    protected void end() {
+        System.out.println("Ending Move to Preset Pos");
+        _climber.liftClimber(0);
     }
 }

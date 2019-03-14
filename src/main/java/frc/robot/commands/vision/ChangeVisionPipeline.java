@@ -59,18 +59,20 @@ public class ChangeVisionPipeline extends Command {
     else if(_dPadUpLeft.get()){
       _vision.changeLimelightPipeline(LIMELIGHT_PIPELINE.LEFT);
     }
-    System.out.println("Running Vision Pipeline");
+   // System.out.println("Running Vision Pipeline" + _vision.isInVisionMode());
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
+    //System.out.println(!_rightTrigger.get());
     return !_rightTrigger.get();// || ;
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
+    System.out.println(_vision.isInVisionMode());
     _vision.setIsInVisionMode(false);
     _camera.switchCamera();
   }

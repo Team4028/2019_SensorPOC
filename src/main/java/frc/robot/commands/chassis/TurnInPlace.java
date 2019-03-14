@@ -26,6 +26,10 @@ public class TurnInPlace extends Command {
         kD=0.005;
         prevTime=Timer.getFPGATimestamp();
         _targetAngle=targetAngle;
+        if(_targetAngle>180)
+        {
+            targetAngle-=360;
+        }
         _isTurnRight=isTurnRight;     
     }
 

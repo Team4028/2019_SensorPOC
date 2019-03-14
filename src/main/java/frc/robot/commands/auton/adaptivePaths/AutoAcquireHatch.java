@@ -30,10 +30,11 @@ public class AutoAcquireHatch extends CommandGroup {
         addSequential(new PrintCommand("SECOND VISION TURN TERMINATING"));
         addSequential(new printTimeFromStart());
         addSequential(new DriveVisionAcquireDistance(),3);
+        addSequential(new WaitCommand(0.25));
         addSequential(new PrintCommand("VISION DRIVE STRAIGHT TERMINATING"));
         addSequential(new printTimeFromStart());
         //addSequential(new ReleaseInfeed());
-        addSequential(new AcquireHatch());
+        addSequential(new AutoFastPickHatch());
         addParallel(new printTimeFromStart());
         addSequential(new DriveSetDistance(-5));
     }
@@ -42,10 +43,15 @@ public class AutoAcquireHatch extends CommandGroup {
     protected void initialize() 
     {
         _startTime = Timer.getFPGATimestamp();
+        _limeLight.setIsInVisionMode(true);
     }
 
     @Override
     protected boolean isFinished() {
         return super.isFinished() || Timer.getFPGATimestamp()-_startTime>=10;
+    }
+    @Override
+    protected void end() {
+        _limeLight.setIsInVisionMode(false);
     }
 }

@@ -7,6 +7,7 @@ import frc.robot.commands.auton.util.Series_Command;
 import frc.robot.commands.auton.util.Simultaneous_Command;
 import frc.robot.commands.infeed.AcquireHatch;
 import frc.robot.commands.infeed.ToggleBeakInOut;
+import frc.robot.commands.infeed.ToggleBeakOpenClose;
 import frc.robot.subsystems.Cargo;
 
 public class StartAcquireHatch extends CommandGroup
@@ -15,11 +16,9 @@ public class StartAcquireHatch extends CommandGroup
     public StartAcquireHatch()
     {
         setInterruptible(false);
-        if(_cargo.get_isBeakOut())
-        {
-            addParallel(new ToggleBeakInOut());
-        }
-        addSequential(new WaitCommand(0.04));
-        addSequential(new AcquireHatch());
+        addSequential(new ToggleBeakOpenClose());
+        addSequential(new WaitCommand(0.08));
+        addParallel(new ToggleBeakInOut());
+        addSequential(new WaitCommand(0.1));
     }
 }

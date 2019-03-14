@@ -12,7 +12,12 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.auton.pathfollowing.Paths;
+import frc.robot.commands.auton.StartAcquireHatch;
+import frc.robot.commands.chassis.StopChassis;
+import frc.robot.commands.climber.ZeroClimber;
 import frc.robot.commands.elevator.ZeroElevatorEncoder;
+import frc.robot.commands.infeed.AcquireHatch;
+import frc.robot.commands.infeed.SendBucketIn;
 import frc.robot.sensors.GyroNavX;
 
 import frc.robot.sensors.VisionLL;
@@ -93,7 +98,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     _buildMsg = GeneralUtilities.WriteBuildInfoToDashboard(ROBOT_NAME);
     Paths.buildPaths();
-    
+    _leds.mvrCompPrettyColors();
   }
 
   /********************************************************************************************
@@ -118,6 +123,11 @@ public class Robot extends TimedRobot {
       Command zeroElevatorCommand = new ZeroElevatorEncoder();
       zeroElevatorCommand.start();
     }
+    Command zeroCLimber = new ZeroClimber();
+    zeroCLimber.start();
+    _vision.setIsInVisionMode(false);
+    Command acquireHatch = new StartAcquireHatch();
+    acquireHatch.start();
 
   }
 
@@ -128,13 +138,9 @@ public class Robot extends TimedRobot {
 
   public void autonomousPeriodic() 
   {
-    _chassis.updateChassis(Timer.getFPGATimestamp());
+    //_chassis.updateChassis(Timer.getFPGATimestamp());
     Scheduler.getInstance().run();
-
-    _leds.set_targetangle(_vision.get_angle1InDegrees(), 
-                          _vision.get_isTargetInFOV(), 
-                          _distanceRev2mSensor.get_distanceToTargetInInches());
-    _vision.turnOnLimelightLEDs();
+   _vision.turnOnLimelightLEDs();
   }
 
   /********************************************************************************************
@@ -145,7 +151,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopInit() {
-    _chassis.stop();
+    _vision.setIsInVisionMode(false);
+    Scheduler.getInstance().removeAll();
+    Command stopChassis = new StopChassis();
+    stopChassis.start();
     _chassis.zeroSensors();
     _chassis.initiateRobotState();
     _chassis.setBrakeMode(NeutralMode.Brake);
@@ -157,6 +166,11 @@ public class Robot extends TimedRobot {
       zeroElevatorCommand.start();
     }
     _chassis.setChassisState(ChassisState.PERCENT_VBUS);
+    Command zeroClimber = new ZeroClimber();
+    zeroClimber.start();
+    Command sendBucketIn = new SendBucketIn();
+    sendBucketIn.start();
+  
   }
 
    /* This function is called periodically during teleop mode.
@@ -165,8 +179,8 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     _chassis.updateChassis(Timer.getFPGATimestamp());
     Scheduler.getInstance().run();  
-    _leds.set_targetangle(_vision.get_angle1InDegrees(), _vision.get_isTargetInFOV(), _distanceRev2mSensor.get_distanceToTargetInInches());  
     _vision.turnOnLimelightLEDs();
+    // System.out.println(_elevator.getStoredTargetPosition());
   }
 
   /********************************************************************************************
@@ -198,6 +212,7 @@ public class Robot extends TimedRobot {
     _chassis.setBrakeMode(NeutralMode.Coast);
     _chassis.stop();
     Scheduler.getInstance().removeAll();
+    _vision.turnOffLimelightLEDs();
   }
 
   /**
@@ -238,8 +253,8 @@ public class Robot extends TimedRobot {
     	// add scan time sample to calc scan time rolling average
     	_scanTimeSamples.add(new BigDecimal(scanCycleDeltaInMSecs));
     	
-    	//if((new Date().getTime() - _lastDashboardWriteTimeMSec) > 100) {
-        {
+    	if((new Date().getTime() - _lastDashboardWriteTimeMSec) > 100) {
+      {
         // ----------------------------------------------
     		// each subsystem should add a call to a outputToSmartDashboard method
     		// to push its data out to the dashboard
@@ -253,8 +268,8 @@ public class Robot extends TimedRobot {
 	    	if(_distanceRev2mSensor != null)  { _distanceRev2mSensor.updateDashboard(); }
         if(_vision != null)               { _vision.updateDashboard(); }
         if(_pressureSensor != null)       { _pressureSensor.updateDashboard(); }
-        if(_navX != null)                 {_navX.updateDashboard();}
-        if(_cameraServer != null)         {_cameraServer.updateDashboard();}
+        if(_navX != null)                 { _navX.updateDashboard(); }
+        if(_cameraServer != null)         { _cameraServer.updateDashboard(); }
         if(_compressor != null)           { _compressor.updateDashboard(); }
 	    	
     		// write the overall robot dashboard info
@@ -268,7 +283,8 @@ public class Robot extends TimedRobot {
     	}
     	
     	// snapshot when this scan ended
-    	_lastScanEndTimeInMSec = new Date().getTime();
+      _lastScanEndTimeInMSec = new Date().getTime();
+    }
 	}
 
 	/** Method for Logging Data to the USB Stick plugged into the RoboRio */
