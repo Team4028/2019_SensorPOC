@@ -5,40 +5,34 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.infeed;
+package frc.robot.commands.auton.adaptivePaths;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.CommandGroup;
+import frc.robot.commands.infeed.ToggleBeakOpenClose;
 import frc.robot.subsystems.Cargo;
 
-public class ToggleBeakPosition extends Command {
-  private Cargo _cargo = Cargo.getInstance();
-  public ToggleBeakPosition() {
-    requires(_cargo);
+public class AutoFastPickHatch extends CommandGroup {
+  Cargo _cargo = Cargo.getInstance();
+  public AutoFastPickHatch() {
     setInterruptible(false);
+    addSequential(new ToggleBeakOpenClose());
   }
 
-  // Called just before this Command runs the first time
-  @Override
-  protected void initialize() {}
-
-  // Called repeatedly when this Command is scheduled to run
-  @Override
-  protected void execute() {
-    _cargo.toggleBeakPlacement();
-  }
-
-  // Make this return true when this Command no longer needs to run execute()
+  
   @Override
   protected boolean isFinished() {
-    return true;
+    return _cargo.get_isBeakOpen();
   }
 
   // Called once after isFinished returns true
   @Override
-  protected void end() {}
+  protected void end() {
+  }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
-  protected void interrupted() {}
+  protected void interrupted() {
+  }
 }

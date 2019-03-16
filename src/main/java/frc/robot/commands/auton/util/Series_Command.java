@@ -9,6 +9,7 @@ public class Series_Command extends Command {
     private final ArrayList<Command> _remainingCommands;
     
     public Series_Command(List<Command> commands) {
+        setInterruptible(false);
     _remainingCommands = new ArrayList<>(commands.size()+1);
     _remainingCommands.add(new Auton_ParallelStarter());
         for (Command command : commands) {
