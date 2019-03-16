@@ -271,6 +271,7 @@ public class Robot extends TimedRobot {
         if(_navX != null)                 { _navX.updateDashboard(); }
         if(_cameraServer != null)         { _cameraServer.updateDashboard(); }
         if(_compressor != null)           { _compressor.updateDashboard(); }
+
 	    	
     		// write the overall robot dashboard info
 	    	SmartDashboard.putString("Robot Build", _buildMsg);

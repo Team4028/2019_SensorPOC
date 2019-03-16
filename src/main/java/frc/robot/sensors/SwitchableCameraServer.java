@@ -15,7 +15,7 @@ import frc.robot.RobotMap;
  * Add your docs here.
  */
 public class SwitchableCameraServer {
-
+    
     private String _currentCameraAddress = RobotMap.RASPBERRY_PI_CAMERA_1_ADDRESS;
     private double _currentCameraIndex = 0;
 
