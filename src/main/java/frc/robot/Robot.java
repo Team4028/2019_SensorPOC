@@ -18,6 +18,7 @@ import frc.robot.commands.climber.ZeroClimber;
 import frc.robot.commands.elevator.ZeroElevatorEncoder;
 import frc.robot.commands.infeed.AcquireHatch;
 import frc.robot.commands.infeed.SendBucketIn;
+import frc.robot.interfaces.IVisionSensor;
 import frc.robot.sensors.GyroNavX;
 
 import frc.robot.sensors.VisionLL;
@@ -63,12 +64,11 @@ public class Robot extends TimedRobot {
   private AirCompressor _compressor = AirCompressor.get_instance();
 
 
-  private VisionLL _vision = VisionLL.getInstance();      // Limelight
+  private IVisionSensor _vision = VisionLL.getInstance();      // Limelight
   //private IVisionSensor _vision = VisionIP.getInstance();   // IPhone
   private GyroNavX _navX = GyroNavX.getInstance();
 
   // ux
-
   private LEDController _leds = LEDController.getInstance();
   private AutonChoosers _autonChoosers = AutonChoosers.getInstance();
   private OI _oi = OI.getInstance();
@@ -80,7 +80,6 @@ public class Robot extends TimedRobot {
   private Elevator _elevator = Elevator.getInstance();
 
   // class level working variables
-
 	private DataLogger _dataLogger = null;
 	private String _buildMsg = "?";
  	long _lastScanEndTimeInMSec;
@@ -125,7 +124,7 @@ public class Robot extends TimedRobot {
     }
     Command zeroCLimber = new ZeroClimber();
     zeroCLimber.start();
-    _vision.setIsInVisionMode(false);
+    _vision.set_isInVisionMode(false);
     Command acquireHatch = new StartAcquireHatch();
     acquireHatch.start();
 
@@ -140,7 +139,7 @@ public class Robot extends TimedRobot {
   {
     //_chassis.updateChassis(Timer.getFPGATimestamp());
     Scheduler.getInstance().run();
-   _vision.turnOnLimelightLEDs();
+   _vision.turnOnLEDs();
   }
 
   /********************************************************************************************
@@ -151,7 +150,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopInit() {
-    _vision.setIsInVisionMode(false);
+    _vision.set_isInVisionMode(false);
     Scheduler.getInstance().removeAll();
     Command stopChassis = new StopChassis();
     stopChassis.start();
@@ -179,7 +178,7 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     _chassis.updateChassis(Timer.getFPGATimestamp());
     Scheduler.getInstance().run();  
-    _vision.turnOnLimelightLEDs();
+    _vision.turnOnLEDs();
     // System.out.println(_elevator.getStoredTargetPosition());
   }
 
@@ -212,7 +211,7 @@ public class Robot extends TimedRobot {
     _chassis.setBrakeMode(NeutralMode.Coast);
     _chassis.stop();
     Scheduler.getInstance().removeAll();
-    _vision.turnOffLimelightLEDs();
+    _vision.turnOffLEDs();
   }
 
   /**
@@ -221,7 +220,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledPeriodic() {
     //Scheduler.getInstance().run();
-    _vision.turnOffLimelightLEDs();
+    _vision.turnOffLEDs();
   }
   
   /********************************************************************************************

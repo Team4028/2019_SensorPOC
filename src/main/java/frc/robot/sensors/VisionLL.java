@@ -117,26 +117,30 @@ public class VisionLL implements IVisionSensor {
         }
     }
 
-    public void turnOffLimelightLEDs() {
-        NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
+    @Override
+    public void turnOnLEDs() {
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(3);
     }
 
-    public void turnOnLimelightLEDs() {
-        NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(3);
+    @Override
+    public void turnOffLEDs() {
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
     }
 
     public boolean isInVisionMode() {
         return _isInVisionMode;
     }
 
-    public void setIsInVisionMode(boolean isInVisionMode){
+    @Override
+    public void set_isInVisionMode(boolean isInVisionMode) {
         _isInVisionMode = isInVisionMode;
         if(isInVisionMode){
-            turnOnLimelightLEDs();
+            turnOnLEDs();
         } else {
-            turnOffLimelightLEDs();
+            turnOffLEDs();
         }
     }
+    
     public double getTrueDistance()
     {
         if(DistanceRev2mSensor.getInstance().get_distanceToTargetInInches()>0)
