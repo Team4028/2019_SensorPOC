@@ -25,6 +25,7 @@ public class HoldClimber extends Command
     @Override
     protected void initialize() {
         startTime = Timer.getFPGATimestamp();
+        _climber.HoldClimber();
     }
     @Override
     protected void execute() {

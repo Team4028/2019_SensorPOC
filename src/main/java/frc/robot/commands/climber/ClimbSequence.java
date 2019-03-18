@@ -31,14 +31,18 @@ public class ClimbSequence extends CommandGroup
         addParallel(new DriveWithControllers(0.2, 0));
         addSequential(new Series_Command(Arrays.asList(new Command[] 
         {
+            new PrintCommand("Holding Starts"),
             new HoldClimber(2),
+            new PrintCommand("Stops Holding"),
             new SendBucketOut(),
             new SendBeakOut(),
             new TogglePunch(),
             new PrintCommand("Bucket Coming Out"),
             new MoveClimberToPos(clearedHeight),
         })));
+        addParallel(new PrintCommand("Moved to Clear Height"));
         addSequential(new DriveWithControllers(0.3, 0),0.85);
+
         addParallel(new StopChassis(),0.25);
         addSequential(new DriveClimber(0.0),0.25);
 

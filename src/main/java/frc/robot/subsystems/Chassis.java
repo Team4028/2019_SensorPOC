@@ -246,7 +246,7 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
     {
       _chassisState = ChassisState.PERCENT_VBUS;
       setLeftRightCommand(ControlMode.PercentOutput, 0,0);
-      System.out.println("Chassis Stop");
+      //System.out.println("Chassis Stop");
     }
 
 

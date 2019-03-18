@@ -26,7 +26,7 @@ public class MoveClimberToPos extends Command
         }
         else
         {
-            _climber.liftClimber(0.4);
+            _climber.liftClimber(0.5);
         }
 
     }
@@ -37,6 +37,6 @@ public class MoveClimberToPos extends Command
     @Override
     protected void end() {
         System.out.println("Ending Move to Preset Pos");
-        _climber.liftClimber(0);
+        _climber.HoldClimber();
     }
 }
