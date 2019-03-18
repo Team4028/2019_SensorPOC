@@ -43,10 +43,10 @@ public class AirCompressor implements IBeakSquadSubsystem {
 	// ====================================================================
     public void updateDashboard(){
         boolean isCompressorRunning = _compressor.enabled();
+        SmartDashboard.putBoolean("AirCompressor:isAirCompressorRunning",isCompressorRunning);
         if(isCompressorRunning == true){
             _numberCycles++;
         }
-        //SmartDashboard.putBoolean("compressor:isCompressorEnabled", isCompressorRunning);
         SmartDashboard.putNumber("AirCompressor:RunningTimeInSec", _numberCycles*.02);
     }
 
