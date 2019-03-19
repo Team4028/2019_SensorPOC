@@ -71,7 +71,6 @@ public class Robot extends TimedRobot {
   // ux
   private LEDController _leds = LEDController.getInstance();
   private AutonChoosers _autonChoosers = AutonChoosers.getInstance();
-  private OI _oi = OI.getInstance();
 
   // subsystems
   private Chassis _chassis = Chassis.getInstance();
@@ -108,6 +107,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    OI _oi = OI.getInstance();
     Paths.buildPaths();
     _chassis.initiateRobotState();
     _chassis.zeroSensors();
@@ -150,8 +150,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopInit() {
+    OI _oi = OI.getInstance();
     _vision.set_isInVisionMode(false);
-    Scheduler.getInstance().removeAll();
+    //Scheduler.getInstance().removeAll();
     Command stopChassis = new StopChassis();
     stopChassis.start();
     _chassis.zeroSensors();

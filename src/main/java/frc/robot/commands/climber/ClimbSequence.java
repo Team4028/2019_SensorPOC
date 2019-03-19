@@ -17,14 +17,18 @@ import frc.robot.commands.infeed.SendBeakOut;
 import frc.robot.commands.infeed.SendBucketOut;
 import frc.robot.commands.infeed.ToggleBeakInOut;
 import frc.robot.commands.infeed.TogglePunch;
+import frc.robot.subsystems.Climber;
 
 public class ClimbSequence extends CommandGroup
 {
     double climbHeight =-20500;
     double clearedHeight=-700;
+    Climber _climber = Climber.getInstance();
 
     public ClimbSequence()
     {
+        requires(_climber);
+        setInterruptible(false);
         //addParallel(new DriveClimber(0.2));
         addSequential(new MoveClimberToPos(climbHeight));
         addParallel(new DriveClimber(0.4));
@@ -42,7 +46,7 @@ public class ClimbSequence extends CommandGroup
         })));
         addParallel(new PrintCommand("Moved to Clear Height"));
         addSequential(new DriveWithControllers(0.3, 0),0.85);
-
+        addSequential(new PrintCommand("Driven"));
         addParallel(new StopChassis(),0.25);
         addSequential(new DriveClimber(0.0),0.25);
 

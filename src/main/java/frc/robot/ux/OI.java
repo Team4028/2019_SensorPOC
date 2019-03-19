@@ -5,6 +5,7 @@ import frc.robot.commands.auton.adaptivePaths.AutoAcquireHatch;
 import frc.robot.commands.auton.adaptivePaths.AutoPlaceHatch;
 import frc.robot.commands.auton.adaptivePaths.AutonFastPlaceHatch;
 import frc.robot.commands.auton.adaptivePaths.BetterVisionPath;
+import frc.robot.commands.auton.adaptivePaths.EasierBetterVisionThing;
 import frc.robot.commands.camera.SwitchCamera;
 import frc.robot.commands.chassis.DriveWithControllers;
 import frc.robot.commands.chassis.StopChassis;
@@ -62,7 +63,8 @@ public class OI {
 		_driverController.rt.whileActive(new RunInfeedMotor(_driverController.rt, true));
 		_driverController.rt.whenReleased(new RunInfeedMotor(_driverController.rt, true));
 		
-		_driverController.lb.whileHeld(new AutoAcquireHatch());
+		_driverController.lb.whileHeld(new EasierBetterVisionThing(_driverController.leftStick, _driverController.rightStick));
+		_driverController.lb.whenReleased(new DriveWithControllers(_driverController.leftStick, _driverController.rightStick));
 		_driverController.rb.whenPressed(new AutonFastPlaceHatch());
 
 		_driverController.a.whenPressed(new ToggleBeakInOut());
