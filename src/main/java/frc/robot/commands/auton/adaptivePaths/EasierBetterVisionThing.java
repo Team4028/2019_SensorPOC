@@ -7,6 +7,8 @@
 
 package frc.robot.commands.auton.adaptivePaths;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.sensors.DistanceRev2mSensor;
@@ -38,10 +40,10 @@ public class EasierBetterVisionThing extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    _limelight.changeLimelightPipeline(LIMELIGHT_PIPELINE.CENTER_PNP);
+    _limelight.changeLimelightPipeline(LIMELIGHT_PIPELINE.CENTER);
     kP=0.025;
     kI=0;
-    kD=0.001;
+    kD=0.00;
     P=0;
     I=0;
     D=0;
@@ -53,7 +55,7 @@ public class EasierBetterVisionThing extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    double a2 = 180/Math.PI*Math.atan2(_limelight.get_xOffset()+7, _limelight.get_yOffset());
+    double a2 = 0;//180/Math.PI*Math.atan2(_limelight.get_xOffset()+7, _limelight.get_yOffset());
     double error = _limelight.getTheta();
     
     if(a2<-90)
@@ -100,12 +102,20 @@ public class EasierBetterVisionThing extends Command {
       {
         if(_limelight.get_isTargetInFOV())
         {
-          _chassis.arcadeDrive(0.5*_leftThumbstick.getY(), turnCmd);
-          System.out.print(" E: " + GeneralUtilities.roundDouble(error, 3));
-          System.out.print(" P: "+GeneralUtilities.roundDouble(P, 3));
-          System.out.print(" I: "+GeneralUtilities.roundDouble(I, 3));
-          System.out.print(" D: "+GeneralUtilities.roundDouble(D, 3));
-          System.out.println("Auto Turn Cmd: "+ turnCmd);    
+          if(2==2/*error*(7+_limelight.get_xOffset())>0*/)
+          {
+            _chassis.arcadeDrive(0.5*_leftThumbstick.getY(), turnCmd);
+            System.out.print(" E: " + GeneralUtilities.roundDouble(error, 3));
+            System.out.print(" P: "+GeneralUtilities.roundDouble(P, 3));
+            System.out.print(" I: "+GeneralUtilities.roundDouble(I, 3));
+            System.out.print(" D: "+GeneralUtilities.roundDouble(D, 3));
+            System.out.println("Auto Turn Cmd: "+ turnCmd);    
+          }
+          // else
+          // {
+          //   System.out.println("Fixing the Garbage Drivers Tendancy to be Garbage");
+          //   _chassis.setLeftRightCommand(ControlMode.PercentOutput, -Math.copySign(0.25, _limelight.get_xOffset()), Math.copySign(0.25, _limelight.get_xOffset()));
+          // }
         }
         else
         {
