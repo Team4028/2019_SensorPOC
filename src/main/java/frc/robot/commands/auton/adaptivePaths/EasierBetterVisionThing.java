@@ -29,6 +29,8 @@ public class EasierBetterVisionThing extends Command {
   double prevD;
   double prevTime;
   double P,I,D;
+  double pushoutDistance;
+
   public EasierBetterVisionThing(Thumbstick leftThumbstick, Thumbstick rightThumbstick) 
   {
     requires(_chassis);
@@ -40,7 +42,7 @@ public class EasierBetterVisionThing extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    _limelight.changeLimelightPipeline(LIMELIGHT_PIPELINE.CENTER);
+    _limelight.changeLimelightPipeline(LIMELIGHT_PIPELINE.CENTER_PNP);
     kP=0.025;
     kI=0;
     kD=0.00;
@@ -49,15 +51,22 @@ public class EasierBetterVisionThing extends Command {
     D=0;
     prevError=0;
     prevD=0;
+    pushoutDistance = 30;
     prevTime = Timer.getFPGATimestamp();
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    double a2 = 0;//180/Math.PI*Math.atan2(_limelight.get_xOffset()+7, _limelight.get_yOffset());
-    double error = _limelight.getTheta();
-    
+    double a2 = 180/Math.PI*Math.atan2(_limelight.get_xOffset()+7, _limelight.get_yOffset());
+    double a2Rad = (Math.PI/180) * a2;
+    double rawError = _limelight.getTheta();
+    double dist = Math.hypot(_limelight.get_xOffset() + 7, _limelight.get_yOffset());
+    double littleAngle = (180/Math.PI)*(Math.PI/2 - Math.atan2(((dist - pushoutDistance*Math.cos(a2Rad))/Math.sin(a2Rad)), pushoutDistance));
+    double error = rawError - littleAngle;
+    System.out.println("Lit Angle: " + littleAngle+180);
+    System.out.println("Old Error: " + rawError);
+    System.out.println("New Error: " + error+180);
     if(a2<-90)
     {
       a2+=180;
@@ -94,7 +103,7 @@ public class EasierBetterVisionThing extends Command {
     }
     if(_rightThumbstick.get())
     {
-      _chassis.arcadeDrive(0.5*_leftThumbstick.getY(), _rightThumbstick.getX());
+      // _chassis.arcadeDrive(0.5*_leftThumbstick.getY(), _rightThumbstick.getX());
     }
     else
     {
@@ -102,20 +111,21 @@ public class EasierBetterVisionThing extends Command {
       {
         if(_limelight.get_isTargetInFOV())
         {
-          if(2==2/*error*(7+_limelight.get_xOffset())>0*/)
+          if(error*(7+_limelight.get_xOffset())>0)
           {
-            _chassis.arcadeDrive(0.5*_leftThumbstick.getY(), turnCmd);
+            // _chassis.arcadeDrive(0.5*_leftThumbstick.getY(), turnCmd);
             System.out.print(" E: " + GeneralUtilities.roundDouble(error, 3));
             System.out.print(" P: "+GeneralUtilities.roundDouble(P, 3));
             System.out.print(" I: "+GeneralUtilities.roundDouble(I, 3));
             System.out.print(" D: "+GeneralUtilities.roundDouble(D, 3));
             System.out.println("Auto Turn Cmd: "+ turnCmd);    
           }
-          // else
-          // {
-          //   System.out.println("Fixing the Garbage Drivers Tendancy to be Garbage");
-          //   _chassis.setLeftRightCommand(ControlMode.PercentOutput, -Math.copySign(0.25, _limelight.get_xOffset()), Math.copySign(0.25, _limelight.get_xOffset()));
-          // }
+          else
+          {
+            System.out.println("Fixing the Garbage Drivers Tendancy to be Garbage");
+            //_chassis.stop();
+            //_chassis.setLeftRightCommand(ControlMode.PercentOutput, -Math.copySign(0.25, _limelight.get_xOffset()), Math.copySign(0.25, _limelight.get_xOffset()));
+          }
         }
         else
         {
