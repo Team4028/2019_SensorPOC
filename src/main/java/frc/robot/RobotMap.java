@@ -63,6 +63,8 @@ public class RobotMap {
 	public static final String RASPBERRY_PI_CAMERA_1_ADDRESS = "http://10.40.28.13:1181/stream.mjpg";
 	public static final String RASPBERRY_PI_CAMERA_2_ADDRESS = "http://10.40.28.13:1182/stream.mjpg";
 	public static final String LIMELIGHT_CAMERA_ADDRESS = "http://10.40.28.11:5800/";
+	public static final String LIMELIGHT_IPV4_ADDR = "10.40.28.11";
+	public static final int LIMELIGHT_PORT_NO = 5801;
 
 	// Logging
 	// this is where the USB stick is mounted on the RoboRIO filesystem.  

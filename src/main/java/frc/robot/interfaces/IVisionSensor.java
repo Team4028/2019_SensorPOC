@@ -23,4 +23,6 @@ public interface IVisionSensor extends IDistanceSensor, IBeakSquadSubsystem{
     public void turnOffLEDs();
 
     public void set_isInVisionMode(boolean isInVisionMode);
+
+    public boolean get_isPingable();
 }

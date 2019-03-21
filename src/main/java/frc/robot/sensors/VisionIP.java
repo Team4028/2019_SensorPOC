@@ -216,4 +216,9 @@ public class VisionIP implements IVisionSensor {
         SmartDashboard.putBoolean("VisionIP:IsVisionThreadRunning", get_isVisionThreadRunning());
         SmartDashboard.putBoolean("VisionIP:isSocketConnected", get_isSocketConnected());
     }
+
+    @Override
+    public boolean get_isPingable() {
+        return false;
+    }
 }

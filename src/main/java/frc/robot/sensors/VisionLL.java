@@ -7,8 +7,15 @@
 
 package frc.robot.sensors;
 
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
+
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.RobotMap;
 import frc.robot.interfaces.IVisionSensor;
 import frc.robot.util.LogDataBE;
 
@@ -157,6 +164,38 @@ public class VisionLL implements IVisionSensor {
         }
     }
 
+    private static boolean get_isReachable(String addr, int openPort, int timeOutMillis) {
+        // Any Open port on other machine
+        // openPort =  22 - ssh, 80 or 443 - webserver, 25 - mailserver etc.
+        try {
+            try (Socket soc = new Socket()) {
+                soc.connect(new InetSocketAddress(addr, openPort), timeOutMillis);
+            }
+            return true;
+        } catch (IOException ex) {
+            return false;
+        }
+    }
+
+    private static boolean get_isIpReachable(String targetIp) {
+ 
+        boolean result = false;
+        try {
+            InetAddress target = InetAddress.getByName(targetIp);
+            result = target.isReachable(5000);  //timeout 5sec
+        } catch (UnknownHostException ex) {
+            System.out.println(ex.toString());
+        } catch (IOException ex) {
+            System.out.println(ex.toString());
+        }
+        return result;
+    }
+
+    @Override
+    public boolean get_isPingable() {
+        return get_isIpReachable(RobotMap.LIMELIGHT_IPV4_ADDR);
+    }
+
     //=====================================================================================
 	// Helper Methods
 	//=====================================================================================  
@@ -174,4 +213,6 @@ public class VisionLL implements IVisionSensor {
         SmartDashboard.putNumber("Vision:ActualDistance", get_revisedDistance());
         SmartDashboard.putNumber("Vision:XOffset", get_xOffset());
     }
+
+
 }
