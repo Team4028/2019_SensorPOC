@@ -222,6 +222,8 @@ public class Robot extends TimedRobot {
   public void disabledPeriodic() {
     //Scheduler.getInstance().run();
     _vision.turnOffLEDs();
+
+    SmartDashboard.putBoolean("Vision:IsPingable", _vision.get_isPingable());
   }
   
   /********************************************************************************************
