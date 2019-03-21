@@ -22,7 +22,7 @@ import frc.robot.subsystems.Climber;
 public class ClimbSequence extends CommandGroup
 {
     double climbHeight =-20500;
-    double clearedHeight=-700;
+    double clearedHeight=-700;//15000?
     Climber _climber = Climber.getInstance();
 
     public ClimbSequence()
