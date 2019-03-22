@@ -22,7 +22,7 @@ import frc.robot.util.BeakXboxController.Thumbstick;
 public class EasierBetterVisionThing extends Command {
   Chassis _chassis = Chassis.getInstance();
   Thumbstick _rightThumbstick,_leftThumbstick;
-  double kP, kI, kD;
+  double kPAngleOneSmall, kIAngleOneSmall, kDAngleOneSmall;
   VisionLL _limelight = VisionLL.getInstance();
   DistanceRev2mSensor _ds = DistanceRev2mSensor.getInstance();
   boolean isFirstCycle;
@@ -36,6 +36,20 @@ public class EasierBetterVisionThing extends Command {
   double kFindTargetTurnVBus;
   boolean isA2Small;
   boolean forcedFinish;
+  double kPAngleOneLarge;
+  double kIAngleOneLarge;
+  double kDAngleOneLarge;
+  double kAngleOneSmallDeadband = 10;
+  double kP, kI, kD;
+  double kAngleOneSmallTurnVBUSLimit;
+  double kAngleOneLargeTurnVBUSLimit;
+  double kForwardVBus;
+  boolean isInPlaceTurn;
+  boolean hasTurnedInPlace;
+  double inPlaceTurnKp;
+  double inPlaceTurnKd;
+  double kInPlaceTurnDeadband;
+  boolean hasInPlacedTurned;
 
   public EasierBetterVisionThing(Thumbstick leftThumbstick, Thumbstick rightThumbstick) 
   {
@@ -48,10 +62,8 @@ public class EasierBetterVisionThing extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    _chassis.setRampRate(0.1);
     _limelight.changeLimelightPipeline(LIMELIGHT_PIPELINE.CENTER_PNP);
-    kP=0.02;
-    kI=0;
-    kD=0.04;
     P=0;
     I=0;
     D=0;
@@ -62,6 +74,22 @@ public class EasierBetterVisionThing extends Command {
     speedAdjustment=2;
     kFindTargetTurnVBus = .3;
     isA2Small=false;
+    kPAngleOneSmall=0.02;
+    kIAngleOneSmall=0;
+    kDAngleOneSmall=0.04;
+    kPAngleOneLarge = .012;
+    kIAngleOneLarge = 0;
+    kDAngleOneLarge = .02;
+    kP = kPAngleOneSmall;
+    kD = kDAngleOneSmall;
+    kAngleOneLargeTurnVBUSLimit = .4;
+    kAngleOneSmallTurnVBUSLimit = .25;
+    kForwardVBus = .3;
+    isInPlaceTurn = false;
+    hasInPlacedTurned = false;
+    inPlaceTurnKp = .05;
+    inPlaceTurnKd = .04;
+    kInPlaceTurnDeadband = 3;
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -86,7 +114,7 @@ public class EasierBetterVisionThing extends Command {
       a2=-180-a2;
     }
     double error;
-    if(Math.abs(dx)>3&& dx!=7 && !isA2Small)
+    if(Math.abs(dx)>3 && dx!=7 && !isA2Small)
     {
       isA2Small=false;
 
@@ -109,9 +137,31 @@ public class EasierBetterVisionThing extends Command {
       if(dx!=7)
       {
         isA2Small=true;
+        if (!hasInPlacedTurned){
+          isInPlaceTurn = true;
+          hasInPlacedTurned = false;
+        } else {
+          isInPlaceTurn = false;
+        }
+
       }
       error = _limelight.getTheta();
       System.out.println("SWITCHING"+ error);
+    }
+
+    if(Math.abs(_limelight.getTheta()) < kAngleOneSmallDeadband){
+      kP = kPAngleOneSmall;
+      kI = kIAngleOneSmall;
+      kD = kDAngleOneSmall;
+    } else {
+      kP = kPAngleOneLarge;
+      kI = kIAngleOneLarge;
+      kD = kDAngleOneLarge;
+    }
+    if (isInPlaceTurn){
+      kP = inPlaceTurnKp;
+      kI = 0;
+      kD = inPlaceTurnKd;
     }
 
     //error-=4;
@@ -141,20 +191,37 @@ public class EasierBetterVisionThing extends Command {
       D=0;
     }
     double turnCmd = P+I+D;
-    if(Math.abs(turnCmd)>0.2)
-    {
-      turnCmd = Math.copySign(0.2, turnCmd);
+    if (Math.abs(_limelight.getTheta()) < kAngleOneSmallDeadband){
+      if(Math.abs(turnCmd)>kAngleOneSmallTurnVBUSLimit)
+      {
+        turnCmd = Math.copySign(kAngleOneSmallTurnVBUSLimit, turnCmd);
+      }
+    } else {
+      if(Math.abs(turnCmd) > kAngleOneLargeTurnVBUSLimit)
+      {
+        turnCmd = Math.copySign(kAngleOneLargeTurnVBUSLimit, turnCmd);
+      }
     }
     if(_rightThumbstick.get())
     {
-      _chassis.arcadeDrive(0.5*_leftThumbstick.getY(), _rightThumbstick.getX());
+      _chassis.arcadeDrive(0.5 * _leftThumbstick.getY(), _rightThumbstick.getX());
     }
     else
     {
         if(_limelight.get_isTargetInFOV())
         {
           angleOneBuffer.addLast(_limelight.getTheta());
-          _chassis.arcadeDrive(0.5*_leftThumbstick.getY(), turnCmd);
+          if (isInPlaceTurn){
+            _chassis.arcadeDrive(0, turnCmd);
+            if (Math.abs(error) < kInPlaceTurnDeadband){
+              isInPlaceTurn = false;
+              hasInPlacedTurned = true;
+              System.out.println("IN PLACE TURN TERMINATING");
+            }
+          } else {
+            _chassis.arcadeDrive(kForwardVBus, turnCmd);
+          }
+
           //System.out.print(" E: " + GeneralUtilities.roundDouble(error, 3));
           System.out.print(" P: "+GeneralUtilities.roundDouble(P, 3));
           //System.out.print(" I: "+GeneralUtilities.roundDouble(I, 3));
@@ -208,11 +275,14 @@ public class EasierBetterVisionThing extends Command {
   protected void end() {
     System.out.println("Terminating");
     _chassis.stop();
+    _chassis.setRampRate(0.7);
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
+    _chassis.setRampRate(0.7);
   }
+
 }

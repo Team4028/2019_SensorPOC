@@ -445,6 +445,13 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
   {
     return _angleError;
   }
+  public void setRampRate(double ramp)
+  {
+    _leftMaster.configOpenloopRamp(ramp);
+    _rightMaster.configOpenloopRamp(ramp);
+    _rightSlave.configOpenloopRamp(ramp);
+    _leftSlave.configOpenloopRamp(ramp);
+  }
   public void setCanSeeTarget(boolean canSeeTarget)
   {
     _isVisionTargetVisible = canSeeTarget;
