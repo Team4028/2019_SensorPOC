@@ -7,6 +7,9 @@
 
 package frc.robot.sensors;
 
+
+import java.net.InetAddress;
+
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.interfaces.IVisionSensor;
@@ -150,6 +153,20 @@ public class VisionLL implements IVisionSensor {
         else 
         {
             return Double.NaN;
+        }
+    }
+
+    public void pingLimelite() 
+    {
+        try {
+            InetAddress _limeliteAddress = InetAddress.getByAddress(new byte[] {10, 40, 28, 11});
+            boolean reachable = _limeliteAddress.isReachable(5000);
+            
+            SmartDashboard.putBoolean("Is limelite reachable?", reachable);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
         }
     }
 

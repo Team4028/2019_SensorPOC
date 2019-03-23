@@ -222,6 +222,7 @@ public class Robot extends TimedRobot {
   public void disabledPeriodic() {
     //Scheduler.getInstance().run();
     _vision.turnOffLimelightLEDs();
+    _vision.pingLimelite();
   }
   
   /********************************************************************************************
