@@ -14,12 +14,13 @@ import frc.robot.sensors.revSrc.VL53L0X;
 import frc.robot.util.LogDataBE;
 import frc.robot.RobotMap;
 import frc.robot.util.GeneralUtilities;
+
 /**
- * This class exposes the onboard REV 2M Distance Sensor 
+ * This class exposes the onboard REV 2M Distance Sensor
  * 
  * Lead Student: Isabella
  */
-public class DistanceRev2mSensor implements IDistanceSensor{
+public class DistanceRev2mSensor implements IDistanceSensor {
 
 	private VL53L0X _distanceSensor;
 	private double _distanceToTargetInInches;
@@ -27,17 +28,17 @@ public class DistanceRev2mSensor implements IDistanceSensor{
 	private boolean _isSensorPresent;
 	private final static double MAX_RANGE = 65;
 
-    //=====================================================================================
+	// =====================================================================================
 	// Define Singleton Pattern
-	//=====================================================================================
+	// =====================================================================================
 	private static DistanceRev2mSensor _instance = new DistanceRev2mSensor();
-	
+
 	public static DistanceRev2mSensor getInstance() {
 		return _instance;
 	}
 
 	// private constructor for singleton pattern
-	private DistanceRev2mSensor() {	
+	private DistanceRev2mSensor() {
 		_distanceSensor = new VL53L0X(RobotMap.I2C_SENSOR_PORT, 0x29);
 		_isSensorPresent = _distanceSensor.doInitialize();
 		setLongRangeMode();
@@ -52,9 +53,15 @@ public class DistanceRev2mSensor implements IDistanceSensor{
 				_distanceToTargetInInches = _distanceSensor.getDistance(DistanceUnit.INCH);
 				_didTimeoutOccur = _distanceSensor.didTimeoutOccur();
 				long finish = System.nanoTime();
-				long time_elapsed = finish-start;
-				SmartDashboard.putNumber("distance sensor: thread time", time_elapsed/1000000);
-				
+				long time_elapsed = finish - start;
+				SmartDashboard.putNumber("distance sensor: thread time", time_elapsed / 1000000);
+
+				try {
+					Thread.sleep(20);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		});
 		t.start();

@@ -8,7 +8,7 @@ import frc.robot.RobotMap;
  */
 public class LEDController {
 
-	private Spark LEDstrip;
+	private Spark _ledStrip;
     private static final double REDZONE = 27.0; 
 	private static final double YELLOWZONE = 10.0;
     private static final double GREENZONE = 2.0;
@@ -25,7 +25,7 @@ public class LEDController {
     // private constructor for singleton pattern - this LED Controller is like a motor in regards to set speed, colors are on rev
     // robotics Blinkin LED User manual. 
 	private LEDController() {	
-		LEDstrip = new Spark(RobotMap.PWM_LED_PORT);
+		_ledStrip = new Spark(RobotMap.PWM_LED_PORT);
 	}
 	
     /* call this method to display the correct LED Color, the method checks to see if a target is aquired using vision, 
@@ -55,31 +55,32 @@ public class LEDController {
     }
     public void mvrCompPrettyColors()
     {
-        LEDstrip.set(-0.97);
+        _ledStrip.set(-0.97);
     }
+    
     //Different methods that set the LEDs to a certain color, the names are self-explainitory
 	private void partyMode() {
-		LEDstrip.set(-0.99);
+		_ledStrip.set(-0.99);
     }
     
 	private void whiteLights(){
-		LEDstrip.set(0.99);
+		_ledStrip.set(0.99);
     }
 
     private void redBlinkLights(){
-        LEDstrip.set(-0.11);
+        _ledStrip.set(-0.11);
     }
     
 	private void greenLights(){
-        LEDstrip.set(0.75);
+        _ledStrip.set(0.75);
     }
 
     private void orangeLEDstrip(){
-        LEDstrip.set(0.67);
+        _ledStrip.set(0.67);
     }
 
     private void redLEDstrip(){
-        LEDstrip.set(0.61);
+        _ledStrip.set(0.61);
     }
 
     /*

@@ -59,10 +59,9 @@ public class Robot extends TimedRobot {
 
   // sensors
   private DistanceRev2mSensor _distanceRev2mSensor = DistanceRev2mSensor.getInstance();
-  private StoredPressureSensor _pressureSensor = StoredPressureSensor.getInstance();
+  private StoredPressureSensor _pressureSensor = null; //StoredPressureSensor.getInstance();
   private SwitchableCameraServer _cameraServer = SwitchableCameraServer.getInstance();
   private AirCompressor _compressor = AirCompressor.get_instance();
-
 
   private IVisionSensor _vision = VisionLL.getInstance();      // Limelight
   //private IVisionSensor _vision = VisionIP.getInstance();   // IPhone
@@ -85,8 +84,6 @@ public class Robot extends TimedRobot {
  	long _lastDashboardWriteTimeMSec;
 	MovingAverage _scanTimeSamples;
   public double _startTime;
-
-
 
   /********************************************************************************************
    * This function is run when the robot is first started up and should be used
@@ -220,7 +217,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledPeriodic() {
-    //Scheduler.getInstance().run();
     _vision.turnOffLEDs();
 
     SmartDashboard.putBoolean("Vision:IsPingable", _vision.get_isPingable());
@@ -249,45 +245,51 @@ public class Robot extends TimedRobot {
   }
 
   /** Method to Push Data to ShuffleBoard */
-	private void outputAllToDashboard() {
-		// limit spamming
-    	long scanCycleDeltaInMSecs = new Date().getTime() - _lastScanEndTimeInMSec;
-    	// add scan time sample to calc scan time rolling average
-    	_scanTimeSamples.add(new BigDecimal(scanCycleDeltaInMSecs));
-    	
-    	if((new Date().getTime() - _lastDashboardWriteTimeMSec) > 100) {
-      {
-        // ----------------------------------------------
-    		// each subsystem should add a call to a outputToSmartDashboard method
-    		// to push its data out to the dashboard
-        // ----------------------------------------------
-        if(_chassis != null)              { _chassis.updateDashboard(); }
-        if(_cargo != null)                { _cargo.updateDashboard(); }
-        if(_climber != null)              { _climber.updateDashboard(); }
-        if(_elevator != null)             { _elevator.updateDashboard(); }
+  private void outputAllToDashboard() 
+  {
+	  // limit spamming
+    //long scanCycleDeltaInMSecs = new Date().getTime() - _lastScanEndTimeInMSec;
+    long scanCycleDeltaInMSecs = System.currentTimeMillis() - _lastScanEndTimeInMSec;    
 
-        if(_autonChoosers != null)        { _autonChoosers.updateDashboard(); }
-	    	if(_distanceRev2mSensor != null)  { _distanceRev2mSensor.updateDashboard(); }
-        if(_vision != null)               { _vision.updateDashboard(); }
-        if(_pressureSensor != null)       { _pressureSensor.updateDashboard(); }
-        if(_navX != null)                 { _navX.updateDashboard(); }
-        if(_cameraServer != null)         { _cameraServer.updateDashboard(); }
-        if(_compressor != null)           { _compressor.updateDashboard(); }
+    //System.out.println("DeltaT:" + scanCycleDeltaInMSecs);
+    // add scan time sample to calc scan time rolling average
+    _scanTimeSamples.add(new BigDecimal(scanCycleDeltaInMSecs));
+    
+    //if((new Date().getTime() - _lastDashboardWriteTimeMSec) > 100) {
+    if((System.currentTimeMillis() - _lastDashboardWriteTimeMSec) > 100) 
+    {
+      // ----------------------------------------------
+      // each subsystem should add a call to a outputToSmartDashboard method
+      // to push its data out to the dashboard
+      // ----------------------------------------------
+      if(_chassis != null)              { _chassis.updateDashboard(); }
+      if(_cargo != null)                { _cargo.updateDashboard(); }
+      if(_climber != null)              { _climber.updateDashboard(); }
+      if(_elevator != null)             { _elevator.updateDashboard(); }
 
-	    	
-    		// write the overall robot dashboard info
-	    	SmartDashboard.putString("Robot Build", _buildMsg);
-	    	
-	    	BigDecimal movingAvg = _scanTimeSamples.getAverage();
-	    	DecimalFormat df = new DecimalFormat("####");
-	    	SmartDashboard.putString("Scan Time (2 sec roll avg)", df.format(movingAvg) + " mSec");
-    		// snapshot last time
-    		_lastDashboardWriteTimeMSec = new Date().getTime();
-    	}
-    	
-    	// snapshot when this scan ended
-      _lastScanEndTimeInMSec = new Date().getTime();
+      if(_autonChoosers != null)        { _autonChoosers.updateDashboard(); }
+      if(_distanceRev2mSensor != null)  { _distanceRev2mSensor.updateDashboard(); }
+      if(_vision != null)               { _vision.updateDashboard(); }
+      if(_pressureSensor != null)       { _pressureSensor.updateDashboard(); }
+      if(_navX != null)                 { _navX.updateDashboard(); }
+      if(_cameraServer != null)         { _cameraServer.updateDashboard(); }
+      if(_compressor != null)           { _compressor.updateDashboard(); }
+
+      
+      // write the overall robot dashboard info
+      SmartDashboard.putString("Robot Build", _buildMsg);
+      
+      BigDecimal movingAvg = _scanTimeSamples.getAverage();
+      DecimalFormat df = new DecimalFormat("####");
+      SmartDashboard.putString("Scan Time (2 sec roll avg)", df.format(movingAvg) + " mSec");
+      // snapshot last time
+      //_lastDashboardWriteTimeMSec = new Date().getTime();
+      _lastDashboardWriteTimeMSec = System.currentTimeMillis();
     }
+    	// snapshot when this scan ended
+      //_lastScanEndTimeInMSec = new Date().getTime();
+      _lastScanEndTimeInMSec = System.currentTimeMillis();
+    
 	}
 
 	/** Method for Logging Data to the USB Stick plugged into the RoboRio */

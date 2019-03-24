@@ -31,8 +31,10 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
   private DoubleSolenoid _punchSolenoid;
   private DoubleSolenoid _beakInOutSolenoid;
   private DoubleSolenoid _bucketSolenoid;
-  private Servo _infeedServo;
+  //private Servo _infeedServo;
   private DigitalInput _hatchLimitSwitch;
+
+
   private static final Value MECHANISM_EXTENDED = DoubleSolenoid.Value.kForward;
   private static final Value MECHANISM_RETRACTED = DoubleSolenoid.Value.kReverse;
   private static final Value BEAK_OPEN = DoubleSolenoid.Value.kForward;
@@ -217,9 +219,10 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
     }
     DriverStation.reportWarning("Release is Running", false);
   }
-  public void servoStartMatch(){
-    _infeedServo.set(1);
-  }
+
+  //public void servoStartMatch(){
+  //  _infeedServo.set(1);
+  //}
 
   // ===============================================================================================================
 	// Expose Properties of Elevator
