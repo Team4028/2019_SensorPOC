@@ -50,6 +50,7 @@ public class EasierBetterVisionThing extends Command {
   double inPlaceTurnKd;
   double kInPlaceTurnDeadband;
   boolean hasInPlacedTurned;
+  double kMinInPlaceVBUS = 0;
 
   public EasierBetterVisionThing(Thumbstick leftThumbstick, Thumbstick rightThumbstick) 
   {
@@ -74,7 +75,7 @@ public class EasierBetterVisionThing extends Command {
     speedAdjustment=2;
     kFindTargetTurnVBus = .3;
     isA2Small=false;
-    kPAngleOneSmall=0.02;
+    kPAngleOneSmall=0.01;
     kIAngleOneSmall=0;
     kDAngleOneSmall=0.04;
     kPAngleOneLarge = .012;
@@ -84,12 +85,12 @@ public class EasierBetterVisionThing extends Command {
     kD = kDAngleOneSmall;
     kAngleOneLargeTurnVBUSLimit = .4;
     kAngleOneSmallTurnVBUSLimit = .25;
-    kForwardVBus = .3;
+    kForwardVBus = .4;
     isInPlaceTurn = false;
     hasInPlacedTurned = false;
-    inPlaceTurnKp = .05;
-    inPlaceTurnKd = .04;
-    kInPlaceTurnDeadband = 3;
+    inPlaceTurnKp = .035;
+    inPlaceTurnKd = .07;
+    kInPlaceTurnDeadband = 4;
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -212,7 +213,7 @@ public class EasierBetterVisionThing extends Command {
         {
           angleOneBuffer.addLast(_limelight.getTheta());
           if (isInPlaceTurn){
-            _chassis.arcadeDrive(0, turnCmd);
+            _chassis.arcadeDrive(0, turnCmd + Math.copySign(kMinInPlaceVBUS, turnCmd));
             if (Math.abs(error) < kInPlaceTurnDeadband){
               isInPlaceTurn = false;
               hasInPlacedTurned = true;
@@ -267,7 +268,7 @@ public class EasierBetterVisionThing extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return forcedFinish || _ds.get_distanceToTargetInInches()<(12+15*_leftThumbstick.getY()) && _ds.get_distanceToTargetInInches()>0;
+    return forcedFinish || _ds.get_distanceToTargetInInches()<19 && _ds.get_distanceToTargetInInches()>0;
   }
 
   // Called once after isFinished returns true

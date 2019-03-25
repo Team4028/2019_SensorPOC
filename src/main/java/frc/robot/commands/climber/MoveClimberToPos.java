@@ -8,10 +8,12 @@ public class MoveClimberToPos extends Command
 {
     double _targetPos;
     Climber _climber = Climber.getInstance();
-    public MoveClimberToPos(double targetPos)
+    double _upSpeed;
+    public MoveClimberToPos(double targetPos, double moveStickUp)
     {
         setInterruptible(true);
         _targetPos=targetPos;
+        _upSpeed = moveStickUp;
     }
 
     @Override
@@ -26,7 +28,7 @@ public class MoveClimberToPos extends Command
         }
         else
         {
-            _climber.liftClimber(0.5);
+            _climber.liftClimber(_upSpeed);
         }
 
     }

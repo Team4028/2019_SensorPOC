@@ -10,9 +10,11 @@ import frc.robot.commands.camera.SwitchCamera;
 import frc.robot.commands.chassis.DriveWithControllers;
 import frc.robot.commands.chassis.StopChassis;
 import frc.robot.commands.climber.ClimbSequence;
+import frc.robot.commands.climber.DoubleClimb;
 import frc.robot.commands.climber.DriveClimber;
 import frc.robot.commands.climber.HoldClimber;
 import frc.robot.commands.climber.LiftClimber;
+import frc.robot.commands.climber.Lvl2Climb;
 import frc.robot.commands.elevator.MoveToPresetPosition;
 import frc.robot.commands.infeed.AcquireHatch;
 import frc.robot.commands.infeed.ReleaseInfeed;
@@ -90,11 +92,12 @@ public class OI {
 		_operatorController.back.whenPressed(new ClimbSequence());
 		_operatorController.start.whenPressed(new SwitchCamera());
 
-		// =========== Engineer ======================================
-		// _engineerController = new BeakXboxController(RobotMap.ENGINEERING_GAMEPAD_USB_PORT);
-		// //============================================================
-		// _engineerController.a.whenPressed(new BetterVisionPath(_engineerController.a));
-		// _engineerController.a.whenReleased(new StopChassis());
+		//=========== Engineer ======================================
+		_engineerController = new BeakXboxController(RobotMap.ENGINEERING_GAMEPAD_USB_PORT);
+		//============================================================
+		_engineerController.x.whenPressed(new DoubleClimb(false));
+		_engineerController.b.whenPressed(new DoubleClimb(true));
+		_engineerController.a.whenPressed(new Lvl2Climb());
 	}
 }
 

@@ -145,6 +145,10 @@ public class GyroNavX {
 		return angle2;
 	}
 
+	public boolean getIsReversed(){
+		return _isReversed;
+	}
+
 	public  double getTargetAngle(SCORING_TARGET target, SIDE side){
 		double scoringTargetAngle = 0;
 		double sideFactor = 0;

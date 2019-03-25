@@ -13,11 +13,13 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.auton.pathfollowing.Paths;
 import frc.robot.commands.auton.StartAcquireHatch;
+import frc.robot.commands.chassis.DriveWithControllers;
 import frc.robot.commands.chassis.StopChassis;
 import frc.robot.commands.climber.ZeroClimber;
 import frc.robot.commands.elevator.ZeroElevatorEncoder;
 import frc.robot.commands.infeed.AcquireHatch;
 import frc.robot.commands.infeed.SendBucketIn;
+import frc.robot.commands.infeed.SendBucketOut;
 import frc.robot.interfaces.IVisionSensor;
 import frc.robot.sensors.GyroNavX;
 
@@ -170,6 +172,7 @@ public class Robot extends TimedRobot {
     zeroClimber.start();
     Command sendBucketIn = new SendBucketIn();
     sendBucketIn.start();
+
   
   }
 
@@ -177,8 +180,11 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    _chassis.updateChassis(Timer.getFPGATimestamp());
     Scheduler.getInstance().run();  
+    // Command drive = new DriveWithControllers(0.7, 0);
+    // drive.start();
+    //_chassis.updateChassis(Timer.getFPGATimestamp());
+
     _vision.turnOnLEDs();
     // System.out.println(_elevator.getStoredTargetPosition());
   }
