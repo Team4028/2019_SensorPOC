@@ -29,8 +29,12 @@ public class Climber extends Subsystem implements IBeakSquadSubsystem {
   // define class level working variables
   TalonSRX _liftMtr;
   VictorSPX _driveMtr;
+
   private static final double INCHES_TO_NU_CONVERSION_NUMBER = .0013729128051576489005976;
   private static final double THIRD_LEVEL_CLIMBER_MEASUREMENT_IN_NU = -20299;
+
+  private static final int CAN_TIMEOUT_MSECS_INIT = 10;
+  private static final int CAN_TIMEOUT_MSECS_PERIODIC = 0;
 
   //=====================================================================================
 	// Define Singleton Pattern
@@ -47,8 +51,8 @@ public class Climber extends Subsystem implements IBeakSquadSubsystem {
     _liftMtr = new TalonSRX(RobotMap.CLIMBER_LIFT_CAN_ADDR);
 
     //Configure Limit Switches
-    _liftMtr.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyClosed);
-    _liftMtr.configReverseLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.Disabled);
+    _liftMtr.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyClosed, CAN_TIMEOUT_MSECS_INIT);
+    _liftMtr.configReverseLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.Disabled, CAN_TIMEOUT_MSECS_INIT);
 
     // Turn of all soft limits
    _liftMtr.configForwardSoftLimitEnable(false, 0);
@@ -58,10 +62,9 @@ public class Climber extends Subsystem implements IBeakSquadSubsystem {
    _liftMtr.setNeutralMode(NeutralMode.Brake);
 
     // Configure Encoder
-   _liftMtr.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
+   _liftMtr.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, CAN_TIMEOUT_MSECS_INIT);
    _liftMtr.setSensorPhase(true);
-   _liftMtr.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 5, 0);
-
+   _liftMtr.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 5, CAN_TIMEOUT_MSECS_INIT);
 
     _driveMtr = new VictorSPX(RobotMap.CLIMBER_DRIVE_CAN_ADDR);
    // _driveMtr.configFactoryDefault();
@@ -75,7 +78,6 @@ public class Climber extends Subsystem implements IBeakSquadSubsystem {
     _driveMtr.set(ControlMode.PercentOutput, driveSpeed);
   }
   
-
   public void setClimberPosition(){
    // if (_liftMtr.getSelectedSensorPosition() < THIRD_LEVEL_CLIMBER_MEASUREMENT_IN_NU) {
       _liftMtr.set(ControlMode.PercentOutput, .5);
@@ -88,30 +90,32 @@ public class Climber extends Subsystem implements IBeakSquadSubsystem {
   {
     return !_liftMtr.getSensorCollection().isFwdLimitSwitchClosed();
   }
+
   public void zeroClimber()
   {
     _liftMtr.setSelectedSensorPosition(0);
   }
+
   public void HoldClimber()
   {
-    _liftMtr.config_kF(0, 0.5);
-    _liftMtr.config_kP(0,0.5);
-    _liftMtr.config_kI(0,0);
-    _liftMtr.config_kD(0,0);
+    _liftMtr.config_kF(0, 0.5, CAN_TIMEOUT_MSECS_PERIODIC);
+    _liftMtr.config_kP(0, 0.5, CAN_TIMEOUT_MSECS_PERIODIC);
+    _liftMtr.config_kI(0, 0, CAN_TIMEOUT_MSECS_PERIODIC);
+    _liftMtr.config_kD(0, 0, CAN_TIMEOUT_MSECS_PERIODIC);
     _liftMtr.set(ControlMode.MotionMagic, getNativeUnits());
   }
 
   public double inchesToNativeUnits(double inches){
-    return inches/ INCHES_TO_NU_CONVERSION_NUMBER;
+    return (inches / INCHES_TO_NU_CONVERSION_NUMBER);
   }
   public double nativeUnitsToInches(double nativeUnits){
-    return nativeUnits * .0013729128051576489005976;
+    return (nativeUnits * .0013729128051576489005976);
   }
-
 
 	public double getPositionInches(){
 		return nativeUnitsToInches(getNativeUnits());
-	}
+  }
+  
   public double getNativeUnits(){
     return  _liftMtr.getSelectedSensorPosition();
   }

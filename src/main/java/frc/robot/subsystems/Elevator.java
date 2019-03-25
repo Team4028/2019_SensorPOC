@@ -90,7 +90,8 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
   private static final int TELEOP_UP_DECELERATION = 4000;
   private static final int TELEOP_DOWN_ACCELERATION = 1000;
 
-  private static final int CAN_TIMEOUT_MILLISECONDS = 30;
+  private static final int CAN_TIMEOUT_MSECS_INIT = 10;
+  private static final int CAN_TIMEOUT_MSECS_PERIODIC = 0;
   //#endregion
 
   //=====================================================================================
@@ -122,55 +123,55 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
         LimitSwitchNormal.NormallyOpen);
 
     // Turn of all soft limits
-    _elevatorMasterMotor.configForwardSoftLimitEnable(false, 0);
-    _elevatorMasterMotor.configReverseSoftLimitEnable(false, 0);
+    _elevatorMasterMotor.configForwardSoftLimitEnable(false, CAN_TIMEOUT_MSECS_INIT);
+    _elevatorMasterMotor.configReverseSoftLimitEnable(false, CAN_TIMEOUT_MSECS_INIT);
 
     // Configure brake mode
     _elevatorMasterMotor.setNeutralMode(NeutralMode.Brake);
 
     // Configure Quad Encoder (Invert = false)
-    _elevatorMasterMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
+    _elevatorMasterMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, CAN_TIMEOUT_MSECS_INIT);
     _elevatorMasterMotor.setSensorPhase(false);
-    _elevatorMasterMotor.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 5, 0);
+    _elevatorMasterMotor.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 5, CAN_TIMEOUT_MSECS_INIT);
 
     // Peak/Nominal output voltages for both directions for talons configuration
-    _elevatorMasterMotor.configNominalOutputForward(0, 0);
-    _elevatorMasterMotor.configNominalOutputReverse(0, 0);
-    _elevatorMasterMotor.configPeakOutputForward(1, 0);
-    _elevatorMasterMotor.configPeakOutputReverse(-1, 0);
+    _elevatorMasterMotor.configNominalOutputForward(0, CAN_TIMEOUT_MSECS_INIT);
+    _elevatorMasterMotor.configNominalOutputReverse(0, CAN_TIMEOUT_MSECS_INIT);
+    _elevatorMasterMotor.configPeakOutputForward(1, CAN_TIMEOUT_MSECS_INIT);
+    _elevatorMasterMotor.configPeakOutputReverse(-1, CAN_TIMEOUT_MSECS_INIT);
 
     // Configure velocity measurement
-    _elevatorMasterMotor.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_5Ms, 0);
-    _elevatorMasterMotor.configVelocityMeasurementWindow(32, 0);
+    _elevatorMasterMotor.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_5Ms, CAN_TIMEOUT_MSECS_INIT);
+    _elevatorMasterMotor.configVelocityMeasurementWindow(32, CAN_TIMEOUT_MSECS_INIT);
 
     // Set up MotionMagic mode
     _elevatorMasterMotor.selectProfileSlot(MOVING_UP_PID_SLOT_INDEX, 0);
 
     // Set closed loop gains
-    _elevatorMasterMotor.config_kF(MOVING_DOWN_PID_SLOT_INDEX, FEED_FORWARD_GAIN_DOWN, CAN_TIMEOUT_MILLISECONDS);
-		_elevatorMasterMotor.config_kP(MOVING_DOWN_PID_SLOT_INDEX, PROPORTIONAL_GAIN_DOWN, CAN_TIMEOUT_MILLISECONDS);
-		_elevatorMasterMotor.config_kI(MOVING_DOWN_PID_SLOT_INDEX, INTEGRAL_GAIN_DOWN, CAN_TIMEOUT_MILLISECONDS);
-		_elevatorMasterMotor.config_kD(MOVING_DOWN_PID_SLOT_INDEX, DERIVATIVE_GAIN_DOWN, CAN_TIMEOUT_MILLISECONDS);
-		_elevatorMasterMotor.config_IntegralZone(MOVING_DOWN_PID_SLOT_INDEX, INTEGRAL_ZONE_DOWN, CAN_TIMEOUT_MILLISECONDS);
+    _elevatorMasterMotor.config_kF(MOVING_DOWN_PID_SLOT_INDEX, FEED_FORWARD_GAIN_DOWN, CAN_TIMEOUT_MSECS_INIT);
+		_elevatorMasterMotor.config_kP(MOVING_DOWN_PID_SLOT_INDEX, PROPORTIONAL_GAIN_DOWN, CAN_TIMEOUT_MSECS_INIT);
+		_elevatorMasterMotor.config_kI(MOVING_DOWN_PID_SLOT_INDEX, INTEGRAL_GAIN_DOWN, CAN_TIMEOUT_MSECS_INIT);
+		_elevatorMasterMotor.config_kD(MOVING_DOWN_PID_SLOT_INDEX, DERIVATIVE_GAIN_DOWN, CAN_TIMEOUT_MSECS_INIT);
+		_elevatorMasterMotor.config_IntegralZone(MOVING_DOWN_PID_SLOT_INDEX, INTEGRAL_ZONE_DOWN, CAN_TIMEOUT_MSECS_INIT);
 		
-		_elevatorMasterMotor.config_kF(MOVING_UP_PID_SLOT_INDEX, FEED_FORWARD_GAIN_UP, CAN_TIMEOUT_MILLISECONDS);
-		_elevatorMasterMotor.config_kP(MOVING_UP_PID_SLOT_INDEX, PROPORTIONAL_GAIN_UP, CAN_TIMEOUT_MILLISECONDS);
-		_elevatorMasterMotor.config_kI(MOVING_UP_PID_SLOT_INDEX, INTEGRAL_GAIN_UP, CAN_TIMEOUT_MILLISECONDS);
-		_elevatorMasterMotor.config_kD(MOVING_UP_PID_SLOT_INDEX, DERIVATIVE_GAIN_UP, CAN_TIMEOUT_MILLISECONDS);
-		_elevatorMasterMotor.config_IntegralZone(MOVING_UP_PID_SLOT_INDEX, INTEGRAL_ZONE_UP, CAN_TIMEOUT_MILLISECONDS);
+		_elevatorMasterMotor.config_kF(MOVING_UP_PID_SLOT_INDEX, FEED_FORWARD_GAIN_UP, CAN_TIMEOUT_MSECS_INIT);
+		_elevatorMasterMotor.config_kP(MOVING_UP_PID_SLOT_INDEX, PROPORTIONAL_GAIN_UP, CAN_TIMEOUT_MSECS_INIT);
+		_elevatorMasterMotor.config_kI(MOVING_UP_PID_SLOT_INDEX, INTEGRAL_GAIN_UP, CAN_TIMEOUT_MSECS_INIT);
+		_elevatorMasterMotor.config_kD(MOVING_UP_PID_SLOT_INDEX, DERIVATIVE_GAIN_UP, CAN_TIMEOUT_MSECS_INIT);
+		_elevatorMasterMotor.config_IntegralZone(MOVING_UP_PID_SLOT_INDEX, INTEGRAL_ZONE_UP, CAN_TIMEOUT_MSECS_INIT);
 		
-		_elevatorMasterMotor.config_kF(HOLDING_PID_SLOT_INDEX, FEED_FORWARD_GAIN_HOLD, CAN_TIMEOUT_MILLISECONDS);
-		_elevatorMasterMotor.config_kP(HOLDING_PID_SLOT_INDEX, PROPORTIONAL_GAIN_HOLD, CAN_TIMEOUT_MILLISECONDS);
-		_elevatorMasterMotor.config_kI(HOLDING_PID_SLOT_INDEX, INTEGRAL_GAIN_HOLD, CAN_TIMEOUT_MILLISECONDS);
-		_elevatorMasterMotor.config_kD(HOLDING_PID_SLOT_INDEX, DERIVATIVE_GAIN_HOLD, CAN_TIMEOUT_MILLISECONDS);
-		_elevatorMasterMotor.config_IntegralZone(HOLDING_PID_SLOT_INDEX, INTEGRAL_ZONE_HOLD, CAN_TIMEOUT_MILLISECONDS);
+		_elevatorMasterMotor.config_kF(HOLDING_PID_SLOT_INDEX, FEED_FORWARD_GAIN_HOLD, CAN_TIMEOUT_MSECS_INIT);
+		_elevatorMasterMotor.config_kP(HOLDING_PID_SLOT_INDEX, PROPORTIONAL_GAIN_HOLD, CAN_TIMEOUT_MSECS_INIT);
+		_elevatorMasterMotor.config_kI(HOLDING_PID_SLOT_INDEX, INTEGRAL_GAIN_HOLD, CAN_TIMEOUT_MSECS_INIT);
+		_elevatorMasterMotor.config_kD(HOLDING_PID_SLOT_INDEX, DERIVATIVE_GAIN_HOLD, CAN_TIMEOUT_MSECS_INIT);
+		_elevatorMasterMotor.config_IntegralZone(HOLDING_PID_SLOT_INDEX, INTEGRAL_ZONE_HOLD, CAN_TIMEOUT_MSECS_INIT);
 
     // Set accel and cruise velocities
-    _elevatorMasterMotor.configMotionCruiseVelocity(UP_CRUISE_VELOCITY, 0);
-    _elevatorMasterMotor.configMotionAcceleration(TELEOP_UP_ACCELERATION, 0);
+    _elevatorMasterMotor.configMotionCruiseVelocity(UP_CRUISE_VELOCITY, CAN_TIMEOUT_MSECS_INIT);
+    _elevatorMasterMotor.configMotionAcceleration(TELEOP_UP_ACCELERATION, CAN_TIMEOUT_MSECS_INIT);
   
     // set allowable closed loop gain
-    _elevatorMasterMotor.configAllowableClosedloopError(0, ELEVATOR_POS_ALLOWABLE_ERROR_NU, 0);
+    _elevatorMasterMotor.configAllowableClosedloopError(0, ELEVATOR_POS_ALLOWABLE_ERROR_NU, CAN_TIMEOUT_MSECS_INIT);
   }
 
   // =================================================================================================================
@@ -190,27 +191,34 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
         _targetElevatorPositionNU = HOME_POSITION_NU;
         _storedPresetPosition= ELEVATOR_TARGET_POSITION.HOME;
         break;
+
       case LEVEL_1:
-      _storedPresetPosition = ELEVATOR_TARGET_POSITION.LEVEL_1;
+        _storedPresetPosition = ELEVATOR_TARGET_POSITION.LEVEL_1;
         if(hasHatch){
           _targetElevatorPositionNU = HATCH_LEVEL_1_POSITION_NU;
         } else {
           _targetElevatorPositionNU = CARGO_LEVEL_1_POSITION_NU;
-        } break;
+        } 
+        break;
+
       case LEVEL_2:
         _storedPresetPosition = ELEVATOR_TARGET_POSITION.LEVEL_2;
         if(hasHatch){
           _targetElevatorPositionNU = HATCH_LEVEL_2_POSITION_NU;
         } else {
           _targetElevatorPositionNU = CARGO_LEVEL_2_POSITION_NU;
-        } break;
+        } 
+        break;
+
       case LEVEL_3:
-      _storedPresetPosition = ELEVATOR_TARGET_POSITION.LEVEL_3;
+        _storedPresetPosition = ELEVATOR_TARGET_POSITION.LEVEL_3;
         if(hasHatch){
           _targetElevatorPositionNU = HATCH_LEVEL_3_POSITION_NU;
         } else {
           _targetElevatorPositionNU = CARGO_LEVEL_3_POSITION_NU;
-        } break;   
+        } 
+        break;  
+
       case CARGO_ACQUIRE:
         _targetElevatorPositionNU = CARGO_ACQUIRE_HEIGHT;
         break;
@@ -224,15 +232,15 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
     if (currentError > ELEVATOR_POS_ALLOWABLE_ERROR_NU) {
       if(_targetElevatorPositionNU > get_ElevatorPos()) {
         _elevatorMasterMotor.selectProfileSlot(MOVING_UP_PID_SLOT_INDEX, 0);
-        _elevatorMasterMotor.configMotionCruiseVelocity(UP_CRUISE_VELOCITY, 0);
-        _elevatorMasterMotor.configMotionAcceleration(TELEOP_UP_ACCELERATION, 0);
+        _elevatorMasterMotor.configMotionCruiseVelocity(UP_CRUISE_VELOCITY, CAN_TIMEOUT_MSECS_PERIODIC);
+        _elevatorMasterMotor.configMotionAcceleration(TELEOP_UP_ACCELERATION, CAN_TIMEOUT_MSECS_PERIODIC);
       } else {
         _elevatorMasterMotor.selectProfileSlot(MOVING_DOWN_PID_SLOT_INDEX, 0);
-        _elevatorMasterMotor.configMotionCruiseVelocity(DOWN_CRUISE_VELOCITY, 0);
+        _elevatorMasterMotor.configMotionCruiseVelocity(DOWN_CRUISE_VELOCITY, CAN_TIMEOUT_MSECS_PERIODIC);
         if(get_ElevatorVelocity() > 0){
-          _elevatorMasterMotor.configMotionAcceleration(TELEOP_UP_DECELERATION, 0);
+          _elevatorMasterMotor.configMotionAcceleration(TELEOP_UP_DECELERATION, CAN_TIMEOUT_MSECS_PERIODIC);
         } else {
-          _elevatorMasterMotor.configMotionAcceleration(TELEOP_DOWN_ACCELERATION, 0);
+          _elevatorMasterMotor.configMotionAcceleration(TELEOP_DOWN_ACCELERATION, CAN_TIMEOUT_MSECS_PERIODIC);
         }
       }
     } else {

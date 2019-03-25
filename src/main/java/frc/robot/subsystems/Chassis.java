@@ -41,10 +41,7 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
 
-	//=====================================================================================
-	// Define Singleton Pattern
-	//=====================================================================================
-  private static Chassis _instance = new Chassis();
+
   
   double ENCODER_CODES_PER_DEGREE = 46.21; //value calculated theoretically from ECPWR //339.2468*100/169.8;
 
@@ -77,6 +74,15 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
   public static double _autoStartTime;
 
   public static double ENCODER_COUNTS_PER_WHEEL_REV = 4008;
+
+  private static final int CAN_TIMEOUT_MSECS_INIT = 10;
+  private static final int CAN_TIMEOUT_MSECS_PERIODIC = 0;
+
+	//=====================================================================================
+	// Define Singleton Pattern
+	//=====================================================================================
+  private static Chassis _instance = new Chassis();
+  
 	public static Chassis getInstance() {
 		return _instance;
 	}
@@ -112,41 +118,42 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
     configDriveMotors(_leftSlave);
 		configDriveMotors(_rightSlave);
   }
-  private void configMasterMotors(TalonSRX talon) {
-		talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 10);
-		talon.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 5, 10);
-	
-        talon.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_10Ms, 0);
-        talon.configVelocityMeasurementWindow(32, 0);
-        
 
-		talon.configClosedloopRamp(0.0, 0);
+  private void configMasterMotors(TalonSRX talon) {
+		talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, CAN_TIMEOUT_MSECS_INIT);
+		talon.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 5, CAN_TIMEOUT_MSECS_INIT);
+	
+    talon.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_10Ms, CAN_TIMEOUT_MSECS_INIT);
+    talon.configVelocityMeasurementWindow(32, CAN_TIMEOUT_MSECS_INIT);
+        
+		talon.configClosedloopRamp(0.0, CAN_TIMEOUT_MSECS_INIT);
 	}
 	
 	private void configDriveMotors(TalonSRX talon) 
 	{
     //talon.configFactoryDefault();
-		talon.configForwardLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.Disabled, 0);
-		talon.configReverseLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.Disabled, 0);
+		talon.configForwardLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.Disabled, CAN_TIMEOUT_MSECS_INIT);
+		talon.configReverseLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.Disabled, CAN_TIMEOUT_MSECS_INIT);
         
-        talon.enableCurrentLimit(false);
-        talon.configOpenloopRamp(1, 10);
-        
-        talon.configPeakOutputForward(1.0, 10);
-        talon.configPeakOutputReverse(-1.0, 10);
-        talon.configNominalOutputForward(0, 10);
-        talon.configNominalOutputReverse(0, 10);
-        talon.configContinuousCurrentLimit(Constants.BIG_NUMBER, 10);
+    talon.enableCurrentLimit(false);
+    talon.configOpenloopRamp(1, CAN_TIMEOUT_MSECS_INIT);
+    
+    talon.configPeakOutputForward(1.0, CAN_TIMEOUT_MSECS_INIT);
+    talon.configPeakOutputReverse(-1.0, CAN_TIMEOUT_MSECS_INIT);
+    talon.configNominalOutputForward(0, CAN_TIMEOUT_MSECS_INIT);
+    talon.configNominalOutputReverse(0, CAN_TIMEOUT_MSECS_INIT);
+    talon.configContinuousCurrentLimit(Constants.BIG_NUMBER, CAN_TIMEOUT_MSECS_INIT);
 	}
 
   @Override
   public void initDefaultCommand() {}
 
-
-
-  public void updateChassis(double timestamp){
+  public void updateChassis(double timestamp)
+  {
     estimateRobotState(timestamp);
-    if ( _chassisState != ChassisState.FOLLOW_PATH){
+
+    if ( _chassisState != ChassisState.FOLLOW_PATH)
+    {
       if(Math.abs(_navX.getPitch())>13 && Math.abs(_navX.getPitch())<20)
       {
         stop();
@@ -162,100 +169,104 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
         setLeftRightCommand(ControlMode.PercentOutput, -0.3, -0.3);
       }
     }
-		switch(_chassisState) {
+
+    switch(_chassisState) 
+    {
 			case UNKNOWN:
-			return;
-      case PERCENT_VBUS:
-				return;
-      case AUTO_TURN:
-        _leftMaster.config_kF(0, 0.4);
-        _leftMaster.config_kP(0, 0.15);
-        _leftMaster.config_kI(0, 0);
-        _leftMaster.config_kD(0,8);
-        _rightMaster.config_kF(0, 0.4);
-        _rightMaster.config_kP(0, 0.15);
-        _rightMaster.config_kI(0, 0);
-        _rightMaster.config_kD(0, 8);
-        _rightMaster.configMotionCruiseVelocity(1400);
-        _leftMaster.configMotionCruiseVelocity(1400);
-        _rightMaster.configMotionAcceleration(1200);
-        _leftMaster.configMotionAcceleration(1200);
         return;
+        
+      case PERCENT_VBUS:
+        return;
+        
+      case AUTO_TURN:
+        _leftMaster.config_kF(0, 0.4, CAN_TIMEOUT_MSECS_PERIODIC);
+        _leftMaster.config_kP(0, 0.2, CAN_TIMEOUT_MSECS_PERIODIC);
+        _leftMaster.config_kI(0, 0, CAN_TIMEOUT_MSECS_PERIODIC);
+        _leftMaster.config_kD(0,8, CAN_TIMEOUT_MSECS_PERIODIC);
+        _rightMaster.config_kF(0, 0.4, CAN_TIMEOUT_MSECS_PERIODIC);
+        _rightMaster.config_kP(0, 0.2, CAN_TIMEOUT_MSECS_PERIODIC);
+        _rightMaster.config_kI(0, 0, CAN_TIMEOUT_MSECS_PERIODIC);
+        _rightMaster.config_kD(0, 8, CAN_TIMEOUT_MSECS_PERIODIC);
+        _rightMaster.configMotionCruiseVelocity(1400, CAN_TIMEOUT_MSECS_PERIODIC);
+        _leftMaster.configMotionCruiseVelocity(1400, CAN_TIMEOUT_MSECS_PERIODIC);
+        _rightMaster.configMotionAcceleration(1200, CAN_TIMEOUT_MSECS_PERIODIC);
+        _leftMaster.configMotionAcceleration(1200, CAN_TIMEOUT_MSECS_PERIODIC);
+        return;
+
       case DRIVE_SET_DISTANCE:
-        _leftMaster.config_kF(0, 0.802);
-        _leftMaster.config_kP(0, 0.32);
-        _leftMaster.config_kI(0, 0);
-        _leftMaster.config_kD(0, 3.2);
-        _rightMaster.config_kF(0, 0.802);
-        _rightMaster.config_kP(0, 0.32);
-        _rightMaster.config_kI(0, 0);
-        _rightMaster.config_kD(0, 3.2);
-        _rightMaster.configMotionCruiseVelocity(1275);
-        _leftMaster.configMotionCruiseVelocity(1275);
-        _rightMaster.configMotionAcceleration(900);
-        _leftMaster.configMotionAcceleration(900);
+        _leftMaster.config_kF(0, 0.802, CAN_TIMEOUT_MSECS_PERIODIC);
+        _leftMaster.config_kP(0, 0.32, CAN_TIMEOUT_MSECS_PERIODIC);
+        _leftMaster.config_kI(0, 0, CAN_TIMEOUT_MSECS_PERIODIC);
+        _leftMaster.config_kD(0, 3.2, CAN_TIMEOUT_MSECS_PERIODIC);
+        _rightMaster.config_kF(0, 0.802, CAN_TIMEOUT_MSECS_PERIODIC);
+        _rightMaster.config_kP(0, 0.32, CAN_TIMEOUT_MSECS_PERIODIC);
+        _rightMaster.config_kI(0, 0, CAN_TIMEOUT_MSECS_PERIODIC);
+        _rightMaster.config_kD(0, 3.2, CAN_TIMEOUT_MSECS_PERIODIC);
+        _rightMaster.configMotionCruiseVelocity(1275, CAN_TIMEOUT_MSECS_PERIODIC);
+        _leftMaster.configMotionCruiseVelocity(1275, CAN_TIMEOUT_MSECS_PERIODIC);
+        _rightMaster.configMotionAcceleration(900, CAN_TIMEOUT_MSECS_PERIODIC);
+        _leftMaster.configMotionAcceleration(900, CAN_TIMEOUT_MSECS_PERIODIC);
 				return;
 				
       case FOLLOW_PATH:
         estimateRobotState(timestamp);
-        _leftMaster.config_kF(0, 0.401);
-        _leftMaster.config_kP(0, .8);
-        _leftMaster.config_kI(0, 0.000); //.001
-        _leftMaster.config_kD(0, 8);
-        _rightMaster.config_kF(0, 0.401);
-        _rightMaster.config_kP(0, 0.8);
-        _rightMaster.config_kI(0, 0.000); //.001
-        _rightMaster.config_kD(0, 8);
+        _leftMaster.config_kF(0, 0.401, CAN_TIMEOUT_MSECS_PERIODIC);
+        _leftMaster.config_kP(0, .8, CAN_TIMEOUT_MSECS_PERIODIC);
+        _leftMaster.config_kI(0, 0.000, CAN_TIMEOUT_MSECS_PERIODIC); //.001
+        _leftMaster.config_kD(0, 8, CAN_TIMEOUT_MSECS_PERIODIC);
+        _rightMaster.config_kF(0, 0.401, CAN_TIMEOUT_MSECS_PERIODIC);
+        _rightMaster.config_kP(0, 0.8, CAN_TIMEOUT_MSECS_PERIODIC);
+        _rightMaster.config_kI(0, 0.000, CAN_TIMEOUT_MSECS_PERIODIC); //.001
+        _rightMaster.config_kD(0, 8, CAN_TIMEOUT_MSECS_PERIODIC);
 				if (_pathFollower != null) 
 					updatePathFollower(timestamp);
 				return;
 		}
   }
   
-    // basic driving
-    public void arcadeDrive(double throttleCmd, double turnCmd) 
+  // basic driving
+  public void arcadeDrive(double throttleCmd, double turnCmd) 
+  {
+    _chassisState = ChassisState.PERCENT_VBUS;
+    if(turnCmd>0.3)
     {
-      _chassisState = ChassisState.PERCENT_VBUS;
-      if(turnCmd>0.3)
-      {
-        _rightMaster.configOpenloopRamp(0.3);
-        _rightSlave.configOpenloopRamp(0.3);
-        _leftMaster.configOpenloopRamp(0.3);
-        _leftSlave.configOpenloopRamp(0.3);
-      }
-      else
-      {
-        _rightMaster.configOpenloopRamp(0.7);
-        _rightSlave.configOpenloopRamp(0.7);
-        _leftMaster.configOpenloopRamp(0.7);
-        _leftSlave.configOpenloopRamp(0.7);
-      }
-      if(throttleCmd>0.5)
-      {
-        _leftMaster.set(ControlMode.PercentOutput, 0.7*throttleCmd+0.4*turnCmd);
-        _rightMaster.set(ControlMode.PercentOutput,0.7*throttleCmd-0.4*turnCmd);
-      }
-      else
-      {
-        _leftMaster.set(ControlMode.PercentOutput, 0.7*throttleCmd+0.4*turnCmd);
-        _rightMaster.set(ControlMode.PercentOutput,0.78*throttleCmd-0.4*turnCmd);
-      }
+      _rightMaster.configOpenloopRamp(0.3, CAN_TIMEOUT_MSECS_PERIODIC);
+      _rightSlave.configOpenloopRamp(0.3, CAN_TIMEOUT_MSECS_PERIODIC);
+      _leftMaster.configOpenloopRamp(0.3, CAN_TIMEOUT_MSECS_PERIODIC);
+      _leftSlave.configOpenloopRamp(0.3, CAN_TIMEOUT_MSECS_PERIODIC);
     }
+    else
+    {
+      _rightMaster.configOpenloopRamp(0.7, CAN_TIMEOUT_MSECS_PERIODIC);
+      _rightSlave.configOpenloopRamp(0.7, CAN_TIMEOUT_MSECS_PERIODIC);
+      _leftMaster.configOpenloopRamp(0.7, CAN_TIMEOUT_MSECS_PERIODIC);
+      _leftSlave.configOpenloopRamp(0.7, CAN_TIMEOUT_MSECS_PERIODIC);
+    }
+
+    if(throttleCmd>0.5)
+    {
+      _leftMaster.set(ControlMode.PercentOutput, 0.7*throttleCmd + 0.4*turnCmd);
+      _rightMaster.set(ControlMode.PercentOutput,0.7*throttleCmd - 0.4*turnCmd);
+    }
+    else
+    {
+      _leftMaster.set(ControlMode.PercentOutput, 0.7*throttleCmd + 0.4*turnCmd);
+      _rightMaster.set(ControlMode.PercentOutput,0.78*throttleCmd - 0.4*turnCmd);
+    }
+  }
   
-    public void stop()
-    {
-      _chassisState = ChassisState.PERCENT_VBUS;
-      setLeftRightCommand(ControlMode.PercentOutput, 0,0);
-      //System.out.println("Chassis Stop");
-    }
+  public void stop()
+  {
+    _chassisState = ChassisState.PERCENT_VBUS;
+    setLeftRightCommand(ControlMode.PercentOutput, 0,0);
+    //System.out.println("Chassis Stop");
+  }
 
-
-
-    public void setMotionMagicCmdInches(double Distance)
+  public void setMotionMagicCmdInches(double Distance)
 	{
 
-		_leftMtrDriveSetDistanceCmd = _leftMaster.getSelectedSensorPosition(0)+ InchestoNU(Distance);
-    _rightMtrDriveSetDistanceCmd = _rightMaster.getSelectedSensorPosition(0)+InchestoNU(Distance);
+		_leftMtrDriveSetDistanceCmd = _leftMaster.getSelectedSensorPosition(0) + InchestoNU(Distance);
+    _rightMtrDriveSetDistanceCmd = _rightMaster.getSelectedSensorPosition(0) + InchestoNU(Distance);
     _chassisState=ChassisState.DRIVE_SET_DISTANCE;
   }
   
@@ -278,9 +289,9 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
 		} 
 		else 
 		{
-        	setLeftRightCommand(ControlMode.Velocity, 0.0, 0.0);
-        }
+      setLeftRightCommand(ControlMode.Velocity, 0.0, 0.0);
     }
+  }
 
   public void initiateRobotState()
   {
@@ -290,6 +301,7 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
     _rightEncoderPrevDistance = getRightPosInches();
     _robotState.reset(Timer.getFPGATimestamp(), new RigidTransform());
   }
+
   public void estimateRobotState( double timestamp)
   {
     final double left_distance = getLeftPosInches();
@@ -329,7 +341,8 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
 		{
 			setLeftRightCommand(ControlMode.Velocity, 0.0, 0.0);
 		}
-	}
+  }
+  
 	public synchronized boolean isDoneWithPath() 
 	{
 		if (_chassisState == ChassisState.FOLLOW_PATH && _pathFollower != null)
@@ -348,17 +361,19 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
 		{
 			return true;
 		}
-    }
+    
+  }
 
     /** Path following e-stop */
 	public synchronized void forceDoneWithPath() 
 	{
-        if (_chassisState == ChassisState.FOLLOW_PATH && _pathFollower != null)
+    if (_chassisState == ChassisState.FOLLOW_PATH && _pathFollower != null)
             _pathFollower.forceFinish();
 		else {}
 		
            // System.out.println("Robot is not in path following mode");
-	}
+  }
+  
 	public synchronized double getRemainingPathDistance() {
 		if (_pathFollower != null) {
 			return _pathFollower.remainingPathLength();
@@ -404,34 +419,36 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
 		double rightDriveTargetPos = (getRightPos() - encoderError);
 		setLeftRightCommand(ControlMode.MotionMagic, leftDriveTargetPos, rightDriveTargetPos);
   }
+
   public void updateAngleError()
   {
     if((_navX.getYaw() >= 0 && _targetAngle >= 0 && _isTurnRight && _navX.getYaw() > _targetAngle) ||
-    (_navX.getYaw() >= 0 && _targetAngle < 0 && _isTurnRight) ||
-    (_navX.getYaw() < 0 && _targetAngle < 0 && _isTurnRight && Math.abs(_navX.getYaw()) < Math.abs(_targetAngle))) {
-    _angleError = 360 - _navX.getYaw() + _targetAngle;
-  }
-  else if((_navX.getYaw() >= 0 && _targetAngle >= 0 && _isTurnRight && _navX.getYaw() < _targetAngle)||
-      (_navX.getYaw() >= 0 && _targetAngle >= 0 && !_isTurnRight && _navX.getYaw() > _targetAngle)||
-      (_navX.getYaw() >= 0 && _targetAngle < 0 && !_isTurnRight) ||
-      (_navX.getYaw() < 0 && _targetAngle >= 0 && _isTurnRight) ||
-      (_navX.getYaw() < 0 && _targetAngle < 0 && _isTurnRight && Math.abs(_navX.getYaw()) > Math.abs(_targetAngle)) ||
-      (_navX.getYaw() < 0 && _targetAngle < 0 && !_isTurnRight && Math.abs(_navX.getYaw()) < Math.abs(_targetAngle))) {
-    _angleError = _targetAngle - _navX.getYaw();
-  }		
-  else if((_navX.getYaw() >= 0 && _targetAngle >= 0 && !_isTurnRight && _navX.getYaw() < _targetAngle)||
-      (_navX.getYaw() < 0 && _targetAngle < 0 && !_isTurnRight && Math.abs(_navX.getYaw()) > Math.abs(_targetAngle))||
-      (_navX.getYaw() < 0 && _targetAngle >= 0 && !_isTurnRight)) {
-    _angleError = _targetAngle - _navX.getYaw() - 360;
-  }			
-  if(_angleError>300)
-  {
-    _angleError-=360;
-  }
-  else if(_angleError<-300)
-  {
-    _angleError+=360;
-  }
+      (_navX.getYaw() >= 0 && _targetAngle < 0 && _isTurnRight) ||
+      (_navX.getYaw() < 0 && _targetAngle < 0 && _isTurnRight && Math.abs(_navX.getYaw()) < Math.abs(_targetAngle))) {
+      _angleError = 360 - _navX.getYaw() + _targetAngle;
+    }
+    else if((_navX.getYaw() >= 0 && _targetAngle >= 0 && _isTurnRight && _navX.getYaw() < _targetAngle)||
+        (_navX.getYaw() >= 0 && _targetAngle >= 0 && !_isTurnRight && _navX.getYaw() > _targetAngle)||
+        (_navX.getYaw() >= 0 && _targetAngle < 0 && !_isTurnRight) ||
+        (_navX.getYaw() < 0 && _targetAngle >= 0 && _isTurnRight) ||
+        (_navX.getYaw() < 0 && _targetAngle < 0 && _isTurnRight && Math.abs(_navX.getYaw()) > Math.abs(_targetAngle)) ||
+        (_navX.getYaw() < 0 && _targetAngle < 0 && !_isTurnRight && Math.abs(_navX.getYaw()) < Math.abs(_targetAngle))) {
+      _angleError = _targetAngle - _navX.getYaw();
+    }		
+    else if((_navX.getYaw() >= 0 && _targetAngle >= 0 && !_isTurnRight && _navX.getYaw() < _targetAngle)||
+        (_navX.getYaw() < 0 && _targetAngle < 0 && !_isTurnRight && Math.abs(_navX.getYaw()) > Math.abs(_targetAngle))||
+        (_navX.getYaw() < 0 && _targetAngle >= 0 && !_isTurnRight)) {
+      _angleError = _targetAngle - _navX.getYaw() - 360;
+    }	
+
+    if(_angleError>300)
+    {
+      _angleError-=360;
+    }
+    else if(_angleError<-300)
+    {
+      _angleError+=360;
+    }
   }
 	//=====================================================================================
 	// Helper Methods
@@ -441,16 +458,17 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
 		_leftMaster.set(mode, leftCommand);
 		_rightMaster.set(mode, rightCommand);
   }
+
   public double getAngleError()
   {
     return _angleError;
   }
   public void setRampRate(double ramp)
   {
-    _leftMaster.configOpenloopRamp(ramp);
-    _rightMaster.configOpenloopRamp(ramp);
-    _rightSlave.configOpenloopRamp(ramp);
-    _leftSlave.configOpenloopRamp(ramp);
+    _leftMaster.configOpenloopRamp(ramp, CAN_TIMEOUT_MSECS_PERIODIC);
+    _rightMaster.configOpenloopRamp(ramp, CAN_TIMEOUT_MSECS_PERIODIC);
+    _rightSlave.configOpenloopRamp(ramp, CAN_TIMEOUT_MSECS_PERIODIC);
+    _leftSlave.configOpenloopRamp(ramp, CAN_TIMEOUT_MSECS_PERIODIC);
   }
   public void setCanSeeTarget(boolean canSeeTarget)
   {
@@ -501,8 +519,8 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
   }
   public void zeroSensors()
   {
-    _leftMaster.getSensorCollection().setQuadraturePosition(0, 10);
-    _rightMaster.getSensorCollection().setQuadraturePosition(0,10);
+    _leftMaster.getSensorCollection().setQuadraturePosition(0, CAN_TIMEOUT_MSECS_PERIODIC);
+    _rightMaster.getSensorCollection().setQuadraturePosition(0, CAN_TIMEOUT_MSECS_PERIODIC);
     _navX.zeroYaw();
   }
 
