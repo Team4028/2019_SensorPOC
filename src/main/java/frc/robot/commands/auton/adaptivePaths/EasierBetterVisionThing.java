@@ -85,7 +85,7 @@ public class EasierBetterVisionThing extends Command {
     kD = kDAngleOneSmall;
     kAngleOneLargeTurnVBUSLimit = .4;
     kAngleOneSmallTurnVBUSLimit = .25;
-    kForwardVBus = .4;
+    kForwardVBus = .35;
     isInPlaceTurn = false;
     hasInPlacedTurned = false;
     inPlaceTurnKp = .035;

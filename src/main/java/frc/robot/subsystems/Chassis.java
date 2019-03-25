@@ -232,13 +232,13 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
       }
       if(throttleCmd>0.5)
       {
-        _leftMaster.set(ControlMode.PercentOutput, 0.7*throttleCmd+0.3*turnCmd);
-        _rightMaster.set(ControlMode.PercentOutput,0.7*throttleCmd-0.3*turnCmd);
+        _leftMaster.set(ControlMode.PercentOutput, 0.7*throttleCmd+0.4*turnCmd);
+        _rightMaster.set(ControlMode.PercentOutput,0.7*throttleCmd-0.4*turnCmd);
       }
       else
       {
-        _leftMaster.set(ControlMode.PercentOutput, 0.7*throttleCmd+0.3*turnCmd);
-        _rightMaster.set(ControlMode.PercentOutput,0.78*throttleCmd-0.3*turnCmd);
+        _leftMaster.set(ControlMode.PercentOutput, 0.7*throttleCmd+0.4*turnCmd);
+        _rightMaster.set(ControlMode.PercentOutput,0.78*throttleCmd-0.4*turnCmd);
       }
     }
   
