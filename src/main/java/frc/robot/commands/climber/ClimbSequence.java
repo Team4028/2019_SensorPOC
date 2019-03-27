@@ -17,6 +17,7 @@ import frc.robot.commands.infeed.ReleaseInfeed;
 import frc.robot.commands.infeed.SendBeakOut;
 import frc.robot.commands.infeed.SendBucketOut;
 import frc.robot.commands.infeed.ToggleBeakInOut;
+import frc.robot.commands.infeed.ToggleBeakOpen;
 import frc.robot.commands.infeed.TogglePunch;
 import frc.robot.subsystems.Climber;
 
@@ -32,18 +33,24 @@ public class ClimbSequence extends CommandGroup
         setInterruptible(false);
         //addParallel(new DriveClimber(0.2));
         addSequential(new MoveClimberToPos(climbHeight,0.5));
-        addParallel(new DriveClimber(0.4));
+        addParallel(new DriveClimber(0.5));
         addParallel(new DriveWithControllers(0.2, 0));
         addSequential(new Series_Command(Arrays.asList(new Command[] 
         {
-            new PrintCommand("Holding Starts"),
-            new HoldClimber(2),
-            new PrintCommand("Stops Holding"),
-            new SendBucketOut(),
+            new HoldClimber(0.375),
+            new MoveClimberToPos(climbHeight+1800, 0.2)
+        })));
+        addParallel(new DriveClimber(0.3));
+        addSequential(new Series_Command(Arrays.asList(new Command[] 
+        {
+            new HoldClimber(.75),
             new SendBeakOut(),
             new TogglePunch(),
-            new PrintCommand("Bucket Coming Out"),
-            new MoveClimberToPos(clearedHeight,0.5),
+            new ToggleBeakOpen(),
+            new SendBucketOut(),
+            new MoveClimberToPos(climbHeight+4000, 0.2),
+            new HoldClimber(.25),
+            new MoveClimberToPos(clearedHeight, 0.5)
         })));
         addParallel(new PrintCommand("Moved to Clear Height"));
         addSequential(new DriveWithControllers(0.3, 0),0.85);

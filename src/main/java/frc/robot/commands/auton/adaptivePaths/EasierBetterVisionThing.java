@@ -21,7 +21,6 @@ import frc.robot.util.BeakXboxController.Thumbstick;
 
 public class EasierBetterVisionThing extends Command {
   Chassis _chassis = Chassis.getInstance();
-  Thumbstick _rightThumbstick,_leftThumbstick;
   double kPAngleOneSmall, kIAngleOneSmall, kDAngleOneSmall;
   VisionLL _limelight = VisionLL.getInstance();
   DistanceRev2mSensor _ds = DistanceRev2mSensor.getInstance();
@@ -51,18 +50,19 @@ public class EasierBetterVisionThing extends Command {
   double kInPlaceTurnDeadband;
   boolean hasInPlacedTurned;
   double kMinInPlaceVBUS = 0;
+  double currentTime;
 
-  public EasierBetterVisionThing(Thumbstick leftThumbstick, Thumbstick rightThumbstick) 
+  public EasierBetterVisionThing() 
   {
     requires(_chassis);
-    setInterruptible(false);
-    _leftThumbstick = leftThumbstick;
-    _rightThumbstick = rightThumbstick;
+    setInterruptible(true);
+
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    _limelight.turnOnLEDs();
     _chassis.setRampRate(0.1);
     _limelight.changeLimelightPipeline(LIMELIGHT_PIPELINE.CENTER_PNP);
     P=0;
@@ -75,10 +75,10 @@ public class EasierBetterVisionThing extends Command {
     speedAdjustment=2;
     kFindTargetTurnVBus = .3;
     isA2Small=false;
-    kPAngleOneSmall=0.01;
+    kPAngleOneSmall=0.0025;
     kIAngleOneSmall=0;
     kDAngleOneSmall=0.04;
-    kPAngleOneLarge = .012;
+    kPAngleOneLarge = .002;
     kIAngleOneLarge = 0;
     kDAngleOneLarge = .02;
     kP = kPAngleOneSmall;
@@ -88,9 +88,9 @@ public class EasierBetterVisionThing extends Command {
     kForwardVBus = .35;
     isInPlaceTurn = false;
     hasInPlacedTurned = false;
-    inPlaceTurnKp = .035;
+    inPlaceTurnKp = .01;
     inPlaceTurnKd = .07;
-    kInPlaceTurnDeadband = 4;
+    kInPlaceTurnDeadband = 6;
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -203,12 +203,6 @@ public class EasierBetterVisionThing extends Command {
         turnCmd = Math.copySign(kAngleOneLargeTurnVBUSLimit, turnCmd);
       }
     }
-    if(_rightThumbstick.get())
-    {
-      _chassis.arcadeDrive(0.5 * _leftThumbstick.getY(), _rightThumbstick.getX());
-    }
-    else
-    {
         if(_limelight.get_isTargetInFOV())
         {
           angleOneBuffer.addLast(_limelight.getTheta());
@@ -218,9 +212,18 @@ public class EasierBetterVisionThing extends Command {
               isInPlaceTurn = false;
               hasInPlacedTurned = true;
               System.out.println("IN PLACE TURN TERMINATING");
+              _chassis.stop();
+              currentTime = Timer.getFPGATimestamp();
             }
           } else {
-            _chassis.arcadeDrive(kForwardVBus, turnCmd);
+            if(Timer.getFPGATimestamp()-currentTime>0.5)
+            {
+              _chassis.arcadeDrive(kForwardVBus, turnCmd);
+            }
+            else
+            {
+              _chassis.stop();
+            }
           }
 
           //System.out.print(" E: " + GeneralUtilities.roundDouble(error, 3));
@@ -262,13 +265,13 @@ public class EasierBetterVisionThing extends Command {
         //   System.out.println("LL Lost View of Target. Turn Bus: " + turnSgn * kFindTargetTurnVBus);
         // }
       
-    }
+    
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return forcedFinish || _ds.get_distanceToTargetInInches()<19 && _ds.get_distanceToTargetInInches()>0;
+    return (forcedFinish || _ds.get_distanceToTargetInInches()<19 && _ds.get_distanceToTargetInInches()>0) && hasInPlacedTurned && (!_limelight.get_isTargetInFOV());
   }
 
   // Called once after isFinished returns true
@@ -283,6 +286,7 @@ public class EasierBetterVisionThing extends Command {
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
+    _limelight.turnOffLEDs();
     _chassis.setRampRate(0.7);
   }
 

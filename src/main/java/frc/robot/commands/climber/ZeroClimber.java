@@ -25,4 +25,8 @@ public class ZeroClimber extends Command
         _climber.HoldClimber();
 
     }
+    @Override
+    protected void interrupted() {
+        _climber.HoldClimber();
+    }
 }

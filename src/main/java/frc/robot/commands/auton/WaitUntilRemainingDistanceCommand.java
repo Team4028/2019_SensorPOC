@@ -15,4 +15,8 @@ public class WaitUntilRemainingDistanceCommand extends Command
     protected boolean isFinished() {
         return _chassis.isDoneWithPath() || _chassis.getRemainingPathDistance()<_distance;
     }
+    @Override
+    protected void end() {
+        _chassis.forceDoneWithPath();
+    }
 }

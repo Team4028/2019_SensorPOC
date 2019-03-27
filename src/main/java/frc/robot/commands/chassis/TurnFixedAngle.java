@@ -30,17 +30,28 @@ public class TurnFixedAngle extends Command {
         boolean isNavXReversed = _navX.getIsReversed();
         double currentAngle = _navX.getYaw();
         double turnAddend;
-        _targetAngle+=currentAngle;
+        if(_isTurnRight)
+        {
+            _targetAngle+=currentAngle;
+        }
+        else
+        {
+            _targetAngle-=currentAngle;
+        }
         // if ((!isNavXReversed) ^ _isTurnRight){
         //     turnAddend = turnAngle;
         // } else {
         //     turnAddend = -1 * turnAngle;
         // }
         // targetAngle = currentAngle + turnAddend;
-        // if(_targetAngle>180)
-        // {
-        //     targetAngle-=360;
-        // }
+        if(_targetAngle>180)
+        {
+            _targetAngle-=360;
+        }
+        else if(_targetAngle<-180)
+        {
+            _targetAngle+=360;
+        }
         _chassis.setTargetAngleAndTurnDirection(_targetAngle, _isTurnRight);
         _chassis.moveToTargetAngle();
     }

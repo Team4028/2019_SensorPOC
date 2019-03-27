@@ -229,17 +229,24 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
   public void moveToPresetPosition(){
     // set appropriate gain slot to use (only flip if outside deadband)
     int currentError = Math.abs(get_ElevatorPos() - _targetElevatorPositionNU);
-    if (currentError > ELEVATOR_POS_ALLOWABLE_ERROR_NU) {
-      if(_targetElevatorPositionNU > get_ElevatorPos()) {
+    if (currentError > ELEVATOR_POS_ALLOWABLE_ERROR_NU) 
+    {
+      if(_targetElevatorPositionNU > get_ElevatorPos()) 
+      {
         _elevatorMasterMotor.selectProfileSlot(MOVING_UP_PID_SLOT_INDEX, 0);
         _elevatorMasterMotor.configMotionCruiseVelocity(UP_CRUISE_VELOCITY, CAN_TIMEOUT_MSECS_PERIODIC);
         _elevatorMasterMotor.configMotionAcceleration(TELEOP_UP_ACCELERATION, CAN_TIMEOUT_MSECS_PERIODIC);
-      } else {
+      } 
+      else 
+      {
         _elevatorMasterMotor.selectProfileSlot(MOVING_DOWN_PID_SLOT_INDEX, 0);
         _elevatorMasterMotor.configMotionCruiseVelocity(DOWN_CRUISE_VELOCITY, CAN_TIMEOUT_MSECS_PERIODIC);
-        if(get_ElevatorVelocity() > 0){
+        if(get_ElevatorVelocity() > 0)
+        {
           _elevatorMasterMotor.configMotionAcceleration(TELEOP_UP_DECELERATION, CAN_TIMEOUT_MSECS_PERIODIC);
-        } else {
+        } 
+        else 
+        {
           _elevatorMasterMotor.configMotionAcceleration(TELEOP_DOWN_ACCELERATION, CAN_TIMEOUT_MSECS_PERIODIC);
         }
       }

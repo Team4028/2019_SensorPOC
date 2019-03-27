@@ -58,7 +58,7 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
   GyroNavX _navX = GyroNavX.getInstance();
   PathFollower _pathFollower=null;
   public TalonSRX _leftMaster, _leftSlave, _rightMaster, _rightSlave;
-
+  public boolean forceFinishAuton=false; 
   public double _leftMtrDriveSetDistanceCmd, _rightMtrDriveSetDistanceCmd;
 
   public double _targetAngle,_angleError;
@@ -373,7 +373,14 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
 		
            // System.out.println("Robot is not in path following mode");
   }
-  
+  public void setForcedAutonFinish(boolean isFinished)
+  {
+    forceFinishAuton=isFinished;
+  }
+  public boolean getForcedAutonFinish()
+  {
+    return forceFinishAuton;
+  }
 	public synchronized double getRemainingPathDistance() {
 		if (_pathFollower != null) {
 			return _pathFollower.remainingPathLength();

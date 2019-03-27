@@ -91,7 +91,7 @@ public class AutonChoosers implements IBeakSquadSubsystem {
     /** Returns the autonBase object associated with the auton selected on the dashboard */
 	public CommandGroup getSelectedAuton() {
 		STARTING_SIDE startingSide = _autonStartingSideChooser.getSelected();
-		
+		System.out.println("Selecting an Auton");
 		switch(_autonAction.getSelected()) {
 			case DO_NOTHING:
 				return new DoNothing();

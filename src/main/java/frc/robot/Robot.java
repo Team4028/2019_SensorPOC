@@ -20,11 +20,14 @@ import frc.robot.commands.elevator.ZeroElevatorEncoder;
 import frc.robot.commands.infeed.AcquireHatch;
 import frc.robot.commands.infeed.SendBucketIn;
 import frc.robot.commands.infeed.SendBucketOut;
+import frc.robot.commands.vision.ChoosePipeline;
 import frc.robot.interfaces.IVisionSensor;
 import frc.robot.sensors.GyroNavX;
 
 import frc.robot.sensors.VisionLL;
+import frc.robot.sensors.VisionLL.LIMELIGHT_PIPELINE;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.CommandGroup;
 //import frc.robot.commands.elevator.ZeroElevatorEncoder;
 import frc.robot.sensors.AirCompressor;
 import frc.robot.sensors.DistanceRev2mSensor;
@@ -86,6 +89,10 @@ public class Robot extends TimedRobot {
  	long _lastDashboardWriteTimeMSec;
 	MovingAverage _scanTimeSamples;
   public double _startTime;
+  OI _oi = OI.getInstance();
+  boolean hasAutonBeenScheduled;
+  boolean hasClimberZeroed;
+
 
   /********************************************************************************************
    * This function is run when the robot is first started up and should be used
@@ -106,7 +113,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    OI _oi = OI.getInstance();
+    Paths.havePathsBuilt=false;
     Paths.buildPaths();
     _chassis.initiateRobotState();
     _chassis.zeroSensors();
@@ -115,17 +122,14 @@ public class Robot extends TimedRobot {
     _scanTimeSamples = new MovingAverage(20);
     _lastDashboardWriteTimeMSec = new Date().getTime(); // snapshot time to control spamming
     _dataLogger = GeneralUtilities.setupLogging("Auton"); // init data logging	
-    _autonChoosers.getSelectedAuton().start();
+
     Chassis._autoStartTime = Timer.getFPGATimestamp();
     if(!_elevator.get_hasElevatorBeenZeroed()){
       Command zeroElevatorCommand = new ZeroElevatorEncoder();
       zeroElevatorCommand.start();
     }
-    Command zeroCLimber = new ZeroClimber();
-    zeroCLimber.start();
-    _vision.set_isInVisionMode(false);
-    Command acquireHatch = new StartAcquireHatch();
-    acquireHatch.start();
+    hasAutonBeenScheduled=false;
+    hasClimberZeroed=false;
 
   }
 
@@ -133,12 +137,34 @@ public class Robot extends TimedRobot {
    * This function is called periodically during autonomous mode.
    */
   @Override
-
   public void autonomousPeriodic() 
   {
-    //_chassis.updateChassis(Timer.getFPGATimestamp());
+    if(!hasClimberZeroed)
+    {
+      Command zeroClimber = new ZeroClimber();
+      zeroClimber.start();
+      hasClimberZeroed=true;
+    }
+
+    if(Paths.havePathsBuilt)
+    {
+      if(!hasAutonBeenScheduled && Timer.getFPGATimestamp()-_chassis._autoStartTime>0.2)
+      {
+        CommandGroup auton = _autonChoosers.getSelectedAuton();
+        System.out.println(auton);
+        hasAutonBeenScheduled=true;
+        auton.start();
+      }
+    }
     Scheduler.getInstance().run();
-   _vision.turnOnLEDs();
+    _chassis.updateChassis(Timer.getFPGATimestamp());
+    _vision.turnOnLEDs();
+    if(_chassis.getForcedAutonFinish())
+    {
+      _autonChoosers.getSelectedAuton().cancel();
+      Scheduler.getInstance().removeAll();
+      _chassis.setForcedAutonFinish(false);
+    }
   }
 
   /********************************************************************************************
@@ -149,9 +175,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopInit() {
-    OI _oi = OI.getInstance();
     _vision.set_isInVisionMode(false);
-    //Scheduler.getInstance().removeAll();
+    Command changePipeline = new ChoosePipeline(LIMELIGHT_PIPELINE.CENTER_PNP);
+    changePipeline.start();
     Command stopChassis = new StopChassis();
     stopChassis.start();
     _chassis.zeroSensors();
@@ -167,8 +193,6 @@ public class Robot extends TimedRobot {
     _chassis.setChassisState(ChassisState.PERCENT_VBUS);
     Command zeroClimber = new ZeroClimber();
     zeroClimber.start();
-    Command sendBucketIn = new SendBucketIn();
-    sendBucketIn.start();
 
   
   }
@@ -178,11 +202,12 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     Scheduler.getInstance().run();  
+    _vision.turnOnLEDs();
     // Command drive = new DriveWithControllers(0.7, 0);
     // drive.start();
     //_chassis.updateChassis(Timer.getFPGATimestamp());
 
-    _vision.turnOnLEDs();
+    //_vision.turnOnLEDs();
     // System.out.println(_elevator.getStoredTargetPosition());
   }
 
@@ -262,7 +287,7 @@ public class Robot extends TimedRobot {
     _scanTimeSamples.add(new BigDecimal(scanCycleDeltaInMSecs));
     
     //if((new Date().getTime() - _lastDashboardWriteTimeMSec) > 100) {
-    if((System.currentTimeMillis() - _lastDashboardWriteTimeMSec) > 100) 
+    if((System.currentTimeMillis() - _lastDashboardWriteTimeMSec) > 20) 
     {
       // ----------------------------------------------
       // each subsystem should add a call to a outputToSmartDashboard method

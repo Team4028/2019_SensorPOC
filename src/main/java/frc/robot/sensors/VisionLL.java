@@ -30,7 +30,9 @@ public class VisionLL implements IVisionSensor {
         RIGHT,
         CENTER,
         LEFT,
-        CENTER_PNP;
+        RIGHT_PNP,
+        CENTER_PNP,
+        LEFT_PNP;
     }
 
     private double HORIZONAL_CAMERA_OFFSET_IN = 6;
@@ -109,17 +111,23 @@ public class VisionLL implements IVisionSensor {
 
     public void changeLimelightPipeline(LIMELIGHT_PIPELINE pipeline) {
         switch(pipeline){
-            case RIGHT:
+            case LEFT:
                 NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(0);
                 break;
             case CENTER:
                 NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(1);
                 break;
-            case LEFT:
+            case RIGHT:
                 NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(2);
                 break;
-            case CENTER_PNP:
+            case LEFT_PNP:
                 NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(3);
+                break;
+            case CENTER_PNP:
+                NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(4);
+                break;
+            case RIGHT_PNP:
+                NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(5);
                 break;
         }
     }

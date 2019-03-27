@@ -7,8 +7,12 @@ import frc.robot.auton.pathfollowing.control.Path;
 import frc.robot.commands.auton.RunMotionProfileCommand;
 import frc.robot.commands.auton.adaptivePaths.AutoAcquireHatch;
 import frc.robot.commands.auton.adaptivePaths.AutoPlaceHatch;
+import frc.robot.commands.auton.adaptivePaths.AutoTrackTarget;
+import frc.robot.commands.auton.util.printTimeFromStart;
 import frc.robot.commands.chassis.DriveSetDistance;
 import frc.robot.commands.chassis.TurnInPlace;
+import frc.robot.commands.infeed.AcquireHatch;
+import frc.robot.commands.infeed.TogglePunch;
 import frc.robot.sensors.GyroNavX.SCORING_TARGET;
 import frc.robot.sensors.GyroNavX.SIDE;
 
@@ -19,11 +23,11 @@ public class LDoubleHatchLSideLSide extends CommandGroup {
     public LDoubleHatchLSideLSide() {
         setInterruptible(false);
         addSequential(new LSingleHatchLSide());
-        addSequential(new DriveSetDistance(-5));
         addSequential(new TurnInPlace(-167, true));
         addSequential(new RunMotionProfileCommand(_toFeederStation));
-        addSequential(new AutoAcquireHatch());
-        addSequential(new RunMotionProfileCommand(_awayFromFeeder));
+        addSequential(new AutoTrackTarget());
+        addSequential(new AcquireHatch());
+        addSequential(new printTimeFromStart());
         //addSequential(new TurnInPlace(20, false));
         //quential(new AutoPlaceHatch());
     }

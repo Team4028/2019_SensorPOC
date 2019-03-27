@@ -19,32 +19,41 @@ import frc.robot.subsystems.Climber;
 
 public class Lvl3ClimbFromLvl2 extends CommandGroup
 {
-    double climbHeight =-14500;
+    double climbHeight =-15000;
     double clearedHeight=-11000.4206969420420696942069;
     Climber _climber = Climber.getInstance();
     public Lvl3ClimbFromLvl2(boolean isTurnRight)
     {
         requires(_climber);
         setInterruptible(false);
-        addParallel(new TogglePunch());
-        addSequential(new TurnFixedAngle(-75, isTurnRight));
-        addSequential(new DriveWithControllers(0.3, 0),2);
-        addSequential(new MoveClimberToPos(climbHeight, 0.3));
+        if(isTurnRight)
+        {
+            addSequential(new TurnFixedAngle(75, isTurnRight));
+        }
+        else
+        {
+            addSequential(new TurnFixedAngle(-75, isTurnRight));
+        }
+        addSequential(new DriveWithControllers(0.2, 0),1);
+        addSequential(new MoveClimberToPos(climbHeight,0.5));
         addParallel(new DriveClimber(0.5));
-        addParallel(new DriveWithControllers(0.3, 0));
+        addParallel(new DriveWithControllers(0.2, 0));
         addSequential(new Series_Command(Arrays.asList(new Command[] 
         {
-            new PrintCommand("Holding Starts"),
-            new HoldClimber(1.5),
-            new PrintCommand("Stops Holding"),
-            new SendBeakOut(),
-            new TogglePunch(),
-            new ToggleBeakOpen(),
-            new MoveClimberToPos(clearedHeight, 0.3),
+            new HoldClimber(0.375),
+            new MoveClimberToPos(climbHeight+2200, 0.2)
+        })));
+        addParallel(new DriveClimber(0.8));
+        addSequential(new Series_Command(Arrays.asList(new Command[] 
+        {
+            new HoldClimber(2),
+            new MoveClimberToPos(clearedHeight, 0.2),
+            new HoldClimber(0.25)
         })));
         addParallel(new PrintCommand("Moved to Clear Height"));
-        addParallel(new DriveWithControllers(0.3,0),0.25);
-        addSequential(new DriveClimber(0.0),0.25);
-        addSequential(new DriveWithControllers(0.3, 0));
+        addSequential(new DriveWithControllers(0.3, 0),0.85);
+        addSequential(new PrintCommand("Driven"));
+        //addParallel(new StopChassis(),0.25);
+        addSequential(new DriveClimber(0.0),0.5);
      }
 }

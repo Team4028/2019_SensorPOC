@@ -1,6 +1,7 @@
 package frc.robot.ux;
 
 import frc.robot.RobotMap;
+import frc.robot.commands.auton.StopAuton;
 import frc.robot.commands.auton.adaptivePaths.AutoAcquireHatch;
 import frc.robot.commands.auton.adaptivePaths.AutoPlaceHatch;
 import frc.robot.commands.auton.adaptivePaths.AutonFastPlaceHatch;
@@ -15,6 +16,7 @@ import frc.robot.commands.climber.DriveClimber;
 import frc.robot.commands.climber.HoldClimber;
 import frc.robot.commands.climber.LiftClimber;
 import frc.robot.commands.climber.Lvl2Climb;
+import frc.robot.commands.climber.Lvl3ClimbFromLvl2;
 import frc.robot.commands.elevator.MoveToPresetPosition;
 import frc.robot.commands.infeed.AcquireHatch;
 import frc.robot.commands.infeed.ReleaseInfeed;
@@ -26,6 +28,7 @@ import frc.robot.commands.infeed.ToggleBeakOpen;
 import frc.robot.commands.infeed.TogglePunch;
 import frc.robot.commands.teleop.StorePresetElevatorPosition;
 import frc.robot.commands.vision.ChangeVisionPipeline;
+import frc.robot.commands.vision.TurnOffLEDs;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Elevator.ELEVATOR_TARGET_POSITION;
 import frc.robot.util.BeakXboxController;
@@ -65,8 +68,9 @@ public class OI {
 		_driverController.rt.whileActive(new RunInfeedMotor(_driverController.rt, true));
 		_driverController.rt.whenReleased(new RunInfeedMotor(_driverController.rt, true));
 		
-		_driverController.lb.whileHeld(new EasierBetterVisionThing(_driverController.leftStick, _driverController.rightStick));
+		_driverController.lb.whileHeld(new EasierBetterVisionThing());
 		_driverController.lb.whenReleased(new DriveWithControllers(_driverController.leftStick, _driverController.rightStick));
+		_driverController.lb.whenReleased(new TurnOffLEDs());
 		_driverController.rb.whenPressed(new AutonFastPlaceHatch());
 
 		_driverController.a.whenPressed(new ToggleBeakInOut());
@@ -74,6 +78,7 @@ public class OI {
 		_driverController.x.whenPressed(new ToggleBeakOpen());
 		_driverController.y.whenPressed(new TogglePunch());
 		
+		_driverController.start.whenPressed(new StopAuton());
 		// =========== Operator ======================================
 		_operatorController = new BeakXboxController(RobotMap.OPERATOR_GAMEPAD_USB_PORT);
 		// ==========================================================
@@ -97,7 +102,7 @@ public class OI {
 		//============================================================
 		_engineerController.x.whenPressed(new DoubleClimb(false));
 		_engineerController.b.whenPressed(new DoubleClimb(true));
-		_engineerController.a.whenPressed(new Lvl2Climb());
+		_engineerController.a.whenPressed(new Lvl3ClimbFromLvl2(true));
 	}
 }
 
