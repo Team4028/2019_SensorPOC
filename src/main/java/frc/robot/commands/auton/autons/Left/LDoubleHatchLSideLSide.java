@@ -15,13 +15,14 @@ import frc.robot.commands.infeed.AcquireHatch;
 import frc.robot.commands.infeed.TogglePunch;
 import frc.robot.sensors.GyroNavX.SCORING_TARGET;
 import frc.robot.sensors.GyroNavX.SIDE;
+import frc.robot.subsystems.Chassis;
 
 public class LDoubleHatchLSideLSide extends CommandGroup {
     Path _toFeederStation = Paths.getPath(Left.FROM_FIRST_BAY_TO_FEEDER_STATION);
     Path _toBay = Paths.getPath(Left.FROM_FEEDER_STATION_TO_SECOND_BAY);
     Path _awayFromFeeder = Paths.getPath(Left.AWAY_FROM_FEEDER);
     public LDoubleHatchLSideLSide() {
-        setInterruptible(false);
+        setInterruptible(true);
         addSequential(new LSingleHatchLSide());
         addSequential(new TurnInPlace(-167, true));
         addSequential(new RunMotionProfileCommand(_toFeederStation));
@@ -30,5 +31,9 @@ public class LDoubleHatchLSideLSide extends CommandGroup {
         addSequential(new printTimeFromStart());
         //addSequential(new TurnInPlace(20, false));
         //quential(new AutoPlaceHatch());
+    }
+    @Override
+    protected boolean isFinished() {
+        return super.isFinished() || Chassis.getInstance().getForcedAutonFinish();
     }
 }

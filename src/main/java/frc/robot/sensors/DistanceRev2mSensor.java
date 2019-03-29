@@ -26,6 +26,7 @@ public class DistanceRev2mSensor implements IDistanceSensor {
 	private double _distanceToTargetInInches;
 	private boolean _didTimeoutOccur;
 	private boolean _isSensorPresent;
+	private double offset = 2.75;
 	private final static double MAX_RANGE = 65;
 
 	// =====================================================================================
@@ -83,7 +84,7 @@ public class DistanceRev2mSensor implements IDistanceSensor {
 		if(_distanceToTargetInInches > MAX_RANGE){
 			_distanceToTargetInInches = -1;
 		}
-		return _distanceToTargetInInches;
+		return _distanceToTargetInInches - offset;
 	}
 
 	public boolean get_didTimeoutOccur() {

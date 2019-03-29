@@ -7,7 +7,9 @@ import frc.robot.subsystems.Chassis;
 public class printTimeFromStart extends Command {
     String _printCmd;
 
-    public printTimeFromStart() {}
+    public printTimeFromStart() {
+        setInterruptible(true);
+    }
 
     @Override
     protected void initialize() {

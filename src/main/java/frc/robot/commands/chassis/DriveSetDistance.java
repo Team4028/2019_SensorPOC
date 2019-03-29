@@ -13,7 +13,7 @@ public class DriveSetDistance extends Command
     {
         _inches=inches;
         requires(_chassis);
-        setInterruptible(false);
+        setInterruptible(true);
     }
 
     @Override

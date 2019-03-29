@@ -14,8 +14,7 @@ import frc.robot.subsystems.Chassis;
 public class StopAuton extends Command {
   Chassis _chassis = Chassis.getInstance();
   public StopAuton() {
-    requires(_chassis);
-    setInterruptible(false);
+    setInterruptible(true);
   }
 
   // Called just before this Command runs the first time

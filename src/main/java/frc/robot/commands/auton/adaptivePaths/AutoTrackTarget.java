@@ -17,6 +17,7 @@ public class AutoTrackTarget extends CommandGroup {
    * Add your docs here.
    */
   public AutoTrackTarget() {
+    setInterruptible(true);
     addSequential(new EasierBetterVisionThing());
   }
 }

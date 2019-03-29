@@ -26,15 +26,16 @@ public class Lvl3ClimbFromLvl2 extends CommandGroup
     {
         requires(_climber);
         setInterruptible(false);
-        if(isTurnRight)
-        {
-            addSequential(new TurnFixedAngle(75, isTurnRight));
-        }
-        else
-        {
-            addSequential(new TurnFixedAngle(-75, isTurnRight));
-        }
-        addSequential(new DriveWithControllers(0.2, 0),1);
+        // if(isTurnRight)
+        // {
+        //     addSequential(new TurnFixedAngle(75, isTurnRight));
+        // }
+        // else
+        // {
+        //     addSequential(new TurnFixedAngle(-75, isTurnRight));
+        // }
+        // addSequential(new DriveWithControllers(0.2, 0),1);
+        // addSequential(new TogglePunch());
         addSequential(new MoveClimberToPos(climbHeight,0.5));
         addParallel(new DriveClimber(0.5));
         addParallel(new DriveWithControllers(0.2, 0));
@@ -52,8 +53,9 @@ public class Lvl3ClimbFromLvl2 extends CommandGroup
         })));
         addParallel(new PrintCommand("Moved to Clear Height"));
         addSequential(new DriveWithControllers(0.3, 0),0.85);
+        addSequential(new DriveClimber(0.0),0.5);
+        addSequential(new DriveWithControllers(0.1, 0),10);
         addSequential(new PrintCommand("Driven"));
         //addParallel(new StopChassis(),0.25);
-        addSequential(new DriveClimber(0.0),0.5);
      }
 }

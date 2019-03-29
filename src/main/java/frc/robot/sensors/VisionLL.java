@@ -81,7 +81,7 @@ public class VisionLL implements IVisionSensor {
 
     @Override
     public boolean get_isTargetInFOV() {
-        if (NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0) == 1) {
+        if (NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0) == 1||(Math.sqrt((get_xOffset()*get_xOffset())+(get_yOffset()*get_yOffset()))<15)) {
             return true;
         } else {
             return false;

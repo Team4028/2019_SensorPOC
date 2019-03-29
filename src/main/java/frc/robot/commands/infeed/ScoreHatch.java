@@ -16,7 +16,7 @@ import frc.robot.subsystems.Cargo.PUNCH_POSITION;
 public class ScoreHatch extends Command {
 
   // local working variables
-  private final int SLEEP_TIME_IN_MS = 100;
+  private final int SLEEP_TIME_IN_MS = 0;
   private final int SLEEP_2_TIME_IN_MS = 500;
 
   private long _startTimeInMs = 0;

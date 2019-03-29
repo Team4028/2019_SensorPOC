@@ -9,7 +9,7 @@ public class SendBucketOut extends Command
     Cargo _cargo = Cargo.getInstance();
     public SendBucketOut()
     {
-        setInterruptible(false);
+        setInterruptible(true);
     }
     @Override
     protected void initialize() {

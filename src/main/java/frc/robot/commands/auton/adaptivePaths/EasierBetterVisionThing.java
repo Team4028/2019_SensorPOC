@@ -51,6 +51,7 @@ public class EasierBetterVisionThing extends Command {
   boolean hasInPlacedTurned;
   double kMinInPlaceVBUS = 0;
   double currentTime;
+  double prevTurnCmd;
 
   public EasierBetterVisionThing() 
   {
@@ -75,10 +76,10 @@ public class EasierBetterVisionThing extends Command {
     speedAdjustment=2;
     kFindTargetTurnVBus = .3;
     isA2Small=false;
-    kPAngleOneSmall=0.0025;
+    kPAngleOneSmall=0.002;
     kIAngleOneSmall=0;
-    kDAngleOneSmall=0.04;
-    kPAngleOneLarge = .002;
+    kDAngleOneSmall=0.09;
+    kPAngleOneLarge = .008;
     kIAngleOneLarge = 0;
     kDAngleOneLarge = .02;
     kP = kPAngleOneSmall;
@@ -88,9 +89,10 @@ public class EasierBetterVisionThing extends Command {
     kForwardVBus = .35;
     isInPlaceTurn = false;
     hasInPlacedTurned = false;
-    inPlaceTurnKp = .01;
-    inPlaceTurnKd = .07;
+    inPlaceTurnKp = .03;
+    inPlaceTurnKd = .105;
     kInPlaceTurnDeadband = 6;
+    prevTurnCmd=0;
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -165,7 +167,7 @@ public class EasierBetterVisionThing extends Command {
       kD = inPlaceTurnKd;
     }
 
-    //error-=4;
+    error+=3;
     if(Math.abs(error)>15)
     {
         error=Math.copySign(15, error);
@@ -219,6 +221,7 @@ public class EasierBetterVisionThing extends Command {
             if(Timer.getFPGATimestamp()-currentTime>0.5)
             {
               _chassis.arcadeDrive(kForwardVBus, turnCmd);
+              prevTurnCmd=turnCmd;
             }
             else
             {
@@ -236,7 +239,7 @@ public class EasierBetterVisionThing extends Command {
         {
           if(isA2Small)
           {
-            _chassis.stop();
+            _chassis.arcadeDrive(kForwardVBus, 0);
             // double avgAngleOne=0;
             // for (int i = 0; i < 10; i++)
             // {
@@ -271,7 +274,7 @@ public class EasierBetterVisionThing extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return (forcedFinish || _ds.get_distanceToTargetInInches()<19 && _ds.get_distanceToTargetInInches()>0) && hasInPlacedTurned && (!_limelight.get_isTargetInFOV());
+    return (forcedFinish || _ds.get_distanceToTargetInInches()<25 && _ds.get_distanceToTargetInInches()>0) && hasInPlacedTurned;
   }
 
   // Called once after isFinished returns true

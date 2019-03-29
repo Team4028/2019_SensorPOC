@@ -159,8 +159,8 @@ public class Paths {
 			new Waypoint(115,120,0,50),
 			new Waypoint(180,120, 40, 80),
 			new Waypoint(210,93,0,90),
-			new Waypoint(272,36,13,70),
-			new Waypoint(290,43,0,40)
+			new Waypoint(272,40,13,70),
+			new Waypoint(290,50,0,40)
 		));
 		_toBackRocketL.setIsReversed(true);
 		leftPaths.put(Left.BACK_ROCKET, _toBackRocketL);

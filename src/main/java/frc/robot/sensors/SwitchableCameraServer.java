@@ -30,12 +30,12 @@ public class SwitchableCameraServer {
 
     public void switchCamera() {
         if(_currentCameraIndex == 0) {
-            //_currentCameraIndex = 1; //Uncomment to Add Second Operator camera
+            _currentCameraIndex = 1; //Uncomment to Add Second Operator camera
             _currentCameraAddress = RobotMap.RASPBERRY_PI_CAMERA_1_ADDRESS;
         }
         else if (_currentCameraIndex == 1) {
             _currentCameraIndex = 0;
-            _currentCameraAddress = RobotMap.RASPBERRY_PI_CAMERA_2_ADDRESS;            
+            _currentCameraAddress = RobotMap.LIMELIGHT_CAMERA_ADDRESS;            
         } else {
             DriverStation.reportWarning("Camera Index Out of Range", false);
             _currentCameraIndex = 0;
@@ -46,6 +46,10 @@ public class SwitchableCameraServer {
 
     public void displayLimelight() {
         _currentCameraAddress = RobotMap.LIMELIGHT_CAMERA_ADDRESS;
+    }
+
+    public void displayPi() {
+        _currentCameraAddress = RobotMap.RASPBERRY_PI_CAMERA_1_ADDRESS;
     }
     
     //=====================================================================================

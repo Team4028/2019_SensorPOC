@@ -5,31 +5,28 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.infeed;
+package frc.robot.commands.camera;
 
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.subsystems.Cargo;
+import frc.robot.sensors.SwitchableCameraServer;
 
-public class SendBucketIn extends Command {
-  Cargo _cargo = Cargo.getInstance();
-  public SendBucketIn() {
+public class ChangeToPi extends Command {
+  private SwitchableCameraServer _camera = SwitchableCameraServer.getInstance();
+
+  public ChangeToPi() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
-    setInterruptible(true);
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    if(_cargo.get_isBucketExtended())
-    {
-      _cargo.toggleBucket();
-    }
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
+    _camera.displayPi();
   }
 
   // Make this return true when this Command no longer needs to run execute()

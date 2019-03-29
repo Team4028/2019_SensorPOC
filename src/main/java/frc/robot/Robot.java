@@ -28,18 +28,15 @@ import frc.robot.sensors.VisionLL;
 import frc.robot.sensors.VisionLL.LIMELIGHT_PIPELINE;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
-//import frc.robot.commands.elevator.ZeroElevatorEncoder;
 import frc.robot.sensors.AirCompressor;
 import frc.robot.sensors.DistanceRev2mSensor;
 import frc.robot.sensors.StoredPressureSensor;
 import frc.robot.sensors.SwitchableCameraServer;
-//import frc.robot.subsystems.Cargo;
 import frc.robot.subsystems.Cargo;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Chassis.ChassisState;
-//import frc.robot.subsystems.Elevator;
 import frc.robot.util.DataLogger;
 import frc.robot.util.GeneralUtilities;
 import frc.robot.util.LogDataBE;
@@ -113,6 +110,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    // CommandGroup startAcquireHatch = new StartAcquireHatch();
+    // startAcquireHatch.start();
     Paths.havePathsBuilt=false;
     Paths.buildPaths();
     _chassis.initiateRobotState();
@@ -130,7 +129,6 @@ public class Robot extends TimedRobot {
     }
     hasAutonBeenScheduled=false;
     hasClimberZeroed=false;
-
   }
 
   /**
@@ -202,7 +200,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     Scheduler.getInstance().run();  
-    _vision.turnOnLEDs();
+    // _vision.turnOnLEDs();
     // Command drive = new DriveWithControllers(0.7, 0);
     // drive.start();
     //_chassis.updateChassis(Timer.getFPGATimestamp());

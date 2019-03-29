@@ -22,10 +22,10 @@ public class LDoubleHatchRocketL extends CommandGroup
     Path _toFeederStation = Paths.getPath(Left.TO_FEEDER_STATION_FROM_ROCKET);
     public LDoubleHatchRocketL()
     {
+        setInterruptible(true);
         addSequential(new LSingleHatchBackRocketL());
         addParallel(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.HOME));
         addSequential(new RunMotionProfileCommand(_awayFromRocket));
-        addSequential(new SendBucketOut());
         addSequential(new RunMotionProfileCommand(_toFeederStation));
         addSequential(new AutoTrackTarget());
         addSequential(new AcquireHatch());
@@ -34,5 +34,13 @@ public class LDoubleHatchRocketL extends CommandGroup
     @Override
     protected boolean isFinished() {
         return super.isFinished()|| _chassis.getForcedAutonFinish();
+    }
+    @Override
+    protected void end() {
+        _chassis.stop();
+    }
+    @Override
+    protected void interrupted() {
+        _chassis.stop();
     }
 }

@@ -30,20 +30,19 @@ public class LSingleHatchBackRocketL extends CommandGroup
     
     public LSingleHatchBackRocketL()
     {
-        setInterruptible(false);
+        setInterruptible(true);
         addParallel(new ChoosePipeline(LIMELIGHT_PIPELINE.RIGHT_PNP));
         addParallel(new StartAcquireHatch());
         addSequential(new ReverseNavX(true));
         addSequential(new RunMotionProfileCommand(_toBackRocket));
         addSequential(new AutoTrackTarget(),4);
-        addSequential(new DriveSetDistance(-3),0.5);
         addSequential(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.LEVEL_3));
-        addSequential(new SendBucketOut());
+        addParallel(new SendBucketOut());
+        addSequential(new DriveSetDistance(10),0.5);
         addSequential(new ToggleBeakOpenClose());
         addSequential(new TogglePunch());
         addSequential(new WaitCommand(1));
         addSequential(new TogglePunch());
-        addSequential(new SendBucketIn());
         addSequential(new DriveSetDistance(-5));
 
     }

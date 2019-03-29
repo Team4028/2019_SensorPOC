@@ -7,6 +7,8 @@ import frc.robot.commands.auton.adaptivePaths.AutoPlaceHatch;
 import frc.robot.commands.auton.adaptivePaths.AutonFastPlaceHatch;
 import frc.robot.commands.auton.adaptivePaths.BetterVisionPath;
 import frc.robot.commands.auton.adaptivePaths.EasierBetterVisionThing;
+import frc.robot.commands.camera.ChangeToLimelight;
+import frc.robot.commands.camera.ChangeToPi;
 import frc.robot.commands.camera.SwitchCamera;
 import frc.robot.commands.chassis.DriveWithControllers;
 import frc.robot.commands.chassis.StopChassis;
@@ -80,27 +82,27 @@ public class OI {
 		
 		_driverController.start.whenPressed(new StopAuton());
 		// =========== Operator ======================================
-		_operatorController = new BeakXboxController(RobotMap.OPERATOR_GAMEPAD_USB_PORT);
-		// ==========================================================
-		_operatorController.leftStick.whileActive(new RunInfeedMotor(_operatorController.leftStick));
-		_operatorController.rb.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.HOME, _operatorController.rt));
-		_operatorController.x.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.LEVEL_1, _operatorController.rt));
-		_operatorController.b.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.LEVEL_2, _operatorController.rt));
-		_operatorController.y.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.LEVEL_3, _operatorController.rt));
-		_operatorController.lb.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.CARGO_ACQUIRE, _operatorController.rt));
-		_operatorController.a.whenPressed(new AutoPlaceHatch(_operatorController.rt));
+		// _operatorController = new BeakXboxController(RobotMap.OPERATOR_GAMEPAD_USB_PORT);
+		// // ==========================================================
+		// _operatorController.leftStick.whileActive(new RunInfeedMotor(_operatorController.leftStick));
+		// _operatorController.rb.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.HOME, _operatorController.rt));
+		// _operatorController.x.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.LEVEL_1, _operatorController.rt));
+		// _operatorController.b.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.LEVEL_2, _operatorController.rt));
+		// _operatorController.y.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.LEVEL_3, _operatorController.rt));
+		// _operatorController.lb.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.CARGO_ACQUIRE, _operatorController.rt));
+		// _operatorController.a.whenPressed(new AutoPlaceHatch(_operatorController.rt));
 
-		_operatorController.rt.whileActive(new ChangeVisionPipeline(_operatorController.dPad.up, _operatorController.dPad.upRight, _operatorController.dPad.upLeft, _operatorController.rt));
-		_operatorController.rt.whenReleased(new ChangeVisionPipeline(_operatorController.dPad.up, _operatorController.dPad.upRight, _operatorController.dPad.upLeft, _operatorController.rt));
+		// _operatorController.rt.whileActive(new ChangeVisionPipeline(_operatorController.dPad.up, _operatorController.dPad.upRight, _operatorController.dPad.upLeft, _operatorController.rt));
+		// _operatorController.rt.whenReleased(new ChangeVisionPipeline(_operatorController.dPad.up, _operatorController.dPad.upRight, _operatorController.dPad.upLeft, _operatorController.rt));
 
-		_operatorController.rt.whileActive(new StorePresetElevatorPosition(_operatorController.b, _operatorController.x, _operatorController.y,_operatorController.rb));
-		_operatorController.back.whenPressed(new ClimbSequence());
-		_operatorController.start.whenPressed(new SwitchCamera());
+		// _operatorController.rt.whileActive(new StorePresetElevatorPosition(_operatorController.b, _operatorController.x, _operatorController.y,_operatorController.rb));
+		// _operatorController.back.whenPressed(new ClimbSequence());
+		// _operatorController.start.whenPressed(new SwitchCamera());
 
 		//=========== Engineer ======================================
 		_engineerController = new BeakXboxController(RobotMap.ENGINEERING_GAMEPAD_USB_PORT);
 		//============================================================
-		_engineerController.x.whenPressed(new DoubleClimb(false));
+		_engineerController.x.whenPressed(new Lvl3ClimbFromLvl2(false));
 		_engineerController.b.whenPressed(new DoubleClimb(true));
 		_engineerController.a.whenPressed(new Lvl3ClimbFromLvl2(true));
 	}

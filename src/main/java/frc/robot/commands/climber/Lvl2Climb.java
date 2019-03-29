@@ -27,8 +27,8 @@ public class Lvl2Climb extends CommandGroup
         setInterruptible(false);
         //addParallel(new DriveClimber(0.2));
         addSequential(new MoveClimberToPos(climbHeight,0.5));
-        addParallel(new DriveClimber(0.5));
-        addParallel(new DriveWithControllers(0.2, 0));
+        addParallel(new DriveClimber(0.5),5);
+        addParallel(new DriveWithControllers(0.2, 0),5);
         addSequential(new Series_Command(Arrays.asList(new Command[] 
         {
             new HoldClimber(0.375),

@@ -13,7 +13,7 @@ public class RunMotionProfileCommand extends Command {
     private double _startTime;
 
     public RunMotionProfileCommand(Path p) {
-        setInterruptible(false);
+        setInterruptible(true);
         requires(_chassis);
         _path = p;
     }
