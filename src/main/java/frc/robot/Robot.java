@@ -110,8 +110,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    // CommandGroup startAcquireHatch = new StartAcquireHatch();
-    // startAcquireHatch.start();
+    CommandGroup startAcquireHatch = new StartAcquireHatch();
+    startAcquireHatch.start();
     Paths.havePathsBuilt=false;
     Paths.buildPaths();
     _chassis.initiateRobotState();
