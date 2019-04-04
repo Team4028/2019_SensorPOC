@@ -27,14 +27,14 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
   // =================================================================================================================
   // define class level working variables
   VictorSPX _infeedMtr;
-  private DoubleSolenoid _beakInOutSolenoid;
-  private DoubleSolenoid _punchSolenoid;
   private DoubleSolenoid _beakOpenCloseSolenoid;
+  private DoubleSolenoid _punchSolenoid;
+  private DoubleSolenoid _beakInOutSolenoid;
   private DoubleSolenoid _bucketSolenoid;
   private Servo _infeedServo;
-  private DigitalInput _hatchAcquiredLimitSwitch;
-  private static final Value BEAK_OUT = DoubleSolenoid.Value.kForward;
-  private static final Value BEAK_IN = DoubleSolenoid.Value.kReverse;
+  private DigitalInput _hatchLimitSwitch;
+  private static final Value MECHANISM_EXTENDED = DoubleSolenoid.Value.kForward;
+  private static final Value MECHANISM_RETRACTED = DoubleSolenoid.Value.kReverse;
   private static final Value BEAK_OPEN = DoubleSolenoid.Value.kForward;
   private static final Value BEAK_CLOSE = DoubleSolenoid.Value.kReverse;
   private static final Value PUNCH_IN = DoubleSolenoid.Value.kForward;
@@ -55,6 +55,7 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
     UNDEFINED,
     OUT,
     IN
+
   }
 
   public enum BEAK_INOUT_POSITION {
@@ -85,27 +86,26 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
     _infeedMtr.configForwardLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.Disabled);
 
     //Hatch Solenoids
-    _beakOpenCloseSolenoid = new DoubleSolenoid(RobotMap.PCM_FORWARD_BEAK_OPENCLOSE_SOLENOID_PORT, RobotMap.PCM_REVERSE_BEAK_OPENCLOSE_SOLENOID_PORT);
+    _beakOpenCloseSolenoid = new DoubleSolenoid(RobotMap.PCM_FORWARD_BEAK_SOLENOID_PORT,RobotMap.PCM_REVERSE_BEAK_SOLENOID_PORT);
     _punchSolenoid = new DoubleSolenoid(RobotMap.PCM_FORWARD_PUNCH_SOLENOID_PORT, RobotMap.PCM_REVERSE_PUNCH_SOLENOID_PORT);
     _beakInOutSolenoid = new DoubleSolenoid(RobotMap.PCM_REVERSE_INOUT_SOLENOID_PORT, RobotMap.PCM_FORWARD_INOUT_SOLENOID_PORT);
-    _bucketSolenoid = new DoubleSolenoid(RobotMap.PCM_FORWARD_BUCKET_SOLENOID_PORT,RobotMap.PCM_REVERSE_BUCKET_SOLENOID_PORT);
-    _hatchAcquiredLimitSwitch = new DigitalInput(RobotMap.CARGO_LIMIT_SWITCH);
-    
+    _bucketSolenoid = new DoubleSolenoid(RobotMap.PCM_FORWARD_BUCKET_SOLENOID_PORT, RobotMap.PCM_REVERSE_BUCKET_SOLENOID_PORT);
+
+    //Hatch Limit Switch
+    _hatchLimitSwitch = new DigitalInput(RobotMap.CARGO_LIMIT_SWITCH_DIO_PORT);
 
     setCargoDefultPosition();
   }
   
   public void setMotorSpeed (double driveSpeed) {
-    if (get_isHatchAquired() == true)
-    {
       double Speed = (.7 * driveSpeed);
-    _infeedMtr.set(ControlMode.PercentOutput, Speed);;
-    }
+    _infeedMtr.set(ControlMode.PercentOutput, Speed);
+    
   } 
 
   public void setCargoDefultPosition() {
     _beakOpenCloseSolenoid.set(BEAK_CLOSE);
-    _beakInOutSolenoid.set(BEAK_OUT);
+    _beakInOutSolenoid.set(MECHANISM_RETRACTED);
     _punchSolenoid.set(PUNCH_IN);
     _bucketSolenoid.set(BUCKET_RETRACTED);
   }
@@ -124,14 +124,10 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
     Value currentPunchPos = _punchSolenoid.get();
     
     if (desiredBeakPosition == BEAK_OPENCLOSE_POSITION.CLOSED) {
-          _beakInOutSolenoid.set(BEAK_CLOSE);
+          _beakOpenCloseSolenoid.set(BEAK_CLOSE);
     }
     else if (desiredBeakPosition == BEAK_OPENCLOSE_POSITION.OPEN) {
-      if(currentPunchPos == PUNCH_IN && currentBeakInOutPos == BEAK_OUT) {
-          _beakOpenCloseSolenoid.set(BEAK_OPEN);
-      } else {
-        DriverStation.reportWarning("BEAK SAFETY INTERLOCK U SUC", false);
-      }
+      _beakOpenCloseSolenoid.set(BEAK_OPEN);
     }
   }
 
@@ -144,7 +140,7 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
       
     } 
     else if (punchPosition == PUNCH_POSITION.OUT) {
-      if(currentBeakOpenClosePos == BEAK_CLOSE && currentBeakInOutPos == BEAK_OUT) {
+      if(currentBeakOpenClosePos == BEAK_CLOSE && currentBeakInOutPos == BEAK_OPEN) {
         _punchSolenoid.set(PUNCH_OUT);
       } else {
         DriverStation.reportWarning("PUNCH SAFETY INTERLOCK U SUC", false);
@@ -155,13 +151,13 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
   public void setBeakInOut(BEAK_INOUT_POSITION beakInOutPosition) {
     Value currentBeakPos = _beakOpenCloseSolenoid.get();
     if (beakInOutPosition == BEAK_INOUT_POSITION.EXTENDED) {
-      _beakInOutSolenoid.set(BEAK_OUT);
+      _beakInOutSolenoid.set(MECHANISM_EXTENDED);
     
     } 
     else if (beakInOutPosition == BEAK_INOUT_POSITION.RETRACTED) {
       if(currentBeakPos== BEAK_CLOSE) 
       {
-           _beakInOutSolenoid.set(BEAK_IN);
+           _beakInOutSolenoid.set(MECHANISM_RETRACTED);
         } else {
           DriverStation.reportWarning("MECHANISM SAFETY INTERLOCK U SUC", false);
         }
@@ -183,7 +179,7 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
   // =====================================
   public void toggleBeakInOut() {
     Value currentBeakInOutPos = _beakInOutSolenoid.get();
-    if (currentBeakInOutPos == BEAK_OUT) {
+    if (currentBeakInOutPos == MECHANISM_RETRACTED) {
       setBeakInOut(BEAK_INOUT_POSITION.EXTENDED);
     } else {
       setBeakInOut(BEAK_INOUT_POSITION.RETRACTED);
@@ -257,7 +253,7 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
 
   public boolean get_isBeakOut() {
     
-    if(_beakInOutSolenoid.get() == BEAK_OUT){
+    if(_beakInOutSolenoid.get() == BEAK_OPEN){
       return true;
     } else {
       return false;
@@ -265,7 +261,6 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
   }
 
   public boolean get_isBucketExtended() {
-    
     if(_bucketSolenoid.get() == BUCKET_EXTENDED){
 
       return true;
@@ -276,7 +271,11 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
   
   public boolean get_isHatchAquired()
   {
-    return _hatchAcquiredLimitSwitch.get();
+    return !_hatchLimitSwitch.get();
+  }
+
+  public boolean get_HasHatch() {
+    return !_hatchLimitSwitch.get();
   }
 
   // ===============================================================================================================
@@ -297,6 +296,6 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
     SmartDashboard.putBoolean("Cargo:IsBeakOut", get_isBeakOut());
     SmartDashboard.putBoolean("Cargo:IsBeakOpen", get_isBeakOpen());
     SmartDashboard.putBoolean("Cargo:IsPunchOut", get_isPunchOut());
-    
+    SmartDashboard.putBoolean("Cargo:HasHatch", get_HasHatch());
   }
 }

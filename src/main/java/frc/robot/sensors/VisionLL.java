@@ -19,8 +19,16 @@ import frc.robot.util.LogDataBE;
  */
 public class VisionLL implements IVisionSensor {
 
+    public enum LIMELIGHT_PIPELINE {
+        RIGHT,
+        CENTER,
+        LEFT,
+        CENTER_PNP;
+    }
+
     private double HORIZONAL_CAMERA_OFFSET_IN = 6;
     private double VERTICAL_CAMERA_OFFSET_IN = 15;
+    private boolean _isInVisionMode = false;
 
     private GyroNavX _navX = GyroNavX.getInstance();
     // =====================================================================================
@@ -34,11 +42,20 @@ public class VisionLL implements IVisionSensor {
 
     // private constructor for singleton pattern
     private VisionLL() {
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(1);
     }
 
     @Override
     public double get_angle1InDegrees() {
         return Math.round(NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0));
+    }
+
+    public double getTheta(){
+        return NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
+    }
+
+    public double getPhi(){
+        return NetworkTableInstance.getDefault().getTable("limelight").getEntry("tz").getDouble(0);
     }
 
     @Override
@@ -62,11 +79,42 @@ public class VisionLL implements IVisionSensor {
         }
     }
 
+    public double get_xOffset() {
+        double[] defaultValue = new double[6];
+        double[] camtran = NetworkTableInstance.getDefault().getTable("limelight").getEntry("camtran").getDoubleArray(defaultValue);
+        double xOffset = camtran[0];
+        return xOffset;
+    }
+
+    public double get_yOffset() {
+        double[] defaultValue = new double[6];
+        double[] camtran = NetworkTableInstance.getDefault().getTable("limelight").getEntry("camtran").getDoubleArray(defaultValue);
+        double yOffset = camtran[2];
+        return yOffset;
+    }
+
     public double get_revisedDistance(){
         double actualDistance = Math.sqrt(Math.pow(get_distanceToTargetInInches(), 2)
         // - Math.pow(HORIZONAL_CAMERA_OFFSET_IN/Math.cos(Math.abs(_navX.)), 2)
          - Math.pow(VERTICAL_CAMERA_OFFSET_IN, 2));
         return actualDistance;
+    }
+
+    public void changeLimelightPipeline(LIMELIGHT_PIPELINE pipeline) {
+        switch(pipeline){
+            case RIGHT:
+                NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(0);
+                break;
+            case CENTER:
+                NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(1);
+                break;
+            case LEFT:
+                NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(2);
+                break;
+            case CENTER_PNP:
+                NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(3);
+                break;
+        }
     }
 
     public void turnOffLimelightLEDs() {
@@ -77,19 +125,49 @@ public class VisionLL implements IVisionSensor {
         NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(3);
     }
 
+    public boolean isInVisionMode() {
+        return _isInVisionMode;
+    }
+
+    public void setIsInVisionMode(boolean isInVisionMode){
+        _isInVisionMode = isInVisionMode;
+        if(isInVisionMode){
+            turnOnLimelightLEDs();
+        } else {
+            turnOffLimelightLEDs();
+        }
+    }
+    public double getTrueDistance()
+    {
+        if(DistanceRev2mSensor.getInstance().get_distanceToTargetInInches()>0)
+        {
+            return DistanceRev2mSensor.getInstance().get_distanceToTargetInInches();
+        }
+        else if(this.get_isTargetInFOV())
+        {
+            return get_revisedDistance();
+        }
+        else 
+        {
+            return Double.NaN;
+        }
+    }
+
     //=====================================================================================
 	// Helper Methods
 	//=====================================================================================  
-	
-    public void updateLogData(LogDataBE logData) {
+    
+    @Override
+    public void updateLogData(LogDataBE logData) {}
 
-    }
-
+    @Override
     public void updateDashboard() {
+        SmartDashboard.putNumber("Distance to Target Inches", getTrueDistance());
         SmartDashboard.putString("Vision:CameraType", "Limelight");
         SmartDashboard.putBoolean("Vision:IsTargetInFOV", get_isTargetInFOV());
         SmartDashboard.putNumber("Vision:Angle1InDegrees", get_angle1InDegrees());
         SmartDashboard.putNumber("Vision:DistanceInInches", get_distanceToTargetInInches());
         SmartDashboard.putNumber("Vision:ActualDistance", get_revisedDistance());
+        SmartDashboard.putNumber("Vision:XOffset", get_xOffset());
     }
 }
