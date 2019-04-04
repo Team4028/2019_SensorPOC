@@ -26,19 +26,19 @@ public class StorePresetElevatorPosition extends Command
     protected void execute() {
         if(_x.get())
         {
-            _elevator.setTargetPosition(ELEVATOR_TARGET_POSITION.LEVEL_1, _cargo.get_HasHatch()); 
+            _elevator.setTargetPosition(ELEVATOR_TARGET_POSITION.LEVEL_1, _cargo.get_isBeakOpen()); 
         }
         else if(_b.get())
         {
-            _elevator.setTargetPosition(ELEVATOR_TARGET_POSITION.LEVEL_2, _cargo.get_HasHatch()); 
+            _elevator.setTargetPosition(ELEVATOR_TARGET_POSITION.LEVEL_2, _cargo.get_isBeakOpen()); 
         }
         else if(_y.get())
         {
-            _elevator.setTargetPosition(ELEVATOR_TARGET_POSITION.LEVEL_3, _cargo.get_HasHatch()); 
+            _elevator.setTargetPosition(ELEVATOR_TARGET_POSITION.LEVEL_3, _cargo.get_isBeakOpen()); 
         }
         else if(_rb.get())
         {
-            _elevator.setTargetPosition(ELEVATOR_TARGET_POSITION.HOME, _cargo.get_HasHatch());
+            _elevator.setTargetPosition(ELEVATOR_TARGET_POSITION.HOME, _cargo.get_isBeakOpen());
         }              
     }
     @Override

@@ -20,7 +20,7 @@ public class MovetoStoredPosition extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    _elevator.setTargetPosition(_elevator.getStoredTargetPosition(), _cargo.get_HasHatch());
+    _elevator.setTargetPosition(_elevator.getStoredTargetPosition(), _cargo.get_isBeakOpen());
   }
 
   // Called repeatedly when this Command is scheduled to run
