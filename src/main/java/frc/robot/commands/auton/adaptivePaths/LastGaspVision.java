@@ -7,20 +7,28 @@
 
 package frc.robot.commands.auton.adaptivePaths;
 
-import javax.lang.model.util.ElementScanner6;
+
+
+import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.sensors.DistanceRev2mSensor;
 import frc.robot.sensors.VisionLL;
 import frc.robot.subsystems.Chassis;
+import frc.robot.util.GeneralUtilities;
 
 public class LastGaspVision extends Command 
 {
   Chassis _chassis = Chassis.getInstance();
   VisionLL _limelight = VisionLL.getInstance();
   DistanceRev2mSensor _ds = DistanceRev2mSensor.getInstance();
-  public double kPDXFIX = 0;
-  public double kPAFIX = 0;
+  public double kPDXFIX = 0.005;
+  public double kPAFIX = 0.004;
+  public double kLowPassFilterCurrentValueWeight = .5;
+  public double previousTurnCmd = 0.;
+  public boolean isFirstCycle = false;
+  public double rawTurnCmd;
+  public double fwdVBus=0.25;
 
   public enum AUTO_SCORE_STATE
   {
@@ -40,15 +48,24 @@ public class LastGaspVision extends Command
   protected void initialize() 
   {
     state = AUTO_SCORE_STATE.UNDEFINED;
+    _limelight.turnOnLEDs();
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() 
   {
-    double dx = _limelight.get_xOffset()+7;
-    double a1 = _limelight.getTheta();
-    if(Math.abs(dx) > 5)
+    double dx = _limelight.get_xOffset()+6;
+    System.out.print("DX: "+GeneralUtilities.roundDouble(dx, 3));
+    double a1 = _limelight.getTheta()-3.25;
+    System.out.println(" A1: "+GeneralUtilities.roundDouble(a1, 3));
+
+
+    if(dx==7)
+    {
+      state=AUTO_SCORE_STATE.UNDEFINED;
+    }
+    else if(Math.abs(dx) > 15)
     {
       state = AUTO_SCORE_STATE.DXFIX;
     }
@@ -61,40 +78,48 @@ public class LastGaspVision extends Command
       state = AUTO_SCORE_STATE.UNDEFINED;
     }
 
-    double turnCmd;
+    double turnCmd=0;
 
-    switch(state)
-    {
-      case UNDEFINED:
-        break;
-      
-      case DXFIX:
-        /*
-        Do something to make the turn command reduce dx
-        have a a1 cap
-        if a1 exceeds the cap, turn the a1 down 
-        */
-        if(Math.abs(a1)<10)
-        {
-          turnCmd = kPDXFIX*dx;
-        }
-        else
-        {
-          turnCmd = kPAFIX*a1;
-        }
-        _chassis.arcadeDrive(0.2, turnCmd);
-      case A1FIX:
-        //Turn Down A1
-        turnCmd = kPAFIX*a1;
-        _chassis.arcadeDrive(0.2, turnCmd);
-        break;
-    }
+
+      switch(state)
+      {
+        case UNDEFINED:
+        applyLowPassFilter(0);
+        _chassis.stop();
+          break;
+        
+        case DXFIX:
+          /*
+          Do something to make the turn command reduce dx
+          have a a1 cap
+          if a1 exceeds the cap, turn the a1 down 
+          */
+          if(Math.abs(a1)<20)
+          {
+            rawTurnCmd = -kPDXFIX*dx;
+            turnCmd = applyLowPassFilter(rawTurnCmd);
+            _chassis.setLeftRightCommand(ControlMode.PercentOutput,fwdVBus+turnCmd,fwdVBus-turnCmd);
+          }
+          else
+          {
+            rawTurnCmd = kPAFIX*a1;
+            turnCmd = applyLowPassFilter(rawTurnCmd);
+            _chassis.setLeftRightCommand(ControlMode.PercentOutput,fwdVBus+turnCmd,fwdVBus-turnCmd);
+          }
+          break;
+        case A1FIX:
+          //Turn Down A1
+          rawTurnCmd = kPAFIX*a1;
+          turnCmd = applyLowPassFilter(rawTurnCmd);
+          _chassis.setLeftRightCommand(ControlMode.PercentOutput,fwdVBus+turnCmd, fwdVBus-turnCmd);
+          break;
+      }
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return ((_ds.get_distanceToTargetInInches()>25) && (_ds.get_distanceToTargetInInches()>0))|| (!_limelight.get_isPingable());
+    return ((_ds.get_distanceToTargetInInches()>25) && (_ds.get_distanceToTargetInInches()>0))|| (!_limelight.get_isPingable())|| !_limelight.get_isTargetInFOV();
   }
 
   // Called once after isFinished returns true
@@ -107,7 +132,22 @@ public class LastGaspVision extends Command
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
+    _limelight.turnOffLEDs();
     _chassis.stop();
+  }
+
+  public double applyLowPassFilter(double newTurnCmd){
+    double newerTurnCmd;
+    if (! isFirstCycle){
+      newerTurnCmd = kLowPassFilterCurrentValueWeight * newTurnCmd + (1 - kLowPassFilterCurrentValueWeight) * previousTurnCmd;
+      previousTurnCmd = newerTurnCmd;
+      return newerTurnCmd;
+    } else {
+      isFirstCycle = true;
+      previousTurnCmd = newTurnCmd;
+      newerTurnCmd = newTurnCmd;
+    }
+    return newerTurnCmd;
   }
 
 
