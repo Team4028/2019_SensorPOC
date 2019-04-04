@@ -268,15 +268,6 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
       return false;
     }
   }
-  
-  public boolean get_isHatchAquired()
-  {
-    return !_hatchLimitSwitch.get();
-  }
-
-  public boolean get_HasHatch() {
-    return !_hatchLimitSwitch.get();
-  }
 
   // ===============================================================================================================
 	// Default Command
@@ -296,6 +287,5 @@ public class Cargo extends Subsystem implements IBeakSquadSubsystem {
     SmartDashboard.putBoolean("Cargo:IsBeakOut", get_isBeakOut());
     SmartDashboard.putBoolean("Cargo:IsBeakOpen", get_isBeakOpen());
     SmartDashboard.putBoolean("Cargo:IsPunchOut", get_isPunchOut());
-    SmartDashboard.putBoolean("Cargo:HasHatch", get_HasHatch());
   }
 }
