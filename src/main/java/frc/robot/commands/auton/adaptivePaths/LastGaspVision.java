@@ -12,6 +12,7 @@ package frc.robot.commands.auton.adaptivePaths;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import edu.wpi.first.wpilibj.command.Command;
+import frc.robot.Constants;
 import frc.robot.sensors.DistanceRev2mSensor;
 import frc.robot.sensors.VisionLL;
 import frc.robot.subsystems.Chassis;
@@ -23,13 +24,15 @@ public class LastGaspVision extends Command
   VisionLL _limelight = VisionLL.getInstance();
   DistanceRev2mSensor _ds = DistanceRev2mSensor.getInstance();
   public double kPDXFIX = 0.005;
-  public double kPAFIX = 0.004;
+  public double kPAFIX = 0.003;
   public double kLowPassFilterCurrentValueWeight = .5;
   public double previousTurnCmd = 0.;
   public boolean isFirstCycle = false;
   public double rawTurnCmd;
-  public double fwdVBus=0.25;
-
+  public double leftFwdVBus=0.25;
+  public double rightFwdVBusCmd = 0.28;
+  public double kAngleOneLimt = 15;
+  public double kDXLimit = Constants.BIG_NUMBER;
   public enum AUTO_SCORE_STATE
   {
     UNDEFINED,
@@ -55,13 +58,14 @@ public class LastGaspVision extends Command
   @Override
   protected void execute() 
   {
-    double dx = _limelight.get_xOffset()+6;
-    System.out.print("DX: "+GeneralUtilities.roundDouble(dx, 3));
-    double a1 = _limelight.getTheta()-3.25;
+    double a1 = _limelight.getTheta()-2;
+    double a2 = Math.atan2(_limelight.get_xOffset()+6, _limelight.get_yOffset()-20);
     System.out.println(" A1: "+GeneralUtilities.roundDouble(a1, 3));
+    double dx = _limelight.get_xOffset()+6*Math.abs(Math.cos(Math.PI/180*a1+a2));
+    System.out.print("DX: "+GeneralUtilities.roundDouble(dx, 3));
 
 
-    if(dx==7)
+    if(a2==Math.atan2(6,-20))
     {
       state=AUTO_SCORE_STATE.UNDEFINED;
     }
@@ -96,22 +100,22 @@ public class LastGaspVision extends Command
           */
           if(Math.abs(a1)<20)
           {
-            rawTurnCmd = -kPDXFIX*dx;
+            rawTurnCmd = -kPDXFIX * limit(dx, kDXLimit);
             turnCmd = applyLowPassFilter(rawTurnCmd);
-            _chassis.setLeftRightCommand(ControlMode.PercentOutput,fwdVBus+turnCmd,fwdVBus-turnCmd);
+            _chassis.setLeftRightCommand(ControlMode.PercentOutput,leftFwdVBus+turnCmd,rightFwdVBusCmd-turnCmd);
           }
           else
           {
-            rawTurnCmd = kPAFIX*a1;
+            rawTurnCmd = kPAFIX * limit(a1, kAngleOneLimt);
             turnCmd = applyLowPassFilter(rawTurnCmd);
-            _chassis.setLeftRightCommand(ControlMode.PercentOutput,fwdVBus+turnCmd,fwdVBus-turnCmd);
+            _chassis.setLeftRightCommand(ControlMode.PercentOutput,leftFwdVBus+turnCmd,rightFwdVBusCmd-turnCmd);
           }
           break;
         case A1FIX:
           //Turn Down A1
-          rawTurnCmd = kPAFIX*a1;
+          rawTurnCmd = kPAFIX * limit(a1, kAngleOneLimt);
           turnCmd = applyLowPassFilter(rawTurnCmd);
-          _chassis.setLeftRightCommand(ControlMode.PercentOutput,fwdVBus+turnCmd, fwdVBus-turnCmd);
+          _chassis.setLeftRightCommand(ControlMode.PercentOutput,leftFwdVBus+turnCmd, rightFwdVBusCmd-turnCmd);
           break;
       }
   }
@@ -148,6 +152,16 @@ public class LastGaspVision extends Command
       newerTurnCmd = newTurnCmd;
     }
     return newerTurnCmd;
+  }
+
+  public double limit(double value, double cap){
+    if (value < -1 * Math.abs(cap)){
+      return -1 * Math.abs(cap);
+    } else if (value > Math.abs(cap)){
+      return Math.abs(cap);
+    } else {
+      return value;
+    }
   }
 
 
