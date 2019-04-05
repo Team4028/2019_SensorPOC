@@ -7,8 +7,6 @@
 
 package frc.robot.commands.auton.adaptivePaths;
 
-
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import edu.wpi.first.wpilibj.command.Command;
@@ -23,21 +21,30 @@ public class LastGaspVision extends Command
   Chassis _chassis = Chassis.getInstance();
   VisionLL _limelight = VisionLL.getInstance();
   DistanceRev2mSensor _ds = DistanceRev2mSensor.getInstance();
-  public double kPDXFIX = 0.005;
-  public double kPAFIX = 0.003;
-  public double kLowPassFilterCurrentValueWeight = .5;
-  public double previousTurnCmd = 0.;
-  public boolean isFirstCycle = false;
-  public double rawTurnCmd;
-  public double leftFwdVBus=0.25;
-  public double rightFwdVBusCmd = 0.28;
-  public double kAngleOneLimt = 15;
-  public double kDXLimit = Constants.BIG_NUMBER;
+  double kPDXFIX = 0.005;
+  double kPAFIXBig = 0.0028;
+  double kPAFIXSmall = 0.003;
+  double kLowPassFilterCurrentValueWeight = .64;
+  double previousTurnCmd = 0.;
+  boolean isFirstCycle = false;
+  double rawTurnCmd;
+  double leftFwdVBus=0.25;
+  double rightFwdVBusCmd = 0.28;
+  double kAngleOneLimt = 15;
+  double kDXLimit = Constants.BIG_NUMBER;
+  double kLeftReducedForwardVBus = .10;
+  double kRightReducedForwardVBus = kLeftReducedForwardVBus * (rightFwdVBusCmd / leftFwdVBus);
+  double kReducedForwardVBusDXLimit = 2.5;
+  double kReducedForwardVBusAngleOneMinimum = 10;
+  double kPReducedForwardVBusBig = .004;
+  double kPReducedForwardVBusSmall = .005;
+
   public enum AUTO_SCORE_STATE
   {
     UNDEFINED,
     DXFIX,
-    A1FIX
+    A1FIX, 
+    REDUCED_FORWARD_VBUS
   }
   AUTO_SCORE_STATE state;
   public LastGaspVision() 
@@ -78,13 +85,17 @@ public class LastGaspVision extends Command
       state = AUTO_SCORE_STATE.A1FIX;
     }
 
+    if (Math.abs(a1) > kReducedForwardVBusAngleOneMinimum && Math.abs(dx) < kReducedForwardVBusDXLimit){
+      state = AUTO_SCORE_STATE.REDUCED_FORWARD_VBUS;
+    }
+
     if (!_limelight.get_isTargetInFOV()){
       state = AUTO_SCORE_STATE.UNDEFINED;
     }
 
     double turnCmd=0;
 
-
+    System.out.println(state);
       switch(state)
       {
         case UNDEFINED:
@@ -106,16 +117,42 @@ public class LastGaspVision extends Command
           }
           else
           {
-            rawTurnCmd = kPAFIX * limit(a1, kAngleOneLimt);
+            if(Math.abs(a1)>10)
+            {
+              rawTurnCmd = kPAFIXBig * limit(a1, kAngleOneLimt);
+            }
+            else
+            {
+              rawTurnCmd = kPAFIXSmall * limit(a1, kAngleOneLimt);
+            }
             turnCmd = applyLowPassFilter(rawTurnCmd);
             _chassis.setLeftRightCommand(ControlMode.PercentOutput,leftFwdVBus+turnCmd,rightFwdVBusCmd-turnCmd);
           }
           break;
         case A1FIX:
           //Turn Down A1
-          rawTurnCmd = kPAFIX * limit(a1, kAngleOneLimt);
+          if(Math.abs(a1)>10)
+          {
+            rawTurnCmd = kPAFIXBig * limit(a1, kAngleOneLimt);
+          }
+          else
+          {
+            rawTurnCmd = kPAFIXSmall * limit(a1, kAngleOneLimt);
+          }
           turnCmd = applyLowPassFilter(rawTurnCmd);
           _chassis.setLeftRightCommand(ControlMode.PercentOutput,leftFwdVBus+turnCmd, rightFwdVBusCmd-turnCmd);
+          break;
+        case REDUCED_FORWARD_VBUS:
+        if(Math.abs(a1)>10)
+          {
+            rawTurnCmd = kPReducedForwardVBusBig * limit(a1, kAngleOneLimt);
+          }
+          else
+          {
+            rawTurnCmd = kPReducedForwardVBusSmall * limit(a1, kAngleOneLimt);
+          }
+          turnCmd = applyLowPassFilter(rawTurnCmd);
+          _chassis.setLeftRightCommand(ControlMode.PercentOutput,kLeftReducedForwardVBus+turnCmd, kRightReducedForwardVBus-turnCmd);
           break;
       }
   }
