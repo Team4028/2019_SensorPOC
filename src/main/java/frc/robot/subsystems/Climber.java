@@ -104,6 +104,14 @@ public class Climber extends Subsystem implements IBeakSquadSubsystem {
     _liftMtr.config_kD(0, 0, CAN_TIMEOUT_MSECS_PERIODIC);
     _liftMtr.set(ControlMode.MotionMagic, getNativeUnits());
   }
+  public void HoldClimberatZero()
+  {
+    _liftMtr.config_kF(0, 0.5, CAN_TIMEOUT_MSECS_PERIODIC);
+    _liftMtr.config_kP(0, 0.7, CAN_TIMEOUT_MSECS_PERIODIC);
+    _liftMtr.config_kI(0, 0.0, CAN_TIMEOUT_MSECS_PERIODIC);
+    _liftMtr.config_kD(0, 0, CAN_TIMEOUT_MSECS_PERIODIC);
+    _liftMtr.set(ControlMode.MotionMagic, 0);
+  }
 
   public double inchesToNativeUnits(double inches){
     return (inches / INCHES_TO_NU_CONVERSION_NUMBER);

@@ -110,8 +110,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    CommandGroup startAcquireHatch = new StartAcquireHatch();
-    startAcquireHatch.start();
+    // CommandGroup startAcquireHatch = new StartAcquireHatch();
+    // startAcquireHatch.start();
     Paths.havePathsBuilt=false;
     Paths.buildPaths();
     _chassis.initiateRobotState();
@@ -200,7 +200,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     Scheduler.getInstance().run();  
-    // _vision.turnOnLEDs();
+    //_vision.turnOnLEDs();
     // Command drive = new DriveWithControllers(0.7, 0);
     // drive.start();
     //_chassis.updateChassis(Timer.getFPGATimestamp());

@@ -13,10 +13,11 @@ import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Constants;
 import frc.robot.sensors.DistanceRev2mSensor;
 import frc.robot.sensors.VisionLL;
+import frc.robot.sensors.VisionLL.LIMELIGHT_PIPELINE;
 import frc.robot.subsystems.Chassis;
 import frc.robot.util.GeneralUtilities;
 
-public class LastGaspVision extends Command 
+public class YaYeetVision extends Command 
 {
   Chassis _chassis = Chassis.getInstance();
   VisionLL _limelight = VisionLL.getInstance();
@@ -32,7 +33,7 @@ public class LastGaspVision extends Command
   double rightFwdVBusCmd = 0.28;
   double kAngleOneLimt = 15;
   double kDXLimit = Constants.BIG_NUMBER;
-  double kLeftReducedForwardVBus = .10;
+  double kLeftReducedForwardVBus = .15;
   double kRightReducedForwardVBus = kLeftReducedForwardVBus * (rightFwdVBusCmd / leftFwdVBus);
   double kReducedForwardVBusDXLimit = 2.5;
   double kReducedForwardVBusAngleOneMinimum = 10;
@@ -42,12 +43,11 @@ public class LastGaspVision extends Command
   public enum AUTO_SCORE_STATE
   {
     UNDEFINED,
-    DXFIX,
     A1FIX, 
     REDUCED_FORWARD_VBUS
   }
   AUTO_SCORE_STATE state;
-  public LastGaspVision() 
+  public YaYeetVision() 
   {
     setInterruptible(true);
     requires(_chassis);
@@ -57,6 +57,7 @@ public class LastGaspVision extends Command
   @Override
   protected void initialize() 
   {
+    _limelight.changeLimelightPipeline(LIMELIGHT_PIPELINE.CENTER);
     state = AUTO_SCORE_STATE.UNDEFINED;
     _limelight.turnOnLEDs();
   }
@@ -65,69 +66,32 @@ public class LastGaspVision extends Command
   @Override
   protected void execute() 
   {
-    double a1 = _limelight.getTheta()-2;
-    double a2 = Math.atan2(_limelight.get_xOffset()+6, _limelight.get_yOffset()-20);
+    double a1 = _limelight.getTheta()-0.5;
     System.out.println(" A1: "+GeneralUtilities.roundDouble(a1, 3));
-    double dx = _limelight.get_xOffset()+6*Math.abs(Math.cos(Math.PI/180*a1+a2));
-    System.out.print("DX: "+GeneralUtilities.roundDouble(dx, 3));
 
 
-    if(a2==Math.atan2(6,-20))
-    {
-      state=AUTO_SCORE_STATE.UNDEFINED;
+
+    if (!_limelight.get_isTargetInFOV()){
+      state = AUTO_SCORE_STATE.UNDEFINED;
     }
-    else if(Math.abs(dx) > 15)
-    {
-      state = AUTO_SCORE_STATE.DXFIX;
+    else if (Math.abs(a1) > kReducedForwardVBusAngleOneMinimum){
+      state = AUTO_SCORE_STATE.REDUCED_FORWARD_VBUS;
     }
     else
     {
       state = AUTO_SCORE_STATE.A1FIX;
     }
 
-    if (Math.abs(a1) > kReducedForwardVBusAngleOneMinimum && Math.abs(dx) < kReducedForwardVBusDXLimit){
-      state = AUTO_SCORE_STATE.REDUCED_FORWARD_VBUS;
-    }
-
-    if (!_limelight.get_isTargetInFOV()){
-      state = AUTO_SCORE_STATE.UNDEFINED;
-    }
-
     double turnCmd=0;
 
     System.out.println(state);
+    if(_limelight.get_isTargetInFOV())
+    {
       switch(state)
       {
         case UNDEFINED:
         applyLowPassFilter(0);
         _chassis.stop();
-          break;
-        
-        case DXFIX:
-          /*
-          Do something to make the turn command reduce dx
-          have a a1 cap
-          if a1 exceeds the cap, turn the a1 down 
-          */
-          if(Math.abs(a1)<20)
-          {
-            rawTurnCmd = -kPDXFIX * limit(dx, kDXLimit);
-            turnCmd = applyLowPassFilter(rawTurnCmd);
-            _chassis.setLeftRightCommand(ControlMode.PercentOutput,leftFwdVBus+turnCmd,rightFwdVBusCmd-turnCmd);
-          }
-          else
-          {
-            if(Math.abs(a1)>10)
-            {
-              rawTurnCmd = kPAFIXBig * limit(a1, kAngleOneLimt);
-            }
-            else
-            {
-              rawTurnCmd = kPAFIXSmall * limit(a1, kAngleOneLimt);
-            }
-            turnCmd = applyLowPassFilter(rawTurnCmd);
-            _chassis.setLeftRightCommand(ControlMode.PercentOutput,leftFwdVBus+turnCmd,rightFwdVBusCmd-turnCmd);
-          }
           break;
         case A1FIX:
           //Turn Down A1
@@ -155,6 +119,11 @@ public class LastGaspVision extends Command
           _chassis.setLeftRightCommand(ControlMode.PercentOutput,kLeftReducedForwardVBus+turnCmd, kRightReducedForwardVBus-turnCmd);
           break;
       }
+    }
+    else
+    {
+      _chassis.stop();
+    }
   }
 
   // Make this return true when this Command no longer needs to run execute()

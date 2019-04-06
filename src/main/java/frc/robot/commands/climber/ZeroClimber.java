@@ -22,11 +22,11 @@ public class ZeroClimber extends Command
     @Override
     protected void end() {
         _climber.zeroClimber();
-        _climber.HoldClimber();
+        _climber.HoldClimberatZero();
 
     }
     @Override
     protected void interrupted() {
-        _climber.HoldClimber();
+        _climber.HoldClimberatZero();
     }
 }

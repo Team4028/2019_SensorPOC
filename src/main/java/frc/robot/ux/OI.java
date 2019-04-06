@@ -7,7 +7,7 @@ import frc.robot.commands.auton.adaptivePaths.AutoPlaceHatch;
 import frc.robot.commands.auton.adaptivePaths.AutonFastPlaceHatch;
 import frc.robot.commands.auton.adaptivePaths.BetterVisionPath;
 import frc.robot.commands.auton.adaptivePaths.EasierBetterVisionThing;
-import frc.robot.commands.auton.adaptivePaths.LastGaspVision;
+import frc.robot.commands.auton.adaptivePaths.YaYeetVision;
 import frc.robot.commands.camera.ChangeToLimelight;
 import frc.robot.commands.camera.ChangeToPi;
 import frc.robot.commands.camera.SwitchCamera;
@@ -71,7 +71,7 @@ public class OI {
 		_driverController.rt.whileActive(new RunInfeedMotor(_driverController.rt, true));
 		_driverController.rt.whenReleased(new RunInfeedMotor(_driverController.rt, true));
 		
-		_driverController.lb.whileHeld(new LastGaspVision());
+		_driverController.lb.whileHeld(new YaYeetVision());
 		_driverController.lb.whenReleased(new DriveWithControllers(_driverController.leftStick, _driverController.rightStick));
 		_driverController.lb.whenReleased(new TurnOffLEDs());
 		_driverController.rb.whenPressed(new AutonFastPlaceHatch());
