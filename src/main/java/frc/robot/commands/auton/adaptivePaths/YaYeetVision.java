@@ -129,7 +129,7 @@ public class YaYeetVision extends Command
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return ((_ds.get_distanceToTargetInInches()>25) && (_ds.get_distanceToTargetInInches()>0))|| (!_limelight.get_isPingable())|| !_limelight.get_isTargetInFOV();
+    return !_limelight.get_isTargetInFOV();
   }
 
   // Called once after isFinished returns true
