@@ -24,12 +24,12 @@ public class LDoubleHatchRocketL extends CommandGroup
     {
         setInterruptible(true);
         addSequential(new LSingleHatchBackRocketL());
-        addParallel(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.HOME));
-        addSequential(new RunMotionProfileCommand(_awayFromRocket));
-        addSequential(new RunMotionProfileCommand(_toFeederStation));
-        addSequential(new AutoTrackTarget());
-        addSequential(new AcquireHatch());
-        addSequential(new printTimeFromStart());
+        // addParallel(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.HOME));
+        // addSequential(new RunMotionProfileCommand(_awayFromRocket));
+        // addSequential(new RunMotionProfileCommand(_toFeederStation));
+        // addSequential(new AutoTrackTarget());
+        // addSequential(new AcquireHatch());
+        // addSequential(new printTimeFromStart());
     }
     @Override
     protected boolean isFinished() {

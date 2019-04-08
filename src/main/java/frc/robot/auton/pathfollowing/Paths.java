@@ -154,13 +154,13 @@ public class Paths {
 		_awayFromFeederStationL.setIsReversed(true);
 		leftPaths.put(Left.AWAY_FROM_FEEDER, _awayFromFeederStationL);
 
-		_toBackRocketL= buildPathFromWaypoints(-0.005,Arrays.asList(
+		_toBackRocketL= buildPathFromWaypoints(-0.006,Arrays.asList(
 			new Waypoint(66,120,0,0),
-			new Waypoint(115,120,0,50),
-			new Waypoint(180,120, 40, 80),
-			new Waypoint(210,93,0,90),
-			new Waypoint(272,40,13,70),
-			new Waypoint(290,50,0,40)
+			new Waypoint(100,120,0,60),
+			new Waypoint(150, 120,0, 120),
+			new Waypoint(220,120, 50,80),
+			new Waypoint(250,76,0,120),
+			new Waypoint(285,32,0,120)
 		));
 		_toBackRocketL.setIsReversed(true);
 		leftPaths.put(Left.BACK_ROCKET, _toBackRocketL);
