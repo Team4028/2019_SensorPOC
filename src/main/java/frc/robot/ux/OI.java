@@ -2,11 +2,6 @@ package frc.robot.ux;
 
 import frc.robot.RobotMap;
 import frc.robot.commands.auton.StopAuton;
-import frc.robot.commands.auton.adaptivePaths.AutoAcquireHatch;
-import frc.robot.commands.auton.adaptivePaths.AutoPlaceHatch;
-import frc.robot.commands.auton.adaptivePaths.AutonFastPlaceHatch;
-import frc.robot.commands.auton.adaptivePaths.BetterVisionPath;
-import frc.robot.commands.auton.adaptivePaths.EasierBetterVisionThing;
 import frc.robot.commands.auton.adaptivePaths.YaYeetVision;
 import frc.robot.commands.camera.ChangeToLimelight;
 import frc.robot.commands.camera.ChangeToPi;
@@ -22,6 +17,7 @@ import frc.robot.commands.climber.Lvl2Climb;
 import frc.robot.commands.climber.Lvl3ClimbFromLvl2;
 import frc.robot.commands.elevator.MoveToPresetPosition;
 import frc.robot.commands.infeed.AcquireHatch;
+import frc.robot.commands.infeed.AutonFastPlaceHatch;
 import frc.robot.commands.infeed.ReleaseInfeed;
 import frc.robot.commands.infeed.RetainBall;
 import frc.robot.commands.infeed.RunInfeedMotor;
@@ -75,7 +71,6 @@ public class OI {
 		_driverController.lb.whenReleased(new DriveWithControllers(_driverController.leftStick, _driverController.rightStick));
 		_driverController.lb.whenReleased(new TurnOffLEDs());
 		_driverController.rb.whenPressed(new AutonFastPlaceHatch());
-
 		_driverController.a.whenPressed(new ToggleBeakInOut());
 		_driverController.b.whenPressed(new ReleaseInfeed());
 		_driverController.x.whenPressed(new ToggleBeakOpen());
@@ -91,7 +86,6 @@ public class OI {
 		_operatorController.b.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.LEVEL_2, _operatorController.rt));
 		_operatorController.y.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.LEVEL_3, _operatorController.rt));
 		_operatorController.lb.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.CARGO_ACQUIRE, _operatorController.rt));
-		_operatorController.a.whenPressed(new AutoPlaceHatch(_operatorController.rt));
 
 		_operatorController.rt.whileActive(new ChangeVisionPipeline(_operatorController.dPad.up, _operatorController.dPad.upRight, _operatorController.dPad.upLeft, _operatorController.rt));
 		_operatorController.rt.whenReleased(new ChangeVisionPipeline(_operatorController.dPad.up, _operatorController.dPad.upRight, _operatorController.dPad.upLeft, _operatorController.rt));

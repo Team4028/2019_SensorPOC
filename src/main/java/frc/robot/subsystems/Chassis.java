@@ -28,7 +28,6 @@ import frc.robot.auton.pathfollowing.motion.RigidTransform;
 import frc.robot.auton.pathfollowing.motion.Rotation;
 import frc.robot.auton.pathfollowing.motion.Twist;
 import frc.robot.auton.pathfollowing.util.Kinematics;
-import frc.robot.commands.auton.adaptivePaths.Auton_turnFromVision;
 import frc.robot.interfaces.IBeakSquadSubsystem;
 import frc.robot.sensors.GyroNavX;
 import frc.robot.sensors.VisionLL;

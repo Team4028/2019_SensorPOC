@@ -9,19 +9,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.auton.autons.DoNothing;
 import frc.robot.commands.auton.autons.LineCross;
-import frc.robot.commands.auton.autons.Center.CDoubleHatchLFrontLSide;
-import frc.robot.commands.auton.autons.Center.CDoubleHatchRFrontRSide;
-import frc.robot.commands.auton.autons.Center.CSingleHatchLFront;
-import frc.robot.commands.auton.autons.Center.CSingleHatchRFront;
-import frc.robot.commands.auton.autons.Left.LDoubleHatchLFrontLSide;
-import frc.robot.commands.auton.autons.Left.LDoubleHatchLSideLSide;
-import frc.robot.commands.auton.autons.Left.LDoubleHatchRocketL;
 import frc.robot.commands.auton.autons.Left.LSingleHatchBackRocketL;
-import frc.robot.commands.auton.autons.Left.LSingleHatchLFront;
 import frc.robot.commands.auton.autons.Left.LSingleHatchLSide;
-import frc.robot.commands.auton.autons.Right.RDoubleHatchRFrontRSide;
-import frc.robot.commands.auton.autons.Right.RDoubleHatchRSideRSide;
-import frc.robot.commands.auton.autons.Right.RSingleHatchRFront;
+import frc.robot.commands.auton.autons.Right.RSingleHatchBackRocket;
 import frc.robot.commands.auton.autons.Right.RSingleHatchRSide;
 import frc.robot.interfaces.IBeakSquadSubsystem;
 import frc.robot.util.LogDataBE;
@@ -34,12 +24,7 @@ public class AutonChoosers implements IBeakSquadSubsystem {
     private enum AUTON_MODE {
 		UNDEFINED,
 		LINE_CROSS,
-		LEFT_FRONT_HATCH,
-		RIGHT_FRONT_HATCH,
 		SIDE_HATCH,
-		DOUBLE_HATCH_FRONT_SIDE_LEFT,
-		DOUBLE_HATCH_FRONT_SIDE_RIGHT,
-		DOUBLE_HATCH_SIDE_SIDE,
 		ROCKET,
         DO_NOTHING, 
     }
@@ -47,7 +32,6 @@ public class AutonChoosers implements IBeakSquadSubsystem {
 	private enum STARTING_SIDE 
 	{
 		LEFT,
-		CENTER,
 		RIGHT
     }
     
@@ -68,19 +52,13 @@ public class AutonChoosers implements IBeakSquadSubsystem {
 	private AutonChoosers() {
         // Auton Mode
 		_autonAction.setDefaultOption("Do Nothing", AUTON_MODE.DO_NOTHING);
-		_autonAction.addOption("Left Front Hatch", AUTON_MODE.LEFT_FRONT_HATCH);
-		_autonAction.addOption("Right Front Hatch", AUTON_MODE.RIGHT_FRONT_HATCH);
 		_autonAction.addOption("Side Hatch", AUTON_MODE.SIDE_HATCH);
 		_autonAction.addOption("Line Cross", AUTON_MODE.LINE_CROSS);
-		_autonAction.addOption("Double Hatch Front Side Left", AUTON_MODE.DOUBLE_HATCH_FRONT_SIDE_LEFT);
-		_autonAction.addOption("Double Hatch Front Side Right", AUTON_MODE.DOUBLE_HATCH_FRONT_SIDE_RIGHT);
 		_autonAction.addOption("Rocket", AUTON_MODE.ROCKET);
-		_autonAction.addOption("Double Hatch Side Side", AUTON_MODE.DOUBLE_HATCH_SIDE_SIDE);
         
         // Auton Starting Side
 		_autonStartingSideChooser.setDefaultOption("LEFT", STARTING_SIDE.LEFT);
 		_autonStartingSideChooser.addOption("RIGHT", STARTING_SIDE.RIGHT);
-		_autonStartingSideChooser.addOption("CENTER", STARTING_SIDE.CENTER);
 
     }
     
@@ -97,87 +75,23 @@ public class AutonChoosers implements IBeakSquadSubsystem {
 				return new DoNothing();
 			case LINE_CROSS:
 				return new LineCross();
-			case LEFT_FRONT_HATCH:
-				if(startingSide==STARTING_SIDE.LEFT)
-				{
-					return new LSingleHatchLFront();
-				}
-				else if(startingSide==STARTING_SIDE.CENTER)
-				{
-					return new CSingleHatchLFront();
-				}
-				else if(startingSide==STARTING_SIDE.RIGHT)
-				{
-					return null;
-				}
-			case RIGHT_FRONT_HATCH:
-				if(startingSide==STARTING_SIDE.CENTER)
-				{
-					return new CSingleHatchRFront();
-				}
-				else if(startingSide==STARTING_SIDE.RIGHT)
-				{
-					return new RSingleHatchRFront();
-				}
-				else
-				{
-					return new LineCross();
-				}
+			
 			case SIDE_HATCH:
 				if(startingSide==STARTING_SIDE.LEFT)
 				{
 					return new LSingleHatchLSide();
 				}
-				else if(startingSide==STARTING_SIDE.CENTER)
-				{
-					return new RSingleHatchRSide();
-				}
 				else if(startingSide==STARTING_SIDE.RIGHT)
 				{
 					return new RSingleHatchRSide();
-				}
-			case DOUBLE_HATCH_SIDE_SIDE:
-				if(startingSide==STARTING_SIDE.LEFT)
-				{
-					return new LDoubleHatchLSideLSide();
-				}
-				else if(startingSide==STARTING_SIDE.RIGHT)
-				{
-					return new RDoubleHatchRSideRSide();
-				}
-				else
-				{
-					return new LineCross();
-				}
-			case DOUBLE_HATCH_FRONT_SIDE_LEFT:
-				if (startingSide==STARTING_SIDE.LEFT)
-				{
-					return new LDoubleHatchLFrontLSide();
-				}
-				else if(startingSide==STARTING_SIDE.CENTER)
-				{
-					return new CDoubleHatchLFrontLSide();
-				}
-				else
-				{
-					return new RDoubleHatchRFrontRSide();
-				}
-			case DOUBLE_HATCH_FRONT_SIDE_RIGHT:
-				if (startingSide==STARTING_SIDE.LEFT)
-				{
-					return new LDoubleHatchLFrontLSide();
-				}
-				else if(startingSide==STARTING_SIDE.CENTER)
-				{
-					return new CDoubleHatchRFrontRSide();
-				}
-				else
-				{
-					return new RDoubleHatchRFrontRSide();
 				}
 			case ROCKET:
-				return new LDoubleHatchRocketL();
-			default:
+				if (startingSide == STARTING_SIDE.LEFT){
+					return new LSingleHatchBackRocketL();
+				} else {
+					return new RSingleHatchBackRocket();
+				}
+ 			default:
 				return new DoNothing(); 
 		}
 	}

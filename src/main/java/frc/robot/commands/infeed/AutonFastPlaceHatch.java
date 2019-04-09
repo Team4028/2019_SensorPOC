@@ -1,4 +1,4 @@
-package frc.robot.commands.auton.adaptivePaths;
+package frc.robot.commands.infeed;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.WaitCommand;
