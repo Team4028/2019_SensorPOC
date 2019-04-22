@@ -323,6 +323,7 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
     //SmartDashboard.putNumber("Elevator:masterMotorCurrentAmps", _elevatorMasterMotor.getOutputCurrent());
     //SmartDashboard.putNumber("Elevator:slaveMotorOutputVolts", _elevatorSlaveMotor.getMotorOutputVoltage());
     //SmartDashboard.putNumber("Elevator:slaveMotorCurrentAmps", _elevatorSlaveMotor.getOutputCurrent());
+    SmartDashboard.putNumber("Elevator: CurrentPosition", NativeUnitsToInches(get_ElevatorPos()));
     SmartDashboard.putNumber("Elevator: Target Position", NativeUnitsToInches(_targetElevatorPositionNU));
     SmartDashboard.putString("Elevator: Position", _presetPositionName);
   }

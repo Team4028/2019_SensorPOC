@@ -110,8 +110,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    // CommandGroup startAcquireHatch = new StartAcquireHatch();
-    // startAcquireHatch.start();
+    CommandGroup startAcquireHatch = new StartAcquireHatch();
+    startAcquireHatch.start();
+    Command changePipeline = new ChoosePipeline(LIMELIGHT_PIPELINE.CENTER);
+    changePipeline.start();
     Paths.havePathsBuilt=false;
     Paths.buildPaths();
     _chassis.initiateRobotState();
@@ -146,7 +148,7 @@ public class Robot extends TimedRobot {
 
     if(Paths.havePathsBuilt)
     {
-      if(!hasAutonBeenScheduled && Timer.getFPGATimestamp()-_chassis._autoStartTime>0.2)
+      if(_autonChoosers.getIsSafe() && !hasAutonBeenScheduled && Timer.getFPGATimestamp()-_chassis._autoStartTime>0.2)
       {
         CommandGroup auton = _autonChoosers.getSelectedAuton();
         System.out.println(auton);
@@ -173,8 +175,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopInit() {
-    _vision.set_isInVisionMode(false);
-    Command changePipeline = new ChoosePipeline(LIMELIGHT_PIPELINE.CENTER_PNP);
+    _chassis.setForcedAutonFinish(false);
+    Command changePipeline = new ChoosePipeline(LIMELIGHT_PIPELINE.CENTER);
     changePipeline.start();
     Command stopChassis = new StopChassis();
     stopChassis.start();

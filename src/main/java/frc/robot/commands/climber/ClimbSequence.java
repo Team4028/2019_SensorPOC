@@ -19,6 +19,7 @@ import frc.robot.commands.infeed.SendBucketOut;
 import frc.robot.commands.infeed.ToggleBeakInOut;
 import frc.robot.commands.infeed.ToggleBeakOpen;
 import frc.robot.commands.infeed.TogglePunch;
+import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.Climber;
 
 public class ClimbSequence extends CommandGroup
@@ -26,7 +27,7 @@ public class ClimbSequence extends CommandGroup
     double climbHeight =-20500;
     double clearedHeight=-700;//15000?
     Climber _climber = Climber.getInstance();
-
+    Chassis _chassis = Chassis.getInstance();
     public ClimbSequence()
     {
         requires(_climber);
@@ -35,29 +36,26 @@ public class ClimbSequence extends CommandGroup
         addSequential(new MoveClimberToPos(climbHeight,0.5));
         addParallel(new DriveClimber(0.5));
         addParallel(new DriveWithControllers(0.2, 0));
-        addSequential(new Series_Command(Arrays.asList(new Command[] 
-        {
-            new HoldClimber(0.375),
-            new MoveClimberToPos(climbHeight+1800, 0.2)
-        })));
+        addSequential(new HoldClimber(0.375));
+        addSequential(new MoveClimberToPos(climbHeight+1800, 0.2));
         addParallel(new DriveClimber(0.3));
-        addSequential(new Series_Command(Arrays.asList(new Command[] 
-        {
-            new HoldClimber(.75),
-            new SendBeakOut(),
-            new TogglePunch(),
-            new ToggleBeakOpen(),
-            new SendBucketOut(),
-            new MoveClimberToPos(climbHeight+4000, 0.2),
-            new HoldClimber(.25),
-            new MoveClimberToPos(clearedHeight, 0.5)
-        })));
+        addSequential(new HoldClimber(.75));
+        addSequential(new SendBeakOut());
+        addSequential(new TogglePunch());
+        addSequential(new ToggleBeakOpen());
+        addSequential(new SendBucketOut());
+        addSequential(new MoveClimberToPos(climbHeight+4000, 0.2));
+        addSequential(new HoldClimber(.25));
+        addSequential(new MoveClimberToPos(clearedHeight, 0.5)); 
         addParallel(new PrintCommand("Moved to Clear Height"));
         addSequential(new DriveWithControllers(0.3, 0),0.85);
         addSequential(new PrintCommand("Driven"));
         addParallel(new StopChassis(),0.25);
         addSequential(new DriveClimber(0.0),0.5);
         // addSequential(new VictorySpin(),3);
-
+    }
+    @Override
+    protected boolean isFinished() {
+        return super.isFinished() || _chassis.getForcedAutonFinish();
     }
 }

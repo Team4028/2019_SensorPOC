@@ -8,11 +8,11 @@ import frc.robot.util.BeakXboxController.Trigger;
 public class DriveClimber extends Command {
 
   private Climber _climber = Climber.getInstance();
-  Trigger _thumbstick;
+  Thumbstick _thumbstick;
   double _throttle;
   boolean isAuton;
 
-  public DriveClimber(Trigger rightstick) {
+  public DriveClimber(Thumbstick rightstick) {
     requires(_climber);
     setInterruptible(true);
     _thumbstick = rightstick;

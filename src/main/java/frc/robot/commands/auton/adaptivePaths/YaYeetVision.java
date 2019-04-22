@@ -23,8 +23,8 @@ public class YaYeetVision extends Command
   VisionLL _limelight = VisionLL.getInstance();
   DistanceRev2mSensor _ds = DistanceRev2mSensor.getInstance();
   double kPDXFIX = 0.005;
-  double kPAFIXBig = 0.0028;
-  double kPAFIXSmall = 0.003;
+  double kPAFIXBig = 0.003;
+  double kPAFIXSmall = 0.004;
   double kLowPassFilterCurrentValueWeight = .64;
   double previousTurnCmd = 0.;
   boolean isFirstCycle = false;

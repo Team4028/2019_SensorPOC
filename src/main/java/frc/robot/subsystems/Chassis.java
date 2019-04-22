@@ -529,6 +529,11 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
     _rightMaster.getSensorCollection().setQuadraturePosition(0, CAN_TIMEOUT_MSECS_PERIODIC);
     _navX.zeroYaw();
   }
+  public void zeroEncoders()
+  {
+    _leftMaster.getSensorCollection().setQuadraturePosition(0, CAN_TIMEOUT_MSECS_PERIODIC);
+    _rightMaster.getSensorCollection().setQuadraturePosition(0, CAN_TIMEOUT_MSECS_PERIODIC);
+  }
 
   private static double rpmToInchesPerSecond(double rpm) 
 	{

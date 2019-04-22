@@ -6,48 +6,55 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.PrintCommand;
 import edu.wpi.first.wpilibj.command.WaitCommand;
+import edu.wpi.first.wpilibj.command.WaitUntilCommand;
 import frc.robot.commands.auton.util.Series_Command;
+import frc.robot.commands.auton.util.Simultaneous_Command;
+import frc.robot.commands.auton.util.printTimeFromStart;
 import frc.robot.commands.chassis.DriveWithControllers;
 import frc.robot.commands.chassis.StopChassis;
+import frc.robot.commands.climber.Important.Secret.Hidden.Surprise.DontWorryAboutIt.EZWin.GGNoRE.YaYeetYaYeetYaYeetGirl.DasMyBurrito.IRICorn.VictorySpin;
+import frc.robot.commands.infeed.ReleaseInfeed;
 import frc.robot.commands.infeed.SendBeakOut;
-import frc.robot.commands.infeed.SendBucketIn;
 import frc.robot.commands.infeed.SendBucketOut;
+import frc.robot.commands.infeed.ToggleBeakInOut;
 import frc.robot.commands.infeed.ToggleBeakOpen;
 import frc.robot.commands.infeed.TogglePunch;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.Climber;
 
-public class Lvl2Climb extends CommandGroup
+public class StickClimb extends CommandGroup
 {
-    double climbHeight =-8500;
-    double clearedHeight=-696.9;//Nice
+    double climbHeight =-20500;
+    double clearedHeight=-700;//15000?
     Climber _climber = Climber.getInstance();
     Chassis _chassis = Chassis.getInstance();
-    public Lvl2Climb()
+
+    public StickClimb()
     {
         requires(_climber);
         setInterruptible(false);
+        //addParallel(new DriveClimber(0.2));
         addSequential(new MoveClimberToPos(climbHeight,0.5));
-            addParallel(new DriveClimber(0.5));
-            addParallel(new DriveWithControllers(0.2, 0));
+        addParallel(new DriveClimber(0.5));
+        addParallel(new DriveWithControllers(0.2, 0));
         addSequential(new HoldClimber(0.375));
         addSequential(new MoveClimberToPos(climbHeight+1800, 0.2));
-            addParallel(new DriveClimber(0.3));
+        addParallel(new DriveClimber(0.3));
         addSequential(new HoldClimber(.75));
         addSequential(new SendBeakOut());
         addSequential(new TogglePunch());
         addSequential(new ToggleBeakOpen());
         addSequential(new SendBucketOut());
-        addSequential(new MoveClimberToPos(climbHeight+4000, 0.2));
+        addSequential(new MoveClimberToPos(climbHeight+5000, 0.2));
         addSequential(new HoldClimber(.25));
-        addSequential(new MoveClimberToPos(clearedHeight, 0.5));
-            addParallel(new PrintCommand("Moved to Clear Height"));
-        addSequential(new DriveWithControllers(0.3, 0),1.1);
-        addSequential(new PrintCommand("Driven"));
-            addParallel(new StopChassis(),0.25);
+        // addSequential(new MoveClimberToPos(clearedHeight, 0.5)); 
+        // addParallel(new PrintCommand("Moved to Clear Height"));
+        // addSequential(new DriveWithControllers(0.3, 0),0.85);
+        // addSequential(new PrintCommand("Driven"));
+        addParallel(new StopChassis(),0.25);
         addSequential(new DriveClimber(0.0),0.5);
-        addSequential(new SendBucketIn());
-        addSequential(new WaitCommand(0.1));
+        // addSequential(new VictorySpin(),3);
+
     }
     @Override
     protected boolean isFinished() {

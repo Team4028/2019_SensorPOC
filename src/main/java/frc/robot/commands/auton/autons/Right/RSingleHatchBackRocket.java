@@ -32,8 +32,6 @@ public class RSingleHatchBackRocket extends CommandGroup
     public RSingleHatchBackRocket()
     {
         setInterruptible(true);
-        addParallel(new ChoosePipeline(LIMELIGHT_PIPELINE.RIGHT_PNP));
-        addParallel(new StartAcquireHatch());
         addSequential(new ReverseNavX(true));
         addSequential(new RunMotionProfileCommand(_toBackRocket));
         addSequential(new TurnInPlace(160, false));

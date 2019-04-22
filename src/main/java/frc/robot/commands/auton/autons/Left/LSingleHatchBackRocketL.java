@@ -21,7 +21,6 @@ public class LSingleHatchBackRocketL extends CommandGroup
     public LSingleHatchBackRocketL()
     {
         setInterruptible(true);
-        addParallel(new StartAcquireHatch());
         addSequential(new ReverseNavX(true));
         addSequential(new RunMotionProfileCommand(_toBackRocket));
         addSequential(new TurnInPlace(-160, true));

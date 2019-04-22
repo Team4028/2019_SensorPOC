@@ -5,30 +5,21 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.auton;
+package frc.robot.commands.auton.util;
 
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.Scheduler;
-import frc.robot.commands.climber.ClimbSequence;
-import frc.robot.subsystems.Chassis;
-import frc.robot.subsystems.Climber;
+import frc.robot.ux.AutonChoosers;
 
-public class StopAuton extends Command {
-  Chassis _chassis = Chassis.getInstance();
-  Climber _climber = Climber.getInstance();
-  public StopAuton() {
+public class StartAuton extends Command {
+  AutonChoosers choosers = AutonChoosers.getInstance();
+  public StartAuton() {
     setInterruptible(true);
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Scheduler.getInstance().removeAll();
-    _chassis.forceDoneWithPath();
-    _chassis.stop();
-    _chassis.setForcedAutonFinish(true);
-    _climber.HoldClimber();
-    _climber.driveClimber(0);
+    choosers.getSelectedAuton().start();
   }
 
   // Called repeatedly when this Command is scheduled to run

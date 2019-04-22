@@ -209,5 +209,6 @@ public class GyroNavX {
 	//=====================================================================================  
 	public void updateDashboard() {
 		SmartDashboard.putNumber("Angle2", _currentAngle2);
+		SmartDashboard.putNumber("NavX:Pitch", getPitch());
 	}
 }

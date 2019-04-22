@@ -7,12 +7,16 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.commands.auton.DriveOffLevel2Forwards;
 import frc.robot.commands.auton.autons.DoNothing;
+import frc.robot.commands.auton.autons.Level2TeleopSandstorm;
 import frc.robot.commands.auton.autons.LineCross;
 import frc.robot.commands.auton.autons.Left.LSingleHatchBackRocketL;
 import frc.robot.commands.auton.autons.Left.LSingleHatchLSide;
+import frc.robot.commands.auton.autons.Left.LSingleHatchLSideLevel2;
 import frc.robot.commands.auton.autons.Right.RSingleHatchBackRocket;
 import frc.robot.commands.auton.autons.Right.RSingleHatchRSide;
+import frc.robot.commands.auton.autons.Right.RSingleHatchRSideLevel2;
 import frc.robot.interfaces.IBeakSquadSubsystem;
 import frc.robot.util.LogDataBE;
 
@@ -31,13 +35,13 @@ public class AutonChoosers implements IBeakSquadSubsystem {
 
 	private enum STARTING_SIDE 
 	{
-		LEFT,
-		RIGHT
+		LEFT_LVL1,
+		LEFT_LVL2,
+		RIGHT_LVL1,
+		RIGHT_LVL2
     }
-    
     private SendableChooser<AUTON_MODE> _autonAction = new SendableChooser<>();
     private SendableChooser<STARTING_SIDE> _autonStartingSideChooser = new SendableChooser<>();
-    //private boolean _isStartingLeft = true;
         
     //=====================================================================================
 	// Define Singleton Pattern
@@ -57,8 +61,10 @@ public class AutonChoosers implements IBeakSquadSubsystem {
 		_autonAction.addOption("Rocket", AUTON_MODE.ROCKET);
         
         // Auton Starting Side
-		_autonStartingSideChooser.setDefaultOption("LEFT", STARTING_SIDE.LEFT);
-		_autonStartingSideChooser.addOption("RIGHT", STARTING_SIDE.RIGHT);
+		_autonStartingSideChooser.setDefaultOption("LEFT LEVEL 1", STARTING_SIDE.LEFT_LVL1);
+		_autonStartingSideChooser.setDefaultOption("LEFT LEVEL 2", STARTING_SIDE.LEFT_LVL2);
+		_autonStartingSideChooser.addOption("RIGHT LEVEL 1", STARTING_SIDE.RIGHT_LVL1);
+		_autonStartingSideChooser.addOption("RIGHT LEVEL 2", STARTING_SIDE.RIGHT_LVL2);
 
     }
     
@@ -72,21 +78,36 @@ public class AutonChoosers implements IBeakSquadSubsystem {
 		System.out.println("Selecting an Auton");
 		switch(_autonAction.getSelected()) {
 			case DO_NOTHING:
-				return new DoNothing();
+				if(startingSide==STARTING_SIDE.LEFT_LVL2||startingSide==STARTING_SIDE.LEFT_LVL2)
+				{
+					return new Level2TeleopSandstorm();
+				}
+				else
+				{
+					return new DoNothing();
+				}
 			case LINE_CROSS:
 				return new LineCross();
 			
 			case SIDE_HATCH:
-				if(startingSide==STARTING_SIDE.LEFT)
+				if(startingSide==STARTING_SIDE.LEFT_LVL1)
 				{
 					return new LSingleHatchLSide();
 				}
-				else if(startingSide==STARTING_SIDE.RIGHT)
+				else if(startingSide==STARTING_SIDE.LEFT_LVL2)
+				{
+					return new LSingleHatchLSideLevel2();
+				}
+				else if(startingSide==STARTING_SIDE.RIGHT_LVL1)
 				{
 					return new RSingleHatchRSide();
 				}
+				else if (startingSide==STARTING_SIDE.RIGHT_LVL2)
+				{
+					return new RSingleHatchRSideLevel2();
+				}
 			case ROCKET:
-				if (startingSide == STARTING_SIDE.LEFT){
+				if (startingSide == STARTING_SIDE.LEFT_LVL1){
 					return new LSingleHatchBackRocketL();
 				} else {
 					return new RSingleHatchBackRocket();
@@ -95,7 +116,10 @@ public class AutonChoosers implements IBeakSquadSubsystem {
 				return new DoNothing(); 
 		}
 	}
-	
+	public boolean getIsSafe()
+	{
+		return _autonStartingSideChooser.getSelected()==STARTING_SIDE.LEFT_LVL1 || _autonStartingSideChooser.getSelected()==STARTING_SIDE.RIGHT_LVL1;
+	}
     @Override
     public void updateLogData(LogDataBE logData) {
 

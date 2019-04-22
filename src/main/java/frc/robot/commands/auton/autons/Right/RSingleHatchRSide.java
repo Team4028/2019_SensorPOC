@@ -12,7 +12,6 @@ public class RSingleHatchRSide extends CommandGroup {
     Path _sidePath = Paths.getPath(Right.TO_RIGHT_CARGO_BAY_FIRST);
     public RSingleHatchRSide() {
         setInterruptible(false);
-        addParallel(new StartAcquireHatch());
         addSequential(new RunMotionProfileCommand(_sidePath));
         addSequential(new TurnInPlace(-75, false));
     }

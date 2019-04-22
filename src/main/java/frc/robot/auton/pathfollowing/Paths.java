@@ -159,8 +159,8 @@ public class Paths {
 		_toBackRocketL= buildPathFromWaypoints(-0.006,Arrays.asList(
 			new Waypoint(66,120,0,0),
 			new Waypoint(100,120,0,60),
-			new Waypoint(150, 120,0, 120),
-			new Waypoint(220,120, 50,80),
+			new Waypoint(140, 120,0, 120),
+			new Waypoint(200,120, 50,80),
 			new Waypoint(250,76,0,120),
 			new Waypoint(290,40,0,120)
 		));

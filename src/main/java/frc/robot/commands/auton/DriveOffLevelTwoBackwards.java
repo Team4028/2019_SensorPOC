@@ -7,44 +7,42 @@
 
 package frc.robot.commands.auton;
 
-import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.Scheduler;
-import frc.robot.commands.climber.ClimbSequence;
-import frc.robot.subsystems.Chassis;
-import frc.robot.subsystems.Climber;
+import com.ctre.phoenix.motorcontrol.ControlMode;
 
-public class StopAuton extends Command {
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.command.Command;
+import frc.robot.subsystems.Chassis;
+
+public class DriveOffLevelTwoBackwards extends Command {
   Chassis _chassis = Chassis.getInstance();
-  Climber _climber = Climber.getInstance();
-  public StopAuton() {
-    setInterruptible(true);
+  double _startTime;
+  public DriveOffLevelTwoBackwards() {
+    requires(_chassis);
+
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Scheduler.getInstance().removeAll();
-    _chassis.forceDoneWithPath();
-    _chassis.stop();
-    _chassis.setForcedAutonFinish(true);
-    _climber.HoldClimber();
-    _climber.driveClimber(0);
+    _startTime = Timer.getFPGATimestamp();
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
+    _chassis.arcadeDrive(-0.5, 0);
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return true;
+    return Timer.getFPGATimestamp()-_startTime>15;
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
+    _chassis.zeroEncoders();
   }
 
   // Called when another command which requires one or more of the same

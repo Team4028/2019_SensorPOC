@@ -1,8 +1,10 @@
 package frc.robot.ux;
 
 import frc.robot.RobotMap;
+import frc.robot.commands.auton.DriveOffLevelTwoBackwards;
 import frc.robot.commands.auton.StopAuton;
 import frc.robot.commands.auton.adaptivePaths.YaYeetVision;
+import frc.robot.commands.auton.util.StartAuton;
 import frc.robot.commands.camera.ChangeToLimelight;
 import frc.robot.commands.camera.ChangeToPi;
 import frc.robot.commands.camera.SwitchCamera;
@@ -15,6 +17,7 @@ import frc.robot.commands.climber.HoldClimber;
 import frc.robot.commands.climber.LiftClimber;
 import frc.robot.commands.climber.Lvl2Climb;
 import frc.robot.commands.climber.Lvl3ClimbFromLvl2;
+import frc.robot.commands.climber.StickClimb;
 import frc.robot.commands.elevator.MoveToPresetPosition;
 import frc.robot.commands.infeed.AcquireHatch;
 import frc.robot.commands.infeed.AutonFastPlaceHatch;
@@ -77,22 +80,29 @@ public class OI {
 		_driverController.y.whenPressed(new TogglePunch());
 		
 		_driverController.start.whenPressed(new StopAuton());
+		_driverController.back.whenPressed(new StartAuton());
 		// =========== Operator ======================================
 		_operatorController = new BeakXboxController(RobotMap.OPERATOR_GAMEPAD_USB_PORT);
 		// ==========================================================
-		_operatorController.leftStick.whileActive(new RunInfeedMotor(_operatorController.leftStick));
 		_operatorController.rb.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.HOME, _operatorController.rt));
 		_operatorController.x.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.LEVEL_1, _operatorController.rt));
 		_operatorController.b.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.LEVEL_2, _operatorController.rt));
 		_operatorController.y.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.LEVEL_3, _operatorController.rt));
 		_operatorController.lb.whenPressed(new MoveToPresetPosition(ELEVATOR_TARGET_POSITION.CARGO_ACQUIRE, _operatorController.rt));
 
-		_operatorController.rt.whileActive(new ChangeVisionPipeline(_operatorController.dPad.up, _operatorController.dPad.upRight, _operatorController.dPad.upLeft, _operatorController.rt));
-		_operatorController.rt.whenReleased(new ChangeVisionPipeline(_operatorController.dPad.up, _operatorController.dPad.upRight, _operatorController.dPad.upLeft, _operatorController.rt));
-
-		_operatorController.rt.whileActive(new StorePresetElevatorPosition(_operatorController.b, _operatorController.x, _operatorController.y,_operatorController.rb));
+	
 		_operatorController.back.whenPressed(new ClimbSequence());
-		_operatorController.start.whenPressed(new SwitchCamera());
+		_operatorController.start.whenPressed(new StickClimb());
+		_operatorController.rt.whenPressed(new Lvl2Climb());
+		_operatorController.lt.whenInactive(new Lvl3ClimbFromLvl2());
+
+		_operatorController.a.whenPressed(new StopAuton());
+		_operatorController.leftStick.whileActive(new LiftClimber(_operatorController.leftStick));
+		_operatorController.rightStick.whileActive(new DriveClimber(_operatorController.rightStick));
+		_operatorController.leftStick.whenReleased(new HoldClimber());
+		_operatorController.rightStick.whenReleased(new DriveClimber(_operatorController.rightStick));
+
+
 
 		//=========== Engineer ======================================
 		//_engineerController = new BeakXboxController(RobotMap.ENGINEERING_GAMEPAD_USB_PORT);

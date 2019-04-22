@@ -147,5 +147,6 @@ public class Climber extends Subsystem implements IBeakSquadSubsystem {
     SmartDashboard.putNumber("Encoder reading in NU", _liftMtr.getSelectedSensorPosition());
     SmartDashboard.putNumber("Lift motor command", _liftMtr.getMotorOutputPercent());
     SmartDashboard.putNumber("apparent encoder value", _liftMtr.getSelectedSensorPosition());
+    SmartDashboard.putNumber("Climber: Position", getPositionInches());
   }
 }
