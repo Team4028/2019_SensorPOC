@@ -35,12 +35,13 @@ public class DriveOffLevel2Forwards extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return Timer.getFPGATimestamp()-_startTime>15;
+    return Timer.getFPGATimestamp()-_startTime>1.5;
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
+    _chassis.stop();
     _chassis.zeroEncoders();
   }
 

@@ -8,6 +8,7 @@
 package frc.robot.commands.auton.autons.Right;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
+import edu.wpi.first.wpilibj.command.WaitCommand;
 import frc.robot.commands.auton.DriveOffLevelTwoBackwards;
 
 public class RSingleHatchBackRocketRLevel2 extends CommandGroup {
@@ -17,6 +18,7 @@ public class RSingleHatchBackRocketRLevel2 extends CommandGroup {
   public RSingleHatchBackRocketRLevel2() {
     setInterruptible(true);
     addSequential(new DriveOffLevelTwoBackwards());
+    addSequential(new WaitCommand(0.5));
     addSequential(new RSingleHatchBackRocket());
   }
 }

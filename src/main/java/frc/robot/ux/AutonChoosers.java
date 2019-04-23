@@ -12,9 +12,11 @@ import frc.robot.commands.auton.autons.DoNothing;
 import frc.robot.commands.auton.autons.Level2TeleopSandstorm;
 import frc.robot.commands.auton.autons.LineCross;
 import frc.robot.commands.auton.autons.Left.LSingleHatchBackRocketL;
+import frc.robot.commands.auton.autons.Left.LSingleHatchBackRocketLLevel2;
 import frc.robot.commands.auton.autons.Left.LSingleHatchLSide;
 import frc.robot.commands.auton.autons.Left.LSingleHatchLSideLevel2;
 import frc.robot.commands.auton.autons.Right.RSingleHatchBackRocket;
+import frc.robot.commands.auton.autons.Right.RSingleHatchBackRocketRLevel2;
 import frc.robot.commands.auton.autons.Right.RSingleHatchRSide;
 import frc.robot.commands.auton.autons.Right.RSingleHatchRSideLevel2;
 import frc.robot.interfaces.IBeakSquadSubsystem;
@@ -109,8 +111,18 @@ public class AutonChoosers implements IBeakSquadSubsystem {
 			case ROCKET:
 				if (startingSide == STARTING_SIDE.LEFT_LVL1){
 					return new LSingleHatchBackRocketL();
-				} else {
+				} 
+				else if(startingSide == STARTING_SIDE.LEFT_LVL2)
+				{
+					return new LSingleHatchBackRocketLLevel2();
+				} 
+				else if(startingSide==STARTING_SIDE.RIGHT_LVL1)
+				{
 					return new RSingleHatchBackRocket();
+				}
+				else 
+				{
+					return new RSingleHatchBackRocketRLevel2();
 				}
  			default:
 				return new DoNothing(); 

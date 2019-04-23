@@ -8,6 +8,7 @@
 package frc.robot.commands.auton.autons.Right;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
+import edu.wpi.first.wpilibj.command.WaitCommand;
 import frc.robot.commands.auton.DriveOffLevel2Forwards;
 
 public class RSingleHatchRSideLevel2 extends CommandGroup {
@@ -17,6 +18,7 @@ public class RSingleHatchRSideLevel2 extends CommandGroup {
   public RSingleHatchRSideLevel2() {
     setInterruptible(true);
     addSequential(new DriveOffLevel2Forwards());
+    addSequential(new WaitCommand(0.5));
     addSequential(new RSingleHatchRSide());
   }
 }

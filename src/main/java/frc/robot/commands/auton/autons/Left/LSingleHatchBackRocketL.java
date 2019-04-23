@@ -18,7 +18,8 @@ public class LSingleHatchBackRocketL extends CommandGroup
 {
     Path _toBackRocket = Paths.getPath(Left.BACK_ROCKET);
     
-    public LSingleHatchBackRocketL()
+    public 
+    LSingleHatchBackRocketL()
     {
         setInterruptible(true);
         addSequential(new ReverseNavX(true));
