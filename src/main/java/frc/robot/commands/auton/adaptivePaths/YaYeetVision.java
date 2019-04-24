@@ -29,12 +29,10 @@ public class YaYeetVision extends Command
   double previousTurnCmd = 0.;
   boolean isFirstCycle = false;
   double rawTurnCmd;
-  double leftFwdVBus=0.25;
-  double rightFwdVBusCmd = 0.28;
+  double fwdVBus = 0.36;
   double kAngleOneLimt = 15;
   double kDXLimit = Constants.BIG_NUMBER;
-  double kLeftReducedForwardVBus = .15;
-  double kRightReducedForwardVBus = kLeftReducedForwardVBus * (rightFwdVBusCmd / leftFwdVBus);
+  double kReducedForwardVBus = .21;
   double kReducedForwardVBusDXLimit = 2.5;
   double kReducedForwardVBusAngleOneMinimum = 10;
   double kPReducedForwardVBusBig = .004;
@@ -104,7 +102,7 @@ public class YaYeetVision extends Command
             rawTurnCmd = kPAFIXSmall * limit(a1, kAngleOneLimt);
           }
           turnCmd = applyLowPassFilter(rawTurnCmd);
-          _chassis.setLeftRightCommand(ControlMode.PercentOutput,leftFwdVBus+turnCmd, rightFwdVBusCmd-turnCmd);
+          _chassis.arcadeDrive(fwdVBus, turnCmd*3.125);//Divide by 0.32
           break;
         case REDUCED_FORWARD_VBUS:
         if(Math.abs(a1)>10)
@@ -116,7 +114,7 @@ public class YaYeetVision extends Command
             rawTurnCmd = kPReducedForwardVBusSmall * limit(a1, kAngleOneLimt);
           }
           turnCmd = applyLowPassFilter(rawTurnCmd);
-          _chassis.setLeftRightCommand(ControlMode.PercentOutput,kLeftReducedForwardVBus+turnCmd, kRightReducedForwardVBus-turnCmd);
+          _chassis.arcadeDrive(kReducedForwardVBus,turnCmd*3.125);
           break;
       }
     }
