@@ -23,8 +23,8 @@ public class YaYeetVision extends Command
   VisionLL _limelight = VisionLL.getInstance();
   DistanceRev2mSensor _ds = DistanceRev2mSensor.getInstance();
   double kPDXFIX = 0.005;
-  double kPAFIXBig = 0.003;
-  double kPAFIXSmall = 0.004;
+  double kPAFIXBig = 0.006;
+  double kPAFIXSmall = 0.008;
   double kLowPassFilterCurrentValueWeight = .64;
   double previousTurnCmd = 0.;
   boolean isFirstCycle = false;
@@ -35,8 +35,8 @@ public class YaYeetVision extends Command
   double kReducedForwardVBus = .21;
   double kReducedForwardVBusDXLimit = 2.5;
   double kReducedForwardVBusAngleOneMinimum = 10;
-  double kPReducedForwardVBusBig = .004;
-  double kPReducedForwardVBusSmall = .005;
+  double kPReducedForwardVBusBig = .006;
+  double kPReducedForwardVBusSmall = .008;
 
   public enum AUTO_SCORE_STATE
   {
@@ -64,7 +64,7 @@ public class YaYeetVision extends Command
   @Override
   protected void execute() 
   {
-    double a1 = _limelight.getTheta()+2;
+    double a1 = _limelight.getTheta();
     System.out.println(" A1: "+GeneralUtilities.roundDouble(a1, 3));
 
 

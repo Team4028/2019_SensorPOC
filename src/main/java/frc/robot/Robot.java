@@ -99,7 +99,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     _buildMsg = GeneralUtilities.WriteBuildInfoToDashboard(ROBOT_NAME);
     Paths.buildPaths();
-    _leds.mvrCompPrettyColors();
+    //_leds.mvrCompPrettyColors();;
   }
 
   /********************************************************************************************
@@ -203,11 +203,9 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     Scheduler.getInstance().run();  
     //_vision.turnOnLEDs();
-    // Command drive = new DriveWithControllers(0.7, 0);
-    // drive.start();
     //_chassis.updateChassis(Timer.getFPGATimestamp());
 
-    //_vision.turnOnLEDs();
+    // _vision.turnOnLEDs();
     // System.out.println(_elevator.getStoredTargetPosition());
   }
 
