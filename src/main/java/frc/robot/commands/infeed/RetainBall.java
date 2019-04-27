@@ -14,7 +14,7 @@ public class RetainBall extends Command
     }
     @Override
     protected void initialize() {
-        _cargo.setMotorSpeed(0.2);
+        _cargo.setMotorSpeed(0.3);
     }
     @Override
     protected boolean isFinished() {
