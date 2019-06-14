@@ -14,12 +14,12 @@ import frc.robot.Constants;
 import frc.robot.sensors.DistanceRev2mSensor;
 import frc.robot.sensors.VisionLL;
 import frc.robot.sensors.VisionLL.LIMELIGHT_PIPELINE;
-import frc.robot.subsystems.Chassis;
+import frc.robot.subsystems.NEOChassis;
 import frc.robot.util.GeneralUtilities;
 
 public class YaYeetVision extends Command 
 {
-  Chassis _chassis = Chassis.getInstance();
+  NEOChassis _chassis = NEOChassis.getInstance();
   VisionLL _limelight = VisionLL.getInstance();
   DistanceRev2mSensor _ds = DistanceRev2mSensor.getInstance();
   double kPDXFIX = 0.005;

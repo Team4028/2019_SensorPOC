@@ -8,17 +8,8 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.auton.DriveOffLevel2Forwards;
-import frc.robot.commands.auton.autons.DoNothing;
-import frc.robot.commands.auton.autons.Level2TeleopSandstorm;
-import frc.robot.commands.auton.autons.LineCross;
-import frc.robot.commands.auton.autons.Left.LSingleHatchBackRocketL;
-import frc.robot.commands.auton.autons.Left.LSingleHatchBackRocketLLevel2;
-import frc.robot.commands.auton.autons.Left.LSingleHatchLSide;
-import frc.robot.commands.auton.autons.Left.LSingleHatchLSideLevel2;
-import frc.robot.commands.auton.autons.Right.RSingleHatchBackRocket;
-import frc.robot.commands.auton.autons.Right.RSingleHatchBackRocketRLevel2;
-import frc.robot.commands.auton.autons.Right.RSingleHatchRSide;
-import frc.robot.commands.auton.autons.Right.RSingleHatchRSideLevel2;
+import frc.robot.commands.auton.DoNothing;
+
 import frc.robot.interfaces.IBeakSquadSubsystem;
 import frc.robot.util.LogDataBE;
 
@@ -76,57 +67,58 @@ public class AutonChoosers implements IBeakSquadSubsystem {
     
     /** Returns the autonBase object associated with the auton selected on the dashboard */
 	public CommandGroup getSelectedAuton() {
-		STARTING_SIDE startingSide = _autonStartingSideChooser.getSelected();
-		System.out.println("Selecting an Auton");
-		switch(_autonAction.getSelected()) {
-			case DO_NOTHING:
-				if(startingSide==STARTING_SIDE.LEFT_LVL2||startingSide==STARTING_SIDE.LEFT_LVL2)
-				{
-					return new Level2TeleopSandstorm();
-				}
-				else
-				{
-					return new DoNothing();
-				}
-			case LINE_CROSS:
-				return new LineCross();
+		return new DoNothing();
+		// STARTING_SIDE startingSide = _autonStartingSideChooser.getSelected();
+		// System.out.println("Selecting an Auton");
+		// switch(_autonAction.getSelected()) {
+		// 	case DO_NOTHING:
+		// 		if(startingSide==STARTING_SIDE.LEFT_LVL2||startingSide==STARTING_SIDE.LEFT_LVL2)
+		// 		{
+		// 			return new Level2TeleopSandstorm();
+		// 		}
+		// 		else
+		// 		{
+		// 			return new DoNothing();
+		// 		}
+		// 	case LINE_CROSS:
+		// 		return new LineCross();
 			
-			case SIDE_HATCH:
-				if(startingSide==STARTING_SIDE.LEFT_LVL1)
-				{
-					return new LSingleHatchLSide();
-				}
-				else if(startingSide==STARTING_SIDE.LEFT_LVL2)
-				{
-					return new LSingleHatchLSideLevel2();
-				}
-				else if(startingSide==STARTING_SIDE.RIGHT_LVL1)
-				{
-					return new RSingleHatchRSide();
-				}
-				else if (startingSide==STARTING_SIDE.RIGHT_LVL2)
-				{
-					return new RSingleHatchRSideLevel2();
-				}
-			case ROCKET:
-				if (startingSide == STARTING_SIDE.LEFT_LVL1){
-					return new LSingleHatchBackRocketL();
-				} 
-				else if(startingSide == STARTING_SIDE.LEFT_LVL2)
-				{
-					return new LSingleHatchBackRocketLLevel2();
-				} 
-				else if(startingSide==STARTING_SIDE.RIGHT_LVL1)
-				{
-					return new RSingleHatchBackRocket();
-				}
-				else 
-				{
-					return new RSingleHatchBackRocketRLevel2();
-				}
- 			default:
-				return new DoNothing(); 
-		}
+		// 	case SIDE_HATCH:
+		// 		if(startingSide==STARTING_SIDE.LEFT_LVL1)
+		// 		{
+		// 			return new LSingleHatchLSide();
+		// 		}
+		// 		else if(startingSide==STARTING_SIDE.LEFT_LVL2)
+		// 		{
+		// 			return new LSingleHatchLSideLevel2();
+		// 		}
+		// 		else if(startingSide==STARTING_SIDE.RIGHT_LVL1)
+		// 		{
+		// 			return new RSingleHatchRSide();
+		// 		}
+		// 		else if (startingSide==STARTING_SIDE.RIGHT_LVL2)
+		// 		{
+		// 			return new RSingleHatchRSideLevel2();
+		// 		}
+		// 	case ROCKET:
+		// 		if (startingSide == STARTING_SIDE.LEFT_LVL1){
+		// 			return new LSingleHatchBackRocketL();
+		// 		} 
+		// 		else if(startingSide == STARTING_SIDE.LEFT_LVL2)
+		// 		{
+		// 			return new LSingleHatchBackRocketLLevel2();
+		// 		} 
+		// 		else if(startingSide==STARTING_SIDE.RIGHT_LVL1)
+		// 		{
+		// 			return new RSingleHatchBackRocket();
+		// 		}
+		// 		else 
+		// 		{
+		// 			return new RSingleHatchBackRocketRLevel2();
+		// 		}
+ 		// 	default:
+		// 		return new DoNothing(); 
+		// }
 	}
 	public boolean getIsSafe()
 	{

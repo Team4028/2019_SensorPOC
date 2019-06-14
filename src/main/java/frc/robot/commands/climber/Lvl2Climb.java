@@ -14,7 +14,7 @@ import frc.robot.commands.infeed.SendBucketIn;
 import frc.robot.commands.infeed.SendBucketOut;
 import frc.robot.commands.infeed.ToggleBeakOpen;
 import frc.robot.commands.infeed.TogglePunch;
-import frc.robot.subsystems.Chassis;
+import frc.robot.subsystems.NEOChassis;
 import frc.robot.subsystems.Climber;
 
 public class Lvl2Climb extends CommandGroup
@@ -22,7 +22,7 @@ public class Lvl2Climb extends CommandGroup
     double climbHeight =-8500;
     double clearedHeight=-696.9;//Nice
     Climber _climber = Climber.getInstance();
-    Chassis _chassis = Chassis.getInstance();
+    NEOChassis _chassis = NEOChassis.getInstance();
     public Lvl2Climb()
     {
         requires(_climber);
@@ -49,8 +49,5 @@ public class Lvl2Climb extends CommandGroup
         addSequential(new SendBucketIn());
         addSequential(new WaitCommand(0.1));
     }
-    @Override
-    protected boolean isFinished() {
-        return super.isFinished() || _chassis.getForcedAutonFinish();
-    }
+
 }

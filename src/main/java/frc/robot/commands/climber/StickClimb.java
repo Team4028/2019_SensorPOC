@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.command.WaitCommand;
 import edu.wpi.first.wpilibj.command.WaitUntilCommand;
 import frc.robot.commands.auton.util.Series_Command;
 import frc.robot.commands.auton.util.Simultaneous_Command;
-import frc.robot.commands.auton.util.printTimeFromStart;
 import frc.robot.commands.chassis.DriveWithControllers;
 import frc.robot.commands.chassis.StopChassis;
 import frc.robot.commands.climber.Important.Secret.Hidden.Surprise.DontWorryAboutIt.EZWin.GGNoRE.YaYeetYaYeetYaYeetGirl.DasMyBurrito.IRICorn.VictorySpin;
@@ -19,7 +18,7 @@ import frc.robot.commands.infeed.SendBucketOut;
 import frc.robot.commands.infeed.ToggleBeakInOut;
 import frc.robot.commands.infeed.ToggleBeakOpen;
 import frc.robot.commands.infeed.TogglePunch;
-import frc.robot.subsystems.Chassis;
+import frc.robot.subsystems.NEOChassis;
 import frc.robot.subsystems.Climber;
 
 public class StickClimb extends CommandGroup
@@ -27,7 +26,7 @@ public class StickClimb extends CommandGroup
     double climbHeight =-20500;
     double clearedHeight=-700;//15000?
     Climber _climber = Climber.getInstance();
-    Chassis _chassis = Chassis.getInstance();
+    NEOChassis _chassis = NEOChassis.getInstance();
 
     public StickClimb()
     {
@@ -55,9 +54,5 @@ public class StickClimb extends CommandGroup
         addSequential(new DriveClimber(0.0),0.5);
         // addSequential(new VictorySpin(),3);
 
-    }
-    @Override
-    protected boolean isFinished() {
-        return super.isFinished() || _chassis.getForcedAutonFinish();
     }
 }

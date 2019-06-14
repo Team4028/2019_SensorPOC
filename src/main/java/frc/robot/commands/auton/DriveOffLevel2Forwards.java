@@ -10,10 +10,10 @@ package frc.robot.commands.auton;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.subsystems.Chassis;
+import frc.robot.subsystems.NEOChassis;
 
 public class DriveOffLevel2Forwards extends Command {
-  Chassis _chassis = Chassis.getInstance();
+  NEOChassis _chassis = NEOChassis.getInstance();
   double _startTime;
   public DriveOffLevel2Forwards() {
     requires(_chassis);
@@ -42,7 +42,6 @@ public class DriveOffLevel2Forwards extends Command {
   @Override
   protected void end() {
     _chassis.stop();
-    _chassis.zeroEncoders();
   }
 
   // Called when another command which requires one or more of the same

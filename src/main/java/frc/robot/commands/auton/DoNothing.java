@@ -5,17 +5,14 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.auton.autons;
+package frc.robot.commands.auton;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
-import frc.robot.commands.auton.DriveOffLevel2Forwards;
 
-public class Level2TeleopSandstorm extends CommandGroup {
+public class DoNothing extends CommandGroup {
   /**
    * Add your docs here.
    */
-  public Level2TeleopSandstorm() {
-    setInterruptible(true);
-    addSequential(new DriveOffLevel2Forwards());
+  public DoNothing() {
   }
 }

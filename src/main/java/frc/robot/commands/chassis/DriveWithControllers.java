@@ -1,12 +1,12 @@
 package frc.robot.commands.chassis;
 
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.subsystems.Chassis;
+import frc.robot.subsystems.NEOChassis;
 import frc.robot.util.BeakXboxController.Thumbstick;
 
 public class DriveWithControllers extends Command {
 
-  private Chassis _chassis = Chassis.getInstance();
+  private NEOChassis _chassis = NEOChassis.getInstance();
   private Thumbstick _leftThumbstick;
   private Thumbstick _rightThumbstick;
   private boolean isAuton;

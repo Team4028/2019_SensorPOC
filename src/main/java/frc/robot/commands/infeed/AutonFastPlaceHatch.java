@@ -5,11 +5,11 @@ import edu.wpi.first.wpilibj.command.WaitCommand;
 import frc.robot.commands.infeed.ToggleBeakOpen;
 import frc.robot.commands.infeed.TogglePunch;
 import frc.robot.subsystems.Cargo;
-import frc.robot.subsystems.Chassis;
+import frc.robot.subsystems.NEOChassis;
 
 public class AutonFastPlaceHatch extends CommandGroup
 {
-    Chassis _chassis = Chassis.getInstance();
+    NEOChassis _chassis = NEOChassis.getInstance();
     Cargo _cargo = Cargo.getInstance();
     public AutonFastPlaceHatch()
     {

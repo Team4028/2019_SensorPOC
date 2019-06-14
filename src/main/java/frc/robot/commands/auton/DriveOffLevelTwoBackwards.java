@@ -11,10 +11,10 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.subsystems.Chassis;
+import frc.robot.subsystems.NEOChassis;
 
 public class DriveOffLevelTwoBackwards extends Command {
-  Chassis _chassis = Chassis.getInstance();
+  NEOChassis _chassis = NEOChassis.getInstance();
   double _startTime;
   public DriveOffLevelTwoBackwards() {
     requires(_chassis);
@@ -43,7 +43,6 @@ public class DriveOffLevelTwoBackwards extends Command {
   @Override
   protected void end() {
     _chassis.stop();
-    _chassis.zeroEncoders();
   }
 
   // Called when another command which requires one or more of the same

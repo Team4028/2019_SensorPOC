@@ -3,11 +3,11 @@ package frc.robot.commands.climber.Important.Secret.Hidden.Surprise.DontWorryAbo
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.subsystems.Chassis;
+import frc.robot.subsystems.NEOChassis;
 
 public class VictorySpin extends Command
 {
-    Chassis _chassis = Chassis.getInstance();
+    NEOChassis _chassis = NEOChassis.getInstance();
     public VictorySpin()
     {
         requires(_chassis);
@@ -15,7 +15,7 @@ public class VictorySpin extends Command
     }
     @Override
     protected void execute() {
-        _chassis.setLeftRightCommand(ControlMode.PercentOutput, 0.5, -0.5);
+        _chassis.arcadeDrive(0,0.5);
     }
 	@Override
 	protected boolean isFinished() {

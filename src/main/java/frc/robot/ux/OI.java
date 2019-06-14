@@ -2,7 +2,6 @@ package frc.robot.ux;
 
 import frc.robot.RobotMap;
 import frc.robot.commands.auton.DriveOffLevelTwoBackwards;
-import frc.robot.commands.auton.StopAuton;
 import frc.robot.commands.auton.adaptivePaths.YaYeetVision;
 import frc.robot.commands.auton.util.StartAuton;
 import frc.robot.commands.camera.ChangeToLimelight;
@@ -79,7 +78,6 @@ public class OI {
 		_driverController.x.whenPressed(new ToggleBeakOpen());
 		_driverController.y.whenPressed(new TogglePunch());
 		
-		_driverController.start.whenPressed(new StopAuton());
 		_driverController.back.whenPressed(new StartAuton());
 		// =========== Operator ======================================
 		_operatorController = new BeakXboxController(RobotMap.OPERATOR_GAMEPAD_USB_PORT);
@@ -96,7 +94,6 @@ public class OI {
 		_operatorController.rt.whenPressed(new Lvl2Climb());
 		_operatorController.lt.whenInactive(new Lvl3ClimbFromLvl2());
 
-		_operatorController.a.whenPressed(new StopAuton());
 		_operatorController.leftStick.whileActive(new LiftClimber(_operatorController.leftStick));
 		_operatorController.rightStick.whileActive(new DriveClimber(_operatorController.rightStick));
 		_operatorController.leftStick.whenReleased(new HoldClimber());

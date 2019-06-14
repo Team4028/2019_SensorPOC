@@ -33,10 +33,9 @@ import frc.robot.sensors.DistanceRev2mSensor;
 import frc.robot.sensors.StoredPressureSensor;
 import frc.robot.sensors.SwitchableCameraServer;
 import frc.robot.subsystems.Cargo;
-import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Chassis.ChassisState;
+import frc.robot.subsystems.NEOChassis;
 import frc.robot.util.DataLogger;
 import frc.robot.util.GeneralUtilities;
 import frc.robot.util.LogDataBE;
@@ -74,7 +73,7 @@ public class Robot extends TimedRobot {
   private AutonChoosers _autonChoosers = AutonChoosers.getInstance();
 
   // subsystems
-  private Chassis _chassis = Chassis.getInstance();
+  private NEOChassis _chassis = NEOChassis.getInstance();
   private Cargo _cargo = Cargo.getInstance();
   private Climber _climber = Climber.getInstance();
   private Elevator _elevator = Elevator.getInstance();
@@ -116,15 +115,10 @@ public class Robot extends TimedRobot {
     changePipeline.start();
     Paths.havePathsBuilt=false;
     Paths.buildPaths();
-    _chassis.initiateRobotState();
-    _chassis.zeroSensors();
     _chassis.stop();
-    _chassis.setBrakeMode(NeutralMode.Brake);
     _scanTimeSamples = new MovingAverage(20);
     _lastDashboardWriteTimeMSec = new Date().getTime(); // snapshot time to control spamming
     _dataLogger = GeneralUtilities.setupLogging("Auton"); // init data logging	
-
-    Chassis._autoStartTime = Timer.getFPGATimestamp();
     if(!_elevator.get_hasElevatorBeenZeroed()){
       Command zeroElevatorCommand = new ZeroElevatorEncoder();
       zeroElevatorCommand.start();
@@ -146,25 +140,9 @@ public class Robot extends TimedRobot {
       hasClimberZeroed=true;
     }
 
-    if(Paths.havePathsBuilt)
-    {
-      if(_autonChoosers.getIsSafe() && !hasAutonBeenScheduled && Timer.getFPGATimestamp()-_chassis._autoStartTime>0.2)
-      {
-        CommandGroup auton = _autonChoosers.getSelectedAuton();
-        System.out.println(auton);
-        hasAutonBeenScheduled=true;
-        auton.start();
-      }
-    }
+
     Scheduler.getInstance().run();
-    _chassis.updateChassis(Timer.getFPGATimestamp());
     _vision.turnOnLEDs();
-    if(_chassis.getForcedAutonFinish())
-    {
-      _autonChoosers.getSelectedAuton().cancel();
-      Scheduler.getInstance().removeAll();
-      _chassis.setForcedAutonFinish(false);
-    }
   }
 
   /********************************************************************************************
@@ -175,24 +153,21 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopInit() {
-    _chassis.setForcedAutonFinish(false);
     Command changePipeline = new ChoosePipeline(LIMELIGHT_PIPELINE.CENTER);
     changePipeline.start();
     Command stopChassis = new StopChassis();
     stopChassis.start();
-    _chassis.zeroSensors();
-    _chassis.initiateRobotState();
-    _chassis.setBrakeMode(NeutralMode.Brake);
-        _scanTimeSamples = new MovingAverage(20);
+    _scanTimeSamples = new MovingAverage(20);
     _dataLogger = GeneralUtilities.setupLogging("Teleop"); // init data logging
     _lastDashboardWriteTimeMSec = new Date().getTime(); // snapshot time to control spamming
     if(!_elevator.get_hasElevatorBeenZeroed()){
       Command zeroElevatorCommand = new ZeroElevatorEncoder();
       zeroElevatorCommand.start();
     }
-    _chassis.setChassisState(ChassisState.PERCENT_VBUS);
     Command zeroClimber = new ZeroClimber();
     zeroClimber.start();
+    _chassis.setIsBrakeMode(true);
+    _chassis.setRampRate(0.5);
 
   
   }
@@ -235,7 +210,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     _scanTimeSamples = new MovingAverage(20);
-    _chassis.setBrakeMode(NeutralMode.Coast);
+    _chassis.setIsBrakeMode(false);
     _chassis.stop();
     Scheduler.getInstance().removeAll();
     _vision.turnOffLEDs();

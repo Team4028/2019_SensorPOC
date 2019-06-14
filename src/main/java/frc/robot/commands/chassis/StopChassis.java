@@ -1,11 +1,11 @@
 package frc.robot.commands.chassis;
 
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.subsystems.Chassis;
+import frc.robot.subsystems.NEOChassis;
 
 public class StopChassis extends Command
 {
-    Chassis _chassis = Chassis.getInstance();
+    NEOChassis _chassis = NEOChassis.getInstance();
     public StopChassis()
     {
         requires(_chassis);
