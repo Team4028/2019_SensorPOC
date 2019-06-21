@@ -32,6 +32,14 @@ public class NEOChassis extends Subsystem implements IBeakSquadSubsystem
         _leftMaster.setInverted(false);
         _leftSlave.setInverted(false);
         setIsBrakeMode(true);
+        _leftMaster.setSmartCurrentLimit(40);
+        _rightMaster.setSmartCurrentLimit(40);
+        _leftSlave.setSmartCurrentLimit(40);
+        _rightSlave.setSmartCurrentLimit(40);
+        _rightMaster.burnFlash();
+        _leftMaster.burnFlash();
+        _leftSlave.burnFlash();
+        _rightSlave.burnFlash();
     }
 
     public void setIsBrakeMode(boolean isBrakeMode)
@@ -70,8 +78,21 @@ public class NEOChassis extends Subsystem implements IBeakSquadSubsystem
         {
             setRampRate(0.85);
         }
-        _leftMaster.set(0.7*fwdCmd+0.3*turnCmd);
-        _rightMaster.set(0.7*fwdCmd-0.3*turnCmd);
+        _leftMaster.set(0.75*fwdCmd+0.25*turnCmd);
+        _rightMaster.set(0.75*fwdCmd-0.25*turnCmd);
+    }
+    public void elevatorUpArcadeDrive(double fwdCmd, double turnCmd)
+    {
+        if(turnCmd>0.3)
+        {
+            setRampRate(0.5);
+        }
+        else
+        {
+            setRampRate(0.85);
+        }
+        _leftMaster.set(0.5*fwdCmd+0.15*turnCmd);
+        _rightMaster.set(0.5*fwdCmd-0.15*turnCmd);
     }
 
     public void stop()
