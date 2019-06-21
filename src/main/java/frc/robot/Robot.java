@@ -119,8 +119,10 @@ public class Robot extends TimedRobot {
     _scanTimeSamples = new MovingAverage(20);
     _lastDashboardWriteTimeMSec = new Date().getTime(); // snapshot time to control spamming
     _dataLogger = GeneralUtilities.setupLogging("Auton"); // init data logging	
-    Command zeroElevatorCommand = new ZeroElevatorEncoder();
-    zeroElevatorCommand.start();
+    if(!_elevator.get_hasElevatorBeenZeroed()){
+      Command zeroElevatorCommand = new ZeroElevatorEncoder();
+      zeroElevatorCommand.start();
+    }
     hasAutonBeenScheduled=false;
     hasClimberZeroed=false;
   }
@@ -137,6 +139,7 @@ public class Robot extends TimedRobot {
       zeroClimber.start();
       hasClimberZeroed=true;
     }
+
 
     Scheduler.getInstance().run();
     _vision.turnOnLEDs();
@@ -173,7 +176,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    Scheduler.getInstance().run(); 
+    Scheduler.getInstance().run();  
     //_vision.turnOnLEDs();
     //_chassis.updateChassis(Timer.getFPGATimestamp());
 

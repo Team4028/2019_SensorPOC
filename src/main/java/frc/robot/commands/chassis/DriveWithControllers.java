@@ -1,21 +1,16 @@
 package frc.robot.commands.chassis;
 
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.subsystems.Cargo;
-import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.NEOChassis;
-import frc.robot.subsystems.Elevator.ELEVATOR_TARGET_POSITION;
 import frc.robot.util.BeakXboxController.Thumbstick;
 
 public class DriveWithControllers extends Command {
 
   private NEOChassis _chassis = NEOChassis.getInstance();
-  private Elevator _elevator = Elevator.getInstance();
   private Thumbstick _leftThumbstick;
   private Thumbstick _rightThumbstick;
   private boolean isAuton;
   private double _throttleCmd, _turnCmd;
-  private Cargo _cargo = Cargo.getInstance();
 
 
   public DriveWithControllers(Thumbstick leftThumbstick, Thumbstick righThumbstick) {
@@ -43,14 +38,7 @@ public class DriveWithControllers extends Command {
   protected void execute() 
   {
     if(!isAuton) {
-      if((_elevator.get_ElevatorPos()>4028))
-      {
-        _chassis.elevatorUpArcadeDrive(_leftThumbstick.getY(), _rightThumbstick.getX());
-      }
-      else
-      {
-        _chassis.arcadeDrive(_leftThumbstick.getY(), _rightThumbstick.getX());
-      }
+      _chassis.arcadeDrive(_leftThumbstick.getY(), _rightThumbstick.getX());
     } else {
       _chassis.arcadeDrive(_throttleCmd, _turnCmd);
     }
