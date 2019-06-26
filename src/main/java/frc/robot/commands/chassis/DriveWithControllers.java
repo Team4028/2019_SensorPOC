@@ -1,6 +1,7 @@
 package frc.robot.commands.chassis;
 
 import edu.wpi.first.wpilibj.command.Command;
+import frc.robot.sensors.GyroNavX;
 import frc.robot.subsystems.Cargo;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.NEOChassis;
@@ -16,6 +17,7 @@ public class DriveWithControllers extends Command {
   private boolean isAuton;
   private double _throttleCmd, _turnCmd;
   private Cargo _cargo = Cargo.getInstance();
+  private GyroNavX _navX = GyroNavX.getInstance();
 
 
   public DriveWithControllers(Thumbstick leftThumbstick, Thumbstick righThumbstick) {
@@ -42,18 +44,26 @@ public class DriveWithControllers extends Command {
   @Override
   protected void execute() 
   {
-    if(!isAuton) {
-      if((_elevator.get_ElevatorPos()>4028))
-      {
-        _chassis.elevatorUpArcadeDrive(_leftThumbstick.getY(), _rightThumbstick.getX());
+    if(Math.abs(_navX.getPitch())<15)
+    {
+      if(!isAuton) {
+        if((_elevator.get_ElevatorPos()>4028))
+        {
+          _chassis.elevatorUpArcadeDrive(_leftThumbstick.getY(), _rightThumbstick.getX());
+        }
+        else
+        {
+          _chassis.arcadeDrive(_leftThumbstick.getY(), _rightThumbstick.getX());
+        }
+      } else {
+        _chassis.arcadeDrive(_throttleCmd, _turnCmd);
       }
-      else
-      {
-        _chassis.arcadeDrive(_leftThumbstick.getY(), _rightThumbstick.getX());
-      }
-    } else {
-      _chassis.arcadeDrive(_throttleCmd, _turnCmd);
     }
+    else
+    {
+      _chassis.stop();
+    }
+   
   }
 
   // Make this return true when this Command no longer needs to run execute()

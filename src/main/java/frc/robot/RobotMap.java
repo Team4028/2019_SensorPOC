@@ -29,6 +29,8 @@ public class RobotMap {
 	public static final int ELEVATOR_SLAVE_CAN_ADDR = 7;
 	public static final int ELEVATOR_MASTER_CAN_ADDR = 8;
 	public static final int INFEED_DRIVE_CAN_ADDR = 9;
+	public static final int LEFT_DRIVE_SLAVE2_CAN_ADDR = 10;
+	public static final int RIGHT_DRIVE_SLAVE2_CAN_ADDR = 11;
 
 	// DIO Ports
 	public static final int CARGO_LIMIT_SWITCH_DIO_PORT = 9;

@@ -14,8 +14,10 @@ public class NEOChassis extends Subsystem implements IBeakSquadSubsystem
 {
     CANSparkMax _leftMaster = new CANSparkMax(RobotMap.LEFT_DRIVE_MASTER_CAN_ADDR, MotorType.kBrushless);
     CANSparkMax _leftSlave = new CANSparkMax(RobotMap.LEFT_DRIVE_SLAVE_CAN_ADDR, MotorType.kBrushless);
+    CANSparkMax _leftSlave2 = new CANSparkMax(RobotMap.LEFT_DRIVE_SLAVE2_CAN_ADDR, MotorType.kBrushless);
     CANSparkMax _rightMaster = new CANSparkMax(RobotMap.RIGHT_DRIVE_MASTER_CAN_ADDR, MotorType.kBrushless);
     CANSparkMax _rightSlave = new CANSparkMax(RobotMap.RIGHT_DRIVE_SLAVE_CAN_ADDR, MotorType.kBrushless);
+    CANSparkMax _rightSlave2 = new CANSparkMax(RobotMap.RIGHT_DRIVE_SLAVE2_CAN_ADDR, MotorType.kBrushless);
     
 
     private static NEOChassis _instance = new NEOChassis();
@@ -26,20 +28,28 @@ public class NEOChassis extends Subsystem implements IBeakSquadSubsystem
     public NEOChassis()
     {
         _leftSlave.follow(_leftMaster);
+        _leftSlave2.follow(_leftMaster);
         _rightSlave.follow(_rightMaster);
+        _rightSlave2.follow(_rightMaster);
         _rightMaster.setInverted(true);
         _rightSlave.setInverted(true);
+        _rightSlave2.setInverted(true);
         _leftMaster.setInverted(false);
         _leftSlave.setInverted(false);
+        _leftSlave2.setInverted(false);
         setIsBrakeMode(true);
         _leftMaster.setSmartCurrentLimit(40);
         _rightMaster.setSmartCurrentLimit(40);
         _leftSlave.setSmartCurrentLimit(40);
         _rightSlave.setSmartCurrentLimit(40);
+        _leftSlave2.setSmartCurrentLimit(40);
+        _rightSlave2.setSmartCurrentLimit(40);
         _rightMaster.burnFlash();
         _leftMaster.burnFlash();
         _leftSlave.burnFlash();
         _rightSlave.burnFlash();
+        _rightSlave2.burnFlash();
+        _leftSlave2.burnFlash();
     }
 
     public void setIsBrakeMode(boolean isBrakeMode)
@@ -50,6 +60,8 @@ public class NEOChassis extends Subsystem implements IBeakSquadSubsystem
             _leftSlave.setIdleMode(IdleMode.kBrake);
             _rightMaster.setIdleMode(IdleMode.kBrake);
             _rightSlave.setIdleMode(IdleMode.kBrake);
+            _rightSlave2.setIdleMode(IdleMode.kBrake);
+            _leftSlave2.setIdleMode(IdleMode.kBrake);
         }
         else
         {
@@ -57,6 +69,8 @@ public class NEOChassis extends Subsystem implements IBeakSquadSubsystem
             _leftSlave.setIdleMode(IdleMode.kCoast);
             _rightMaster.setIdleMode(IdleMode.kCoast);
             _rightSlave.setIdleMode(IdleMode.kCoast);
+            _rightSlave2.setIdleMode(IdleMode.kCoast);
+            _leftSlave2.setIdleMode(IdleMode.kCoast);
         }
     }
 
@@ -66,6 +80,8 @@ public class NEOChassis extends Subsystem implements IBeakSquadSubsystem
         _leftSlave.setOpenLoopRampRate(rampRate);
         _rightMaster.setOpenLoopRampRate(rampRate);
         _rightSlave.setOpenLoopRampRate(rampRate);
+        _leftSlave2.setOpenLoopRampRate(rampRate);
+        _rightSlave2.setOpenLoopRampRate(rampRate);
     }
 
     public void arcadeDrive(double fwdCmd, double turnCmd)
@@ -85,11 +101,11 @@ public class NEOChassis extends Subsystem implements IBeakSquadSubsystem
     {
         if(turnCmd>0.3)
         {
-            setRampRate(0.5);
+            setRampRate(0.8);
         }
         else
         {
-            setRampRate(0.85);
+            setRampRate(1.0);
         }
         _leftMaster.set(0.5*fwdCmd+0.15*turnCmd);
         _rightMaster.set(0.5*fwdCmd-0.15*turnCmd);
