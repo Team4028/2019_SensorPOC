@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.auton.DriveOffLevel2Forwards;
 import frc.robot.commands.auton.DoNothing;
-
+import frc.robot.commands.auton.DriveOffLevel2;
 import frc.robot.interfaces.IBeakSquadSubsystem;
 import frc.robot.util.LogDataBE;
 
@@ -20,18 +20,14 @@ public class AutonChoosers implements IBeakSquadSubsystem {
 
     private enum AUTON_MODE {
 		UNDEFINED,
-		LINE_CROSS,
-		SIDE_HATCH,
-		ROCKET,
-        DO_NOTHING, 
+		DO_NOTHING, 
+		GG_EZ_AUTON_AWARD_SPONSORED_BY_FORD_TWO_HATCH_SANDSTORM_TELEOP
     }
 
-	private enum STARTING_SIDE 
+	private enum STARTING_SIDE
 	{
-		LEFT_LVL1,
-		LEFT_LVL2,
-		RIGHT_LVL1,
-		RIGHT_LVL2
+		LVL_1,
+		LVL_2
     }
     private SendableChooser<AUTON_MODE> _autonAction = new SendableChooser<>();
     private SendableChooser<STARTING_SIDE> _autonStartingSideChooser = new SendableChooser<>();
@@ -49,15 +45,12 @@ public class AutonChoosers implements IBeakSquadSubsystem {
 	private AutonChoosers() {
         // Auton Mode
 		_autonAction.setDefaultOption("Do Nothing", AUTON_MODE.DO_NOTHING);
-		_autonAction.addOption("Side Hatch", AUTON_MODE.SIDE_HATCH);
-		_autonAction.addOption("Line Cross", AUTON_MODE.LINE_CROSS);
-		_autonAction.addOption("Rocket", AUTON_MODE.ROCKET);
+		_autonAction.addOption("Teleop", AUTON_MODE.GG_EZ_AUTON_AWARD_SPONSORED_BY_FORD_TWO_HATCH_SANDSTORM_TELEOP);
         
         // Auton Starting Side
-		_autonStartingSideChooser.setDefaultOption("LEFT LEVEL 1", STARTING_SIDE.LEFT_LVL1);
-		_autonStartingSideChooser.setDefaultOption("LEFT LEVEL 2", STARTING_SIDE.LEFT_LVL2);
-		_autonStartingSideChooser.addOption("RIGHT LEVEL 1", STARTING_SIDE.RIGHT_LVL1);
-		_autonStartingSideChooser.addOption("RIGHT LEVEL 2", STARTING_SIDE.RIGHT_LVL2);
+		_autonStartingSideChooser.setDefaultOption("LEVEL 1", STARTING_SIDE.LVL_1);
+		_autonStartingSideChooser.setDefaultOption("LEVEL 2", STARTING_SIDE.LVL_2);
+
 
     }
     
@@ -67,62 +60,35 @@ public class AutonChoosers implements IBeakSquadSubsystem {
     
     /** Returns the autonBase object associated with the auton selected on the dashboard */
 	public CommandGroup getSelectedAuton() {
-		return new DoNothing();
-		// STARTING_SIDE startingSide = _autonStartingSideChooser.getSelected();
-		// System.out.println("Selecting an Auton");
-		// switch(_autonAction.getSelected()) {
-		// 	case DO_NOTHING:
-		// 		if(startingSide==STARTING_SIDE.LEFT_LVL2||startingSide==STARTING_SIDE.LEFT_LVL2)
-		// 		{
-		// 			return new Level2TeleopSandstorm();
-		// 		}
-		// 		else
-		// 		{
-		// 			return new DoNothing();
-		// 		}
-		// 	case LINE_CROSS:
-		// 		return new LineCross();
+		STARTING_SIDE startingSide = _autonStartingSideChooser.getSelected();
+		System.out.println("Selecting an Auton");
+		switch(_autonAction.getSelected()) {
+			case DO_NOTHING:
+				if(startingSide==STARTING_SIDE.LVL_2)
+				{
+					return new DriveOffLevel2();
+				}
+				else
+				{
+					return new DoNothing();
+				}
+			case GG_EZ_AUTON_AWARD_SPONSORED_BY_FORD_TWO_HATCH_SANDSTORM_TELEOP:
+				if(startingSide==STARTING_SIDE.LVL_2)
+				{
+					return new DriveOffLevel2();
+				}
+				else
+				{
+					return new DoNothing();
+				}
 			
-		// 	case SIDE_HATCH:
-		// 		if(startingSide==STARTING_SIDE.LEFT_LVL1)
-		// 		{
-		// 			return new LSingleHatchLSide();
-		// 		}
-		// 		else if(startingSide==STARTING_SIDE.LEFT_LVL2)
-		// 		{
-		// 			return new LSingleHatchLSideLevel2();
-		// 		}
-		// 		else if(startingSide==STARTING_SIDE.RIGHT_LVL1)
-		// 		{
-		// 			return new RSingleHatchRSide();
-		// 		}
-		// 		else if (startingSide==STARTING_SIDE.RIGHT_LVL2)
-		// 		{
-		// 			return new RSingleHatchRSideLevel2();
-		// 		}
-		// 	case ROCKET:
-		// 		if (startingSide == STARTING_SIDE.LEFT_LVL1){
-		// 			return new LSingleHatchBackRocketL();
-		// 		} 
-		// 		else if(startingSide == STARTING_SIDE.LEFT_LVL2)
-		// 		{
-		// 			return new LSingleHatchBackRocketLLevel2();
-		// 		} 
-		// 		else if(startingSide==STARTING_SIDE.RIGHT_LVL1)
-		// 		{
-		// 			return new RSingleHatchBackRocket();
-		// 		}
-		// 		else 
-		// 		{
-		// 			return new RSingleHatchBackRocketRLevel2();
-		// 		}
- 		// 	default:
-		// 		return new DoNothing(); 
-		// }
+ 			default:
+				return new DoNothing(); 
+		}
 	}
 	public boolean getIsSafe()
 	{
-		return _autonStartingSideChooser.getSelected()==STARTING_SIDE.LEFT_LVL1 || _autonStartingSideChooser.getSelected()==STARTING_SIDE.RIGHT_LVL1;
+		return _autonStartingSideChooser.getSelected()==STARTING_SIDE.LVL_1;
 	}
     @Override
     public void updateLogData(LogDataBE logData) {

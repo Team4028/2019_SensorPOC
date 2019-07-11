@@ -29,25 +29,25 @@ public class Lvl3ClimbFromLvl2 extends CommandGroup
     {
         requires(_climber);
         setInterruptible(false);
-        addSequential(new TogglePunch());
-        addSequential(new ToggleBeakOpenClose());
-        addSequential(new MoveClimberToPos(climbHeight,0.5));
-        addParallel(new DriveClimber(0.5));
-        addParallel(new DriveWithControllers(0.2, 0));
+        addSequential(new MoveClimberToPos(climbHeight,0.7));
+            addParallel(new DriveClimber(0.5));
+            addParallel(new DriveWithControllers(0.075, 0));
         addSequential(new HoldClimber(0.48));
-        addParallel(new SendBucketOut());
-        addParallel(new ToggleBeakInOut());
+            addParallel(new SendBucketOut());
+            addParallel(new SendBeakOut());
+            addParallel(new ToggleBeakOpenClose());
         addSequential(new MoveClimberToPos(climbHeight+2200, 0.2));
-        addParallel(new DriveClimber(0.8));
+            addParallel(new DriveClimber(0.8));
         addSequential(new HoldClimber(2));
+            addParallel (new DriveWithControllers(0.2, 0),1.2);
         addSequential(new MoveClimberToPos(clearedHeight, 0.2));
         addSequential(new HoldClimber(0.25));
-        addParallel(new PrintCommand("Moved to Clear Height"));
-        addSequential(new DriveWithControllers(0.3, 0),0.85);
-        addSequential(new DriveClimber(0.0),0.5);
-        addSequential(new DriveWithControllers(0.1, 0),0.3);
+            addParallel(new PrintCommand("Moved to Clear Height"));
+        addSequential(new DriveClimber(0.0),0.1);
+        addSequential(new DriveWithControllers(0.1, 0),0.2);
+        addSequential(new DriveWithControllers(0.05, 0),0.3);
         addSequential(new PrintCommand("Driven"));
-        //addParallel(new StopChassis(),0.25);
+        addSequential(new StopChassis(),0.25);
      }
 
 }

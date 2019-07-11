@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.auton.pathfollowing.Paths;
+import frc.robot.commands.auton.DriveOffLevel2Forwards;
 import frc.robot.commands.auton.StartAcquireHatch;
 import frc.robot.commands.chassis.DriveWithControllers;
 import frc.robot.commands.chassis.StopChassis;
@@ -116,6 +117,7 @@ public class Robot extends TimedRobot {
     Paths.havePathsBuilt=false;
     Paths.buildPaths();
     _chassis.stop();
+    _chassis.setIsBrakeMode(true);
     _scanTimeSamples = new MovingAverage(20);
     _lastDashboardWriteTimeMSec = new Date().getTime(); // snapshot time to control spamming
     _dataLogger = GeneralUtilities.setupLogging("Auton"); // init data logging	
@@ -164,7 +166,6 @@ public class Robot extends TimedRobot {
     Command zeroClimber = new ZeroClimber();
     zeroClimber.start();
     _chassis.setIsBrakeMode(true);
-    _chassis.setRampRate(0.5);
 
   
   }
@@ -207,7 +208,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     _scanTimeSamples = new MovingAverage(20);
-    _chassis.setIsBrakeMode(false);
+    _chassis.setIsBrakeMode(true);
     _chassis.stop();
     Scheduler.getInstance().removeAll();
     _vision.turnOffLEDs();

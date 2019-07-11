@@ -12,13 +12,13 @@ import frc.robot.util.LogDataBE;
 
 public class NEOChassis extends Subsystem implements IBeakSquadSubsystem 
 {
-    CANSparkMax _leftMaster = new CANSparkMax(RobotMap.LEFT_DRIVE_MASTER_CAN_ADDR, MotorType.kBrushless);
-    CANSparkMax _leftSlave = new CANSparkMax(RobotMap.LEFT_DRIVE_SLAVE_CAN_ADDR, MotorType.kBrushless);
-    CANSparkMax _leftSlave2 = new CANSparkMax(RobotMap.LEFT_DRIVE_SLAVE2_CAN_ADDR, MotorType.kBrushless);
-    CANSparkMax _rightMaster = new CANSparkMax(RobotMap.RIGHT_DRIVE_MASTER_CAN_ADDR, MotorType.kBrushless);
-    CANSparkMax _rightSlave = new CANSparkMax(RobotMap.RIGHT_DRIVE_SLAVE_CAN_ADDR, MotorType.kBrushless);
-    CANSparkMax _rightSlave2 = new CANSparkMax(RobotMap.RIGHT_DRIVE_SLAVE2_CAN_ADDR, MotorType.kBrushless);
-    
+    private CANSparkMax _leftMaster = new CANSparkMax(RobotMap.LEFT_DRIVE_MASTER_CAN_ADDR, MotorType.kBrushless);
+    private CANSparkMax _leftSlave = new CANSparkMax(RobotMap.LEFT_DRIVE_SLAVE_CAN_ADDR, MotorType.kBrushless);
+    private CANSparkMax _leftSlave2 = new CANSparkMax(RobotMap.LEFT_DRIVE_SLAVE2_CAN_ADDR, MotorType.kBrushless);
+    private CANSparkMax _rightMaster = new CANSparkMax(RobotMap.RIGHT_DRIVE_MASTER_CAN_ADDR, MotorType.kBrushless);
+    private CANSparkMax _rightSlave = new CANSparkMax(RobotMap.RIGHT_DRIVE_SLAVE_CAN_ADDR, MotorType.kBrushless);
+    private CANSparkMax _rightSlave2 = new CANSparkMax(RobotMap.RIGHT_DRIVE_SLAVE2_CAN_ADDR, MotorType.kBrushless);
+    private static final int currentLimit = 60;
 
     private static NEOChassis _instance = new NEOChassis();
     public static NEOChassis getInstance() 
@@ -38,12 +38,13 @@ public class NEOChassis extends Subsystem implements IBeakSquadSubsystem
         _leftSlave.setInverted(false);
         _leftSlave2.setInverted(false);
         setIsBrakeMode(true);
-        _leftMaster.setSmartCurrentLimit(40);
-        _rightMaster.setSmartCurrentLimit(40);
-        _leftSlave.setSmartCurrentLimit(40);
-        _rightSlave.setSmartCurrentLimit(40);
-        _leftSlave2.setSmartCurrentLimit(40);
-        _rightSlave2.setSmartCurrentLimit(40);
+        setRampRate(1.2);
+        _leftMaster.setSmartCurrentLimit(currentLimit);
+        _rightMaster.setSmartCurrentLimit(currentLimit);
+        _leftSlave.setSmartCurrentLimit(currentLimit);
+        _rightSlave.setSmartCurrentLimit(currentLimit);
+        _leftSlave2.setSmartCurrentLimit(currentLimit);
+        _rightSlave2.setSmartCurrentLimit(currentLimit);
         _rightMaster.burnFlash();
         _leftMaster.burnFlash();
         _leftSlave.burnFlash();
@@ -92,10 +93,19 @@ public class NEOChassis extends Subsystem implements IBeakSquadSubsystem
         }
         else
         {
-            setRampRate(0.85);
+            setRampRate(1.2);
         }
-        _leftMaster.set(0.75*fwdCmd+0.25*turnCmd);
-        _rightMaster.set(0.75*fwdCmd-0.25*turnCmd);
+        if(Math.abs(fwdCmd)>0.2)
+        {
+            _leftMaster.set(0.7*fwdCmd+0.22*turnCmd);
+            _rightMaster.set(0.75*fwdCmd-0.22*turnCmd);
+        }
+        else
+        {
+            _leftMaster.set(0.7*fwdCmd+0.25*turnCmd);
+            _rightMaster.set(0.75*fwdCmd-0.25*turnCmd);
+        }
+        
     }
     public void elevatorUpArcadeDrive(double fwdCmd, double turnCmd)
     {
@@ -105,16 +115,17 @@ public class NEOChassis extends Subsystem implements IBeakSquadSubsystem
         }
         else
         {
-            setRampRate(1.0);
+            setRampRate(1.5);
         }
-        _leftMaster.set(0.5*fwdCmd+0.15*turnCmd);
-        _rightMaster.set(0.5*fwdCmd-0.15*turnCmd);
+        _leftMaster.set(0.5*fwdCmd+0.125*turnCmd);
+        _rightMaster.set(0.56*fwdCmd-0.125*turnCmd);
     }
 
     public void stop()
     {
         _leftMaster.set(0);
         _rightMaster.set(0);
+        //setIsBrakeMode(true);
     }
     @Override
     public void updateLogData(LogDataBE logData) {
@@ -124,7 +135,8 @@ public class NEOChassis extends Subsystem implements IBeakSquadSubsystem
 
     @Override
     public void updateDashboard() {
-        SmartDashboard.putNumber("Chassis Current", _leftMaster.getOutputCurrent());
+        SmartDashboard.putNumber("Chassis Current Left", _leftMaster.getOutputCurrent());
+        SmartDashboard.putNumber("Chassis Current Right", _rightMaster.getOutputCurrent());
 
     }
 

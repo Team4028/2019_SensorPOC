@@ -35,7 +35,7 @@ public class StickClimb extends CommandGroup
         //addParallel(new DriveClimber(0.2));
         addSequential(new MoveClimberToPos(climbHeight,0.5));
         addParallel(new DriveClimber(0.5));
-        addParallel(new DriveWithControllers(0.2, 0));
+        addParallel(new DriveWithControllers(0.05, 0));
         addSequential(new HoldClimber(0.375));
         addSequential(new MoveClimberToPos(climbHeight+1800, 0.2));
         addParallel(new DriveClimber(0.3));
@@ -45,13 +45,16 @@ public class StickClimb extends CommandGroup
         addSequential(new ToggleBeakOpen());
         addSequential(new SendBucketOut());
         addSequential(new MoveClimberToPos(climbHeight+5000, 0.2));
-        addSequential(new HoldClimber(.25));
+        addParallel(new DriveWithControllers(0.075, 0));
+        addParallel(new DriveClimber(0.0),0.5);
+        addSequential(new HoldClimber(.75));
         // addSequential(new MoveClimberToPos(clearedHeight, 0.5)); 
         // addParallel(new PrintCommand("Moved to Clear Height"));
         // addSequential(new DriveWithControllers(0.3, 0),0.85);
         // addSequential(new PrintCommand("Driven"));
+        addSequential(new DriveWithControllers(0.05, 0),0.25);
+        addSequential(new DriveWithControllers(0.025, 0),0.25);
         addParallel(new StopChassis(),0.25);
-        addSequential(new DriveClimber(0.0),0.5);
         // addSequential(new VictorySpin(),3);
 
     }

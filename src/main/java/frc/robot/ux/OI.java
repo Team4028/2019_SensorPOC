@@ -1,7 +1,6 @@
 package frc.robot.ux;
 
 import frc.robot.RobotMap;
-import frc.robot.commands.auton.DriveOffLevelTwoBackwards;
 import frc.robot.commands.auton.adaptivePaths.YaYeetVision;
 import frc.robot.commands.auton.util.StartAuton;
 import frc.robot.commands.camera.ChangeToLimelight;

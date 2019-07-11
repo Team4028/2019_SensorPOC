@@ -29,13 +29,13 @@ public class DriveOffLevel2Forwards extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    _chassis.arcadeDrive(0.5,0);
+    _chassis.arcadeDrive(0.4,0);
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return Timer.getFPGATimestamp()-_startTime>1.5;
+    return Timer.getFPGATimestamp()-_startTime>0.65;
   }
 
   // Called once after isFinished returns true

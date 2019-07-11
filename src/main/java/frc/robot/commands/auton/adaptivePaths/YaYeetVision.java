@@ -14,6 +14,7 @@ import frc.robot.Constants;
 import frc.robot.sensors.DistanceRev2mSensor;
 import frc.robot.sensors.VisionLL;
 import frc.robot.sensors.VisionLL.LIMELIGHT_PIPELINE;
+import frc.robot.subsystems.Cargo;
 import frc.robot.subsystems.NEOChassis;
 import frc.robot.util.GeneralUtilities;
 
@@ -37,6 +38,7 @@ public class YaYeetVision extends Command
   double kReducedForwardVBusAngleOneMinimum = 10;
   double kPReducedForwardVBusBig = .006;
   double kPReducedForwardVBusSmall = .008;
+  Cargo _cargo = Cargo.getInstance();
 
   public enum AUTO_SCORE_STATE
   {
@@ -58,6 +60,13 @@ public class YaYeetVision extends Command
     _limelight.changeLimelightPipeline(LIMELIGHT_PIPELINE.CENTER);
     state = AUTO_SCORE_STATE.UNDEFINED;
     _limelight.turnOnLEDs();
+    if(_cargo.get_isBeakOpen())
+    {
+      kPAFIXBig = 0.002;
+      kPAFIXSmall = 0.009;
+      kPReducedForwardVBusBig = .004;
+      kPReducedForwardVBusSmall = .006;
+    }
   }
 
   // Called repeatedly when this Command is scheduled to run

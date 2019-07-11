@@ -44,12 +44,18 @@ public class DriveWithControllers extends Command {
   @Override
   protected void execute() 
   {
-    if(Math.abs(_navX.getPitch())<15)
-    {
+    
       if(!isAuton) {
         if((_elevator.get_ElevatorPos()>4028))
         {
-          _chassis.elevatorUpArcadeDrive(_leftThumbstick.getY(), _rightThumbstick.getX());
+          if(Math.abs(_navX.getPitch())<15)
+          {
+            _chassis.elevatorUpArcadeDrive(_leftThumbstick.getY(), _rightThumbstick.getX());
+          }
+          else
+          {
+            _chassis.stop();
+          }
         }
         else
         {
@@ -59,12 +65,8 @@ public class DriveWithControllers extends Command {
         _chassis.arcadeDrive(_throttleCmd, _turnCmd);
       }
     }
-    else
-    {
-      _chassis.stop();
-    }
+    
    
-  }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override

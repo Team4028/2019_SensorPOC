@@ -24,7 +24,7 @@ public class MoveClimberToPos extends Command
     protected void execute() {
         if(_climber.getNativeUnits()>_targetPos)
         {
-            _climber.liftClimber(-0.9);
+            _climber.liftClimber(-1.0);
         }
         else
         {

@@ -19,7 +19,7 @@ import frc.robot.subsystems.Climber;
 
 public class Lvl2Climb extends CommandGroup
 {
-    double climbHeight =-8500;
+    double climbHeight =-8000;
     double clearedHeight=-696.9;//Nice
     Climber _climber = Climber.getInstance();
     NEOChassis _chassis = NEOChassis.getInstance();
@@ -27,13 +27,13 @@ public class Lvl2Climb extends CommandGroup
     {
         requires(_climber);
         setInterruptible(false);
-        addSequential(new MoveClimberToPos(climbHeight,0.5));
+        addSequential(new MoveClimberToPos(climbHeight,0.7));
             addParallel(new DriveClimber(0.5));
-            addParallel(new DriveWithControllers(0.2, 0));
+            addParallel(new DriveWithControllers(0.075, 0));
         addSequential(new HoldClimber(0.6));
-        addSequential(new MoveClimberToPos(climbHeight+1800, 0.2));
+        addSequential(new MoveClimberToPos(climbHeight+1500, 0.2));
             addParallel(new DriveClimber(0.3));
-        addSequential(new HoldClimber(.75));
+        addSequential(new HoldClimber(.65));
         addSequential(new SendBeakOut());
         addSequential(new TogglePunch());
         addSequential(new ToggleBeakOpen());
@@ -42,7 +42,7 @@ public class Lvl2Climb extends CommandGroup
         addSequential(new HoldClimber(.25));
         addSequential(new MoveClimberToPos(clearedHeight, 0.5));
             addParallel(new PrintCommand("Moved to Clear Height"));
-        addSequential(new DriveWithControllers(0.3, 0),1.1);
+        addSequential(new DriveWithControllers(0.15, 0),1.1);
         addSequential(new PrintCommand("Driven"));
             addParallel(new StopChassis(),0.25);
         addSequential(new DriveClimber(0.0),0.5);
