@@ -53,7 +53,7 @@ public class Elevator extends Subsystem implements IBeakSquadSubsystem {
   private static final int HOME_POSITION_NU = InchesToNativeUnits(0);
   private static final int CARGO_LEVEL_1_POSITION_NU = InchesToNativeUnits(23.25);
   private static final int CARGO_LEVEL_2_POSITION_NU = InchesToNativeUnits(51.25);
-  private static final int CARGO_LEVEL_3_POSITION_NU = InchesToNativeUnits(51.25);//78.25
+  private static final int CARGO_LEVEL_3_POSITION_NU = InchesToNativeUnits(78.25);//51.25
   private static final int HATCH_LEVEL_1_POSITION_NU = InchesToNativeUnits(0);
   private static final int HATCH_LEVEL_2_POSITION_NU = InchesToNativeUnits(31);
   private static final int HATCH_LEVEL_3_POSITION_NU = InchesToNativeUnits(58);

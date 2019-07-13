@@ -35,7 +35,7 @@ public class ClimbSequence extends CommandGroup
         addSequential(new MoveClimberToPos(climbHeight,0.9));
         addParallel(new DriveClimber(0.5));
         addParallel(new DriveWithControllers(0.075, 0));
-        addSequential(new HoldClimber(0.375));
+        addSequential(new HoldClimber(0.575));
         addSequential(new MoveClimberToPos(climbHeight+1800, 0.2));
         addParallel(new DriveClimber(0.3));
         addSequential(new HoldClimber(.75));

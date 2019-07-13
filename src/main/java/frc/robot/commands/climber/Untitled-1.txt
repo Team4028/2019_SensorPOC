@@ -1,4 +1,3 @@
-
 package frc.robot.commands.climber;
 
 import java.util.Arrays;
@@ -37,18 +36,20 @@ public class Lvl3ClimbFromLvl2 extends CommandGroup
             addParallel(new SendBucketOut());
             addParallel(new SendBeakOut());
             addParallel(new ToggleBeakOpenClose());
-        addSequential(new MoveClimberToPos(climbHeight+3000, 0.2));
+        addSequential(new MoveClimberToPos(climbHeight+2200, 0.2));
             addParallel(new DriveClimber(0.8));
-            addParallel (new DriveWithControllers(0.40, 0),1.2);
-        addSequential(new HoldClimber(2));// Make this 2 in push
+        addSequential(new HoldClimber(1));// Make this 2 in push
+            addParallel (new DriveWithControllers(0.075, 0),1.2);
         addSequential(new MoveClimberToPos(clearedHeight, 0.2));
         addSequential(new HoldClimber(0.25));
             addParallel(new PrintCommand("Moved to Clear Height"));
         addSequential(new DriveClimber(0.0),0.1);
-        addSequential(new DriveWithControllers(0.20, 0),0.2);
-        addSequential(new DriveWithControllers(0.05, 0),0.3);
+        addSequential(new DriveWithControllers(0.05, 0),0.2);
+        addSequential(new DriveWithControllers(0.025, 0),0.3);
         addSequential(new PrintCommand("Driven"));
         addSequential(new StopChassis(),0.25);
      }
 
 }
+
+
