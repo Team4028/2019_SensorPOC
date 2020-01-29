@@ -136,7 +136,7 @@ public class Chassis extends Subsystem implements IBeakSquadSubsystem {
         talon.configPeakOutputReverse(-1.0, 10);
         talon.configNominalOutputForward(0, 10);
         talon.configNominalOutputReverse(0, 10);
-        talon.configContinuousCurrentLimit(Constants.BIG_NUMBER, 10);
+        //talon.configContinuousCurrentLimit(Constants.BIG_NUMBER, 10);
 	}
 
   @Override
